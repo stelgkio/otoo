@@ -1,0 +1,20 @@
+################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/Konektor/config
+.vs/
+/.vs/Konektor/FileContentIndex/
+/.vs/Konektor/v17/
+/Konektor/ClientApp/package-lock.json
+/.vs/Konektor/v17/.futdcache.v2
+/.vs/ProjectEvaluation/konektor.metadata.v7.bin
+/.vs/ProjectEvaluation/konektor.projects.v7.bin
+/Infrastracture/obj
+/Domain/obj
+/Application/obj
+/Application/bin
+/Domain/bin
+/Infrastracture/bin
+.metals/metals.log
+.metals/metals.mv.db

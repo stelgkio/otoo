@@ -1,0 +1,50 @@
+<!-- Google Tag Manager (noscript) (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
+
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- Layout wrapper -->
+<div class="layout-wrapper layout-content-navbar">
+  <div class="layout-container">
+
+    <app-sidenav></app-sidenav>
+    <!-- Layout container -->
+    <div class="layout-page">
+      <!-- Navbar -->
+
+      <app-navbar></app-navbar>
+
+      <!-- / Navbar -->
+
+      <!-- Content wrapper -->
+      <div class="content-wrapper">
+        <!-- Content -->
+      <div class="container-xxl flex-grow-1 container-p-y">
+        <router-outlet></router-outlet>
+        <!-- / Content -->
+
+        <!-- Footer -->
+
+        <!-- / Footer -->
+      </div>
+        <div class="content-backdrop fade"></div>
+      </div>
+      <!-- Content wrapper -->
+    </div>
+    <!-- / Layout page -->
+  </div>
+
+  <!-- Overlay -->
+  <div class="layout-overlay layout-menu-toggle" (click)="sideNavToggle()"></div>
+
+  <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+  <div
+    class="drag-target"
+    style="
+      touch-action: pan-y;
+      user-select: none;
+      -webkit-user-drag: none;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    "
+  ></div>
+</div>
+<!-- / Layout wrapper -->

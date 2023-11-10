@@ -1,0 +1,35 @@
+<div [ngClass]="showModal ? 'modal fade show' : 'modal fade'" id="addNewAddress" tabindex="-1" [ngStyle]= "{'display': showModal ? 'block' : 'none' }"  aria-modal="true" role="dialog">
+  <div class="modal-dialog modal-lg modal-simple modal-add-new-address">
+    <div class="modal-content p-3 p-md-5">
+      <div class="modal-body">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="close()"></button>
+        <div class="text-center mb-4">
+          <h3 class="address-title">Add New Project</h3>
+          <!-- <p class="address-subtitle">Add new address for express delivery</p> -->
+        </div>
+        <form id="addNewAddressForm" class="row g-3" [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+          <div class="col-12 ">
+            <label class="form-label" for="modalAddressAddress1">Project Name</label>
+            <input type="text" id="modalAddressAddress1"  formControlName="Name" name="Name" class="form-control" placeholder="Project name" />
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="modalAddressAddress2">Project Url</label>
+            <input type="text" id="modalAddressAddress2"  formControlName="Url" name="Url" class="form-control" placeholder="https://Test.Project.com" />
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="modalAddressAddress2">Project description</label>
+            <input type="text" id="modalAddressAddress2"  formControlName="Description" name="Description" class="form-control" placeholder="" />
+          </div>
+
+          <div class="col-12 text-center">
+            <button type="submit" class="btn btn-primary me-sm-3 me-1" [disabled]="!projectForm.valid" >Submit</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close"  (click)="close()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ <div *ngIf="showModal" class="modal-backdrop fade show"></div>

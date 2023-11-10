@@ -1,0 +1,45 @@
+<div class="container-xxl flex-grow-1 container-p-y">
+  <!-- <button type="button" class="btn btn-primary"  data-bs-target="#addNewAddress"
+    (click)="createNewProject()"> Show </button> -->
+  <div class="row g-4 mb-4">
+    <div class="col-sm-6 col-xl-3">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex align-items-start justify-content-between">
+            <div class="content-left">
+              <span  (click)="createNewProject()"> Create new Porject</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div  class="row g-4 mb-4">
+    <div *ngFor="let title of projects$ |async" class="col-sm-6 col-xl-3">
+      <a href="javascript:void(0);" (click)="navigateToProject(title.id)">
+      <div   class="card">
+        <div class="card-body">
+          <div class="d-flex align-items-start justify-content-between">
+            <div class="content-left">
+              <span> {{title.name}}</span>
+              <div class="d-flex align-items-end mt-2">
+                <h4 class="mb-0 me-2">{{title.description}}</h4>
+                 <small class="text-success"></small>
+              </div>
+              <small>{{title.url}}</small>
+            </div>
+            <span class="badge bg-label-primary rounded p-2">
+              <i class="bx bx-user bx-sm"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+
+
+<app-new-project-modal [showModal]="openCreateProjectModal" (closeModal)="closeModalEvent($event)" (formModalValue)="formModalValue($event)"></app-new-project-modal>

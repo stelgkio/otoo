@@ -1,0 +1,104 @@
+<div class="container-xxl flex-grow-1 container-p-y ">
+  <h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Connect Project /</span> Create &amp; New
+  </h4>
+    <div class="card mb-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h3 class="card-title display-1 mb-0">Create a KonektorX</h3>
+          <br />
+          <br />
+
+          <!-- Form starts -->
+          <form [formGroup]="frameWorkForm" >
+            <div class="d-flex align-items-center justify-content-center align-items-center">
+              <div class="mb-3 col-9 justify-content-center align-items-center">
+                <label class="form-label" for="bs-validation-country">Framework</label>
+                <select class="form-select" id="bs-validation-country" required="" formControlName="framework" (change)="changeFrameWork($event)" >
+                  <option value="">Select Framework</option>
+                  <option value="WooCommerce">WooCommerce</option>
+                  <option value="Shoppify" disabled>Shoppify</option>
+
+                </select>
+                <div class="valid-feedback"> Looks good! </div>
+                <div class="invalid-feedback"> Please select your framework </div>
+              </div>
+            </div>
+            </form>
+            <div [ngClass]="isWooCommerce ? 'card card-action mb-5' : 'card card-action mb-5 d-none'">
+              <div class="card-alert"></div>
+              <div class="card-header collapsed">
+                <div class="card-action-title">
+                  <h4 class="card-title display-6 mb-0">WooCommerce Cridentials</h4>
+                </div>
+                <div class="card-action-element">
+                  <ul class="list-inline mb-0">
+                    <li class="list-inline-item">                     
+                      <a href="https://woocommerce.github.io/woocommerce-rest-api-docs/#rest-api-keys" class="card-collapsible">
+                        <i class="fa fa-info-circle" aria-hidden="true"></i>                        
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="card-body">
+                <form id="formAccountSettings" [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="fv-plugins-bootstrap5 fv-plugins-framework" novalidate="novalidate">
+                  <div class="row d-flex align-items-center justify-content-center align-items-center">
+                    <div class="mb-3 col-md-6 form-password-toggle fv-plugins-icon-container">
+                      <label class="form-label" for="currentPassword">Site url</label>
+                      <div class="input-group input-group-merge has-validation">
+                        <div class="input-group">
+                          <span class="input-group-text" id="basic-addon14">
+                            {{this.projectForm.get('basicUrl')?.value}}
+                          </span>
+                          <input type="text" class="form-control" placeholder="URL"   formControlName="endpointUrl" id="basic-url1" value="/wp-json/wc/v3/" aria-describedby="basic-addon14">
+                        </div>
+                      </div><div class="fv-plugins-message-container invalid-feedback"></div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="mb-3 col-md-6 form-password-toggle fv-plugins-icon-container">
+                      <label class="form-label" for="newPassword">Consumer key</label>
+                      <div class="input-group input-group-merge has-validation">
+                        <input class="form-control"   formControlName="consumerKey" type="password" id="newPassword" name="newPassword" placeholder="············">
+                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                      </div><div class="fv-plugins-message-container invalid-feedback"></div>
+                    </div>
+                    <div class="mb-3 col-md-6 form-password-toggle fv-plugins-icon-container">
+                      <label class="form-label" for="confirmPassword">Consumer secret</label>
+                      <div class="input-group input-group-merge has-validation">
+                        <input class="form-control"   formControlName="consumerSecret"  type="password" name="confirmPassword" id="confirmPassword" placeholder="············">
+                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                      </div><div class="fv-plugins-message-container invalid-feedback"></div>
+                    </div>
+                    <div class="col-12 mb-4">
+                      <p class="fw-semibold mt-2">Password Requirements:</p>
+                      <ul class="ps-3 mb-0">
+                        <li class="mb-1">
+                          Minimum 8 characters long - the more, the better
+                        </li>
+                        <li class="mb-1">At least one lowercase character</li>
+                        <li>At least one number, symbol, or whitespace character</li>
+                      </ul>
+                    </div>
+                    <div class="col-12 mt-1">
+                      <button type="submit" [disabled]="!projectForm.valid" class="btn btn-primary me-2">Save changes</button>
+                      <button type="reset" class="btn btn-label-secondary">Cancel</button>
+                    </div>
+                  </div>
+                  <input type="hidden">
+                </form>
+              </div>
+            </div>
+
+        </div>
+
+
+
+
+      </div>
+    </div>
+  </div>
+
+
+

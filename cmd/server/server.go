@@ -25,7 +25,7 @@ func NewServer(db *pg.DB, logger *logger.Logger, config *config.Container) *echo
 
 	// Auth
 	authService := service.NewAuthService(userRepo, nil)
-	authHandler := handler.NewAuthHandler(authService)
+	authHandler := handler.NewAuthHandler(authService, userService)
 
 	//Home
 	homeHandler := handler.NewHomeHandler()

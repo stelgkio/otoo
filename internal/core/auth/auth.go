@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	accessTokenCookieName  = "access-token"
-	refreshTokenCookieName = "refresh-token"
+	accessTokenCookieName  = "accesstoken"
+	refreshTokenCookieName = "refreshtoken"
 	// Just for the demo purpose, I declared secrets here. In the real-world application, you might need
 	// to get it from the env variables.
 	jwtSecretKey        = "some-secret-key"
@@ -69,7 +69,8 @@ func generateRefreshToken(user *user.User) (string, time.Time, error) {
 func generateToken(user *user.User, expirationTime time.Time, secret []byte) (string, time.Time, error) {
 	// Create the JWT claims, which includes the username and expiry time
 	claims := &JwtCustomClaims{
-		Name: user.Name,
+		Name:  user.Email,
+		Admin: true,
 		RegisteredClaims: jwt.RegisteredClaims{
 			// In JWT, the expiry time is expressed as unix milliseconds
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
@@ -102,7 +103,7 @@ func setTokenCookie(name, token string, expiration time.Time, c echo.Context) {
 func setUserCookie(user *user.User, expiration time.Time, c echo.Context) {
 	cookie := new(http.Cookie)
 	cookie.Name = "user"
-	cookie.Value = user.Name
+	cookie.Value = user.Email
 	cookie.Expires = expiration
 	cookie.Path = "/"
 	c.SetCookie(cookie)

@@ -68,12 +68,14 @@ span.psw {
 </style>
 	<h1 for="uname"><b>REGISTER</b></h1>
 	@lo.HeadTemplate() {
-		<form action="/action_page.php" method="post">
+		<form hx-post="/register" hx-ext="json-enc">
 			<div class="container">
 				<label for="uname"><b>Username</b></label>
-				<input type="text" placeholder="Enter Username" name="uname" required/>
+				<input id="email" type="text" placeholder="Enter Username" name="email" required/>
 				<label for="psw"><b>Password</b></label>
-				<input type="password" placeholder="Enter Password" name="psw" required/>
+				<input id="password" type="password" placeholder="Enter Password" name="password" required/>
+				<label for="psw"><b>Confirmation Password</b></label>
+				<input id="confirmation_password" type="password" placeholder="Enter Confirmation Password" name="confirmation_password" required/>
 				<button type="submit">Login</button>
 				<label>
 					<input type="checkbox" checked="checked" name="remember"/> Remember me

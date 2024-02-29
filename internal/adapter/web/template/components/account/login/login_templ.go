@@ -115,7 +115,7 @@ span.psw {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</b></h1><form action=\"/action_page.php\" method=\"post\"><div class=\"container\"><label for=\"uname\"><b>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</b></h1><form action=\"/login\" method=\"post\"><div class=\"container\"><label for=\"uname\"><b>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -124,7 +124,7 @@ span.psw {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</b></label> <input type=\"text\" placeholder=\"Enter Username\" name=\"uname\" required> <label for=\"psw\"><b>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</b></label> <input type=\"text\" placeholder=\"Enter Username\" name=\"email\" id=\"email\" required> <label for=\"psw\"><b>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -133,7 +133,7 @@ span.psw {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</b></label> <input type=\"password\" placeholder=\"Enter Password\" name=\"psw\" required> <button type=\"submit\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</b></label> <input type=\"password\" placeholder=\"Enter Password\" name=\"password\" id=\"password\" required> <button type=\"submit\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

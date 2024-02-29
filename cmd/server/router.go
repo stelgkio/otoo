@@ -39,7 +39,8 @@ func httpRoutes(
 
 	e.GET("register", authHandler.RegisterForm)
 	e.POST("register", authHandler.Register)
-	e.POST("", func(c echo.Context) error {
+
+	e.GET("", func(c echo.Context) error {
 		return c.Redirect(http.StatusMovedPermanently, c.Echo().Reverse("index"))
 	})
 
@@ -50,7 +51,7 @@ func httpRoutes(
 		},
 
 		SigningKey:   []byte(auth.GetJWTSecret()),
-		TokenLookup:  "cookie:access-token",
+		TokenLookup:  "cookie:accesstoken",
 		ErrorHandler: auth.JWTErrorChecker,
 	}))
 

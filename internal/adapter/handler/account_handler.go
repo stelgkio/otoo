@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	l "github.com/stelgkio/otoo/internal/adapter/web/template/components/account/login"
 	reg "github.com/stelgkio/otoo/internal/adapter/web/template/components/account/register"
@@ -27,8 +28,8 @@ func NewAuthHandler(svc port.AuthService, urs port.UserService) *AuthHandler {
 
 // loginRequest represents the request body for logging in a user
 type loginRequest struct {
-	Email    string `json:"email" binding:"required,email" example:"test@example.com"`
-	Password string `json:"password" binding:"required,min=8" example:"12345678" minLength:"8"`
+	Email    string `form:"email" validate:"required,email" example:"test@example.com"`
+	Password string `form:"password" validate:"required,min=8" example:"12345678" minLength:"8"`
 }
 
 // authResponse represents an authentication response body
@@ -58,18 +59,19 @@ func AuthResponse(token string) authResponse {
 func (ah *AuthHandler) Login(ctx echo.Context) (err error) {
 
 	req := new(loginRequest)
+
 	if err := ctx.Bind(req); err != nil {
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
 
 	token, err := ah.svc.Login(ctx, req.Email, req.Password)
 	if err != nil {
-		return ctx.String(http.StatusBadRequest, "bad request")
+		return ctx.String(http.StatusBadRequest, err.Error())
 	}
 
-	rsp := AuthResponse(token)
+	AuthResponse(token)
 
-	return ctx.JSON(http.StatusOK, rsp)
+	return ctx.Redirect(http.StatusFound, "/")
 }
 
 // @Router			/login [get]
@@ -80,8 +82,9 @@ func (ah *AuthHandler) LoginForm(c echo.Context) error {
 
 // registerRequest represents the request body for creating a user
 type registerRequest struct {
-	Email    string `json:"email" binding:"required,email" example:"test@example.com"`
-	Password string `json:"password" binding:"required,min=6" example:"12345678"`
+	Email                string `json:"email" validate:"required,email" example:"test@example.com"`
+	Password             string `json:"password" validate:"required,min=6" example:"12345678"`
+	ConfirmationPassword string `json:"confirmation_password" validate:"required,min=6" example:"12345678"`
 }
 
 // @Router			/register [get]
@@ -96,14 +99,31 @@ func (ah *AuthHandler) Register(ctx echo.Context) error {
 	if err := ctx.Bind(req); err != nil {
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
+	ctx.Validate(req)
+	// validate email is not taken
+	validate := validator.New()
 
-	user := domain.User{
-		Email:    req.Email,
-		Password: req.Password}
+	// Validate the User struct
+	err := validate.Struct(req)
+	if err != nil {
+		// Validation failed, handle the error
+		errors := err.(validator.ValidationErrors)
+		return ctx.String(http.StatusBadRequest, errors.Error())
 
-	_, err := ah.urs.CreateUser(ctx, &user)
+	}
+	// validate password is the same as confirm password
+	if req.Password != req.ConfirmationPassword {
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	user, err := domain.NewUser(req.Email, req.Password)
 	if err != nil {
 		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	// Create a new validator instance
+
+	_, err = ah.urs.CreateUser(ctx, user)
+	if err != nil {
+		return ctx.String(http.StatusInternalServerError, "bad request")
 	}
 
 	return ctx.Redirect(http.StatusMovedPermanently, ctx.Echo().Reverse("index"))

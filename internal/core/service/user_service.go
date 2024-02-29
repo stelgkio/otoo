@@ -25,8 +25,14 @@ func NewUserService(repo port.UserRepository) *UserService {
 
 // Register creates a new user
 func (us *UserService) CreateUser(ctx echo.Context, user *domain.User) (*domain.User, error) {
-
-	user, err := us.repo.CreateUser(ctx, user)
+	u, err := us.repo.GetUserByEmail(ctx, user.Email)
+	if err != nil && err != e.ErrDataNotFound {
+		return nil, e.ErrInternal
+	}
+	if u != nil {
+		return nil, e.ErrEmailAlreadyExist
+	}
+	user, err = us.repo.CreateUser(ctx, user)
 	if err != nil {
 		if err == e.ErrConflictingData {
 			return nil, err

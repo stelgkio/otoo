@@ -27,6 +27,8 @@ var (
 	ErrInvalidToken = errors.New("access token is invalid")
 	// ErrInvalidCredentials is an error for when the credentials are invalid
 	ErrInvalidCredentials = errors.New("invalid email or password")
+	// 	ErrEmailAlreadyExist is an error for when the email already exist
+	ErrEmailAlreadyExist = errors.New("invalid email email already exist")
 	// ErrEmptyAuthorizationHeader is an error for when the authorization header is empty
 	ErrEmptyAuthorizationHeader = errors.New("authorization header is not provided")
 	// ErrInvalidAuthorizationHeader is an error for when the authorization header is invalid

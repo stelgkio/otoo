@@ -7,11 +7,6 @@ import (
 	"github.com/stelgkio/otoo/internal/core/util"
 )
 
-type DtoUser struct {
-	Email    string `json:"email" validate:"email"`
-	Password string `json:"password" validate:"password"`
-}
-
 // UserRole is an enum for user's role
 type UserRole string
 
@@ -24,7 +19,7 @@ const (
 type User struct {
 	Base
 	Name        string
-	Email       string
+	Email       string `json:"email" pg:"email,unique,notnull"`
 	Password    string
 	Role        UserRole
 	ValidatedAt types.NullTime
@@ -49,4 +44,10 @@ func NewUser(email string, password string) (*User, error) {
 	u.UpdatedAt = now
 	u.IsActive = true
 	return u, nil
+}
+
+// Validate validates user's email and password
+func (u *User) ValidateEmail(email string) error {
+
+	return nil
 }

@@ -142,7 +142,7 @@ span.psw {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</b></label> <input id=\"confirmation_password\" type=\"password\" placeholder=\"Enter Confirmation Password\" name=\"confirmation_password\" required> <button type=\"submit\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</b></label> <input id=\"confirmationpassword\" type=\"password\" placeholder=\"Enter Confirmation Password\" name=\"confirmationpassword\" required> <button type=\"submit\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -15,7 +15,7 @@ import (
 
 func NewServer(db *pg.DB, logger *logger.Logger, config *config.Container) *echo.Echo {
 
-	s := StartServer()
+	s := StartServer(logger)
 
 	// Dependency injection
 	// User
@@ -30,7 +30,12 @@ func NewServer(db *pg.DB, logger *logger.Logger, config *config.Container) *echo
 	//Home
 	homeHandler := handler.NewHomeHandler()
 
-	_, err := NewRouter(s, userHandler, authHandler, homeHandler)
+	// Project
+	projectRepo := repository.NewProjectRepository(db)
+	projectService := service.NewProjectService(projectRepo)
+	projectHandler := handler.NewProjectHandler(projectService)
+
+	_, err := NewRouter(s, userHandler, authHandler, homeHandler, projectHandler)
 	if err != nil {
 		return nil
 	}
@@ -38,15 +43,15 @@ func NewServer(db *pg.DB, logger *logger.Logger, config *config.Container) *echo
 	return s
 }
 
-func StartServer() *echo.Echo {
+func StartServer(logger *logger.Logger) *echo.Echo {
 	e := echo.New()
 
-	e.Use(middleware.Logger())
-
-	e.Use(middleware.Recover())
-	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-		Format: "method=${method}, uri=${uri}, status=${status}\n",
-	}))
+	// e.Use(middleware.Logger())
+	e.Use(logger.LoggerMiddleware())
+	// e.Use(middleware.Recover())
+	// e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+	// 	Format: "method=${method}, uri=${uri}, status=${status}\n",
+	// }))
 	e.Use(middleware.CORS())
 
 	e.Static("/css", "css")

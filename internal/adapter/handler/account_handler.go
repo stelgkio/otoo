@@ -26,12 +26,6 @@ func NewAuthHandler(svc port.AuthService, urs port.UserService) *AuthHandler {
 	}
 }
 
-// loginRequest represents the request body for logging in a user
-type loginRequest struct {
-	Email    string `form:"email" validate:"required,email" example:"test@example.com"`
-	Password string `form:"password" validate:"required,min=8" example:"12345678" minLength:"8"`
-}
-
 // authResponse represents an authentication response body
 type authResponse struct {
 	AccessToken string `json:"token"`
@@ -41,6 +35,12 @@ func AuthResponse(token string) authResponse {
 	return authResponse{
 		AccessToken: token,
 	}
+}
+
+// loginRequest represents the request body for logging in a user
+type loginRequest struct {
+	Email    string `form:"email" validate:"required,email" example:"test@example.com"`
+	Password string `form:"password" validate:"required,min=8" example:"12345678" minLength:"8"`
 }
 
 // Login godoc
@@ -82,9 +82,9 @@ func (ah *AuthHandler) LoginForm(c echo.Context) error {
 
 // registerRequest represents the request body for creating a user
 type registerRequest struct {
-	Email                string `json:"email" validate:"required,email" example:"test@example.com"`
-	Password             string `json:"password" validate:"required,min=6" example:"12345678"`
-	ConfirmationPassword string `json:"confirmation_password" validate:"required,min=6" example:"12345678"`
+	Email                string `form:"email" validate:"required,email" example:"test@example.com"`
+	Password             string `form:"password" validate:"required,min=6" example:"12345678"`
+	ConfirmationPassword string `form:"confirmationpassword" validate:"required,min=6" example:"12345678"`
 }
 
 // @Router			/register [get]
@@ -113,7 +113,7 @@ func (ah *AuthHandler) Register(ctx echo.Context) error {
 	}
 	// validate password is the same as confirm password
 	if req.Password != req.ConfirmationPassword {
-		return ctx.String(http.StatusBadRequest, "bad request")
+		return ctx.String(http.StatusInternalServerError, "invalid configuration password")
 	}
 	user, err := domain.NewUser(req.Email, req.Password)
 	if err != nil {

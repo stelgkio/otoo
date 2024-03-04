@@ -42,7 +42,7 @@ func NewUser(email string, password string) (*User, error) {
 	u.Email = email
 	u.CreatedAt = now
 	u.UpdatedAt = now
-	u.IsActive = true
+	u.IsActive = false
 	return u, nil
 }
 
@@ -50,4 +50,9 @@ func NewUser(email string, password string) (*User, error) {
 func (u *User) ValidateEmail(email string) error {
 
 	return nil
+}
+
+// setIsActive sets user's isActive field to true
+func (u *User) setIsActive(active bool) {
+	u.IsActive = active
 }

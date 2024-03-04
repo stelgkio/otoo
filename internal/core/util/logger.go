@@ -3,7 +3,10 @@ package util
 import (
 	"time"
 
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 type Logger struct {
@@ -11,7 +14,10 @@ type Logger struct {
 }
 
 func NewLogger() *Logger {
-	logger, _ := zap.NewDevelopment()
+	//	logger, _ := zap.NewDevelopment()
+	config := zap.NewDevelopmentConfig()
+	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	logger, _ := config.Build()
 	return &Logger{
 		logger: logger,
 	}
@@ -44,4 +50,20 @@ func (l *Logger) Sync() {
 
 func getTime() string {
 	return time.Now().Format(time.RFC3339Nano)
+}
+func (l *Logger) LoggerMiddleware() echo.MiddlewareFunc {
+	return middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+		LogURI:     true,
+		LogStatus:  true,
+		LogLatency: true,
+		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+			l.logger.Info("request",
+				zap.String("URI", v.URI),
+				zap.Int("status", v.Status),
+				zap.Duration("latency", v.Latency),
+			)
+
+			return nil
+		},
+	})
 }

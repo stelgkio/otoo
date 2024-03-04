@@ -20,25 +20,18 @@ func NewRouter(
 	userHandler *h.UserHandler,
 	authHandler *h.AuthHandler,
 	homeHandler *h.HomeHandler,
+	projectHandler *h.ProjectHandler,
 ) (*Router, error) {
-
-	// authRoutes(e, userHandler, authHandler)
-	httpRoutes(e, userHandler, authHandler, homeHandler)
-	e.HTTPErrorHandler = customHTTPErrorHandler
-	return &Router{e}, nil
-}
-
-func httpRoutes(
-	e *echo.Echo,
-	userHandler *h.UserHandler,
-	authHandler *h.AuthHandler,
-	homeHandler *h.HomeHandler) {
 
 	e.GET("login", authHandler.LoginForm).Name = "SignInForm"
 	e.POST("login", authHandler.Login)
 
 	e.GET("register", authHandler.RegisterForm)
 	e.POST("register", authHandler.Register)
+
+	//Proejct group
+	projectgroup := e.Group("/project")
+	projectgroup.POST("/create", projectHandler.CreateProject)
 
 	e.GET("", func(c echo.Context) error {
 		return c.Redirect(http.StatusMovedPermanently, c.Echo().Reverse("index"))
@@ -59,6 +52,10 @@ func httpRoutes(
 	homegroup.Use(auth.TokenRefresherMiddleware)
 
 	homegroup.GET("index", homeHandler.Home).Name = "index"
+
+	//ße.HTTPErrorHandler = customHTTPErrorHandler
+	e.Use()
+	return &Router{e}, nil
 }
 
 func customHTTPErrorHandler(err error, c echo.Context) {

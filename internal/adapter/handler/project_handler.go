@@ -23,12 +23,12 @@ func NewProjectHandler(svc port.ProjectService) *ProjectHandler {
 func (ph *ProjectHandler) CreateProject(ctx echo.Context) error {
 	req := new(domain.ProjectRequest)
 	if err := ctx.Bind(req); err != nil {
-		return ctx.String(http.StatusBadRequest, "bad request")
+		return ctx.JSON(http.StatusBadRequest, "bad request")
 	}
 
 	dom, err := ph.svc.CreateProject(ctx, req)
 	if err != nil {
-		return ctx.String(http.StatusInternalServerError, err.Error())
+		return ctx.JSON(http.StatusInternalServerError, err.Error())
 	}
 
 	return ctx.JSON(http.StatusCreated, dom)

@@ -11,8 +11,8 @@ func CreateSchema(db *pg.DB) error {
 	models := []interface{}{
 		(*domain.User)(nil),
 		(*domain.Project)(nil),
-		(*domain.WoocommerceProject)(nil),
-		(*domain.ShopifyProject)(nil),
+		// (*domain.WoocommerceProject)(nil),
+		// (*domain.ShopifyProject)(nil),
 	}
 
 	for _, model := range models {

@@ -18,28 +18,11 @@ func NewProjectRepository(db *pg.DB) *ProjectRepository {
 }
 
 // CreatProject creates a newProject in the database
-func (repo *ProjectRepository) CreateProject(ctx echo.Context, project *domain.Project, woo *domain.WoocommerceProject, shop *domain.ShopifyProject) (*domain.Project, error) {
-
-	if woo != nil {
-		_, err := repo.db.Model(woo).Insert()
-		if err != nil {
-			ctx.Echo().Logger.Error(err)
-		}
-		project.WoocommerceProjectId = woo.Id
-		project.WoocommerceProject = woo
-	}
-	if shop != nil {
-		_, err := repo.db.Model(shop).Insert()
-		if err != nil {
-			ctx.Echo().Logger.Error(err)
-		}
-		project.ShopifyProjectId = shop.Id
-		project.ShopifyProject = shop
-	}
+func (repo *ProjectRepository) CreateProject(ctx echo.Context, project *domain.Project) (*domain.Project, error) {
 
 	_, err := repo.db.Model(project).Insert()
 	if err != nil {
-		ctx.Echo().Logger.Error(err)
+		return nil, err
 	}
 
 	return project, nil

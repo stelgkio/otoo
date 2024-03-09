@@ -51,8 +51,3 @@ func (u *User) ValidateEmail(email string) error {
 
 	return nil
 }
-
-// setIsActive sets user's isActive field to true
-func (u *User) setIsActive(active bool) {
-	u.IsActive = active
-}

@@ -23,16 +23,10 @@ type Project struct {
 	Name        string
 	Description string
 	ProjectType ProjectType
-
-	WoocommerceProjectId uuid.UUID           `pg:"woocommerce_id,type:uuid"`
-	WoocommerceProject   *WoocommerceProject `pg:"rel:has-one"`
-
-	ShopifyProjectId uuid.UUID       `pg:"shopify_id,type:uuid"`
-	ShopifyProject   *ShopifyProject `pg:"rel:has-one"`
-
-	UserId uuid.UUID `pg:"fk:user_id,type:uuid"`
-	User   *User     `pg:"rel:has-one"`
-
+	WoocommerceProject
+	ShopifyProject
+	UserId      uuid.UUID `pg:"fk:user_id,type:uuid"`
+	User        *User     `pg:"rel:has-one"`
 	ValidatedAt types.NullTime
 	IsActive    bool
 }
@@ -49,16 +43,15 @@ func NewProject(p *ProjectRequest) (*Project, error) {
 }
 
 type WoocommerceProject struct {
-	Base
-	Name           string
-	Description    string
-	Domain         string
-	ConsumerKey    string
-	ConsumerSecret string
+	Name           string `json:"woocommerce_name" pg:"woocommerce_name"`
+	Description    string `json:"woocommerce_description" pg:"woocommerce_description"`
+	Domain         string `json:"woocommerce_domain" pg:"woocommerce_domain"`
+	ConsumerKey    string `json:"woocommerce_consumer_key" pg:"woocommerce_consumer_key"`
+	ConsumerSecret string `json:"woocommerce_consumer_secret" pg:"woocommerce_consumer_secret"`
 }
 
-func NewWoocommerceProject(p *ProjectRequest) (*WoocommerceProject, error) {
-	wc := new(WoocommerceProject)
+func NewWoocommerceProject(p *ProjectRequest) (WoocommerceProject, error) {
+	wc := WoocommerceProject{}
 	wc.Name = p.Name
 	wc.Description = p.Description
 	wc.Domain = p.Domain
@@ -68,16 +61,15 @@ func NewWoocommerceProject(p *ProjectRequest) (*WoocommerceProject, error) {
 }
 
 type ShopifyProject struct {
-	Base
-	Name           string
-	Description    string
-	Domain         string
-	ConsumerKey    string
-	ConsumerSecret string
+	Name           string `json:"shopify_consumer_name" pg:"shopify_consumer_name"`
+	Description    string `json:"shopify_description" pg:"shopify_description"`
+	Domain         string `json:"shopify_domain" pg:"shopify_domain"`
+	ConsumerKey    string `json:"shopify_consumer_key" pg:"shopify_consumer_key"`
+	ConsumerSecret string `json:"shopify_consumer_secret" pg:"shopify_consumer_secret"`
 }
 
-func NewShopifyProject(p *ProjectRequest) (*ShopifyProject, error) {
-	sp := new(ShopifyProject)
+func NewShopifyProject(p *ProjectRequest) (ShopifyProject, error) {
+	sp := ShopifyProject{}
 	sp.Name = p.Name
 	sp.Description = p.Description
 	sp.Domain = p.Domain

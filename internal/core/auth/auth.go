@@ -1,10 +1,12 @@
 package auth
 
 import (
+	"errors"
 	"net/http"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	user "github.com/stelgkio/otoo/internal/core/domain"
 )
@@ -74,6 +76,7 @@ func generateToken(user *user.User, expirationTime time.Time, secret []byte) (st
 		RegisteredClaims: jwt.RegisteredClaims{
 			// In JWT, the expiry time is expressed as unix milliseconds
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
+			ID:        user.Id.String(),
 		},
 	}
 
@@ -154,4 +157,49 @@ func TokenRefresherMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		return next(c)
 	}
+
+}
+
+func GetUserId(c echo.Context) (uuid.UUID, error) {
+	u := c.Get("user").(*jwt.Token)
+
+	claims := u.Claims.(*JwtCustomClaims)
+
+	uuidValue, err := uuid.Parse(claims.ID)
+	if err != nil {
+		return uuidValue, errors.New("error parsing uuid for user")
+
+	}
+
+	return uuidValue, nil
+}
+
+func GenerateWebHookAccessToken(projectId string) (string, time.Time, error) {
+	// Declare the expiration time of the token
+	expirationTime := time.Now().Add(1 * time.Hour)
+
+	return generateWebHookToken(projectId, expirationTime, []byte(GetJWTSecret()))
+}
+func generateWebHookToken(projectId string, expirationTime time.Time, secret []byte) (string, time.Time, error) {
+	// Create the JWT claims, which includes the username and expiry time
+	claims := &JwtCustomClaims{
+		Name:  projectId,
+		Admin: true,
+		RegisteredClaims: jwt.RegisteredClaims{
+			// In JWT, the expiry time is expressed as unix milliseconds
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
+			ID:        projectId,
+		},
+	}
+
+	// Declare the token with the algorithm used for signing, and the claims
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	// Create the JWT string
+	tokenString, err := token.SignedString(secret)
+	if err != nil {
+		return "", time.Now(), err
+	}
+
+	return tokenString, expirationTime, nil
 }

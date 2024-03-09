@@ -7,7 +7,7 @@ import (
 
 type ProjectRepository interface {
 	// CreateProject inserts a new project into the database
-	CreateProject(ctx echo.Context, project *domain.Project, woo *domain.WoocommerceProject, shop *domain.ShopifyProject) (*domain.Project, error)
+	CreateProject(ctx echo.Context, project *domain.Project) (*domain.Project, error)
 	// // GetUserByID selects a user by id
 	// GetUserByID(ctx context.Context, id uint64) (*domain.User, error)
 	// // GetUserByEmail selects a user by email

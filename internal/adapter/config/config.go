@@ -13,6 +13,7 @@ type (
 		Token *Token
 		Redis *Redis
 		DB    *DB
+		Mongo *Mongo
 		HTTP  *HTTP
 	}
 	// App contains all the environment variables for the application
@@ -28,6 +29,9 @@ type (
 	Redis struct {
 		Addr     string
 		Password string
+	}
+	Mongo struct {
+		ConnectionUrl string
 	}
 	// Database contains all the environment variables for the database
 	DB struct {
@@ -79,6 +83,10 @@ func New() (*Container, error) {
 		Name:       os.Getenv("DB_NAME"),
 	}
 
+	mongodb := &Mongo{
+		ConnectionUrl: os.Getenv("MONGO_CONNECTION_URL"),
+	}
+
 	http := &HTTP{
 		Env:            os.Getenv("APP_ENV"),
 		URL:            os.Getenv("HTTP_URL"),
@@ -91,6 +99,7 @@ func New() (*Container, error) {
 		token,
 		redis,
 		db,
+		mongodb,
 		http,
 	}, nil
 }

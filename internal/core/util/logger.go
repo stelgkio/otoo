@@ -18,6 +18,7 @@ func NewLogger() *Logger {
 	config := zap.NewDevelopmentConfig()
 	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	logger, _ := config.Build()
+	defer logger.Sync()
 	return &Logger{
 		logger: logger,
 	}
@@ -53,17 +54,52 @@ func getTime() string {
 }
 func (l *Logger) LoggerMiddleware() echo.MiddlewareFunc {
 	return middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
-		LogURI:     true,
-		LogStatus:  true,
-		LogLatency: true,
+		LogURI:       true,
+		LogStatus:    true,
+		LogLatency:   true,
+		LogError:     true,
+		LogRequestID: true,
+		HandleError:  true,
 		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
-			l.logger.Info("request",
-				zap.String("URI", v.URI),
-				zap.Int("status", v.Status),
-				zap.Duration("latency", v.Latency),
-			)
-
+			if v.Error == nil {
+				l.logger.Info("request",
+					zap.String("URI", v.URI),
+					zap.Int("status", v.Status),
+					zap.Duration("latency", v.Latency),
+					zap.String("request_id", v.RequestID),
+				)
+			} else {
+				l.logger.Error("request error",
+					zap.String("URI", v.URI),
+					zap.Int("status", v.Status),
+					zap.Duration("latency", v.Latency),
+					zap.String("request_id", v.RequestID),
+					//zap.String("error", v.Error.Error()),
+				)
+			}
 			return nil
 		},
 	})
 }
+
+//LogURI:      true,
+//		LogStatus:   true,
+//		LogError:    true,
+//		HandleError: true, // forwards error to the global error handler, so it can decide appropriate status code
+//		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+//			if v.Error == nil {
+//				logger.Info("request",
+//					zap.String("URI", v.URI),
+//					zap.Int("status", v.Status),
+//				)
+//			} else {
+//				logger.Error("request error",
+//					zap.String("URI", v.URI),
+//					zap.Int("status", v.Status),
+//					zap.Error(v.Error),
+//				)
+//			}
+//			return nil
+//		},
+//	}))
+//

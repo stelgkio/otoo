@@ -30,8 +30,8 @@ func MongoDbConnect(mongoUrl string) (*mongo.Client, error) {
 		return nil, err
 	}
 	slog.Info("⛁ Connected to Mongo Database")
-	coll := client.Database("otoo").Collection("woocommerce_orders")
-	coll.Database().Client()
+	// coll := client.Database("otoo").Collection("woocommerce_orders")
+	// coll.Database().Client()
 
 	return client, nil
 }

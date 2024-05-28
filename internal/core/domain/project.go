@@ -9,7 +9,7 @@ import (
 
 // Consumer secret  cs_562132bdb7e4e4c9e37b53a0fb703718e2dad5f7
 
-// ProjectType is an enum for user's role
+// ProjectType is an enum for project type of woo or shopify
 type ProjectType string
 
 // UserRole enum values
@@ -20,15 +20,15 @@ const (
 
 type Project struct {
 	Base
-	Name        string
-	Description string
-	ProjectType ProjectType
+	Name        string      `json:"name" pg:"name,notnull"`
+	Description string      `json:"description" pg:"description,notnull"`
+	ProjectType ProjectType `json:"project_type" pg:"project_type,notnull"`
 	WoocommerceProject
 	ShopifyProject
 	UserId      uuid.UUID `pg:"fk:user_id,type:uuid"`
 	User        *User     `pg:"rel:has-one"`
 	ValidatedAt types.NullTime
-	IsActive    bool
+	IsActive    bool `pg:"is_active"`
 }
 
 // NewProject creates a instance of user with hashed password
@@ -86,4 +86,12 @@ type ProjectRequest struct {
 	Domain         string      `json:"domain" form:"domain"`
 	ConsumerKey    string      `json:"consumer_key" form:"consumer_key"`
 	ConsumerSecret string      `json:"consumer_secret" form:"consumer_secret"`
+	AccessToken    string      `json:"accesstoken" form:"accesstoken"`
+}
+
+type FindProjectRequest struct {
+	Name        string      `json:"name" form:"name"`
+	Description string      `json:"description" form:"description"`
+	ProjectType ProjectType `json:"project_type" form:"project_type"`
+	Domain      string      `json:"domain" form:"domain"`
 }

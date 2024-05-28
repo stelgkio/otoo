@@ -14,9 +14,10 @@ import (
 	h "github.com/stelgkio/otoo/internal/adapter/web/template/components/dashboard"
 	n "github.com/stelgkio/otoo/internal/adapter/web/template/components/nav"
 	lo "github.com/stelgkio/otoo/internal/adapter/web/template/layout/head"
+	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-func HomeComponent() templ.Component {
+func HomeComponent(projects []*domain.Project) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -43,7 +44,7 @@ func HomeComponent() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = h.DashboardComponent().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = h.DashboardComponent(projects).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -1,0 +1,115 @@
+package views
+
+templ WalletModal() {
+	<div
+		class="modal fade"
+		id="connectWalletModal"
+		tabindex="-1"
+		aria-labelledby="connectWalletModalLabel"
+		aria-hidden="true"
+	>
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content overflow-hidden">
+				<div class="modal-header pb-0 border-0">
+					<h1 class="modal-title h4" id="connectWalletModalLabel">Connect your wallet</h1>
+					<button
+						type="button"
+						class="btn-close"
+						data-bs-dismiss="modal"
+						aria-label="Close"
+					></button>
+				</div>
+				<div class="modal-body undefined">
+					<div class="list-group list-group-flush gap-2">
+						<div class="list-group-item border rounded d-flex gap-3 p-4 bg-body-secondary-hover">
+							<div class="icon flex-none">
+								<img
+									src="../../img/wallets/metamask.png"
+									class="w-rem-8 h-rem-8"
+									alt="..."
+								/>
+							</div>
+							<div class="d-flex align-items-center flex-fill">
+								<div><a href="#" class="stretched-link text-heading text-sm fw-bold">MetaMask</a></div>
+								<div class="ms-auto"><span class="badge badge-md text-bg-primary">Popular</span></div>
+							</div>
+						</div>
+						<div class="list-group-item border rounded d-flex gap-3 p-4 bg-body-secondary-hover">
+							<div class="icon flex-none">
+								<img
+									src="../../img/wallets/coinbase.webp"
+									class="w-rem-8 h-rem-8"
+									alt="..."
+								/>
+							</div>
+							<div class="d-flex align-items-center flex-fill">
+								<div>
+									<a href="#" class="stretched-link text-heading text-sm fw-bold">Coinbase Wallet</a>
+								</div>
+							</div>
+						</div>
+						<div class="list-group-item border rounded d-flex gap-3 p-4 bg-body-secondary-hover">
+							<div class="icon flex-none">
+								<img
+									src="../../img/wallets/walletconnect.png"
+									class="w-rem-8 h-rem-8"
+									alt="..."
+								/>
+							</div>
+							<div class="d-flex align-items-center flex-fill">
+								<div>
+									<a href="#" class="stretched-link text-heading text-sm fw-bold">WalletConnect</a>
+								</div>
+							</div>
+						</div>
+						<div class="list-group-item border rounded d-flex gap-3 p-4 bg-body-secondary-hover">
+							<div class="icon flex-none">
+								<img
+									src="../../img/wallets/phantom.png"
+									class="w-rem-8 h-rem-8"
+									alt="..."
+								/>
+							</div>
+							<div class="d-flex align-items-center flex-fill">
+								<div><a href="#" class="stretched-link text-heading text-sm fw-bold">Phantom</a></div>
+								<div class="ms-auto"><span class="badge badge-md text-bg-light">Solana</span></div>
+							</div>
+						</div>
+						<div class="list-group-item border rounded d-flex gap-3 p-4 bg-body-secondary-hover">
+							<div class="icon flex-none">
+								<img
+									src="../../img/wallets/core.png"
+									class="w-rem-8 h-rem-8"
+									alt="..."
+								/>
+							</div>
+							<div class="d-flex align-items-center flex-fill">
+								<div><a href="#" class="stretched-link text-heading text-sm fw-bold">Core</a></div>
+								<div class="ms-auto"><span class="badge badge-md text-bg-light">Avalanche</span></div>
+							</div>
+						</div>
+						<div class="list-group-item border rounded d-flex gap-3 p-4 bg-body-secondary-hover">
+							<div class="icon flex-none">
+								<img
+									src="../../img/wallets/glow.svg"
+									class="w-rem-8 h-rem-8"
+									alt="..."
+								/>
+							</div>
+							<div class="d-flex align-items-center flex-fill">
+								<div><a href="#" class="stretched-link text-heading text-sm fw-bold">Glow</a></div>
+								<div class="ms-auto"><span class="badge badge-md text-bg-light">Solana</span></div>
+							</div>
+						</div>
+					</div>
+					<div class="text-xs text-muted mt-6">
+						By connecting wallet, you agree to Satoshi's 
+						<a href="#" class="fw-bold">
+							Terms of Service
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}

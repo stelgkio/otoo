@@ -1,0 +1,51 @@
+package components
+
+import (
+	"fmt"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ ProjectListComponent(projects []*domain.Project,pagenumber int) {
+	for index, item := range projects {
+		if (index < len(projects)-1) {
+			<article class="card">
+				<div class="card-header">
+					<div>
+						<h3>{ item.Name }</h3>
+					</div>
+				</div>
+				<div class="card-body">
+					<p>{ item.Description }</p>
+				</div>
+				<div class="card-footer">
+					<a href="#">View integration</a>
+				</div>
+			</article>
+		} else {
+			<article
+				class="card"
+				hx-get={ fmt.Sprintf("/projectlist?page=%d", pagenumber+1) }
+				hx-trigger="revealed"
+				hx-swap="afterend"
+			>
+				<div class="card-header">
+					<div>
+						//<span><img src="https://assets.codepen.io/285131/zeplin.svg"/></span>
+						<h3>Stelios</h3>
+					</div>
+					// <label class="toggle show-modal">
+					// 	<input type="checkbox" checked/>
+					// 	<span></span>
+					// </label>
+				</div>
+				<div class="card-body">
+					<p>{ item.Description }</p>
+				</div>
+				<div class="card-footer">
+					<a href="#">View integration</a>
+				</div>
+			</article>
+		}
+	}
+	//     <!----======== Form Component ======== -->
+}

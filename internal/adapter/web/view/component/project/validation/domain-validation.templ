@@ -1,0 +1,50 @@
+package views
+
+templ DomainUrlValidation(valid bool, domain string) {
+	if !valid {
+		<div id="domain-validation" class="input-group position-relative">
+			<span
+				class="input-group-text"
+			>
+				https:// 
+			</span>
+			<input
+				name="domain"
+				type="text"
+				class="form-control is-invalid"
+				placeholder="Domain url"
+				value={ domain }
+				aria-label="domain url"
+				hx-post="/project/validation/domain"
+				hx-target="#domain-validation"
+			/>
+			<span
+				class="input-group-text"
+			>/wp-json/wc/v3</span>
+			<div class="invalid-feedback" style="display: block;">
+				Domain url already exist!
+			</div>
+		</div>
+	} else {
+		<div id="domain-validation" class="input-group position-relative" hx-target="this" hx-swap="outerHTML">
+			<span
+				class="input-group-text"
+			>
+				https:// 
+			</span>
+			<input
+				name="domain"
+				type="text"
+				value={ domain }
+				class="form-control"
+				placeholder="Domain url"
+				aria-label="domain url"
+				hx-post="/project/validation/domain"
+				hx-target="#domain-validation"
+			/>
+			<span
+				class="input-group-text"
+			>/wp-json/wc/v3</span>
+		</div>
+	}
+}

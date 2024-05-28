@@ -32,7 +32,7 @@ func Nav() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></div><div class=\"menu-items\"><ul class=\"nav-links\"><li><a href=\"index.html\"><i class=\"uil uil-estate\"></i> <span class=\"link-name\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></div><div class=\"menu-items\"><ul class=\"nav-links\"><li><a href=\"\"><i class=\"uil uil-estate\"></i> <span class=\"link-name\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -41,7 +41,7 @@ func Nav() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></a></li><li><a href=\"extensions.html\"><i class=\"uil uil-files-landscapes\"></i> <span class=\"link-name\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></a></li><li><a href=\"extensions\"><i class=\"uil uil-files-landscapes\"></i> <span class=\"link-name\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

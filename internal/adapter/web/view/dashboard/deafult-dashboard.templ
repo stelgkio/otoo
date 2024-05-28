@@ -1,0 +1,329 @@
+package views
+
+import (
+	o "github.com/stelgkio/otoo/internal/adapter/web/view/component/order/history"
+	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/product/best_seller"
+)
+
+templ DeafultDashboard() {
+	<div
+		id="dashboard-content"
+		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
+	>
+		<main class="container-fluid px-3 py-5 p-lg-6 p-xxl-8">
+			<div class="mb-6 mb-xl-10">
+				<div class="row g-3 align-items-center">
+					<div class="col">
+						<h1 class="ls-tight">Dashboard</h1>
+					</div>
+					<div class="col">
+						<div class="hstack gap-2 justify-content-end">
+							<button
+								type="button"
+								class="btn btn-sm btn-square btn-neutral rounded-circle d-xxl-none"
+								data-bs-toggle="offcanvas"
+								data-bs-target="#responsiveOffcanvas"
+								aria-controls="responsiveOffcanvas"
+							>
+								<i class="bi bi-three-dots"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row g-3 g-xxl-6">
+				<div class="col-xxl-8">
+					<div class="vstack gap-3 gap-md-6">
+						<div class="row g-3">
+							<div class="col-md col-sm-6">
+								<div class="card border-primary-hover">
+									<div class="card-body p-4">
+										<div class="d-flex align-items-center gap-2">
+											<i class="bi bi-bag-plus"></i>
+											<a
+												href="javascript:void(0)"
+												hx-get="/analytics"
+												hx-target="#dashboard-content"
+												class="h6 stretched-link"
+											>
+												Orders
+											</a>
+										</div>
+										<div class="text-sm fw-semibold mt-3">32893</div>
+										<!-- <div class="d-flex align-items-center gap-2 mt-1 text-xs"><span
+                                                        class="badge badge-xs bg-success"><i
+                                                            class="bi bi-arrow-up-right"></i> </span><span>+13.7%</span>
+                                                </div> -->
+									</div>
+								</div>
+							</div>
+							<div class="col-md col-sm-6">
+								<div class="card border-primary-hover">
+									<div class="card-body p-4">
+										<div class="d-flex align-items-center gap-2">
+											<i class="bi bi-file-earmark-person"></i>
+											<a
+												href="javascript:void(0)"
+												hx-get="/customer"
+												hx-target="#dashboard-content"
+												class="h6 stretched-link"
+											>Customers</a>
+										</div>
+										<div class="text-sm fw-semibold mt-3">1745 </div>
+										<!-- <div class="d-flex align-items-center gap-2 mt-1 text-xs"><span
+                                                        class="badge badge-xs bg-danger"><i
+                                                            class="bi bi-arrow-up-right"></i> </span><span>-3.2%</span>
+                                                </div> -->
+									</div>
+								</div>
+							</div>
+							<div class="col-md col-sm-6">
+								<div class="card border-primary-hover">
+									<div class="card-body p-4">
+										<div class="d-flex align-items-center gap-2">
+											<i class="bi bi-shop"></i>
+											<a
+												href="javascript:void(0)"
+												hx-get="/product"
+												hx-target="#dashboard-content"
+												class="h6 stretched-link"
+											>Products</a>
+										</div>
+										<div class="text-sm fw-semibold mt-3">890 </div>
+										<!-- <div class="d-flex align-items-center gap-2 mt-1 text-xs"><span
+                                                        class="badge badge-xs bg-danger"><i
+                                                            class="bi bi-arrow-up-right"></i> </span><span>-2.2%</span>
+                                                </div> -->
+									</div>
+								</div>
+							</div>
+							<!-- <div class="col-md-1 d-none d-md-block">
+                                        <div
+                                            class="card h-md-100 d-flex flex-column align-items-center justify-content-center py-4 bg-body-secondary bg-opacity-75 bg-opacity-100-hover">
+                                            <a href="#cryptoModal" class="stretched-link text-body-secondary"
+                                                data-bs-toggle="modal"><i class="bi bi-plus-lg"></i></a>
+                                        </div>
+                                    </div> -->
+						</div>
+						<div class="card">
+							<div class="card-body pb-0">
+								<div class="d-flex justify-content-between align-items-center">
+									<div>
+										<h5>Orders</h5>
+									</div>
+									<div class="hstack align-items-center">
+										<a href="#" class="text-muted">
+											<i
+												class="bi bi-arrow-repeat"
+											></i>
+										</a>
+									</div>
+								</div>
+								<div class="mx-n4">
+									<div id="chart-users" data-height="270"></div>
+								</div>
+							</div>
+						</div>
+						<!-- <div class="card">
+                                    <div class="card-body pb-0">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h5>Order Payment Status</h5>
+                                            </div>
+                                            <div class="hstack align-items-center"><a href="#" class="text-muted"><i
+                                                        class="bi bi-arrow-repeat"></i></a></div>
+                                        </div>
+                                        <div class="mx-n4">
+                                            <div id="chart" data-height="200"></div>
+                                        </div>
+                                    </div>
+                                </div> -->
+						@o.LatestOrderHistory()
+					</div>
+				</div>
+				<div class="col-xxl-4">
+					<div
+						class="offcanvas-xxl m-xxl-0 rounded-sm-4 rounded-xxl-0 offcanvas-end overflow-hidden m-sm-4"
+						tabindex="-1"
+						id="responsiveOffcanvas"
+						aria-labelledby="responsiveOffcanvasLabel"
+					>
+						<div class="offcanvas-header rounded-top-4">
+							<h5 class="offcanvas-title" id="responsiveOffcanvasLabel">Quick Stats</h5>
+							<button
+								type="button"
+								class="btn-close"
+								data-bs-dismiss="offcanvas"
+								data-bs-target="#responsiveOffcanvas"
+								aria-label="Close"
+							></button>
+						</div>
+						<div class="offcanvas-body d-flex flex-column p-3 p-sm-6 p-xxl-0 gap-3 gap-xxl-6">
+							<div class="vstack gap-6 gap-xxl-6">
+								<div class="card border-0 border-xxl">
+									<div class="card-body d-flex flex-column p-0 p-xxl-6">
+										<div class="d-flex justify-content-between align-items-center mb-3">
+											<div>
+												<h5>Weekly Balance</h5>
+											</div>
+											<div>
+												<span class="text-heading fw-bold">
+													<i
+														class="bi bi-arrow-up me-2"
+													></i>7.8%
+												</span>
+											</div>
+										</div>
+										<div class="text-2xl fw-bolder text-heading ls-tight">
+											€23.863,21
+										</div>
+										<div class="d-flex align-items-center justify-content-between mt-8">
+											<!-- <div class="">
+                                                        <div class="d-flex gap-3 align-items-center">
+                                                            <div
+                                                                class="icon icon-sm icon-shape text-sm rounded-circle bg-dark text-success">
+                                                                <i class="bi bi-arrow-down"></i>
+                                                            </div><span class="h6 fw-semibold text-muted">Income</span>
+                                                        </div>
+                                                        <div class="fw-bold text-heading mt-3">$23.863,21 USD</div>
+                                                    </div><span class="vr bg-dark bg-opacity-10"></span>
+                                                    <div class="">
+                                                        <div class="d-flex gap-3 align-items-center">
+                                                            <div
+                                                                class="icon icon-sm icon-shape text-sm rounded-circle bg-dark text-danger">
+                                                                <i class="bi bi-arrow-up"></i>
+                                                            </div><span
+                                                                class="h6 fw-semibold text-muted">Expenses</span>
+                                                        </div>
+                                                        <div class="fw-bold text-heading mt-3">$5.678,45 USD</div>
+                                                    </div> -->
+										</div>
+									</div>
+								</div>
+								<hr class="my-0 d-xxl-none"/>
+								@p.ProductBestSeller()
+								<hr class="my-0 d-xxl-none"/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+	<script>
+	    var chartElement2= document.querySelector("#chart-users");
+   
+        var options2= {
+            chart: {
+                type: "bar",
+                stacked: true,
+                zoom: {
+                    enabled: false
+                },
+                toolbar: {
+                    show: false
+                },
+                shadow: {
+                    enabled: false
+                },
+                offsetX: 0,
+                animations: {
+                    enabled: false,
+                    easing: "easeinout",
+                    speed: 800,
+                    animateGradually: {
+                        enabled: true,
+                        delay: 150
+                    },
+                    dynamicAnimation: {
+                        enabled: true,
+                        speed: 350
+                    }
+                },
+                fontFamily: "#333",
+				height: 390,
+            },
+            colors: [ '#8957ff', '#ffc107', '#dc3545'],
+            plotOptions: {
+                bar: {
+                    columnWidth: "23px",
+                    borderRadius: 2
+                }
+            },
+            stroke: {
+                width: 4,
+                curve: "smooth"
+            },
+            series: [{
+                name: "Revenue",
+                data: [30, 10, 20, 10, 17, 12, 8, 20]
+            }],
+            markers: {
+                size: 0
+            },
+            xaxis: {
+				  axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                },
+                categories: ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                labels: {
+                    style: {
+                         colors: "#e3dede",
+                        fontSize: "13px"
+                    }
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        colors: "#e3dede",
+                        fontSize: "13px"
+                    }
+                }
+            },
+            legend: {
+                show: false
+            },
+            grid: {
+                borderColor: "#999",
+                strokeDashArray: 3
+            },
+            dataLabels: {
+                enabled: false
+            },
+            tooltip: {
+                shared: true,
+                intersect: false,
+                y: {
+                    formatter: function (val) {
+                        return val.toFixed(0) + " orders";
+                    }
+                }
+            },
+            responsive: [{
+                breakpoint: 364,
+                options: {
+                    plotOptions: {
+                        bar: {
+                            columnWidth: "30px",
+                            borderRadius: 2
+                        }
+                    }
+                }
+            }]
+		}
+        
+
+     
+
+       var barChart = new ApexCharts(chartElement2, options2);
+        barChart.render();
+
+ 
+
+
+	</script>
+}

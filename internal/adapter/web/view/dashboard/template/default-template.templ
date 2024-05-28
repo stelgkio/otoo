@@ -1,0 +1,11 @@
+package views
+
+import (
+	d "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard"
+)
+
+templ DeafultTemplate() {
+	@DashboardTemplate() {
+		@d.DeafultDashboard()
+	}
+}

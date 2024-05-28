@@ -1,0 +1,500 @@
+package views
+
+templ WalletDashboard() {
+	<div
+		id="dashboard-content"
+		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
+	>
+		<main class="container-fluid px-3 py-5 p-lg-6 p-xxl-8">
+			<div class="mb-6 mb-xl-10">
+				<div class="row g-3 align-items-center">
+					<div class="col">
+						<h1 class="ls-tight">Wallet</h1>
+					</div>
+				</div>
+			</div>
+			<div class="row g-3 g-xl-6">
+				<div class="col-xxl-8">
+					<div class="vstack gap-3 gap-xl-6">
+						<div class="d-flex">
+							<div class="">
+								<div class="hstack gap-3 mb-1">
+									<h4 class="fw-semibold">Total Balance</h4>
+									<a href="#">
+										<i
+											class="bi bi-eye"
+										></i>
+									</a>
+									<a href="#">
+										<i
+											class="bi bi-info-circle"
+										></i>
+									</a>
+								</div>
+								<div class="text-2xl text-heading fw-bolder ls-tight">$23.000,48</div>
+							</div>
+						</div>
+						<div class="row g-3 g-xl-6">
+							<div class="col-sm-6">
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex align-items-start gap-4">
+											<div
+												class="flex-none progress-circle progress-circle-xl progress-circle-primary text-light"
+												aria-valuenow="65"
+												aria-valuemin="0"
+												aria-valuemax="100"
+												role="progressbar"
+												style="--value:65"
+											>
+												<span
+													class="text-primary fw-bold"
+												>65%</span>
+											</div>
+											<div>
+												<div class="mb-2">
+													<span
+														class="d-block text-xs text-muted text-opacity-75"
+													>
+														Today&#39;s
+														Income
+													</span>
+													<span
+														class="d-block fw-bold text-heading text-sm"
+													>
+														370,00
+														EUR
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex align-items-start gap-4">
+											<div
+												class="flex-none progress-circle progress-circle-xl progress-circle-primary text-light"
+												aria-valuenow="40"
+												aria-valuemin="0"
+												aria-valuemax="100"
+												role="progressbar"
+												style="--value:40"
+											>
+												<span
+													class="text-primary fw-bold"
+												>40%</span>
+											</div>
+											<div>
+												<div class="mb-2">
+													<span
+														class="d-block text-xs text-muted text-opacity-75"
+													>
+														Monthly&#39;s
+														Income
+													</span>
+													<span
+														class="d-block fw-bold text-heading text-sm"
+													>
+														1800,00
+														EUR
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row g-3">
+							<div class="col-xl-3">
+								<div class="row row-cols-1 row-cols-sm-2 row-cols-xl-1 g-3">
+									<div class="col">
+										<div class="card">
+											<div class="p-4">
+												<h6 class="text-limit text-muted mb-3">April</h6>
+												<span
+													class="text-sm text-muted text-opacity-90 fw-semibold"
+												>EUR</span>
+												<span class="d-block h3 ls-tight fw-bold">5.040,00</span>
+												<p class="mt-1">
+													<span class="text-success text-xs">
+														<i
+															class="fas fa-arrow-up me-1"
+														></i>20% 
+													</span>
+													<span
+														class="text-muted text-xs text-opacity-75"
+													>
+														vs last
+														month
+													</span>
+												</p>
+											</div>
+										</div>
+									</div>
+									<div class="col">
+										<div class="card">
+											<div class="p-4">
+												<h6 class="text-limit text-muted mb-3">March</h6>
+												<span
+													class="text-sm text-muted text-opacity-90 fw-semibold"
+												>EUR</span>
+												<span class="d-block h3 ls-tight fw-bold">2.500,39</span>
+												<p class="mt-1">
+													<span class="text-success text-xs">
+														<i
+															class="fas fa-arrow-down me-1"
+														></i>+3.5%
+													</span>
+													<span class="text-muted text-xs text-opacity-75">
+														vs
+														last month
+													</span>
+												</p>
+											</div>
+										</div>
+									</div>
+									<div class="col">
+										<div class="card">
+											<div class="p-4">
+												<h6 class="text-limit text-muted mb-3">Feb</h6>
+												<span
+													class="text-sm text-muted text-opacity-90 fw-semibold"
+												>EUR</span>
+												<span class="d-block h3 ls-tight fw-bold">1.900,39</span>
+												<p class="mt-1">
+													<span class="text-danger text-xs">
+														<i
+															class="fas fa-arrow-down me-1"
+														></i>-3.5%
+													</span>
+													<span class="text-muted text-xs text-opacity-75">
+														vs
+														last month
+													</span>
+												</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-xl-9">
+								<div class="card">
+									<div class="card-body pb-0">
+										<div class="d-flex justify-content-between align-items-center">
+											<div>
+												<h5>Performance</h5>
+											</div>
+											<div class="hstack align-items-center">
+												<a
+													href="#"
+													class="text-muted"
+												><i class="bi bi-arrow-repeat"></i></a>
+											</div>
+										</div>
+										<div class="mx-n4">
+											<div id="chart-line" data-height="400"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xxl-4">
+					<div
+						class="offcanvas-xxl m-xxl-0 rounded-sm-4 rounded-xxl-0 offcanvas-end overflow-hidden m-sm-4"
+						tabindex="-1"
+						id="responsiveOffcanvas"
+						aria-labelledby="responsiveOffcanvasLabel"
+					>
+						<div class="offcanvas-header rounded-top-4 bg-light">
+							<h5 class="offcanvas-title" id="responsiveOffcanvasLabel">Quick Stats</h5>
+							<button
+								type="button"
+								class="btn-close"
+								data-bs-dismiss="offcanvas"
+								data-bs-target="#responsiveOffcanvas"
+								aria-label="Close"
+							></button>
+						</div>
+						<div class="offcanvas-body d-flex flex-column p-3 p-sm-6 p-xxl-0 gap-3 gap-xxl-6">
+							<div class="vstack gap-6">
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex justify-content-between align-items-center mb-5">
+											<div>
+												<h5>Recent transactions</h5>
+											</div>
+											<div class="hstack align-items-center">
+												<a
+													href="#"
+													class="text-muted"
+												><i class="bi bi-arrow-repeat"></i></a>
+											</div>
+										</div>
+										<div class="vstack gap-6">
+											<div>
+												<div class="d-flex align-items-center gap-3">
+													<div
+														class="icon icon-shape flex-none text-base text-bg-dark rounded-circle"
+													>
+														<i class="bi bi-cash-stack"></i>
+													</div>
+													<div>
+														<h6 class="progress-text mb-1 d-block">Payment 1</h6>
+														<p class="text-muted text-xs">Pending - 3 min ago</p>
+													</div>
+													<div class="text-end ms-auto">
+														<span
+															class="h6 text-sm"
+														>1,500 EURO</span>
+													</div>
+												</div>
+											</div>
+											<div>
+												<div class="d-flex align-items-center gap-3">
+													<div
+														class="icon icon-shape flex-none text-base text-bg-dark rounded-circle"
+													>
+														<i class="bi bi-cash-stack"></i>
+													</div>
+													<div>
+														<h6 class="progress-text mb-1 d-block">Payment 2</h6>
+														<p class="text-muted text-xs">Pending - 4 min ago</p>
+													</div>
+													<div class="text-end ms-auto">
+														<span
+															class="h6 text-sm"
+														>1,500 EURO</span>
+													</div>
+												</div>
+											</div>
+											<div>
+												<div class="d-flex align-items-center gap-3">
+													<div
+														class="icon icon-shape flex-none text-base text-bg-dark rounded-circle"
+													>
+														<i class="bi bi-cash-stack"></i>
+													</div>
+													<div>
+														<h6 class="progress-text mb-1 d-block">Payment 3</h6>
+														<p class="text-muted text-xs">Pending - 3 min ago</p>
+													</div>
+													<div class="text-end ms-auto">
+														<span
+															class="h6 text-sm"
+														>1,500 EURO</span>
+													</div>
+												</div>
+											</div>
+											<div>
+												<div class="d-flex align-items-center gap-3">
+													<div
+														class="icon icon-shape flex-none text-base text-bg-dark rounded-circle"
+													>
+														<i class="bi bi-cash-stack"></i>
+													</div>
+													<div>
+														<h6 class="progress-text mb-1 d-block">Payment 4</h6>
+														<p class="text-muted text-xs">Pending - 3 min ago</p>
+													</div>
+													<div class="text-end ms-auto">
+														<span
+															class="h6 text-sm"
+														>1,500 EURO</span>
+													</div>
+												</div>
+											</div>
+											<div>
+												<div class="d-flex align-items-center gap-3">
+													<div
+														class="icon icon-shape flex-none text-base text-bg-dark rounded-circle"
+													>
+														<i class="bi bi-cash-stack"></i>
+													</div>
+													<div>
+														<h6 class="progress-text mb-1 d-block">Payment 5</h6>
+														<p class="text-muted text-xs">Pending - 3 min ago</p>
+													</div>
+													<div class="text-end ms-auto">
+														<span
+															class="h6 text-sm"
+														>1,500 EURO</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex justify-content-between align-items-center mb-5">
+											<div>
+												<h5>Upcoming payments</h5>
+											</div>
+											<div class="hstack align-items-center">
+												<a
+													href="#"
+													class="text-muted"
+												><i class="bi bi-arrow-repeat"></i></a>
+											</div>
+										</div>
+										<div class="vstack gap-6">
+											<div>
+												<div class="d-flex align-items-center gap-3">
+													<div
+														class="icon icon-shape flex-none text-base text-bg-dark rounded-circle"
+													>
+														<i class="bi bi-cash-stack"></i>
+													</div>
+													<div>
+														<h6 class="progress-text mb-1 d-block">Coming Payment 1</h6>
+														<p class="text-muted text-xs">Pending - 3 min ago</p>
+													</div>
+													<div class="text-end ms-auto">
+														<span
+															class="h6 text-sm"
+														>1,500 EURO</span>
+													</div>
+												</div>
+											</div>
+											<div>
+												<div class="d-flex align-items-center gap-3">
+													<div
+														class="icon icon-shape flex-none text-base text-bg-dark rounded-circle"
+													>
+														<i class="bi bi-cash-stack"></i>
+													</div>
+													<div>
+														<h6 class="progress-text mb-1 d-block">Coming Payment 2</h6>
+														<p class="text-muted text-xs">Pending - 30 min ago</p>
+													</div>
+													<div class="text-end ms-auto">
+														<span
+															class="h6 text-sm"
+														>1,500 EURO</span>
+													</div>
+												</div>
+											</div>
+											<div>
+												<div class="d-flex align-items-center gap-3">
+													<div
+														class="icon icon-shape flex-none text-base text-bg-dark rounded-circle"
+													>
+														<i class="bi bi-cash-stack"></i>
+													</div>
+													<div>
+														<h6 class="progress-text mb-1 d-block">Coming Payment 3</h6>
+														<p class="text-muted text-xs">Pending - 39 min ago</p>
+													</div>
+													<div class="text-end ms-auto">
+														<span
+															class="h6 text-sm"
+														>1,500 EURO</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+	<script>
+        // Assuming you have an HTML element with id "chart" to render the chart
+        var chartElement = document.getElementById("chart-line");
+
+        var options = {
+            chart: {
+                zoom: {
+                    enabled: false
+                },
+                toolbar: {
+                    show: false
+                },
+                shadow: {
+                    enabled: false
+                },
+                animations: {
+                    enabled: false
+                },
+                height: 403,
+            },
+            colors: ['#007bff', '#8957ff', '#ffc107', '#dc3545'], // Using the same colors as the original example
+            stroke: {
+                width: 4,
+                curve: "smooth"
+            },
+            series: [
+                { name: "Income", type: "line", data: [30, 50, 70, 90, 80, 70, 90, 120, 100, 120, 140] },
+                { name: "Expenses", type: "line", data: [50, 70, 30, 20, 10, 10, 40, 100, 90, 100, 120] }
+            ],
+            markers: {
+                size: 0
+            },
+            xaxis: {
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                },
+                categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                labels: {
+                    style: {
+                        colors: "#999",
+                        fontSize: "13px",
+                        fontFamily: "#333",
+                        cssClass: "apexcharts-xaxis-label"
+                    }
+                }
+            },
+            yaxis: {
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                },
+                labels: {
+                    style: {
+                        colors: "#999",
+                        fontSize: "13px",
+                        fontFamily: "inherit",
+                        cssClass: "apexcharts-xaxis-label"
+                    }
+                }
+            },
+            legend: {
+                show: false
+            },
+            grid: {
+                borderColor: "#807c7c",
+                strokeDashArray: 3
+            },
+            dataLabels: {
+                enabled: false
+            },
+            tooltip: {
+                shared: true,
+                intersect: false,
+                y: {
+                    formatter: function (e) {
+                        return e !== undefined ? e.toFixed(0) + " orders" : e;
+                    }
+                }
+            }
+        };
+
+        var lineChart = new ApexCharts(chartElement, options);
+        lineChart.render();
+	 </script>
+}

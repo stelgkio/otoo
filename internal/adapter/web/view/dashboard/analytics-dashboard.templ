@@ -1,0 +1,282 @@
+package views
+
+templ AnalyticsDashboard() {
+	<div
+		id="dashboard-content"
+		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
+	>
+		<main class="container-fluid px-3 py-5 p-lg-6 p-xxl-8">
+			<div class="mb-6 mb-xl-10">
+				<div class="row g-3 align-items-center">
+					<div class="col">
+						<h1 class="ls-tight">Orders</h1>
+					</div>
+					<div class="col">
+						<div class="hstack gap-2 justify-content-end">
+							<button
+								hx-get="/product"
+								hx-target="#dashboard-content"
+								type="button"
+								class="btn btn-sm btn-neutral d-sm-inline-flex"
+							>
+								<span
+									class="pe-2"
+								></span><span>Products</span>
+							</button>
+							<button
+								hx-get="/customer"
+								hx-target="#dashboard-content"
+								type="button"
+								class="btn btn-sm btn-neutral  d-sm-inline-flex"
+							>
+								<span
+									class="pe-2"
+								></span><span>Customers</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="vstack gap-3 gap-xl-6 mt-8">
+				<div class="row row-cols-sm-2 row-cols-md-4 g-3">
+					<div class="col">
+						<div class="card border-primary-hover">
+							<div class="card-body d-flex gap-3">
+								<div class="">
+									<span class="d-block text-muted mb-1">Total Orders</span> <span
+	class="d-block text-lg fw-bold text-heading"
+>123.456</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card">
+							<div class="card-body">
+								<div class="d-flex gap-3 mb-1">
+									<span class="text-muted">Orders</span> <span
+	class="badge text-bg-light rounded"
+>24H</span> <span
+	class="text-muted text-opacity-60 text-opacity-100-hover"
+	tabindex="0"
+	data-bs-toggle="popover"
+	data-bs-trigger="hover focus"
+	data-bs-placement="right"
+	data-bs-html="true"
+	data-bs-content="The total market value of a cryptocurrency's circulating supply. It is analogous to the free-float capitalization in the stock market.<br /><br />Market Cap = Current Price x Circulating Supply."
+	role="button"
+><i class="bi bi-info-circle"></i></span>
+								</div>
+								<div class="d-flex align-items-center">
+									<span
+										class="text-lg text-heading fw-bold"
+									>1.987 </span><span
+	class="ms-auto text-success text-sm fw-semibold"
+>+23%</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card">
+							<div class="card-body">
+								<div class="d-flex gap-3 mb-1">
+									<span class="text-muted">Orders</span> <span
+	class="badge text-bg-light rounded"
+>7D</span> <span
+	class="text-muted text-opacity-60 text-opacity-100-hover"
+	tabindex="0"
+	data-bs-toggle="popover"
+	data-bs-trigger="hover focus"
+	data-bs-placement="right"
+	data-bs-html="true"
+	data-bs-content="The total market value of a cryptocurrency's circulating supply. It is analogous to the free-float capitalization in the stock market.<br /><br />Market Cap = Current Price x Circulating Supply."
+	role="button"
+><i class="bi bi-info-circle"></i></span>
+								</div>
+								<div class="d-flex align-items-center">
+									<span
+										class="text-lg text-heading fw-bold"
+									>20.987 </span><span
+	class="ms-auto text-success text-sm fw-semibold"
+>+23%</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card">
+							<div class="card-body">
+								<div class="d-flex gap-3 mb-1">
+									<span class="text-muted">Orders</span> <span
+	class="badge text-bg-light rounded"
+>30D</span> <span
+	class="text-muted text-opacity-60 text-opacity-100-hover"
+	tabindex="0"
+	data-bs-toggle="popover"
+	data-bs-trigger="hover focus"
+	data-bs-placement="right"
+	data-bs-html="true"
+	data-bs-content="The total market value of a cryptocurrency's circulating supply. It is analogous to the free-float capitalization in the stock market.<br /><br />Market Cap = Current Price x Circulating Supply."
+	role="button"
+><i class="bi bi-info-circle"></i></span>
+								</div>
+								<div class="d-flex align-items-center">
+									<span
+										class="text-lg text-heading fw-bold"
+									>34.000 </span><span
+	class="ms-auto text-success text-sm fw-semibold"
+>+23%</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row g-3 g-xl-6">
+					<div class="col-xxl-12">
+						<div class="card">
+							<div class="card-body pb-0">
+								<div class="row g-3 justify-content-between align-items-center">
+									<div class="col-12 col-sm">
+										<h5>Orders chart</h5>
+									</div>
+									<div class="col-12 col-sm-auto">
+										<div
+											class="d-flex scrollable-x justify-content-between gap-1 p-1 align-items-center bg-body-secondary rounded text-xs fw-semibold"
+										>
+											// <a
+											// 	href="#"
+											// 	class="px-3 py-1 text-muted bg-white-hover bg-opacity-70-hover rounded"
+											// >
+											// 	1H
+											// </a>
+											// <a
+											// 	href="#"
+											// 	class="px-3 py-1 text-muted bg-white rounded shadow-1"
+											// >
+											// 	1D 
+											// </a>
+											<a
+												href="#"
+												class="px-3 py-1 text-muted  bg-white-hover bg-opacity-50-hover rounded"
+											>
+												1W
+											</a>
+											<a
+												href="#"
+												class="px-3 py-1 text-muted bg-white-hover bg-opacity-50-hover rounded"
+											>
+												1M
+											</a>
+											<a
+												href="#"
+												class="d-none d-sm-inline-block px-3 py-1 text-muted bg-white-hover bg-opacity-50-hover rounded"
+											>
+												1Y
+											</a>
+										</div>
+									</div>
+								</div>
+								<div class="mx-n4">
+									//<div id="chart-crypto-price" data-height="320"></div>
+									<div id="chart" data-height="420"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+	<script>
+        // Assuming you have an HTML element with id "chart" to render the chart
+        var chartElement = document.getElementById("chart");
+
+        var options = {
+            chart: {
+                zoom: {
+                    enabled: false
+                },
+                toolbar: {
+                    show: false
+                },
+                shadow: {
+                    enabled: false
+                },
+                animations: {
+                    enabled: false
+                },
+                height: 390,
+            },
+            colors: ['#007bff', '#8957ff', '#ffc107', '#dc3545'], // Using the same colors as the original example
+            stroke: {
+                width: 4,
+                curve: "smooth"
+            },
+            series: [
+                { name: "Card", type: "line", data: [30, 50, 70, 90, 80, 70, 90, 120, 100, 120, 140] },
+                { name: "Cash", type: "line", data: [50, 70, 30, 20, 10, 10, 40, 100, 90, 100, 120] }
+            ],
+            markers: {
+                size: 0
+            },
+            xaxis: {
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                },
+                categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                labels: {
+                    style: {
+                        colors: "#e3dede",
+                        fontSize: "13px",
+                        fontFamily: "#333",
+                        cssClass: "apexcharts-xaxis-label"
+                    }
+                }
+            },
+            yaxis: {
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                },
+                labels: {
+                    style: {
+                        colors: "#e3dede",
+                        fontSize: "13px",
+                        fontFamily: "inherit",
+                        cssClass: "apexcharts-xaxis-label"
+                    }
+                }
+            },
+            legend: {
+                show: false
+            },
+            grid: {
+                borderColor: "#807c7c",
+                strokeDashArray: 3
+            },
+            dataLabels: {
+                enabled: false
+            },
+            tooltip: {
+                shared: true,
+                intersect: false,
+                y: {
+                    formatter: function (e) {
+                        return e !== undefined ? e.toFixed(0) + " orders" : e;
+                    }
+                }
+            }
+        };
+
+        var lineChart = new ApexCharts(chartElement, options);
+        lineChart.render();
+
+
+    </script>
+}

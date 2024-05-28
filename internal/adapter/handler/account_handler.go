@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"fmt"
+	"log/slog"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
-	l "github.com/stelgkio/otoo/internal/adapter/web/template/components/account/login"
-	reg "github.com/stelgkio/otoo/internal/adapter/web/template/components/account/register"
+	l "github.com/stelgkio/otoo/internal/adapter/web/view/account/login"
+	reg "github.com/stelgkio/otoo/internal/adapter/web/view/account/register"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stelgkio/otoo/internal/core/port"
 	r "github.com/stelgkio/otoo/internal/core/util"
@@ -64,32 +66,35 @@ func (ah *AuthHandler) Login(ctx echo.Context) (err error) {
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
 
-	token, err := ah.svc.Login(ctx, req.Email, req.Password)
+	_, err = ah.svc.Login(ctx, req.Email, req.Password)
 	if err != nil {
-		return ctx.String(http.StatusBadRequest, err.Error())
+		return r.Render(ctx, l.Login(err))
+		//ctx.String(http.StatusBadRequest, err.Error())
 	}
 
-	AuthResponse(token)
+	//AuthResponse(token)
 
-	return ctx.Redirect(http.StatusFound, "/")
+	return ctx.Redirect(http.StatusFound, "/dashboard")
 }
 
 // @Router			/login [get]
 func (ah *AuthHandler) LoginForm(c echo.Context) error {
-	return r.Render(c, l.Login())
+	return r.Render(c, l.Login(nil))
 
 }
 
 // registerRequest represents the request body for creating a user
 type registerRequest struct {
-	Email                string `form:"email" validate:"required,email" example:"test@example.com"`
-	Password             string `form:"password" validate:"required,min=6" example:"12345678"`
-	ConfirmationPassword string `form:"confirmationpassword" validate:"required,min=6" example:"12345678"`
+	Email                string `form:"email" validate:"required,email"`
+	Password             string `form:"password" validate:"required,min=8"`
+	ConfirmationPassword string `form:"confirmationpassword" validate:"required,min=8"`
+	Name                 string `form:"name" validate:"required"`
+	LastName             string `form:"last_name" validate:"required"`
 }
 
 // @Router			/register [get]
 func (ah *AuthHandler) RegisterForm(ctx echo.Context) error {
-	return r.Render(ctx, reg.Register())
+	return r.Render(ctx, reg.Register(0, nil, nil))
 }
 
 // @Router			/register [post]
@@ -97,35 +102,41 @@ func (ah *AuthHandler) Register(ctx echo.Context) error {
 
 	req := new(registerRequest)
 	if err := ctx.Bind(req); err != nil {
-		return ctx.String(http.StatusBadRequest, "bad request")
+		return r.Render(ctx, reg.Register(http.StatusBadRequest, nil, nil))
+		//return ctx.String(http.StatusBadRequest, "bad request")
 	}
 	ctx.Validate(req)
 	// validate email is not taken
 	validate := validator.New()
-
+	// validate password is the same as confirm password
+	if req.Password != req.ConfirmationPassword {
+		return r.Render(ctx, reg.Register(0, nil, fmt.Errorf("Invalid confirmation password")))
+	}
 	// Validate the User struct
 	err := validate.Struct(req)
 	if err != nil {
 		// Validation failed, handle the error
 		errors := err.(validator.ValidationErrors)
-		return ctx.String(http.StatusBadRequest, errors.Error())
+		return r.Render(ctx, reg.Register(0, errors, nil))
+	}
 
-	}
-	// validate password is the same as confirm password
-	if req.Password != req.ConfirmationPassword {
-		return ctx.String(http.StatusInternalServerError, "invalid configuration password")
-	}
-	user, err := domain.NewUser(req.Email, req.Password)
+	user, err := domain.NewUser(req.Email, req.Password, req.Name, req.LastName)
 	if err != nil {
-		return ctx.String(http.StatusBadRequest, "bad request")
+		slog.Error("error new user:", "StatusBadRequest", err)
+		return r.Render(ctx, reg.Register(http.StatusBadRequest, nil, nil))
 	}
-	// Create a new validator instance
 
 	_, err = ah.urs.CreateUser(ctx, user)
 	if err != nil {
-		return ctx.String(http.StatusInternalServerError, "bad request")
+		slog.Error("error create new user:", "StatusBadRequest", err)
+		return r.Render(ctx, reg.Register(http.StatusBadRequest, nil, nil))
 	}
 
-	return ctx.Redirect(http.StatusMovedPermanently, ctx.Echo().Reverse("index"))
+	_, err = ah.svc.Login(ctx, req.Email, req.Password)
+	if err != nil {
+		slog.Error("error new user create token:", "StatusInternalServerError", err)
+		return r.Render(ctx, reg.Register(http.StatusInternalServerError, nil, nil))
+	}
+	return ctx.Redirect(http.StatusMovedPermanently, ctx.Echo().Reverse("dashboard"))
 
 }

@@ -1,0 +1,189 @@
+package views
+
+templ ProjectCreateForm(invalid bool) {
+	<div
+		id="dashboard-content"
+		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
+	>
+		<main class="container-fluid px-6 pb-10">
+			<form autocomplete="off" method="post" action="project/create">
+				<header class="py-4 border-bottom">
+					<div class="row align-items-center">
+						<div class="col">
+							<div class="d-flex align-items-center gap-4">
+								<div>
+									<button
+										type="button"
+										class="btn-close text-xs"
+										aria-label="Close"
+										hx-get="/project/list"
+										hx-target="#dashboard-content"
+									></button>
+								</div>
+								<div class="vr opacity-20 my-1"></div>
+								<h1 class="h4 ls-tight">Add a new project</h1>
+							</div>
+						</div>
+					</div>
+				</header>
+				<div class="row align-items-center g-3 mt-6">
+					<div class="col-md-2">
+						<label class="form-label mb-0">Project name</label>
+					</div>
+					<div class="col-md-8 col-xl-5" hx-target="this" hx-swap="outerHTML">
+						<input
+							name="name"
+							type="text"
+							hx-post="/project/validation/name"
+							class="form-control"
+							placeholder="Project name"
+						/>
+						// <div class="invalid-feedback">
+						// 	Project name already exists
+						// </div>
+					</div>
+				</div>
+				<hr class="my-6"/>
+				<div class="row align-items-center g-3">
+					<div class="col-md-2">
+						<h6 class="fw-semibold">Description</h6>
+					</div>
+					<div class="col-md-8 col-xl-5">
+						<label class="visually-hidden">Description</label>
+						<textarea
+							name="description"
+							class="form-control"
+							placeholder="Project description ..."
+							rows="2"
+						></textarea>
+						// <span
+						// 	class="d-block mt-2 text-sm text-muted"
+						// >Make it unique.</span>
+					</div>
+				</div>
+				<hr class="my-6"/>
+				<div class="row align-items-center g-3">
+					<div class="col-md-2"><label class="form-label mb-0">Select type</label></div>
+					<div class="col-md-8 col-xl-5">
+						<div class="d-flex gap-3 scrollable-x">
+							<div class="form-item-checkable">
+								<input
+									class="form-item-check"
+									type="radio"
+									name="project_type"
+									id="projecttypewoo"
+									checked="checked"
+									value="Woocommerce"
+								/>
+								<label
+									class="form-item cursor-pointer"
+									for="projecttypewoo"
+								>
+									<span
+										class="form-item-click d-inline-flex flex-column gap-3 align-items-center justify-content-center form-control w-rem-24 h-rem-24 text-center text-muted"
+									>
+										<img src="./assets/img/marketing/WooCommerce_logo.svg.png" class="w-rem-5 flex-none " alt="..."/>
+										// <i
+										// 	class="bi bi-currency-bitcoin text-xl"
+										// ></i>
+										<span
+											class="fw-semibold text-xs"
+										>WooCommerce</span>
+									</span>
+								</label>
+							</div>
+							<div class="form-item-checkable">
+								<input
+									class="form-control form-item-check"
+									type="radio"
+									name="project_type"
+									id="projecttypeshopy"
+									value="Shopify"
+								/>
+								<label
+									class="form-item cursor-pointer"
+									for="projecttypeshopy"
+								>
+									<span
+										class="form-item-click d-inline-flex flex-column gap-3 align-items-center justify-content-center form-control w-rem-24 h-rem-24 text-center text-muted"
+									>
+										<img src="./assets/img/marketing/shopify-logo.svg" class="w-rem-5 flex-none " alt="..."/>
+										<span class="fw-semibold text-xs">Shopify</span>
+									</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr class="my-6"/>
+				<div id="shopify-fields">
+					<div class="row align-items-center g-3 mt-6">
+						<div class="col-md-2">
+							<label class="form-label mb-0">Domain</label>
+						</div>
+						<div class="col-md-8 col-xl-5">
+							<div id="domain-validation" class="input-group position-relative">
+								<span
+									class="input-group-text"
+								>
+									https:// 
+								</span>
+								<input
+									name="domain"
+									type="text"
+									class="form-control"
+									placeholder="Domain url"
+									aria-label="domain url"
+									hx-post="/project/validation/domain"
+									hx-target="#domain-validation"
+								/>
+								<span
+									class="input-group-text"
+								>/wp-json/wc/v3</span>
+								<div class="invalid-feedback" style="display: block;">
+									Invalid domain url
+								</div>
+							</div>
+						</div>
+					</div>
+					<hr class="my-6"/>
+					<div class="row align-items-center g-3 mt-6">
+						<div class="col-md-2">
+							<label class="form-label mb-0">Consumer key</label>
+						</div>
+						<div class="col-md-8 col-xl-5">
+							<input name="consumer_key" type="password" class="form-control" placeholder="Consumer key" autocomplete="off"/>
+						</div>
+					</div>
+					<hr class="my-6"/>
+					<div class="row align-items-center g-3 mt-6">
+						<div class="col-md-2">
+							<label class="form-label mb-0">Consumer secret</label>
+						</div>
+						<div class="col-md-8 col-xl-5">
+							<input name="consumer_secret" type="password" class="form-control" placeholder="Consumer secret" autocomplete="off"/>
+						</div>
+					</div>
+				</div>
+				<hr class="my-6 "/>
+				<div class="d-flex justify-content-end gap-2">
+					if invalid {
+						<div class="invalid-feedback" style="display: block;">
+							Something when wrong try again later!
+						</div>
+					}
+					<button
+						type="button"
+						class="btn btn-sm btn-neutral"
+						hx-get="/project/list"
+						hx-target="#dashboard-content"
+					>Cancel</button>
+					<button
+						type="submit"
+						class="btn btn-sm btn-primary"
+					>Submit</button>
+				</div>
+			</form>
+		</main>
+	</div>
+}

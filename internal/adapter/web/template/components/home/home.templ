@@ -4,11 +4,12 @@ import (
 	lo "github.com/stelgkio/otoo/internal/adapter/web/template/layout/head"
 	n "github.com/stelgkio/otoo/internal/adapter/web/template/components/nav"
 	h "github.com/stelgkio/otoo/internal/adapter/web/template/components/dashboard"
+	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-templ HomeComponent() {
+templ HomeComponent(projects []*domain.Project) {
 	@lo.HeadTemplate() {
 		@n.Nav()
-		@h.DashboardComponent()
+		@h.DashboardComponent(projects)
 	}
 }

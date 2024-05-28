@@ -12,8 +12,8 @@ type ProjectRepository interface {
 	// GetUserByID(ctx context.Context, id uint64) (*domain.User, error)
 	// // GetUserByEmail selects a user by email
 	//GetUserByEmail(ctx echo.Context, email string) (*domain.User, error)
-	// // ListUsers selects a list of users with pagination
-	// ListUsers(ctx context.Context, skip, limit uint64) ([]domain.User, error)
+	// // ListProject selects a list of project with pagination
+	FindProjects(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error)
 	// // UpdateUser updates a user
 	// UpdateUser(ctx context.Context, user *domain.User) (*domain.User, error)
 	// // DeleteUser deletes a user
@@ -27,7 +27,7 @@ type ProjectService interface {
 	// GetUser returns a user by id
 	// GetUser(ctx context.Context, id uint64) (*domain.User, error)
 	// // ListUsers returns a list of users with pagination
-	// ListUsers(ctx context.Context, skip, limit uint64) ([]domain.User, error)
+	FindProjects(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error)
 	// // UpdateUser updates a user
 	// UpdateUser(ctx context.Context, user *domain.User) (*domain.User, error)
 	// // DeleteUser deletes a user

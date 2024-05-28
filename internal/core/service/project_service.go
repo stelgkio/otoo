@@ -62,3 +62,7 @@ func (ps *ProjectService) CreateProject(ctx echo.Context, req *domain.ProjectReq
 
 	return pr, nil
 }
+
+func (os *ProjectService) FindProjects(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error) {
+	return os.repo.FindProjects(ctx, filters, skip, limit)
+}

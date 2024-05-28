@@ -32,9 +32,6 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	authService := service.NewAuthService(userRepo, nil)
 	authHandler := handler.NewAuthHandler(authService, userService)
 
-	//Home
-	homeHandler := handler.NewHomeHandler()
-
 	//WooCommerce
 	woocommerceRepo := mongorepo.NewWoocommerceRepository(mongodb)
 	woocommerceService := woocommerce.NewWoocommerceService()
@@ -45,7 +42,13 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	projectService := service.NewProjectService(projectRepo, woocommerceService)
 	projectHandler := handler.NewProjectHandler(projectService)
 
-	_, err := NewRouter(s, userHandler, authHandler, homeHandler, projectHandler, WooCommerceHandler)
+	//Home
+	homeHandler := handler.NewHomeHandler(projectService)
+
+	dashboardHandler := handler.NewDashboardHandler(projectService, userService)
+
+	//Router
+	_, err := NewRouter(s, userHandler, authHandler, homeHandler, projectHandler, WooCommerceHandler, dashboardHandler)
 	if err != nil {
 		return nil
 	}

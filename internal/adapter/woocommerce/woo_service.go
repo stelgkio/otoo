@@ -5,8 +5,35 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/pkg/errors"
 	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/woocommerce"
+)
+
+var (
+	couponEvents = []string{
+		"coupon.created",
+		"coupon.updated",
+		"coupon.deleted",
+	}
+
+	customerEvents = []string{
+		"customer.created",
+		"customer.updated",
+		"customer.deleted",
+	}
+
+	orderEvents = []string{
+		"order.created",
+		"order.updated",
+		"order.deleted",
+	}
+
+	productEvents = []string{
+		"product.created",
+		"product.updated",
+		"product.deleted",
+	}
 )
 
 type WoocommerceService struct {
@@ -23,7 +50,7 @@ func (s *WoocommerceService) WoocommerceCreateOrderWebHook(customerKey string, c
 	_, err := client.Webhook.Create(webhook)
 	if err != nil {
 		slog.Error("create webhook error", "error", err)
-		return err
+		return errors.Wrap(err, "create webhook error")
 	}
 	slog.Info("create webhook success")
 	return nil

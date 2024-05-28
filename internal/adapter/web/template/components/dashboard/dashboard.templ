@@ -1,36 +1,44 @@
 package components
 
-templ DashboardComponent() {
+import (
+	"github.com/stelgkio/otoo/internal/core/domain"
+	p "github.com/stelgkio/otoo/internal/adapter/web/template/components/dashboard/projectlist"
+)
+
+templ DashboardComponent(projects []*domain.Project) {
 	<section class="dashboard">
 		<div class="top">
 			<i class="uil uil-bars sidebar-toggle"></i>
-			<div class="search-box">
-				<i class="uil uil-search"></i>
-				<input type="text" placeholder="Search here..."/>
+			//<img src="images/profile.jpg" alt=""/>
+			<div class="container">
+				//<header class="header">
+				// 	<h1><a href="https://tarekraafat.github.io/autoComplete.js/" target="_blank">autoComplete.js</a></h1>
+				// </header>
+				<div class="d-flex justify-content-center">
+					<div class="autoComplete_wrapper">
+						<input id="autoComplete" type="search" tabindex="1"/>
+					</div>
+					<div class="selection" style="display:none"></div>
+				</div>
 			</div>
-			<img src="images/profile.jpg" alt=""/>
 		</div>
 		// <!======== Main Section ======== -->
 		<div class="dash-content">
 			<div class="overview">
 				<div class="responsive-wrapper">
-					<div class="title">
-						<i class="uil uil-tachometer-fast-alt"></i>
-						<span class="text">Add a New Project</span>
+					<div
+						class="container mt-2"
+						style="margin-left: -0.7rem"
+					>
+						<button type="button" class="btn btn-secondary">
+							<i class="uil uil-plus-circle"></i>
+							Create new project
+						</button>
 					</div>
 					<div class="content">
-						<div class="content-panel">
-							<div class="vertical-tabs">
-								<a href="#" class="active">View all</a>
-								<a href="#">Woocommerce</a>
-								<a href="#">Shopify</a>
-								<a href="#">Prestashop</a>
-								<a href="#">Magento</a>
-							</div>
-						</div>
 						<div class="content-main">
 							<div class="card-grid">
-								//     <!----======== Form Component ======== -->
+								@p.ProjectListComponent(projects,1)
 							</div>
 						</div>
 					</div>

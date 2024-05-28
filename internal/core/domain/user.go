@@ -18,17 +18,18 @@ const (
 
 type User struct {
 	Base
-	Name        string
+	Name        string `json:"name" pg:"name,notnull"`
 	Email       string `json:"email" pg:"email,unique,notnull"`
 	Password    string
 	Role        UserRole
 	ValidatedAt types.NullTime
 	LastLogin   types.NullTime
-	IsActive    bool
+	IsActive    bool   `json:"is_active" pg:"is_active"`
+	LastName    string `json:"last_name" pg:"last_name,notnull"`
 }
 
 // NewUser creates a instance of user with hashed password
-func NewUser(email string, password string) (*User, error) {
+func NewUser(email string, password string, name string, last_name string) (*User, error) {
 	var err error
 	u := new(User)
 	var hash util.Hash
@@ -42,6 +43,8 @@ func NewUser(email string, password string) (*User, error) {
 	u.Email = email
 	u.CreatedAt = now
 	u.UpdatedAt = now
+	u.Name = name
+	u.LastName = last_name
 	u.IsActive = false
 	return u, nil
 }

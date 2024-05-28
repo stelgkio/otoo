@@ -56,7 +56,7 @@ func GenerateTokensAndSetCookies(user *user.User, c echo.Context) error {
 
 func generateAccessToken(user *user.User) (string, time.Time, error) {
 	// Declare the expiration time of the token
-	expirationTime := time.Now().Add(1 * time.Hour)
+	expirationTime := time.Now().Add(24 * time.Hour)
 
 	return generateToken(user, expirationTime, []byte(GetJWTSecret()))
 }
@@ -164,11 +164,10 @@ func GetUserId(c echo.Context) (uuid.UUID, error) {
 	u := c.Get("user").(*jwt.Token)
 
 	claims := u.Claims.(*JwtCustomClaims)
-
 	uuidValue, err := uuid.Parse(claims.ID)
+
 	if err != nil {
 		return uuidValue, errors.New("error parsing uuid for user")
-
 	}
 
 	return uuidValue, nil
@@ -176,7 +175,7 @@ func GetUserId(c echo.Context) (uuid.UUID, error) {
 
 func GenerateWebHookAccessToken(projectId string) (string, time.Time, error) {
 	// Declare the expiration time of the token
-	expirationTime := time.Now().Add(1 * time.Hour)
+	expirationTime := time.Now().Add(5 * time.Hour)
 
 	return generateWebHookToken(projectId, expirationTime, []byte(GetJWTSecret()))
 }

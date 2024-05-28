@@ -1,9 +1,12 @@
 run:
 	@templ generate
-	@go run cmd/main.go 
+	@go run main.go 
 
 build:
-	@go build -o bin/main cmd/main.go
+	@go build -o bin/main main.go
+
+templ:
+	@templ generate -watch
 build-css:
 	./tailwindcss -i input.css -o assets/output.css --minify
 

@@ -1,11 +1,18 @@
 package handler
 
 import (
-	"net/http"
+	"log/slog"
 
 	"github.com/labstack/echo/v4"
+	er "github.com/stelgkio/otoo/internal/adapter/web/view/component/error"
+	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/create"
+	l "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/list"
+	pr "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/progress"
+	v "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/validation"
+	d "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/view"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stelgkio/otoo/internal/core/port"
+	r "github.com/stelgkio/otoo/internal/core/util"
 )
 
 // UserHandler represents the HTTP handler for user-related requests
@@ -20,16 +27,82 @@ func NewProjectHandler(svc port.ProjectService) *ProjectHandler {
 	}
 }
 
+// POST /project/create
 func (ph *ProjectHandler) CreateProject(ctx echo.Context) error {
 	req := new(domain.ProjectRequest)
 	if err := ctx.Bind(req); err != nil {
-		return ctx.JSON(http.StatusBadRequest, "bad request")
+		slog.Error("Create project binding error", "error", err)
+		return r.Render(ctx, p.ProjectCreateForm(true))
 	}
 
 	dom, err := ph.svc.CreateProject(ctx, req)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, err.Error())
+		slog.Error("Create project error", "error", err)
+		return r.Render(ctx, p.ProjectCreateForm(true))
 	}
 
-	return ctx.JSON(http.StatusCreated, dom)
+	slog.Info("Create new project", "log_info", dom)
+	return r.Render(ctx, pr.CreateProjectProgress())
+}
+
+// GET /project/createform
+func (ph *ProjectHandler) ProjectCreateForm(ctx echo.Context) error {
+	return r.Render(ctx, p.ProjectCreateForm(false))
+}
+
+// GET /project/list
+func (ph *ProjectHandler) ProjectListPage(ctx echo.Context) error {
+
+	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{}, 1, 10)
+	if err != nil {
+		return err
+	}
+	return r.Render(ctx, l.ProjectListPage(projects))
+}
+
+// GET /dashboard
+func (ph *ProjectHandler) GetProjectDashboardPage(ctx echo.Context) error {
+
+	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{}, 1, 10)
+	if err != nil {
+		return err
+	}
+
+	return r.Render(ctx, d.ProjectDashboard(projects))
+}
+
+// POST /project/validation/name
+func (ph *ProjectHandler) ProjectNameValidation(ctx echo.Context) error {
+	req := new(domain.ProjectRequest)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("Error binding request", err)
+	}
+	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{Name: req.Name}, 1, 10)
+	if err != nil {
+		return err
+	}
+	var valid bool = true
+	if len(projects) > 0 {
+		valid = false
+	}
+	return r.Render(ctx, v.ProjectNameValidation(valid, req.Name))
+}
+
+// POST /project/validation/domain
+func (ph *ProjectHandler) ProjectDomainValidation(ctx echo.Context) error {
+	req := new(domain.ProjectRequest)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("Error binding request", err)
+		return r.Render(ctx, er.ErrorPage())
+	}
+	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{Domain: req.Domain}, 1, 10)
+	if err != nil {
+		return err
+	}
+
+	var valid bool = true
+	if len(projects) > 0 {
+		valid = false
+	}
+	return r.Render(ctx, v.DomainUrlValidation(valid, req.Domain))
 }

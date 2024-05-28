@@ -1,9 +1,11 @@
 package repository
 
 import (
-	"github.com/go-pg/pg/v10"
+	"errors"
 
+	"github.com/go-pg/pg/v10"
 	"github.com/labstack/echo/v4"
+	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
@@ -26,4 +28,35 @@ func (repo *ProjectRepository) CreateProject(ctx echo.Context, project *domain.P
 	}
 
 	return project, nil
+}
+
+func (repo *ProjectRepository) FindProjects(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error) {
+
+	var projects []*domain.Project
+
+	userId, err := auth.GetUserId(ctx)
+	if err != nil {
+		return nil, errors.New("user is not found")
+	}
+	offset := (skip - 1) * limit
+
+	query := repo.db.Model(&projects)
+	if filters.Name != "" {
+		query = query.Where("name = ?", filters.Name)
+	}
+	if filters.Domain != "" {
+		query = query.WhereOr("shopify_domain LIKE ?", "%"+filters.Domain+"%")
+		query = query.WhereOr("woocommerce_domain LIKE ?", "%"+filters.Domain+"%")
+	}
+	query = query.
+		Where("user_id =?", userId).
+		Order("name ASC").
+		Limit(limit).
+		Offset(offset)
+
+	err = query.Select()
+	if err != nil {
+		return nil, err
+	}
+	return projects, nil
 }

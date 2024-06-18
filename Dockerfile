@@ -1,30 +1,33 @@
-# syntax=docker/dockerfile:1
+# Use the official Golang image for building the application
+FROM golang:1.22 as builder
 
-# Build the application from source
-FROM golang:1.22 AS build-stage
+# Set the working directory inside the container
+WORKDIR /project/otoo/
 
-WORKDIR /app
-
+# Copy the go.mod and go.sum files and download dependencies
 COPY go.mod go.sum ./
 RUN go mod download
 
-COPY *.go ./
+# Copy the source code and the .env file into the container
+COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /otoo
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /project/otoo/build/myapp .
 
-# Run the tests in the container
-FROM build-stage AS run-test-stage
-RUN go test -v ./...
+# Use a minimal image for the final stage
+FROM alpine:latest
 
-# Deploy the application binary into a lean image
-FROM gcr.io/distroless/base-debian11 AS build-release-stage
+# Copy the built application from the builder stage
+COPY --from=builder /project/otoo/build/myapp /project/otoo/build/myapp
 
-WORKDIR /
+# # Copy the .env file to the final image (if needed by the application)
+# COPY --from=builder /project/otoo/.env /project/otoo/.env
 
-COPY --from=build-stage /otoo /otoo
+# # Set the environment variable for the .env file path (if necessary)
+# ENV ENV_FILE_PATH=/project/otoo/.env
 
+# Expose the application port
 EXPOSE 8081
 
-USER nonroot:nonroot
-
-ENTRYPOINT ["/otoo"]
+# Set the entry point for the container to run the application
+ENTRYPOINT [ "/project/otoo/build/myapp" ]

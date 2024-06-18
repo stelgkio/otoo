@@ -1,34 +1,22 @@
-const body = document.querySelector("body"),
-    modeToggle = body.querySelector(".mode-toggle");
-sidebar = body.querySelector("nav");
-sidebarToggle = body.querySelector(".sidebar-toggle");
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('project-search');
+    const projectList = document.getElementById('project-list');
+    const projects = projectList.querySelectorAll('[data-project-type="pro"]');
 
-let getMode = localStorage.getItem("mode");
-if (getMode && getMode === "dark") {
-    body.classList.toggle("dark");
-}
+    searchInput.addEventListener('input', function () {
+        const filter = searchInput.value.toLowerCase();
 
-let getStatus = localStorage.getItem("status");
-if (getStatus && getStatus === "close") {
-    sidebar.classList.toggle("close");
-}
+        for (let i = 0; i < projects.length; i++) {
+            const project = projects[i];
+            const projectName = project.getElementsByTagName('a')[0].innerText.toLowerCase();
 
-modeToggle.addEventListener("click", () => {
-    body.classList.toggle("dark");
-    if (body.classList.contains("dark")) {
-        localStorage.setItem("mode", "dark");
-    } else {
-        localStorage.setItem("mode", "light");
-    }
+            if (projectName.includes(filter)) {
+                project.setAttribute('style', 'display:inline !important');
+            } else {
+                project.setAttribute('style', 'display:none !important');
+            }
+        }
+    });
 });
-
-sidebarToggle.addEventListener("click", () => {
-    sidebar.classList.toggle("close");
-    if (sidebar.classList.contains("close")) {
-        localStorage.setItem("status", "close");
-    } else {
-        localStorage.setItem("status", "open");
-    }
-})
 
 

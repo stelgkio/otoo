@@ -64,20 +64,20 @@ func ProjectListPage(projects []*domain.Project) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card border-primary-hover shadow-soft-3-hover d-flex justify-content-center\"><div class=\"modal-content overflow-hidden\"><div class=\"card-body p-0\"><div class=\"px-6 py-5 border-bottom\"><input type=\"text\" class=\"form-control\" placeholder=\"Search project\" aria-label=\"Search\"></div><div class=\"p-2\" style=\"max-height: 400px; overflow-y: auto;\"><div class=\"vstack\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card border-primary-hover shadow-soft-3-hover d-flex justify-content-center\"><div class=\"modal-content overflow-hidden\"><div class=\"card-body p-0\"><div class=\"px-6 py-5 border-bottom\"><input id=\"project-search\" type=\"text\" class=\"form-control\" placeholder=\"Search project\" aria-label=\"Search\"></div><div id=\"project-list\" class=\"p-2\" style=\"max-height: 400px; overflow-y: auto;\"><div class=\"vstack\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			for _, p := range projects {
 				if p.ProjectType == "Shopify" {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"position-relative d-flex gap-3 p-4 rounded bg-body-secondary-hover\"><div class=\"d-flex flex-fill justify-content-center\"><div class=\"justify-content-center\"><img src=\"./assets/img/marketing/shopify-logo.svg\" class=\"w-rem-5 flex-none \" alt=\"...\"> <a href=\"#\" class=\"stretched-link text-heading fw-bold\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div data-project-type=\"pro\" class=\"position-relative d-flex gap-3 p-4 rounded bg-body-secondary-hover\"><div class=\"d-flex flex-fill justify-content-center\"><div class=\"justify-content-center\"><img src=\"./assets/img/marketing/shopify-logo.svg\" class=\"w-rem-5 flex-none \" alt=\"...\"> <a href=\"#\" class=\"stretched-link text-heading fw-bold\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var5 string
 					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(p.Name)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/list/project-list.templ`, Line: 70, Col: 26}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/list/project-list.templ`, Line: 72, Col: 26}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 					if templ_7745c5c3_Err != nil {
@@ -88,14 +88,14 @@ func ProjectListPage(projects []*domain.Project) templ.Component {
 						return templ_7745c5c3_Err
 					}
 				} else {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"position-relative d-flex gap-3 p-4 rounded bg-body-secondary-hover\"><div class=\"d-flex flex-fill justify-content-center\"><div class=\"justify-content-center\"><img src=\"./assets/img/marketing/WooCommerce_logo.svg.png\" class=\"w-rem-5 flex-none \" alt=\"...\"> <a href=\"#\" class=\"stretched-link text-heading fw-bold\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div data-project-type=\"pro\" class=\"position-relative d-flex gap-3 p-4 rounded bg-body-secondary-hover\"><div class=\"d-flex flex-fill justify-content-center\"><div class=\"justify-content-center\"><img src=\"./assets/img/marketing/WooCommerce_logo.svg.png\" class=\"w-rem-5 flex-none \" alt=\"...\"> <a href=\"#\" class=\"stretched-link text-heading fw-bold\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var6 string
 					templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(p.Name)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/list/project-list.templ`, Line: 84, Col: 26}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/list/project-list.templ`, Line: 87, Col: 26}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 					if templ_7745c5c3_Err != nil {

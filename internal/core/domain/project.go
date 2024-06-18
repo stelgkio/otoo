@@ -89,6 +89,29 @@ type ProjectRequest struct {
 	AccessToken    string      `json:"accesstoken" form:"accesstoken"`
 }
 
+func (p *ProjectRequest) Validate() map[string](string) {
+
+	errors := make(map[string]string)
+
+	if p.Name == "" {
+		errors["name"] = "Name is required"
+	}
+	if p.Domain == "" {
+		errors["domain"] = "Domain is required"
+	}
+	if p.ConsumerKey == "" {
+		errors["consumer_key"] = "Consumer key is required"
+	}
+	if p.ConsumerSecret == "" {
+		errors["consumer_secret"] = "Consumer secret is required"
+	}
+	// if p.AccessToken == "" {
+	// 	errors["accesstoken"] = "Access token is required"
+	// }
+
+	return errors
+}
+
 type FindProjectRequest struct {
 	Name        string      `json:"name" form:"name"`
 	Description string      `json:"description" form:"description"`

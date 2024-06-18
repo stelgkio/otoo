@@ -15,7 +15,7 @@ templ ProjectTopBar() {
 			</div>
 		</div>
 		<div class="hstack flex-fill justify-content-end flex-nowrap gap-6 ms-auto px-6 px-xxl-8">
-			<div class="dropdown d-none">
+			<div class="dropdown">
 				<a
 					href="#"
 					class="nav-link"
@@ -33,11 +33,11 @@ templ ProjectTopBar() {
 						class="dropdown-item d-flex align-items-center"
 						data-bs-theme-value="dark"
 					>Dark</button>
-					<button
-						type="button"
-						class="dropdown-item d-flex align-items-center"
-						data-bs-theme-value="auto"
-					>System</button>
+					// <button
+					// 	type="button"
+					// 	class="dropdown-item d-flex align-items-center"
+					// 	data-bs-theme-value="auto"
+					// >System</button>
 				</div>
 			</div>
 			<div class="dropdown">
@@ -81,21 +81,22 @@ templ ProjectTopBar() {
 			</div>
 			<div class="dropdown">
 				<a
-					class="avatar avatar-sm text-bg-dark rounded-circle"
+					class="avatar avatar-sm rounded-circle"
 					href="#"
 					role="button"
 					data-bs-toggle="dropdown"
 					aria-haspopup="false"
 					aria-expanded="false"
 				>
-					<i class="bi bi-person-square h5"></i>
+					<i class="bi bi-person-circle h5"></i>
 				</a>
 				<div class="dropdown-menu dropdown-menu-end">
 					<div class="dropdown-header">
-						<span class="d-block text-sm text-muted mb-1">
-							Signed in
-							as
-						</span> <span class="d-block text-heading fw-semibold">Test User</span>
+						// <span class="d-block text-sm text-muted mb-1">
+						// 	Signed in
+						// 	as
+						// </span> 
+						<span class="d-block text-heading fw-semibold">Test User</span>
 					</div>
 					<div class="dropdown-divider"></div>
 					<a class="dropdown-item" href="#">

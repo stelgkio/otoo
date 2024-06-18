@@ -13857,3 +13857,16 @@ span.flatpickr-weekday {
     background: #f3f3f3;
     color: black;
 }
+
+.htmx-indicator {
+    opacity: 0;
+    transition: opacity 500ms ease-in;
+}
+
+.htmx-request .htmx-indicator {
+    opacity: 1
+}
+
+.htmx-request.htmx-indicator {
+    opacity: 1
+}

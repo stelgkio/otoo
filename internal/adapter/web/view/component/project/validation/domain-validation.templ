@@ -2,7 +2,7 @@ package views
 
 templ DomainUrlValidation(valid bool, domain string) {
 	if !valid {
-		<div id="domain-validation" class="input-group position-relative">
+		<div class="input-group position-relative">
 			<span
 				class="input-group-text"
 			>
@@ -21,12 +21,18 @@ templ DomainUrlValidation(valid bool, domain string) {
 			<span
 				class="input-group-text"
 			>/wp-json/wc/v3</span>
-			<div class="invalid-feedback" style="display: block;">
-				Domain url already exist!
-			</div>
+			if domain == "" {
+				<div class="invalid-feedback" style="display: block;">
+					Domain is required!
+				</div>
+			} else {
+				<div class="invalid-feedback" style="display: block;">
+					Domain url already exist!
+				</div>
+			}
 		</div>
 	} else {
-		<div id="domain-validation" class="input-group position-relative" hx-target="this" hx-swap="outerHTML">
+		<div class="input-group position-relative">
 			<span
 				class="input-group-text"
 			>

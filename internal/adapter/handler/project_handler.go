@@ -32,13 +32,18 @@ func (ph *ProjectHandler) CreateProject(ctx echo.Context) error {
 	req := new(domain.ProjectRequest)
 	if err := ctx.Bind(req); err != nil {
 		slog.Error("Create project binding error", "error", err)
-		return r.Render(ctx, p.ProjectCreateForm(true))
+		return r.Render(ctx, p.ProjectCreateForm(true, nil, new(domain.ProjectRequest)))
+	}
+	validationErrors := req.Validate()
+	if len(validationErrors) > 0 {
+		return r.Render(ctx, p.ProjectCreateForm(true, validationErrors, req))
+
 	}
 
 	dom, err := ph.svc.CreateProject(ctx, req)
 	if err != nil {
 		slog.Error("Create project error", "error", err)
-		return r.Render(ctx, p.ProjectCreateForm(true))
+		return r.Render(ctx, p.ProjectCreateForm(true, nil, new(domain.ProjectRequest)))
 	}
 
 	slog.Info("Create new project", "log_info", dom)
@@ -47,7 +52,7 @@ func (ph *ProjectHandler) CreateProject(ctx echo.Context) error {
 
 // GET /project/createform
 func (ph *ProjectHandler) ProjectCreateForm(ctx echo.Context) error {
-	return r.Render(ctx, p.ProjectCreateForm(false))
+	return r.Render(ctx, p.ProjectCreateForm(false, nil, new(domain.ProjectRequest)))
 }
 
 // GET /project/list

@@ -49,17 +49,19 @@ templ ProjectListPage(projects []*domain.Project) {
 									<div class="card-body p-0">
 										<div class="px-6 py-5 border-bottom">
 											<input
+												id="project-search"
 												type="text"
 												class="form-control"
 												placeholder="Search project"
 												aria-label="Search"
 											/>
 										</div>
-										<div class="p-2" style="max-height: 400px; overflow-y: auto;">
+										<div id="project-list" class="p-2" style="max-height: 400px; overflow-y: auto;">
 											<div class="vstack">
 												for _, p := range projects {
 													if p.ProjectType =="Shopify" {
 														<div
+															data-project-type="pro"
 															class="position-relative d-flex gap-3 p-4 rounded bg-body-secondary-hover"
 														>
 															<div class="d-flex flex-fill justify-content-center">
@@ -74,6 +76,7 @@ templ ProjectListPage(projects []*domain.Project) {
 														</div>
 													} else {
 														<div
+															data-project-type="pro"
 															class="position-relative d-flex gap-3 p-4 rounded bg-body-secondary-hover"
 														>
 															<div class="d-flex flex-fill justify-content-center">

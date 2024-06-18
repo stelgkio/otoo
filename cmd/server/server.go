@@ -23,6 +23,12 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	s := StartServer(logger)
 
 	// Dependency injection
+
+	//smtp
+	smtpService := service.NewSmtpService()
+	// Contact
+	contactRepo := mongorepo.NewContactRepository(mongodb)
+	contactService := service.NewContactService(contactRepo, smtpService)
 	// User
 	userRepo := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepo)
@@ -43,7 +49,7 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	projectHandler := handler.NewProjectHandler(projectService)
 
 	//Home
-	homeHandler := handler.NewHomeHandler(projectService)
+	homeHandler := handler.NewHomeHandler(projectService, contactService)
 
 	dashboardHandler := handler.NewDashboardHandler(projectService, userService)
 

@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 	h "github.com/stelgkio/otoo/internal/adapter/handler"
 	v "github.com/stelgkio/otoo/internal/adapter/web/view"
+	con "github.com/stelgkio/otoo/internal/adapter/web/view/component/contact"
 	w "github.com/stelgkio/otoo/internal/adapter/woocommerce"
 	auth "github.com/stelgkio/otoo/internal/core/auth"
 	r "github.com/stelgkio/otoo/internal/core/util"
@@ -30,6 +31,11 @@ func NewRouter(
 	e.GET("/index", func(c echo.Context) error {
 		return r.Render(c, v.IndexTemplate())
 	}).Name = "index"
+
+	e.GET("/contact", func(c echo.Context) error {
+		return r.Render(c, con.ContantComponent())
+	})
+	e.POST("/contact", homeHandler.ContactForm)
 
 	e.GET("login", authHandler.LoginForm).Name = "SignInForm"
 	e.POST("login", authHandler.Login)

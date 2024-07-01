@@ -245,6 +245,11 @@ a {
     font-weight: 500
 }
 
+@font-face {
+    font-family: mylogo-font;
+    src: url('DAGGERSQUARE.otf');
+}
+
 a.text-muted:hover {
     color: var(--x-primary)
 }
@@ -13844,10 +13849,7 @@ span.flatpickr-weekday {
 
 /*# sourceMappingURL=main.css.map */
 
-@font-face {
-    font-family: mylogo-font;
-    src: url('DAGGERSQUARE.otf');
-}
+
 
 .mylogo {
     font-family: mylogo-font !important;

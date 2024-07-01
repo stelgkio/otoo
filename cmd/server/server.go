@@ -105,9 +105,6 @@ func StartServer(logger *slog.Logger) *echo.Echo {
 		// Call the default handler to return the HTTP response
 		e.DefaultHTTPErrorHandler(err, c)
 	}
-	e.Static("/css", "css")
-	e.Static("/assets", "assets")
-	e.Static("/fonts", "fonts")
 
 	return e
 }

@@ -19,7 +19,8 @@ FROM alpine:latest
 
 # Copy the built application from the builder stage
 COPY --from=builder /project/otoo/build/myapp /project/otoo/build/myapp
-
+# Copy the assets from the builder stage
+COPY --from=builder /project/otoo/assets /project/otoo/build/assets
 # # Copy the .env file to the final image (if needed by the application)
 # COPY --from=builder /project/otoo/.env /project/otoo/.env
 

@@ -2,15 +2,21 @@ package main
 
 import (
 	"context"
+	"embed"
 	"log/slog"
+	"net/http"
 	"os"
 
 	"github.com/go-pg/pg/v10"
+	"github.com/labstack/echo/v4"
 	server "github.com/stelgkio/otoo/cmd/server"
 	"github.com/stelgkio/otoo/internal/adapter/config"
 	nosql "github.com/stelgkio/otoo/internal/adapter/storage/mongodb"
 	database "github.com/stelgkio/otoo/internal/adapter/storage/postgres"
 )
+
+//go:embed assets/*
+var assetsFS embed.FS
 
 func main() {
 	// Load environment variables
@@ -23,7 +29,6 @@ func main() {
 		logger.Error("Error loading environment variables", "error", err)
 		os.Exit(1)
 	}
-    
 
 	// Connect to database
 	db := pg.Connect(&pg.Options{
@@ -67,6 +72,11 @@ func main() {
 
 	//
 	app := server.NewServer(db, mongodb, logger, config)
+	// Serve static files from embedded FS
+	app.GET("/assets/*", echo.WrapHandler(http.FileServer(http.FS(assetsFS))))
 
+	// app.Static("/css", "./css")
+	// app.Static("/assets", "./assets")
+	// app.Static("/fonts", "./fonts")
 	logger.Error("failed to start server", app.Start(":8081"))
 }

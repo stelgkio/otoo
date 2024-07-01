@@ -33,3 +33,5 @@
 # Go workspace file
 go.work
 .DS_Store
+tmp/build-errors.log
+.DS_Store

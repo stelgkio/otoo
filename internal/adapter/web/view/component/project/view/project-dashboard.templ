@@ -6,12 +6,11 @@ import (
 	l "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/list"
 )
 
-templ ProjectDashboard(projects []*domain.Project) {
-	@t.ProjectTemplate() {
+templ ProjectDashboard(projects []*domain.Project, user *domain.User) {
+	@t.ProjectTemplate(user) {
 		@l.ProjectListPage(projects)
 		<script>
-	    var chartElement2= document.querySelector("#chart-users");
-   
+	    var chartElement2= document.querySelector("#chart-users");   
         var options2= {
             chart: {
                 type: "bar",

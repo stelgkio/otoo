@@ -39,6 +39,12 @@ func NewRouter(
 
 	e.GET("login", authHandler.LoginForm).Name = "SignInForm"
 	e.POST("login", authHandler.Login)
+
+	e.GET("forgotpassword", authHandler.ForgotPasswordForm)
+	e.POST("forgotpassword", authHandler.ForgotPassword)
+
+	e.GET("resetpassword", authHandler.ResetPasswordForm)
+	e.POST("resetpassword", authHandler.ResetPassword)
 	//e.GET("projectlist", homeHandler.ProjectList)
 	e.GET("register", authHandler.RegisterForm)
 	e.POST("register", authHandler.Register)
@@ -51,9 +57,8 @@ func NewRouter(
 	dashboardgroup.Use(auth.TokenRefresherMiddleware)
 
 	dashboardgroup.GET("", projectHandler.GetProjectDashboardPage).Name = "dashboard"
-	dashboardgroup.GET("/projectlist", homeHandler.ProjectList)
-	dashboardgroup.GET("/projectlist", homeHandler.ProjectList)
 
+	dashboardgroup.GET("/logout", authHandler.Logout)
 	//Proejct group
 	projectgroup := e.Group("/project")
 	// Add authentication

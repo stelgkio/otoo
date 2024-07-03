@@ -19,7 +19,7 @@ func (s *SmtpService) SendEmail(ctx echo.Context) error {
 	m.SetHeader("To", "gkiostyl13@gmail.com")
 	m.SetHeader("Subject", "Hello!")
 	m.SetBody("text/plain", "This is the plain text body of the email.")
-	d := gomail.NewDialer("mail.otoo.gr", 587, "administrator@otoo.gr", "Liwizt&R1Gg&oUWp")
+
 	if err := d.DialAndSend(m); err != nil {
 		panic(err)
 	}

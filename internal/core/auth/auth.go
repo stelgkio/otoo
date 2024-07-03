@@ -54,6 +54,15 @@ func GenerateTokensAndSetCookies(user *user.User, c echo.Context) error {
 	return nil
 }
 
+func RemoveTokensAndDeleteCookies(user *user.User, c echo.Context) error {
+
+	removeTokenCookie(accessTokenCookieName, c)
+	removeUserCookie(c)
+	removeTokenCookie(refreshTokenCookieName, c)
+
+	return nil
+}
+
 func generateAccessToken(user *user.User) (string, time.Time, error) {
 	// Declare the expiration time of the token
 	expirationTime := time.Now().Add(24 * time.Hour)
@@ -102,12 +111,30 @@ func setTokenCookie(name, token string, expiration time.Time, c echo.Context) {
 
 	c.SetCookie(cookie)
 }
+func removeTokenCookie(name string, c echo.Context) {
+	cookie := new(http.Cookie)
+	cookie.Name = name
+	cookie.Value = ""
+	cookie.MaxAge = -1
+	cookie.Path = "/"
+	cookie.HttpOnly = true
+
+	c.SetCookie(cookie)
+}
 
 func setUserCookie(user *user.User, expiration time.Time, c echo.Context) {
 	cookie := new(http.Cookie)
 	cookie.Name = "user"
 	cookie.Value = user.Email
 	cookie.Expires = expiration
+	cookie.Path = "/"
+	c.SetCookie(cookie)
+}
+func removeUserCookie(c echo.Context) {
+	cookie := new(http.Cookie)
+	cookie.Name = "user"
+	cookie.Value = ""
+	cookie.MaxAge = -1
 	cookie.Path = "/"
 	c.SetCookie(cookie)
 }

@@ -16,7 +16,7 @@ import (
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-func ProjectDashboard(projects []*domain.Project) templ.Component {
+func ProjectDashboard(projects []*domain.Project, user *domain.User) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -44,8 +44,7 @@ func ProjectDashboard(projects []*domain.Project) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			templ_7745c5c3_Var3 := `
-	    var chartElement2= document.querySelector("#chart-users");
-   
+	    var chartElement2= document.querySelector("#chart-users");   
         var options2= {
             chart: {
                 type: "bar",
@@ -172,7 +171,7 @@ func ProjectDashboard(projects []*domain.Project) templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = t.ProjectTemplate().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = t.ProjectTemplate(user).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

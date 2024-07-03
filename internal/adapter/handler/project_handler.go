@@ -10,6 +10,7 @@ import (
 	pr "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/progress"
 	v "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/validation"
 	d "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/view"
+	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stelgkio/otoo/internal/core/port"
 	r "github.com/stelgkio/otoo/internal/core/util"
@@ -17,13 +18,15 @@ import (
 
 // UserHandler represents the HTTP handler for user-related requests
 type ProjectHandler struct {
-	svc port.ProjectService
+	svc     port.ProjectService
+	userSvc port.UserService
 }
 
 // NewProjectHandler creates a new ProjectHandler instance
-func NewProjectHandler(svc port.ProjectService) *ProjectHandler {
+func NewProjectHandler(svc port.ProjectService, userSvc port.UserService) *ProjectHandler {
 	return &ProjectHandler{
 		svc,
+		userSvc,
 	}
 }
 
@@ -72,15 +75,23 @@ func (ph *ProjectHandler) GetProjectDashboardPage(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
+	userId, err := auth.GetUserId(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := ph.userSvc.GetUserById(ctx, userId)
+	if err != nil {
+		return err
+	}
 
-	return r.Render(ctx, d.ProjectDashboard(projects))
+	return r.Render(ctx, d.ProjectDashboard(projects, user))
 }
 
 // POST /project/validation/name
 func (ph *ProjectHandler) ProjectNameValidation(ctx echo.Context) error {
 	req := new(domain.ProjectRequest)
 	if err := ctx.Bind(req); err != nil {
-		slog.Error("Error binding request", err)
+		slog.Error("Error binding request", "error", err)
 	}
 	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{Name: req.Name}, 1, 10)
 	if err != nil {
@@ -97,7 +108,7 @@ func (ph *ProjectHandler) ProjectNameValidation(ctx echo.Context) error {
 func (ph *ProjectHandler) ProjectDomainValidation(ctx echo.Context) error {
 	req := new(domain.ProjectRequest)
 	if err := ctx.Bind(req); err != nil {
-		slog.Error("Error binding request", err)
+		slog.Error("Error binding request", "error", err)
 		return r.Render(ctx, er.ErrorPage())
 	}
 	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{Domain: req.Domain}, 1, 10)

@@ -1,6 +1,8 @@
 package views
 
-templ ProjectTopBar() {
+import "github.com/stelgkio/otoo/internal/core/domain"
+
+templ ProjectTopBar(user *domain.User) {
 	<div class="d-none d-lg-flex py-3">
 		<div class="flex-none">
 			<div class="input-group input-group-sm input-group-inline w-rem-64 rounded-pill">
@@ -96,30 +98,30 @@ templ ProjectTopBar() {
 						// 	Signed in
 						// 	as
 						// </span> 
-						<span class="d-block text-heading fw-semibold">Test User</span>
+						<span class="d-block text-heading fw-semibold">{ user.Name }{ user.LastName }</span>
 					</div>
 					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="#">
+					<a class="dropdown-item" href="/dashboard">
 						<i
 							class="bi bi-house me-3"
 						></i>Home 
 					</a>
-					<a class="dropdown-item" href="#">
+					<a class="dropdown-item" href="/profile">
 						<i
 							class="bi bi-pencil me-3"
 						></i>Edit profile
 					</a>
 					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="#">
+					<a class="dropdown-item" href="/settings">
 						<i
 							class="bi bi-gear me-3"
 						></i>Settings 
 					</a>
 					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="#">
+					<a class="dropdown-item" href="/dashboard/logout">
 						<i
 							class="bi bi-person me-3"
-						></i>Login
+						></i>Logout
 					</a>
 				</div>
 			</div>

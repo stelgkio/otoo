@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stelgkio/otoo/internal/core/port"
@@ -61,4 +62,13 @@ func (us *UserService) CreateUser(ctx echo.Context, user *domain.User) (*domain.
 	// }
 
 	return user, nil
+}
+
+func (us *UserService) GetUserById(ctx echo.Context, id uuid.UUID) (*domain.User, error) {
+	user, err := us.repo.GetUserById(ctx, id)
+	if err != nil && err != e.ErrDataNotFound {
+		return nil, e.ErrInternal
+	}
+	return user, nil
+
 }

@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+	f "github.com/stelgkio/otoo/internal/adapter/web/view/account/forgot_password"
 	l "github.com/stelgkio/otoo/internal/adapter/web/view/account/login"
 	reg "github.com/stelgkio/otoo/internal/adapter/web/view/account/register"
 	"github.com/stelgkio/otoo/internal/core/domain"
@@ -45,6 +46,11 @@ type loginRequest struct {
 	Password string `form:"password" validate:"required,min=8" example:"12345678" minLength:"8"`
 }
 
+// loginRequest represents the request body for logging in a user
+type forgotPosswordRequest struct {
+	Email string `form:"email" validate:"required,email" example:"test@example.com"`
+}
+
 // Login godoc
 //
 //	@Summary		Login and get an access token
@@ -81,6 +87,14 @@ func (ah *AuthHandler) Login(ctx echo.Context) (err error) {
 func (ah *AuthHandler) LoginForm(c echo.Context) error {
 	return r.Render(c, l.Login(nil))
 
+}
+
+func (ah *AuthHandler) Logout(ctx echo.Context) (err error) {
+	err = ah.svc.Logout(ctx)
+	if err != nil {
+		return ctx.Redirect(http.StatusMovedPermanently, "/index")
+	}
+	return ctx.Redirect(http.StatusMovedPermanently, "/index")
 }
 
 // registerRequest represents the request body for creating a user
@@ -138,5 +152,45 @@ func (ah *AuthHandler) Register(ctx echo.Context) error {
 		return r.Render(ctx, reg.Register(http.StatusInternalServerError, nil, nil))
 	}
 	return ctx.Redirect(http.StatusMovedPermanently, ctx.Echo().Reverse("dashboard"))
+
+}
+
+// @Router			/ForgotPassword [get]
+func (ah *AuthHandler) ForgotPasswordForm(c echo.Context) error {
+	return r.Render(c, f.ForgotPassword())
+
+}
+
+// @Router			/ForgotPassword [post]
+func (ah *AuthHandler) ForgotPassword(ctx echo.Context) error {
+	req := new(forgotPosswordRequest)
+
+	if err := ctx.Bind(req); err != nil {
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	//AuthResponse(token)
+
+	return ctx.Redirect(http.StatusFound, "/ResetPassword")
+
+}
+
+// @Router			/ForgotPassword [get]
+func (ah *AuthHandler) ResetPasswordForm(c echo.Context) error {
+	return r.Render(c, f.ForgotPassword())
+
+}
+
+// @Router			/ForgotPassword [post]
+func (ah *AuthHandler) ResetPassword(ctx echo.Context) error {
+	req := new(forgotPosswordRequest)
+
+	if err := ctx.Bind(req); err != nil {
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	//AuthResponse(token)
+
+	return ctx.Redirect(http.StatusFound, "/ResetPassword")
 
 }

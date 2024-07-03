@@ -4,9 +4,10 @@ import (
 	n "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/template/top_bar"
 	b "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/template/side-bar"
 	h "github.com/stelgkio/otoo/internal/adapter/web/view/component/header"
+	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-templ ProjectTemplate() {
+templ ProjectTemplate(user *domain.User) {
 	<!DOCTYPE html>
 	<html lang="en">
 		@h.HeaderComponent()
@@ -14,9 +15,9 @@ templ ProjectTemplate() {
 			class="bg-body-tertiary"
 		>
 			<div class="d-flex flex-column flex-lg-row h-lg-100 gap-1">
-				@b.ProjectSideBar()
+				@b.ProjectSideBar(user)
 				<div class="flex-lg-fill overflow-x-auto ps-lg-1 vstack vh-lg-100 position-relative">
-					@n.ProjectTopBar()
+					@n.ProjectTopBar(user)
 					{ children... }
 				</div>
 			</div>

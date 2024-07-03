@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/go-pg/pg/v10"
+	"github.com/google/uuid"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stelgkio/otoo/internal/core/domain"
@@ -32,6 +33,20 @@ func (repo *UserRepository) CreateUser(ctx echo.Context, user *domain.User) (*do
 func (repo *UserRepository) GetUserByEmail(ctx echo.Context, email string) (*domain.User, error) {
 	var user domain.User
 	err := repo.db.Model(&user).Where("email =?", email).Select()
+	if err != nil {
+		if err == pg.ErrNoRows {
+			return nil, e.ErrDataNotFound
+		}
+		return nil, e.ErrInternal
+	}
+
+	return &user, nil
+}
+
+// GetUserByEmail creates a user in the database
+func (repo *UserRepository) GetUserById(ctx echo.Context, id uuid.UUID) (*domain.User, error) {
+	var user domain.User
+	err := repo.db.Model(&user).Where("id =?", id).Select()
 	if err != nil {
 		if err == pg.ErrNoRows {
 			return nil, e.ErrDataNotFound

@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/labstack/echo/v4"
-	auth "github.com/stelgkio/otoo/internal/core/auth"
+	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/port"
 	e "github.com/stelgkio/otoo/internal/core/util"
 )
@@ -46,4 +46,25 @@ func (as *AuthService) Login(ctx echo.Context, email, password string) (string, 
 	}
 
 	return "", nil
+}
+
+func (as *AuthService) Logout(ctx echo.Context) error {
+
+	userId, err := auth.GetUserId(ctx)
+	if err != nil {
+		return e.ErrInternal
+	}
+	user, err := as.repo.GetUserById(ctx, userId)
+	if err != nil {
+		if err == e.ErrDataNotFound {
+			return e.ErrInvalidCredentials
+		}
+		return e.ErrInternal
+	}
+	err = auth.RemoveTokensAndDeleteCookies(user, ctx)
+	if err != nil {
+		return e.ErrTokenCreation
+	}
+
+	return nil
 }

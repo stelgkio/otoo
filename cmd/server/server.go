@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"log/slog"
+	"net/http"
 
 	"github.com/go-pg/pg/v10"
 	"github.com/labstack/echo/v4"
@@ -46,7 +47,7 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	// Project
 	projectRepo := repository.NewProjectRepository(db)
 	projectService := service.NewProjectService(projectRepo, woocommerceService)
-	projectHandler := handler.NewProjectHandler(projectService)
+	projectHandler := handler.NewProjectHandler(projectService, userService)
 
 	//Home
 	homeHandler := handler.NewHomeHandler(projectService, contactService)
@@ -97,7 +98,10 @@ func StartServer(logger *slog.Logger) *echo.Echo {
 	e.Use(middleware.RequestID())
 	e.Use(middleware.Recover())
 
-	e.Use(middleware.CORS())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+	})))
 	e.HTTPErrorHandler = func(err error, c echo.Context) {
 		// Take required information from error and context and send it to a service like New Relic
 		//		fmt.Println(c.Path(), c.QueryParams(), err.Error())

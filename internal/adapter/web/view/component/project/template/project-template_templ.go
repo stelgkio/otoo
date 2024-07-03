@@ -14,9 +14,10 @@ import (
 	h "github.com/stelgkio/otoo/internal/adapter/web/view/component/header"
 	b "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/template/side-bar"
 	n "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/template/top_bar"
+	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-func ProjectTemplate() templ.Component {
+func ProjectTemplate(user *domain.User) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -41,7 +42,7 @@ func ProjectTemplate() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = b.ProjectSideBar().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = b.ProjectSideBar(user).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -49,7 +50,7 @@ func ProjectTemplate() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = n.ProjectTopBar().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = n.ProjectTopBar(user).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

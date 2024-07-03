@@ -2,11 +2,9 @@ package handler
 
 import (
 	"log/slog"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
-	l "github.com/stelgkio/otoo/internal/adapter/web/template/components/dashboard/projectlist"
-	t "github.com/stelgkio/otoo/internal/adapter/web/template/components/home"
+
 	v "github.com/stelgkio/otoo/internal/adapter/web/view"
 	con "github.com/stelgkio/otoo/internal/adapter/web/view/component/contact"
 	"github.com/stelgkio/otoo/internal/core/domain"
@@ -24,28 +22,6 @@ func NewHomeHandler(svc port.ProjectService, cont port.ContactService) *HomeHand
 		svc,
 		cont,
 	}
-}
-
-func (h HomeHandler) Home(c echo.Context) error {
-	projects, err := h.svc.FindProjects(c, &domain.FindProjectRequest{}, 1, 10)
-	if err != nil {
-		return err
-	}
-	return r.Render(c, t.HomeComponent(projects))
-}
-
-func (h HomeHandler) ProjectList(c echo.Context) error {
-	//page := c.QueryParam("page")
-	page, err := strconv.Atoi(c.QueryParam("page"))
-	if err != nil {
-		slog.Error("Invalid page number", err)
-		return err
-	}
-	projects, err := h.svc.FindProjects(c, &domain.FindProjectRequest{}, page, 10)
-	if err != nil {
-		return err
-	}
-	return r.Render(c, l.ProjectListComponent(projects, page))
 }
 
 // Post /contact

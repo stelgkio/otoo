@@ -1,6 +1,12 @@
 package views
 
-templ ProjectSideBar() {
+import (
+	"fmt"
+	"unicode/utf8"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ ProjectSideBar(user *domain.User) {
 	<nav
 		class="flex-none navbar navbar-vertical navbar-expand-lg navbar-light bg-transparent show vh-lg-100 px-0 py-2"
 		id="sidebar"
@@ -36,43 +42,35 @@ templ ProjectSideBar() {
 						aria-expanded="false"
 					>
 						<div>
-							<div class="avatar avatar-sm text-bg-secondary rounded-circle">AE</div>
+							<div class="avatar avatar-sm text-bg-secondary rounded-circle">{ getInitials(user.Name,user.LastName) }</div>
 						</div>
-						<div class="d-none d-sm-block ms-3"><span class="h6">TestUser</span></div>
+						<div class="d-none d-sm-block ms-3"><span class="h6">{ user.Name }{ user.LastName }</span></div>
 						<div class="d-none d-md-block ms-md-2">
 							<i class="bi bi-chevron-down text-muted text-xs"></i>
 						</div>
 					</a>
 					<div class="dropdown-menu dropdown-menu-end">
 						<div class="dropdown-header">
-							<span class="d-block text-heading fw-semibold">TestUser</span>
+							<span class="d-block text-heading fw-semibold">{ user.Name }{ user.LastName }</span>
 						</div>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">
-							<i
-								class="bi bi-house me-3"
-							></i>MyProjectName 
-						</a>
-						<a class="dropdown-item" href="#">
+						<a class="dropdown-item" href="/dashboard">
 							<i class="bi bi-house me-3"></i>Home 
 						</a>
-						<a
-							class="dropdown-item"
-							href="#"
-						>
+						<a class="dropdown-item" href="/profile">
 							<i class="bi bi-pencil me-3"></i>Edit profile
 						</a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">
+						<a class="dropdown-item" href="/settings">
 							<i
 								class="bi bi-gear me-3"
 							></i>Settings 
 						</a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">
+						<a class="dropdown-item" href="/dashboard/logout">
 							<i
 								class="bi bi-person me-3"
-							></i>Login
+							></i>Logout
 						</a>
 					</div>
 				</div>
@@ -96,4 +94,18 @@ templ ProjectSideBar() {
 			</div>
 		</div>
 	</nav>
+}
+
+func getInitials(name, lastName string) (string, error) {
+	if name == "" || lastName == "" {
+		return "", fmt.Errorf("name and last name must not be empty")
+	}
+
+	// Extract the first rune (Unicode code point) from each string
+	nameInitial, _ := utf8.DecodeRuneInString(name)
+	lastNameInitial, _ := utf8.DecodeRuneInString(lastName)
+
+	// Combine the initials into a single string
+	initials := string(nameInitial) + string(lastNameInitial)
+	return initials, nil
 }

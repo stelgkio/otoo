@@ -15,6 +15,7 @@ type (
 		DB    *DB
 		Mongo *Mongo
 		HTTP  *HTTP
+		SMTP  *SMTP
 	}
 	// App contains all the environment variables for the application
 	App struct {
@@ -41,6 +42,12 @@ type (
 		User       string
 		Password   string
 		Name       string
+	}
+	SMTP struct {
+		Host     string
+		Port     string
+		User     string
+		Password string
 	}
 	// HTTP contains all the environment variables for the http server
 	HTTP struct {
@@ -93,6 +100,12 @@ func New() (*Container, error) {
 		Port:           os.Getenv("HTTP_PORT"),
 		AllowedOrigins: os.Getenv("HTTP_ALLOWED_ORIGINS"),
 	}
+	smtp := &SMTP{
+		Host:     os.Getenv("SMTP_HOST"),
+		Port:     os.Getenv("SMTP_PORT"),
+		User:     os.Getenv("SMTP_USER"),
+		Password: os.Getenv("SMTP_PASS"),
+	}
 
 	return &Container{
 		app,
@@ -101,5 +114,6 @@ func New() (*Container, error) {
 		db,
 		mongodb,
 		http,
+		smtp,
 	}, nil
 }

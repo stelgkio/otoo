@@ -35,3 +35,5 @@ go.work
 .DS_Store
 tmp/build-errors.log
 .DS_Store
+tmp/main
+tmp/build-errors.log

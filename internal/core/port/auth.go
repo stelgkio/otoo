@@ -18,4 +18,6 @@ type AuthService interface {
 	// Login authenticates a user by email and password and returns a token
 	Login(ctx echo.Context, email, password string) (string, error)
 	Logout(ctx echo.Context) error
+	ForgotPassword(ctx echo.Context, email string) error
+	ResetPassword(ctx echo.Context) error
 }

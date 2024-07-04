@@ -56,3 +56,13 @@ func (repo *UserRepository) GetUserById(ctx echo.Context, id uuid.UUID) (*domain
 
 	return &user, nil
 }
+
+// CreateUser creates a new user in the database
+func (repo *UserRepository) UpdateUser(ctx echo.Context, user *domain.User) (*domain.User, error) {
+	_, err := repo.db.Model(user).Where("email =?", user.Email).Update()
+	if err != nil {
+		panic(err)
+	}
+
+	return user, nil
+}

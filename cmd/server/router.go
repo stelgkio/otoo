@@ -43,8 +43,8 @@ func NewRouter(
 	e.GET("forgotpassword", authHandler.ForgotPasswordForm)
 	e.POST("forgotpassword", authHandler.ForgotPassword)
 
-	e.GET("resetpassword", authHandler.ResetPasswordForm)
-	e.POST("resetpassword", authHandler.ResetPassword)
+	e.GET("resetpassword/:token", authHandler.ResetPasswordForm)
+	e.POST("resetpassword/:email", authHandler.ResetPassword)
 	//e.GET("projectlist", homeHandler.ProjectList)
 	e.GET("register", authHandler.RegisterForm)
 	e.POST("register", authHandler.Register)

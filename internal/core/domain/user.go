@@ -20,7 +20,7 @@ type User struct {
 	Base
 	Name        string `json:"name" pg:"name,notnull"`
 	Email       string `json:"email" pg:"email,unique,notnull"`
-	Password    string
+	Password    string `json:"password" pg:"password,notnull"`
 	Role        UserRole
 	ValidatedAt types.NullTime
 	LastLogin   types.NullTime

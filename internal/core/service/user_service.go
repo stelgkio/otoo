@@ -72,3 +72,20 @@ func (us *UserService) GetUserById(ctx echo.Context, id uuid.UUID) (*domain.User
 	return user, nil
 
 }
+func (us *UserService) GetUserByEmail(ctx echo.Context, email string) (*domain.User, error) {
+	user, err := us.repo.GetUserByEmail(ctx, email)
+	if err != nil && err != e.ErrDataNotFound {
+		return nil, e.ErrInternal
+	}
+	return user, nil
+
+}
+
+func (us *UserService) UpdateUser(ctx echo.Context, user *domain.User) (*domain.User, error) {
+	user, err := us.repo.UpdateUser(ctx, user)
+	if err != nil && err != e.ErrDataNotFound {
+		return nil, e.ErrInternal
+	}
+	return user, nil
+
+}

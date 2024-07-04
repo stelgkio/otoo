@@ -68,3 +68,20 @@ func (as *AuthService) Logout(ctx echo.Context) error {
 
 	return nil
 }
+
+func (as *AuthService) ForgotPassword(ctx echo.Context, email string) error {
+	user, err := as.repo.GetUserByEmail(ctx, email)
+	if err != nil {
+		return err
+	}
+	link, _ := e.ResetPasswordLinkGenerator(email)
+	if user != nil && link != "" {
+		NewSmtpService().SendForgetPasswordEmail(ctx, email, user.Name, user.LastName, link)
+	}
+
+	return nil
+}
+
+func (as *AuthService) ResetPassword(ctx echo.Context) error {
+	return nil
+}

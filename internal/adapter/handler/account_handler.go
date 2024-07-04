@@ -10,6 +10,7 @@ import (
 	f "github.com/stelgkio/otoo/internal/adapter/web/view/account/forgot_password"
 	l "github.com/stelgkio/otoo/internal/adapter/web/view/account/login"
 	reg "github.com/stelgkio/otoo/internal/adapter/web/view/account/register"
+	re "github.com/stelgkio/otoo/internal/adapter/web/view/account/reset_password"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stelgkio/otoo/internal/core/port"
 	r "github.com/stelgkio/otoo/internal/core/util"
@@ -51,19 +52,13 @@ type forgotPosswordRequest struct {
 	Email string `form:"email" validate:"required,email" example:"test@example.com"`
 }
 
-// Login godoc
-//
-//	@Summary		Login and get an access token
-//	@Description	Logs in a registered user and returns an access token if the credentials are valid.
-//	@Tags			Users
-//	@Accept			json
-//	@Produce		json
-//	@Param			request	body		loginRequest	true	"Login request body"
-//	@Success		200		{object}	authResponse	"Succesfully logged in"
-//	@Failure		400		{object}	errorResponse	"Validation error"
-//	@Failure		401		{object}	errorResponse	"Unauthorized error"
-//	@Failure		500		{object}	errorResponse	"Internal server error"
-//	@Router			/login [post]
+// loginRequest represents the request body for logging in a user
+type resetPosswordRequest struct {
+	Password             string `form:"password" validate:"required,min=8"`
+	ConfirmationPassword string `form:"confirmationpassword" validate:"required,min=8"`
+}
+
+// @Router			/login [post]
 func (ah *AuthHandler) Login(ctx echo.Context) (err error) {
 
 	req := new(loginRequest)
@@ -124,7 +119,7 @@ func (ah *AuthHandler) Register(ctx echo.Context) error {
 	validate := validator.New()
 	// validate password is the same as confirm password
 	if req.Password != req.ConfirmationPassword {
-		return r.Render(ctx, reg.Register(0, nil, fmt.Errorf("Invalid confirmation password")))
+		return r.Render(ctx, reg.Register(0, nil, fmt.Errorf("invalid confirmation password")))
 	}
 	// Validate the User struct
 	err := validate.Struct(req)
@@ -169,28 +164,64 @@ func (ah *AuthHandler) ForgotPassword(ctx echo.Context) error {
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
 
-	//AuthResponse(token)
+	ah.svc.ForgotPassword(ctx, req.Email)
 
-	return ctx.Redirect(http.StatusFound, "/ResetPassword")
-
+	return r.Render(ctx, f.ForgotPasswordSuccess())
 }
 
 // @Router			/ForgotPassword [get]
-func (ah *AuthHandler) ResetPasswordForm(c echo.Context) error {
-	return r.Render(c, f.ForgotPassword())
+func (ah *AuthHandler) ResetPasswordForm(ctx echo.Context) error {
+	token := ctx.Param("token")
+	email, _ := r.Decrypt(token)
+	user, err := ah.urs.GetUserByEmail(ctx, email)
+
+	if user == nil {
+		slog.Error("error get existing user:", "StatusBadRequest", err)
+		return r.Render(ctx, re.ResetPasswordError())
+	}
+	return r.Render(ctx, re.ResetPasswordForm(0, email, nil, nil))
 
 }
 
 // @Router			/ForgotPassword [post]
 func (ah *AuthHandler) ResetPassword(ctx echo.Context) error {
-	req := new(forgotPosswordRequest)
-
+	req := new(resetPosswordRequest)
+	email := ctx.Param("email")
 	if err := ctx.Bind(req); err != nil {
-		return ctx.String(http.StatusBadRequest, "bad request")
+		return r.Render(ctx, reg.Register(http.StatusBadRequest, nil, nil))
+		//return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	ctx.Validate(req)
+	// validate email is not taken
+	validate := validator.New()
+	// validate password is the same as confirm password
+	if req.Password != req.ConfirmationPassword {
+		return r.Render(ctx, re.ResetPasswordForm(0, "", nil, fmt.Errorf("invalid confirmation password")))
+	}
+	// Validate the User struct
+	err := validate.Struct(req)
+	if err != nil {
+		// Validation failed, handle the error
+		errors := err.(validator.ValidationErrors)
+		return r.Render(ctx, re.ResetPasswordForm(0, "", errors, nil))
 	}
 
-	//AuthResponse(token)
+	fromExistingUser, err := ah.urs.GetUserByEmail(ctx, email)
+	if err != nil {
+		slog.Error("error get existing user:", "StatusBadRequest", err)
+		return r.Render(ctx, re.ResetPasswordForm(http.StatusBadRequest, "", nil, nil))
+	}
+	user, err := domain.NewUser(fromExistingUser.Email, req.Password, fromExistingUser.Name, fromExistingUser.LastName)
+	if err != nil {
+		slog.Error("error new user:", "StatusBadRequest", err)
+		return r.Render(ctx, re.ResetPasswordForm(http.StatusBadRequest, "", nil, nil))
+	}
 
-	return ctx.Redirect(http.StatusFound, "/ResetPassword")
+	_, err = ah.urs.UpdateUser(ctx, user)
+	if err != nil {
+		slog.Error("error update user:", "StatusBadRequest", err)
+		return r.Render(ctx, re.ResetPasswordForm(http.StatusBadRequest, "", nil, nil))
+	}
 
+	return ctx.Redirect(http.StatusMovedPermanently, "/login")
 }

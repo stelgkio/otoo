@@ -6,10 +6,12 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"io"
+	"os"
 )
 
 // encrypt encrypts plain text string using AES algorithm and returns the encrypted text in hexadecimal format.
-func encrypt(plainText, key string) (string, error) {
+func Encrypt(plainText string) (string, error) {
+	key := os.Getenv("AES_KEY")
 	// Create a new AES cipher using the key
 	block, err := aes.NewCipher([]byte(key))
 	if err != nil {
@@ -39,8 +41,9 @@ func encrypt(plainText, key string) (string, error) {
 }
 
 // decrypt decrypts the encrypted text in hexadecimal format using AES algorithm and returns the decrypted plain text.
-func decrypt(cipherText, key string) (string, error) {
+func Decrypt(cipherText string) (string, error) {
 	// Convert the encrypted text from hexadecimal format to a byte slice
+	key := os.Getenv("AES_KEY")
 	cipherTextBytes, err := hex.DecodeString(cipherText)
 	if err != nil {
 		return "", err

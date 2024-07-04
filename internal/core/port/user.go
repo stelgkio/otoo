@@ -16,7 +16,7 @@ type UserRepository interface {
 	// // ListUsers selects a list of users with pagination
 	// ListUsers(ctx context.Context, skip, limit uint64) ([]domain.User, error)
 	// // UpdateUser updates a user
-	// UpdateUser(ctx context.Context, user *domain.User) (*domain.User, error)
+	UpdateUser(ctx echo.Context, user *domain.User) (*domain.User, error)
 	// // DeleteUser deletes a user
 	// DeleteUser(ctx context.Context, id uint64) error
 }
@@ -27,10 +27,12 @@ type UserService interface {
 	CreateUser(ctx echo.Context, user *domain.User) (*domain.User, error)
 	// GetUser returns a user by id
 	GetUserById(ctx echo.Context, id uuid.UUID) (*domain.User, error)
+	// GetUser returns a user by id
+	GetUserByEmail(ctx echo.Context, email string) (*domain.User, error)
 	// // ListUsers returns a list of users with pagination
 	// ListUsers(ctx context.Context, skip, limit uint64) ([]domain.User, error)
 	// // UpdateUser updates a user
-	// UpdateUser(ctx context.Context, user *domain.User) (*domain.User, error)
+	UpdateUser(ctx echo.Context, user *domain.User) (*domain.User, error)
 	// // DeleteUser deletes a user
 	// DeleteUser(ctx context.Context, id uint64) error
 }

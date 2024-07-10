@@ -169,6 +169,7 @@ func TokenRefresherMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 				})
 				if err != nil {
 					if err == jwt.ErrSignatureInvalid {
+
 						c.Response().Writer.WriteHeader(http.StatusUnauthorized)
 					}
 				}

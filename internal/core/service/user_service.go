@@ -89,3 +89,13 @@ func (us *UserService) UpdateUser(ctx echo.Context, user *domain.User) (*domain.
 	return user, nil
 
 }
+
+func (us *UserService) DeleteUser(ctx echo.Context, userId uuid.UUID) error {
+
+	err := us.repo.DeleteUser(ctx, userId)
+	if err != nil && err != e.ErrDataNotFound {
+		return e.ErrInternal
+	}
+	return nil
+
+}

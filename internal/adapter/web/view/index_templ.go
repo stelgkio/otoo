@@ -32,7 +32,7 @@ func IndexTemplate() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><link rel=\"preload\" href=\"/assets/css/DAGGERSQUARE.otf\" as=\"font\" crossorigin><link rel=\"stylesheet\" type=\"text/css\" href=\"assets/css/main.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"assets/css/utility.css\"><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css\"><link rel=\"stylesheet\" href=\"https://api.fontshare.com/v2/css?f=satoshi@900,700,500,300,401,400&amp;display=swap\"><link rel=\"icon\" type=\"image/png\" href=\"assets/img/favicon1.png\"></head><body class=\"p-1 p-lg-2\"><div class=\"overflow-x-hidden rounded-top-4 pt-2 pt-lg-4\"><header><div class=\"w-lg-75 mx-2 mx-lg-auto position-relative z-2 px-lg-3 py-0 shadow-5 rounded-3 rounded-lg-pill bg-dark\"><nav class=\"navbar navbar-expand-lg navbar-dark p-0\" id=\"navbar\"><div class=\"container px-sm-0\"><a class=\"navbar-brand d-inline-block w-lg-64\" href=\"#\"><h1 class=\"display-9 mylogo text-white fw-bolder lh-tight px-sm-1\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><link rel=\"preload\" href=\"/assets/css/DAGGERSQUARE.otf\" as=\"font\" crossorigin><link rel=\"stylesheet\" type=\"text/css\" href=\"assets/css/main.css\"><link rel=\"stylesheet\" type=\"text/css\" href=\"assets/css/utility.css\"><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css\"><link rel=\"stylesheet\" href=\"https://api.fontshare.com/v2/css?f=satoshi@900,700,500,300,401,400&amp;display=swap\"><link rel=\"icon\" type=\"image/png\" href=\"assets/img/favicon1.png\"></head><body class=\"p-1 p-lg-2\"><div class=\"overflow-x-hidden rounded-top-4 pt-2 pt-lg-4\"><header><div class=\"w-lg-75 mx-2 mx-lg-auto position-relative z-2 px-lg-3 py-0 shadow-5 rounded-3 rounded-lg-pill bg-dark\"><nav class=\"navbar navbar-expand-lg navbar-dark p-0\" id=\"navbar\"><div class=\"container px-sm-0\"><a class=\"navbar-brand d-inline-block w-lg-64\" href=\"/index\"><h1 class=\"display-9 mylogo text-white fw-bolder lh-tight px-sm-1\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -185,16 +185,16 @@ func IndexTemplate() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <span class=\"mylogo fw-bolder lh-tight px-sm-1\" style=\"color: #8957ff\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var20 := `more`
+		templ_7745c5c3_Var20 := `Otoo `
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var20)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div></div></div><div class=\"mt-10 d-none d-lg-block\"><div class=\"col-lg-8\"><p class=\"w-xl-75 lead text-white\"></p></div></div><div class=\"mt-10  d-lg-block\"><img alt=\"otoo dashboard landing page with sample data\" style=\"border-radius: 10px 10px;  width: 100%;\" src=\"./assets/img/landing2.jpeg\"></div></div></div><div id=\"howtiworks\" class=\"mt-2 py-20 pt-lg-32 bg-dark rounded-bottom-4 overflow-hidden position-relative z-1\"><div class=\"container mw-screen-xl\"><div class=\"row\"><div class=\"col-lg-6 col-md-10\"><h5 class=\"h5 mb-5 text-uppercase text-primary\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></a></div></div></div><div class=\"mt-10 d-none d-lg-block\"><div class=\"col-lg-8\"><p class=\"w-xl-75 lead text-white\"></p></div></div><div class=\"mt-10  d-lg-block\"><img alt=\"otoo dashboard landing page with sample data\" style=\"border-radius: 10px 10px;  width: 100%;\" src=\"./assets/img/landing2.jpeg\"></div></div></div><div id=\"howtiworks\" class=\"mt-2 py-20 pt-lg-32 bg-dark rounded-bottom-4 overflow-hidden position-relative z-1\"><div class=\"container mw-screen-xl\"><div class=\"row\"><div class=\"col-lg-6 col-md-10\"><h5 class=\"h5 mb-5 text-uppercase text-primary\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -419,7 +419,7 @@ func IndexTemplate() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<a class=\"mylogo\" href=\"https://webpixels.io?ref=themes.getbootstrap.com\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<a class=\"mylogo\" href=\"/index\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

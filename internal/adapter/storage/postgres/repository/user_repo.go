@@ -23,7 +23,13 @@ func NewUserRepository(db *pg.DB) *UserRepository {
 func (repo *UserRepository) CreateUser(ctx echo.Context, user *domain.User) (*domain.User, error) {
 	_, err := repo.db.Model(user).Insert()
 	if err != nil {
-		panic(err)
+		// Handle unique constraint violation
+		if pgErr, ok := err.(pg.Error); ok {
+			if pgErr.IntegrityViolation() {
+				return nil, e.ErrEmailAlreadyExist
+			}
+		}
+		return nil, err
 	}
 
 	return user, nil
@@ -32,7 +38,7 @@ func (repo *UserRepository) CreateUser(ctx echo.Context, user *domain.User) (*do
 // GetUserByEmail creates a user in the database
 func (repo *UserRepository) GetUserByEmail(ctx echo.Context, email string) (*domain.User, error) {
 	var user domain.User
-	err := repo.db.Model(&user).Where("email =?", email).Select()
+	err := repo.db.Model(&user).Where("email =?", email).Where("is_active =true").Select()
 	if err != nil {
 		if err == pg.ErrNoRows {
 			return nil, e.ErrDataNotFound
@@ -46,7 +52,7 @@ func (repo *UserRepository) GetUserByEmail(ctx echo.Context, email string) (*dom
 // GetUserByEmail creates a user in the database
 func (repo *UserRepository) GetUserById(ctx echo.Context, id uuid.UUID) (*domain.User, error) {
 	var user domain.User
-	err := repo.db.Model(&user).Where("id =?", id).Select()
+	err := repo.db.Model(&user).Where("id =?", id).Where("is_active =true").Select()
 	if err != nil {
 		if err == pg.ErrNoRows {
 			return nil, e.ErrDataNotFound
@@ -59,10 +65,22 @@ func (repo *UserRepository) GetUserById(ctx echo.Context, id uuid.UUID) (*domain
 
 // CreateUser creates a new user in the database
 func (repo *UserRepository) UpdateUser(ctx echo.Context, user *domain.User) (*domain.User, error) {
-	_, err := repo.db.Model(user).Where("email =?", user.Email).Update()
+	_, err := repo.db.Model(user).Where("email =?", user.Email).Where("is_active =true").Update()
 	if err != nil {
 		panic(err)
 	}
 
 	return user, nil
+}
+
+// DeleteUser delete a user in the database
+func (repo *UserRepository) DeleteUser(ctx echo.Context, id uuid.UUID) error {
+	user := &domain.User{}
+	_, err := repo.db.Model(user).Where("id = ?", id).Delete()
+
+	if err != nil {
+		panic(err)
+	}
+
+	return nil
 }

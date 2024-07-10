@@ -2,8 +2,10 @@ package repository
 
 import (
 	"errors"
+	"time"
 
 	"github.com/go-pg/pg/v10"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
@@ -50,6 +52,7 @@ func (repo *ProjectRepository) FindProjects(ctx echo.Context, filters *domain.Fi
 	}
 	query = query.
 		Where("user_id =?", userId).
+		Where("is_active =true").
 		Order("name ASC").
 		Limit(limit).
 		Offset(offset)
@@ -59,4 +62,24 @@ func (repo *ProjectRepository) FindProjects(ctx echo.Context, filters *domain.Fi
 		return nil, err
 	}
 	return projects, nil
+}
+
+// DeleteProjectsByUserId is doing a soft delete to this projects
+func (repo *ProjectRepository) DeleteProjectsByUserId(ctx echo.Context, userId uuid.UUID) error {
+	project := &domain.Project{}
+	res, err := repo.db.Model(project).
+		Set("is_active = ?", false).
+		Set("deleted_at = ?", time.Now()).
+		Where("user_id = ?", userId).
+		//Returning("*"). // This ensures the updated project is returned
+		Update()
+	if res.RowsAffected() == 0 {
+		return nil
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

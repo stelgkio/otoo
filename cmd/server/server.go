@@ -54,8 +54,10 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 
 	dashboardHandler := handler.NewDashboardHandler(projectService, userService)
 
+	//profile handler
+	profileHandler := handler.NewProfileHandler(userService, projectService, authService)
 	//Router
-	_, err := NewRouter(s, userHandler, authHandler, homeHandler, projectHandler, WooCommerceHandler, dashboardHandler)
+	_, err := NewRouter(s, userHandler, authHandler, homeHandler, projectHandler, WooCommerceHandler, dashboardHandler, profileHandler)
 	if err != nil {
 		return nil
 	}

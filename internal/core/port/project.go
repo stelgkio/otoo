@@ -1,6 +1,7 @@
 package port
 
 import (
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
@@ -18,6 +19,7 @@ type ProjectRepository interface {
 	// UpdateUser(ctx context.Context, user *domain.User) (*domain.User, error)
 	// // DeleteUser deletes a user
 	// DeleteUser(ctx context.Context, id uint64) error
+	DeleteProjectsByUserId(ctx echo.Context, userId uuid.UUID) error
 }
 
 // UserService is an interface for interacting with user-related business logic
@@ -32,4 +34,5 @@ type ProjectService interface {
 	// UpdateUser(ctx context.Context, user *domain.User) (*domain.User, error)
 	// // DeleteUser deletes a user
 	// DeleteUser(ctx context.Context, id uint64) error
+	SoftDeleteProjects(ctx echo.Context, userId uuid.UUID) error
 }

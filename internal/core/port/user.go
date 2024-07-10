@@ -18,7 +18,7 @@ type UserRepository interface {
 	// // UpdateUser updates a user
 	UpdateUser(ctx echo.Context, user *domain.User) (*domain.User, error)
 	// // DeleteUser deletes a user
-	// DeleteUser(ctx context.Context, id uint64) error
+	DeleteUser(ctx echo.Context, id uuid.UUID) error
 }
 
 // UserService is an interface for interacting with user-related business logic
@@ -34,5 +34,5 @@ type UserService interface {
 	// // UpdateUser updates a user
 	UpdateUser(ctx echo.Context, user *domain.User) (*domain.User, error)
 	// // DeleteUser deletes a user
-	// DeleteUser(ctx context.Context, id uint64) error
+	DeleteUser(ctx echo.Context, id uuid.UUID) error
 }

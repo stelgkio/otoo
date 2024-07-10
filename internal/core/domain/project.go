@@ -28,7 +28,6 @@ type Project struct {
 	UserId      uuid.UUID `pg:"fk:user_id,type:uuid"`
 	User        *User     `pg:"rel:has-one"`
 	ValidatedAt types.NullTime
-	IsActive    bool `pg:"is_active"`
 }
 
 // NewProject creates a instance of user with hashed password

@@ -9,8 +9,10 @@ import (
 	h "github.com/stelgkio/otoo/internal/adapter/handler"
 	v "github.com/stelgkio/otoo/internal/adapter/web/view"
 	con "github.com/stelgkio/otoo/internal/adapter/web/view/component/contact"
+	conf "github.com/stelgkio/otoo/internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form"
 	w "github.com/stelgkio/otoo/internal/adapter/woocommerce"
 	auth "github.com/stelgkio/otoo/internal/core/auth"
+	"github.com/stelgkio/otoo/internal/core/domain"
 	r "github.com/stelgkio/otoo/internal/core/util"
 )
 
@@ -26,6 +28,7 @@ func NewRouter(
 	projectHandler *h.ProjectHandler,
 	WooCommerceHandler *w.WooCommerceHandler,
 	dashboardHandler *h.DashboardHandler,
+	profileHandler *h.ProfileHandler,
 ) (*Router, error) {
 
 	e.GET("/index", func(c echo.Context) error {
@@ -52,29 +55,51 @@ func NewRouter(
 		return c.Redirect(http.StatusMovedPermanently, c.Echo().Reverse("index"))
 	})
 
+	//Dashboard
 	dashboardgroup := e.Group("/dashboard")
-	dashboardgroup.Use(configureJWT())
-	dashboardgroup.Use(auth.TokenRefresherMiddleware)
+	{
+		dashboardgroup.Use(configureJWT())
+		dashboardgroup.Use(auth.TokenRefresherMiddleware)
 
-	dashboardgroup.GET("", projectHandler.GetProjectDashboardPage).Name = "dashboard"
+		dashboardgroup.GET("", projectHandler.GetProjectDashboardPage).Name = "dashboard"
 
-	dashboardgroup.GET("/logout", authHandler.Logout)
-	//Proejct group
+		dashboardgroup.GET("/logout", authHandler.Logout)
+		dashboardgroup.GET("/contact", func(c echo.Context) error {
+			return r.Render(c, conf.ContactForm(false, false, nil, new(domain.ContactRequest)))
+		})
+		dashboardgroup.POST("/contact", homeHandler.DashboardContactForm)
+
+	}
+	//Project group
 	projectgroup := e.Group("/project")
-	// Add authentication
-	projectgroup.Use(configureJWT())
-	//Attach jwt token refresher.
-	projectgroup.Use(auth.TokenRefresherMiddleware)
-	projectgroup.GET("/list", projectHandler.ProjectListPage)
-	projectgroup.GET("/createform", projectHandler.ProjectCreateForm)
-	projectgroup.POST("/create", projectHandler.CreateProject)
-	projectgroup.POST("/validation/name", projectHandler.ProjectNameValidation)
-	projectgroup.POST("/validation/domain", projectHandler.ProjectDomainValidation)
+	{
+		// Add authentication
+		projectgroup.Use(configureJWT())
+		//Attach jwt token refresher.
+		projectgroup.Use(auth.TokenRefresherMiddleware)
 
-	//Proejct group
+		projectgroup.GET("/list", projectHandler.ProjectListPage)
+		projectgroup.GET("/createform", projectHandler.ProjectCreateForm)
+		projectgroup.POST("/create", projectHandler.CreateProject)
+		projectgroup.POST("/validation/name", projectHandler.ProjectNameValidation)
+		projectgroup.POST("/validation/domain", projectHandler.ProjectDomainValidation)
+	}
+	//woocommerce group
 	woocommercegroup := e.Group("/woocommerce")
-	woocommercegroup.POST("/create", WooCommerceHandler.OrderWebHook)
+	{
+		woocommercegroup.POST("/create", WooCommerceHandler.OrderWebHook)
+	}
 
+	//Profile
+	profilegroup := e.Group("/profile")
+	{
+		profilegroup.Use(configureJWT())
+		profilegroup.Use(auth.TokenRefresherMiddleware)
+		profilegroup.GET("", profileHandler.Profile).Name = "profile"
+		profilegroup.GET("/password", profileHandler.ProfilePassword)
+		profilegroup.POST("/user/update", profileHandler.ProfileUpdate)
+		profilegroup.POST("/user/delete", profileHandler.ProfileDelete)
+	}
 	return &Router{e}, nil
 }
 

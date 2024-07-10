@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
@@ -53,6 +54,8 @@ func (ps *ProjectService) CreateProject(ctx echo.Context, req *domain.ProjectReq
 		project.WoocommerceProject = domain.WoocommerceProject{}
 	}
 	project.UserId = userId
+	project.IsActive = true
+
 	pr, err := ps.repo.CreateProject(ctx, project)
 	if err != nil {
 		return nil, errors.New("project is not created")
@@ -65,4 +68,8 @@ func (ps *ProjectService) CreateProject(ctx echo.Context, req *domain.ProjectReq
 
 func (os *ProjectService) FindProjects(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error) {
 	return os.repo.FindProjects(ctx, filters, skip, limit)
+}
+
+func (os *ProjectService) SoftDeleteProjects(ctx echo.Context, userId uuid.UUID) error {
+	return os.repo.DeleteProjectsByUserId(ctx, userId)
 }

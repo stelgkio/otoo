@@ -1,0 +1,53 @@
+package views
+
+templ ProfileHeader(headerTitle string, active int) {
+	<header class="border-bottom mb-10">
+		<div class="row align-items-center">
+			<div class="col-sm-6 col-12">
+				<h1 class="ls-tight">{ headerTitle }</h1>
+			</div>
+		</div>
+		<ul class="nav nav-tabs nav-tabs-flush gap-6 overflow-x border-0 mt-4">
+			if (active==1) {
+				<li class="nav-item">
+					<a
+						href="javascript:void(0)"
+						hx-get="/profile"
+						hx-target="#dashboard-content"
+						class="nav-link active"
+					>General</a>
+				</li>
+			} else {
+				<li class="nav-item">
+					<a
+						href="javascript:void(0)"
+						hx-get="/profile"
+						hx-target="#dashboard-content"
+						class="nav-link"
+					>General</a>
+				</li>
+			}
+			//<li class="nav-item"> <a href="/pages/account-billing.html" class="nav-link active">Billing</a></li>
+			if (active==2) {
+				<li class="nav-item ">
+					<a
+						href="javascript:void(0)"
+						hx-get="/profile/password"
+						hx-target="#dashboard-content"
+						class="nav-link active"
+					>Password</a>
+				</li>
+			} else {
+				<li class="nav-item">
+					<a
+						href="javascript:void(0)"
+						hx-get="/profile/password"
+						hx-target="#dashboard-content"
+						class="nav-link"
+					>Password</a>
+				</li>
+			}
+			//<li class="nav-item"><a href="/pages/account-team.html" class="nav-link">Team</a></li>
+		</ul>
+	</header>
+}

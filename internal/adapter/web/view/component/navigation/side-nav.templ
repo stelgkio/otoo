@@ -1,5 +1,7 @@
 package views
 
+import c "github.com/stelgkio/otoo/internal/adapter/web/view/component/contact/contact-btn"
+
 templ SideBar() {
 	<nav
 		class="flex-none navbar navbar-vertical navbar-expand-lg navbar-light bg-transparent show vh-lg-100 px-0 py-2"
@@ -144,9 +146,10 @@ templ SideBar() {
 							aria-controls="sidebar-components"
 						>
 							<i class="bi bi-grid-1x2-fill"></i>
-							<span>Extensions</span> <span
-	class="badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto"
-></span>
+							<span>Extensions</span>
+							<span
+								class="badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto"
+							></span>
 						</a>
 						<div class="collapse" id="sidebar-components">
 							<ul class="nav nav-sm flex-column mt-1">
@@ -191,20 +194,7 @@ templ SideBar() {
 					</li>
 				</ul>
 				<div class="mt-auto"></div>
-				<div class="card bg-dark border-0 mt-5 mb-3">
-					<div class="card-body">
-						<div class="vstack gap-4">
-							<i class="bi bi-rocket-takeoff-fill text-white text-2xl"></i>
-							<p class="text-sm text-white text-opacity-70">
-								Let's talk about your project.
-							</p>
-							<a href="/pages/other-pricing.html" class="btn btn-sm btn-primary w-100">
-								Get In
-								Touch<i class="bi bi-arrow-right ms-2"></i>
-							</a>
-						</div>
-					</div>
-				</div>
+				@c.ContactBtn()
 			</div>
 		</div>
 	</nav>

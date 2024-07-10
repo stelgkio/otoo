@@ -80,6 +80,7 @@ func (ah *AuthHandler) Login(ctx echo.Context) (err error) {
 
 // @Router			/login [get]
 func (ah *AuthHandler) LoginForm(c echo.Context) error {
+	c.Response().Header().Set("HX-Redirect", "/login")
 	return r.Render(c, l.Login(nil))
 
 }
@@ -87,9 +88,11 @@ func (ah *AuthHandler) LoginForm(c echo.Context) error {
 func (ah *AuthHandler) Logout(ctx echo.Context) (err error) {
 	err = ah.svc.Logout(ctx)
 	if err != nil {
-		return ctx.Redirect(http.StatusMovedPermanently, "/index")
+		ctx.Response().Header().Set("HX-Redirect", "/")
+		return ctx.Redirect(http.StatusAccepted, "/index")
 	}
-	return ctx.Redirect(http.StatusMovedPermanently, "/index")
+	ctx.Response().Header().Set("HX-Redirect", "/")
+	return ctx.Redirect(http.StatusAccepted, "/index")
 }
 
 // registerRequest represents the request body for creating a user
@@ -164,7 +167,7 @@ func (ah *AuthHandler) ForgotPassword(ctx echo.Context) error {
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
 
-	ah.svc.ForgotPassword(ctx, req.Email)
+	go ah.svc.ForgotPassword(ctx, req.Email)
 
 	return r.Render(ctx, f.ForgotPasswordSuccess())
 }

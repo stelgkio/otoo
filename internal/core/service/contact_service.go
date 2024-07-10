@@ -32,6 +32,6 @@ func (c *ContactService) InsertContact(ctx echo.Context, req *domain.ContactRequ
 	if err := c.repo.InsertContact(ctx, contact); err != nil {
 		return errors.New("contact is not created")
 	}
-	c.smtp.SendContactEmail(ctx)
+	go c.smtp.SendContactEmail(ctx, req)
 	return nil
 }

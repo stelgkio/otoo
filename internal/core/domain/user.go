@@ -24,7 +24,6 @@ type User struct {
 	Role        UserRole
 	ValidatedAt types.NullTime
 	LastLogin   types.NullTime
-	IsActive    bool   `json:"is_active" pg:"is_active"`
 	LastName    string `json:"last_name" pg:"last_name,notnull"`
 }
 
@@ -45,7 +44,7 @@ func NewUser(email string, password string, name string, last_name string) (*Use
 	u.UpdatedAt = now
 	u.Name = name
 	u.LastName = last_name
-	u.IsActive = false
+	u.IsActive = true
 	return u, nil
 }
 

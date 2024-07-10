@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"unicode/utf8"
 	"github.com/stelgkio/otoo/internal/core/domain"
+	c "github.com/stelgkio/otoo/internal/adapter/web/view/component/contact/contact-btn"
 )
 
 templ ProjectSideBar(user *domain.User) {
@@ -54,20 +55,31 @@ templ ProjectSideBar(user *domain.User) {
 							<span class="d-block text-heading fw-semibold">{ user.Name }{ user.LastName }</span>
 						</div>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="/dashboard">
-							<i class="bi bi-house me-3"></i>Home 
+						<a
+							class="dropdown-item"
+							class="dropdown-item"
+							href="javascript:void(0)"
+							hx-get="/project/list"
+							hx-target="#dashboard-content"
+						>
+							<i class="bi bi-house me-3"></i>Projects 
 						</a>
-						<a class="dropdown-item" href="/profile">
+						<a
+							class="dropdown-item"
+							href="javascript:void(0)"
+							hx-get="/profile"
+							hx-target="#dashboard-content"
+						>
 							<i class="bi bi-pencil me-3"></i>Edit profile
 						</a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="/settings">
-							<i
-								class="bi bi-gear me-3"
-							></i>Settings 
-						</a>
+						// <a class="dropdown-item" href="/settings">
+						// 	<i
+						// 		class="bi bi-gear me-3"
+						// 	></i>Settings 
+						// </a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="/dashboard/logout">
+						<a class="dropdown-item" hx-get="/dashboard/logout">
 							<i
 								class="bi bi-person me-3"
 							></i>Logout
@@ -75,23 +87,7 @@ templ ProjectSideBar(user *domain.User) {
 					</div>
 				</div>
 			</div>
-			<div class="collapse navbar-collapse overflow-x-hidden" id="sidebarCollapse">
-				<div class="mt-auto"></div>
-				<div class="card bg-dark border-0 mt-5 mb-3">
-					<div class="card-body">
-						<div class="vstack gap-4">
-							<i class="bi bi-rocket-takeoff-fill text-white text-2xl"></i>
-							<p class="text-sm text-white text-opacity-70">
-								Let's talk about your project.
-							</p>
-							<a href="/pages/other-pricing.html" class="btn btn-sm btn-primary w-100">
-								Get In
-								Touch<i class="bi bi-arrow-right ms-2"></i>
-							</a>
-						</div>
-					</div>
-				</div>
-			</div>
+			@c.ContactBtn()
 		</div>
 	</nav>
 }

@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"github.com/go-playground/validator/v10"
 	"github.com/microcosm-cc/bluemonday"
 )
 
@@ -37,12 +36,12 @@ type ContactRequest struct {
 func (c *ContactRequest) Validate() map[string](string) {
 	errors := make(map[string]string)
 
-	// Validate the contact struct
-	validate := validator.New()
-	if err := validate.Struct(c); err != nil {
-		errors["error"] = "Invalid struct"
-		return errors
-	}
+	// // Validate the contact struct
+	// validate := validator.New()
+	// if err := validate.Struct(c); err != nil {
+	// 	errors["error"] = "Invalid struct"
+	// 	return errors
+	// }
 
 	// Sanitize the input to prevent XSS
 	p := bluemonday.UGCPolicy()

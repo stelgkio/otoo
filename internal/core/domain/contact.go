@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"regexp"
+
 	"github.com/microcosm-cc/bluemonday"
 )
 
@@ -52,9 +54,19 @@ func (c *ContactRequest) Validate() map[string](string) {
 
 	if c.Email == "" {
 		errors["email"] = "Email is required"
+	} else {
+		emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+		if !emailRegex.MatchString(c.Email) {
+			errors["email"] = "Invalid email format"
+		}
 	}
 	if c.Phone == "" {
 		errors["phone"] = "Phone is required"
+	} else {
+		phoneRegex := regexp.MustCompile(`^\d{10}$`) // Change regex pattern as per your phone number format
+		if !phoneRegex.MatchString(c.Phone) {
+			errors["phone"] = "Invalid phone format (should be 10 digits)"
+		}
 	}
 	if c.Message == "" {
 		errors["message"] = "Message is required"

@@ -4,6 +4,7 @@ import (
 	"context"
 	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/go-pg/pg/v10"
 	"github.com/labstack/echo/v4"
@@ -80,17 +81,18 @@ func StartServer(logger *slog.Logger) *echo.Echo {
 		LogLatency:  true,
 		HandleError: true, // forwards error to the global error handler, so it can decide appropriate status code
 		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+			latencySeconds := float64(v.Latency) / float64(time.Millisecond)
 			if v.Error == nil {
 				logger.LogAttrs(context.Background(), slog.LevelInfo, "REQUEST",
 					slog.String("uri", v.URI),
 					slog.Int("status", v.Status),
-					slog.Duration("latency", v.Latency),
+					slog.Float64("latencyMS", latencySeconds),
 				)
 			} else {
 				logger.LogAttrs(context.Background(), slog.LevelError, "REQUEST_ERROR",
 					slog.String("uri", v.URI),
 					slog.Int("status", v.Status),
-					slog.Duration("latency", v.Latency),
+					slog.Float64("latencyMS", latencySeconds),
 					slog.String("err", v.Error.Error()),
 				)
 			}

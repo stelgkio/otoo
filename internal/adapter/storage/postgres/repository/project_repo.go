@@ -47,8 +47,8 @@ func (repo *ProjectRepository) FindProjects(ctx echo.Context, filters *domain.Fi
 		query = query.Where("name = ?", filters.Name)
 	}
 	if filters.Domain != "" {
-		query = query.WhereOr("shopify_domain LIKE ?", "%"+filters.Domain+"%")
-		query = query.WhereOr("woocommerce_domain LIKE ?", "%"+filters.Domain+"%")
+		query = query.WhereOr("shopify_domain =?", filters.Domain)
+		query = query.WhereOr("woocommerce_domain =?", filters.Domain)
 	}
 	query = query.
 		Where("user_id =?", userId).

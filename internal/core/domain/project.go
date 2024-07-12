@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"regexp"
+
 	"github.com/go-pg/pg/types"
 	"github.com/google/uuid"
 )
@@ -97,6 +99,8 @@ func (p *ProjectRequest) Validate() map[string](string) {
 	}
 	if p.Domain == "" {
 		errors["domain"] = "Domain is required"
+	} else if !isValidHttpsURL(p.Domain) {
+		errors["domain"] = "Domain must be a valid HTTPS URL"
 	}
 	if p.ConsumerKey == "" {
 		errors["consumer_key"] = "Consumer key is required"
@@ -104,9 +108,6 @@ func (p *ProjectRequest) Validate() map[string](string) {
 	if p.ConsumerSecret == "" {
 		errors["consumer_secret"] = "Consumer secret is required"
 	}
-	// if p.AccessToken == "" {
-	// 	errors["accesstoken"] = "Access token is required"
-	// }
 
 	return errors
 }
@@ -116,4 +117,10 @@ type FindProjectRequest struct {
 	Description string      `json:"description" form:"description"`
 	ProjectType ProjectType `json:"project_type" form:"project_type"`
 	Domain      string      `json:"domain" form:"domain"`
+}
+
+// isValidHttpsURL checks if a given URL is a valid HTTPS URL
+func isValidHttpsURL(url string) bool {
+	re := regexp.MustCompile(`^https:\/\/[a-zA-Z0-9\-._~:\/?#@!$&'()*+,;=%]+$`)
+	return re.MatchString(url)
 }

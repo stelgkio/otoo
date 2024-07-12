@@ -87,7 +87,22 @@ func NewRouter(
 	//woocommerce group
 	woocommercegroup := e.Group("/woocommerce")
 	{
-		woocommercegroup.POST("/create", WooCommerceHandler.OrderWebHook)
+		woocommercegroup.POST("/order/created", WooCommerceHandler.OrderCreatedWebHook)
+		woocommercegroup.POST("/order/updated", WooCommerceHandler.OrderUpdatesWebHook)
+		woocommercegroup.POST("/order/deleted", WooCommerceHandler.OrderDeletedWebHook)
+
+		woocommercegroup.POST("/coupon/created", WooCommerceHandler.CouponCreatedWebHook)
+		woocommercegroup.POST("/coupon/updated", WooCommerceHandler.CouponUpdatedWebHook)
+		woocommercegroup.POST("/coupon/deleted", WooCommerceHandler.CouponDeletedWebHook)
+
+		woocommercegroup.POST("/customer/created", WooCommerceHandler.CustomerCreatedWebHook)
+		woocommercegroup.POST("/customer/updated", WooCommerceHandler.CustomerUpdatedWebHook)
+		woocommercegroup.POST("/customer/deleted", WooCommerceHandler.CustomerDeletedWebHook)
+
+		woocommercegroup.POST("/product/created", WooCommerceHandler.ProductCreatedWebHook)
+		woocommercegroup.POST("/product/updated", WooCommerceHandler.ProductUpdatedWebHook)
+		woocommercegroup.POST("/product/deleted", WooCommerceHandler.ProductDeletedWebHook)
+
 	}
 
 	//Profile

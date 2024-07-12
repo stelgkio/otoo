@@ -125,7 +125,7 @@ func ProjectCreateForm(invalid bool, errors map[string](string), values *domain.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></span></label></div><div class=\"form-item-checkable\"><input class=\"form-control form-item-check\" type=\"radio\" name=\"project_type\" id=\"projecttypeshopy\" value=\"Shopify\" disable> <label class=\"form-item cursor-pointer\" for=\"projecttypeshopy\"><span class=\"form-item-click d-inline-flex flex-column gap-3 align-items-center justify-content-center form-control w-rem-24 h-rem-24 text-center text-muted\"><img src=\"./assets/img/marketing/shopify-logo.svg\" class=\"w-rem-5 flex-none \" alt=\"...\"> <span class=\"fw-semibold text-xs\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></span></label></div><div class=\"form-item-checkable\"><input class=\"form-control form-item-check\" type=\"radio\" name=\"project_type\" id=\"projecttypeshopy\" value=\"Shopify\" disabled> <label class=\"form-item cursor-pointer\" for=\"projecttypeshopy\"><span class=\"form-item-click d-inline-flex flex-column gap-3 align-items-center justify-content-center form-control w-rem-24 h-rem-24 text-center text-muted\"><img src=\"./assets/img/marketing/shopify-logo.svg\" class=\"w-rem-5 flex-none \" alt=\"...\"> <span class=\"fw-semibold text-xs\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -134,25 +134,25 @@ func ProjectCreateForm(invalid bool, errors map[string](string), values *domain.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></span></label></div></div></div></div><hr class=\"my-6\"><div id=\"shopify-fields\"><div class=\"row align-items-center g-3 mt-6\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></span></label></div></div></div></div><hr class=\"my-6\"><div id=\"shopify-fields\"><div class=\"row align-items-center g-3 mt-6\"><div class=\"d-flex align-items-end justify-content-between\"><div><p class=\"text-sm text-muted\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var10 := `Domain`
+		templ_7745c5c3_Var10 := `The domain url schema should be https for example https://example.com`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</label></div><div id=\"domain-validation\" class=\"col-md-8 col-xl-5\"><div class=\"input-group position-relative\"><span class=\"input-group-text\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div></div><div class=\"col-md-2\"><label class=\"form-label mb-0\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var11 := `https:// `
+		templ_7745c5c3_Var11 := `Domain`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</label></div><div id=\"domain-validation\" class=\"col-md-8 col-xl-5\"><div class=\"input-group position-relative\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -183,16 +183,7 @@ func ProjectCreateForm(invalid bool, errors map[string](string), values *domain.
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<span class=\"input-group-text\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var12 := `/wp-json/wc/v3`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -201,12 +192,12 @@ func ProjectCreateForm(invalid bool, errors map[string](string), values *domain.
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var13 string
-			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(errors["domain"])
+			var templ_7745c5c3_Var12 string
+			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(errors["domain"])
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/create/project_create.templ`, Line: 176, Col: 27}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/create/project_create.templ`, Line: 177, Col: 27}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -219,8 +210,8 @@ func ProjectCreateForm(invalid bool, errors map[string](string), values *domain.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var14 := `Consumer key`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
+		templ_7745c5c3_Var13 := `Consumer key`
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -241,12 +232,12 @@ func ProjectCreateForm(invalid bool, errors map[string](string), values *domain.
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var15 string
-			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(errors["consumer_key"])
+			var templ_7745c5c3_Var14 string
+			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(errors["consumer_key"])
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/create/project_create.templ`, Line: 190, Col: 33}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/create/project_create.templ`, Line: 192, Col: 33}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -268,12 +259,12 @@ func ProjectCreateForm(invalid bool, errors map[string](string), values *domain.
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><hr class=\"my-6\"><div class=\"row align-items-center g-3 mt-6\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"col-md-2\"><a href=\"https://woocommerce.com/document/woocommerce-rest-api/\" target=\"_blank\" class=\"tooltip-container\"><i class=\"bi bi-info-circle\"></i> <span class=\"tooltip-text\"></span></a></div></div><hr class=\"my-6\"><div class=\"row align-items-center g-3 mt-6\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var16 := `Consumer secret`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var16)
+		templ_7745c5c3_Var15 := `Consumer secret`
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -294,12 +285,12 @@ func ProjectCreateForm(invalid bool, errors map[string](string), values *domain.
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var17 string
-			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(errors["consumer_secret"])
+			var templ_7745c5c3_Var16 string
+			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(errors["consumer_secret"])
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/create/project_create.templ`, Line: 206, Col: 36}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/create/project_create.templ`, Line: 214, Col: 36}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -321,12 +312,12 @@ func ProjectCreateForm(invalid bool, errors map[string](string), values *domain.
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div><hr class=\"my-6 \"><div class=\"d-flex justify-content-end gap-2\"><button type=\"button\" class=\"btn btn-sm btn-neutral\" hx-get=\"/project/list\" hx-target=\"#dashboard-content\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"col-md-2\"><a href=\"https://woocommerce.com/document/woocommerce-rest-api/\" target=\"_blank\" class=\"tooltip-container\"><i class=\"bi bi-info-circle\"></i> <span class=\"tooltip-text\"></span></a></div></div></div><hr class=\"my-6 \"><div class=\"d-flex justify-content-end gap-2\"><button type=\"button\" class=\"btn btn-sm btn-neutral\" hx-get=\"/project/list\" hx-target=\"#dashboard-content\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var18 := `Cancel`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
+		templ_7745c5c3_Var17 := `Cancel`
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var17)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -334,8 +325,8 @@ func ProjectCreateForm(invalid bool, errors map[string](string), values *domain.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var19 := `Submit`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var19)
+		templ_7745c5c3_Var18 := `Submit`
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -348,8 +339,8 @@ func ProjectCreateForm(invalid bool, errors map[string](string), values *domain.
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Var20 := `Something when wrong try again later!`
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var20)
+			templ_7745c5c3_Var19 := `Something when wrong try again later!`
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var19)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -358,7 +349,21 @@ func ProjectCreateForm(invalid bool, errors map[string](string), values *domain.
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></form></main></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></form></main><script>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var20 := `
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl)
+})
+`
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var20)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

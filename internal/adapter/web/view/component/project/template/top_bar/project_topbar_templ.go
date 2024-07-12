@@ -106,7 +106,7 @@ func ProjectTopBar(user *domain.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div></div></div><div class=\"dropdown\"><a class=\"avatar avatar-sm rounded-circle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-haspopup=\"false\" aria-expanded=\"false\"><i class=\"bi bi-person-circle h5\"></i></a><div class=\"dropdown-menu dropdown-menu-end\"><div class=\"dropdown-header\"><span class=\"d-block text-heading fw-semibold\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div></div></div><div class=\"dropdown\"><a class=\"avatar avatar-sm rounded-circle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"><i class=\"bi bi-person-circle h5\"></i></a><div class=\"dropdown-menu dropdown-menu-end\"><div class=\"dropdown-header\"><span class=\"d-block text-heading fw-semibold\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

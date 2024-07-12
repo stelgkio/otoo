@@ -61,7 +61,7 @@ func (ps *ProjectService) CreateProject(ctx echo.Context, req *domain.ProjectReq
 		return nil, errors.New("project is not created")
 	}
 
-	go ps.wp.WoocommerceCreateOrderWebHook(req.ConsumerKey, req.ConsumerSecret, req.Domain, pr.Id.String())
+	go ps.wp.WoocommerceCreateAllWebHook(req.ConsumerKey, req.ConsumerSecret, req.Domain, pr.Id.String())
 
 	return pr, nil
 }

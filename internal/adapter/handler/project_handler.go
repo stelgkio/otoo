@@ -106,11 +106,19 @@ func (ph *ProjectHandler) ProjectNameValidation(ctx echo.Context) error {
 
 // POST /project/validation/domain
 func (ph *ProjectHandler) ProjectDomainValidation(ctx echo.Context) error {
+	errors := make(map[string]string)
+	errors["domain"] = ""
 	req := new(domain.ProjectRequest)
 	if err := ctx.Bind(req); err != nil {
 		slog.Error("Error binding request", "error", err)
 		return r.Render(ctx, er.ErrorPage())
 	}
+	validationErrors := req.Validate()
+	if validationErrors["domain"] != "" {
+		return r.Render(ctx, v.DomainUrlValidation(false, req.Domain, validationErrors))
+
+	}
+
 	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{Domain: req.Domain}, 1, 10)
 	if err != nil {
 		return err
@@ -119,6 +127,8 @@ func (ph *ProjectHandler) ProjectDomainValidation(ctx echo.Context) error {
 	var valid bool = true
 	if len(projects) > 0 {
 		valid = false
+		errors["domain"] = "Domain url already exist!"
 	}
-	return r.Render(ctx, v.DomainUrlValidation(valid, req.Domain))
+
+	return r.Render(ctx, v.DomainUrlValidation(valid, req.Domain, errors))
 }

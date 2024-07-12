@@ -1,13 +1,8 @@
 package views
 
-templ DomainUrlValidation(valid bool, domain string) {
-	if !valid {
+templ DomainUrlValidation(valid bool, domain string,errors map[string](string)) {
+	if errors["domain"] != "" {
 		<div class="input-group position-relative">
-			<span
-				class="input-group-text"
-			>
-				https:// 
-			</span>
 			<input
 				name="domain"
 				type="text"
@@ -18,26 +13,14 @@ templ DomainUrlValidation(valid bool, domain string) {
 				hx-post="/project/validation/domain"
 				hx-target="#domain-validation"
 			/>
-			<span
-				class="input-group-text"
-			>/wp-json/wc/v3</span>
-			if domain == "" {
+			if  errors["domain"] != "" {
 				<div class="invalid-feedback" style="display: block;">
-					Domain is required!
-				</div>
-			} else {
-				<div class="invalid-feedback" style="display: block;">
-					Domain url already exist!
+					{ errors["domain"] }
 				</div>
 			}
 		</div>
 	} else {
 		<div class="input-group position-relative">
-			<span
-				class="input-group-text"
-			>
-				https:// 
-			</span>
 			<input
 				name="domain"
 				type="text"
@@ -48,9 +31,6 @@ templ DomainUrlValidation(valid bool, domain string) {
 				hx-post="/project/validation/domain"
 				hx-target="#domain-validation"
 			/>
-			<span
-				class="input-group-text"
-			>/wp-json/wc/v3</span>
 		</div>
 	}
 }

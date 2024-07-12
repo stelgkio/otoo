@@ -115,7 +115,7 @@ templ ProjectCreateForm(invalid bool,errors map[string](string),values *domain.P
 									name="project_type"
 									id="projecttypeshopy"
 									value="Shopify"
-									disable
+									disabled
 								/>
 								<label
 									class="form-item cursor-pointer"
@@ -131,20 +131,24 @@ templ ProjectCreateForm(invalid bool,errors map[string](string),values *domain.P
 							</div>
 						</div>
 					</div>
-				</div>
+				</div>		
 				<hr class="my-6"/>
 				<div id="shopify-fields">
 					<div class="row align-items-center g-3 mt-6">
+						<div class="d-flex align-items-end justify-content-between">
+						<div>
+						
+							<p class="text-sm text-muted">
+								The domain url schema should be https for example https://example.com
+							</p>
+						</div>
+				
+					</div>
 						<div class="col-md-2">
 							<label class="form-label mb-0">Domain</label>
 						</div>
 						<div id="domain-validation" class="col-md-8 col-xl-5">
 							<div class="input-group position-relative">
-								<span
-									class="input-group-text"
-								>
-									https:// 
-								</span>
 								if errors["domain"] != "" {
 									<input
 										name="domain"
@@ -168,9 +172,6 @@ templ ProjectCreateForm(invalid bool,errors map[string](string),values *domain.P
 										value={ values.Domain }
 									/>
 								}
-								<span
-									class="input-group-text"
-								>/wp-json/wc/v3</span>
 							</div>
 							if errors["domain"] != "" {
 								<div class="invalid-feedback" style="display: block;">
@@ -178,6 +179,7 @@ templ ProjectCreateForm(invalid bool,errors map[string](string),values *domain.P
 								</div>
 							}
 						</div>
+						
 					</div>
 					<hr class="my-6"/>
 					<div class="row align-items-center g-3 mt-6">
@@ -194,6 +196,12 @@ templ ProjectCreateForm(invalid bool,errors map[string](string),values *domain.P
 								<input name="consumer_key" type="password" class="form-control" placeholder="Consumer key" autocomplete="off" value={ values.ConsumerKey }/>
 							}
 						</div>
+						<div class="col-md-2">
+							<a href="https://woocommerce.com/document/woocommerce-rest-api/" target="_blank" class="tooltip-container">
+								<i class="bi bi-info-circle"></i>
+								<span class="tooltip-text"></span>
+							</a>
+						</div>
 					</div>
 					<hr class="my-6"/>
 					<div class="row align-items-center g-3 mt-6">
@@ -209,6 +217,12 @@ templ ProjectCreateForm(invalid bool,errors map[string](string),values *domain.P
 							} else {
 								<input name="consumer_secret" type="password" class="form-control" placeholder="Consumer secret" autocomplete="off" value={ values.ConsumerSecret }/>
 							}
+						</div>
+						<div class="col-md-2">
+							<a href="https://woocommerce.com/document/woocommerce-rest-api/" target="_blank" class="tooltip-container">
+								<i class="bi bi-info-circle"></i>
+								<span class="tooltip-text"></span>
+							</a>
 						</div>
 					</div>
 				</div>
@@ -243,5 +257,11 @@ templ ProjectCreateForm(invalid bool,errors map[string](string),values *domain.P
 				</div>
 			</form>
 		</main>
+		<script>
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl)
+})
+</script>
 	</div>
 }

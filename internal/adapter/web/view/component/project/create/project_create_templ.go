@@ -195,7 +195,7 @@ func ProjectCreateForm(invalid bool, errors map[string](string), values *domain.
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(errors["domain"])
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/create/project_create.templ`, Line: 177, Col: 27}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/create/project_create.templ`, Line: 179, Col: 27}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -235,7 +235,7 @@ func ProjectCreateForm(invalid bool, errors map[string](string), values *domain.
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(errors["consumer_key"])
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/create/project_create.templ`, Line: 192, Col: 33}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/create/project_create.templ`, Line: 194, Col: 33}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
@@ -288,7 +288,7 @@ func ProjectCreateForm(invalid bool, errors map[string](string), values *domain.
 			var templ_7745c5c3_Var16 string
 			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(errors["consumer_secret"])
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/create/project_create.templ`, Line: 214, Col: 36}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/create/project_create.templ`, Line: 216, Col: 36}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 			if templ_7745c5c3_Err != nil {

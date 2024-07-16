@@ -1,6 +1,10 @@
 package port
 
-import "github.com/stelgkio/otoo//internal/core/domain/woocommerce"
+import (
+	"github.com/google/uuid"
+	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type WoocommerceRepository interface {
 	// InsertWoocommerceOrder inserts a new order into the database
@@ -24,13 +28,13 @@ type WoocommerceRepository interface {
 	CouponDelete(data any) error
 	CouponFindByProjectId(projectId string) error
 
-	WebhookCreate(data woocommerce.WebhookResult) error
-	WebhookUpdate(data woocommerce.WebhookResult) error
-	WebhookDelete(data woocommerce.WebhookResult) error
-	WebhookFindByProjectId(projectId string) error
+	WebhookCreate(data w.WebhookRecord) error
+	WebhookUpdate(data w.WebhookRecord) (*w.WebhookRecord, error)
+	WebhookDelete(id primitive.ObjectID) error
+	WebhookFindByProjectId(projectId string) ([]w.WebhookRecord, error)
 }
 
-type WoocommerceService interface {
+type WoocommerceWebhookService interface {
 	// WoocommerceCreateOrderWebHook create new order web hook for woocommerce
-	WoocommerceCreateAllWebHook(customerKey string, customerSecret string, domainUrl string, projectId string) error
+	WoocommerceCreateAllWebHook(customerKey string, customerSecret string, domainUrl string, projectId uuid.UUID) error
 }

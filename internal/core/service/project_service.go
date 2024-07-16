@@ -12,11 +12,11 @@ import (
 
 type ProjectService struct {
 	repo port.ProjectRepository
-	wp   port.WoocommerceService
+	wp   port.WoocommerceWebhookService
 }
 
 // NewUserService creates a new user service instance
-func NewProjectService(repo port.ProjectRepository, wp port.WoocommerceService) *ProjectService {
+func NewProjectService(repo port.ProjectRepository, wp port.WoocommerceWebhookService) *ProjectService {
 	return &ProjectService{
 		repo,
 		wp,
@@ -61,7 +61,7 @@ func (ps *ProjectService) CreateProject(ctx echo.Context, req *domain.ProjectReq
 		return nil, errors.New("project is not created")
 	}
 
-	go ps.wp.WoocommerceCreateAllWebHook(req.ConsumerKey, req.ConsumerSecret, req.Domain, pr.Id.String())
+	go ps.wp.WoocommerceCreateAllWebHook(req.ConsumerKey, req.ConsumerSecret, req.Domain, pr.Id)
 
 	return pr, nil
 }
@@ -72,4 +72,8 @@ func (os *ProjectService) FindProjects(ctx echo.Context, filters *domain.FindPro
 
 func (os *ProjectService) SoftDeleteProjects(ctx echo.Context, userId uuid.UUID) error {
 	return os.repo.DeleteProjectsByUserId(ctx, userId)
+}
+
+func (repo *ProjectService) GetProjectByID(ctx echo.Context, id uuid.UUID) (*domain.Project, error) {
+	return nil, nil
 }

@@ -9,8 +9,8 @@ import (
 type ProjectRepository interface {
 	// CreateProject inserts a new project into the database
 	CreateProject(ctx echo.Context, project *domain.Project) (*domain.Project, error)
-	// // GetUserByID selects a user by id
-	// GetUserByID(ctx context.Context, id uint64) (*domain.User, error)
+	// // GetProjectByID selects a project by id
+	GetProjectByID(ctx echo.Context, id uuid.UUID) (*domain.Project, error)
 	// // GetUserByEmail selects a user by email
 	//GetUserByEmail(ctx echo.Context, email string) (*domain.User, error)
 	// // ListProject selects a list of project with pagination
@@ -26,8 +26,8 @@ type ProjectRepository interface {
 type ProjectService interface {
 	// Register registers a new user
 	CreateProject(ctx echo.Context, project *domain.ProjectRequest) (*domain.Project, error)
-	// GetUser returns a user by id
-	// GetUser(ctx context.Context, id uint64) (*domain.User, error)
+	// GetProject returns a project by id
+	GetProjectByID(ctx echo.Context, id uuid.UUID) (*domain.Project, error)
 	// // ListUsers returns a list of users with pagination
 	FindProjects(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error)
 	// // UpdateUser updates a user

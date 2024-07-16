@@ -1,0 +1,14 @@
+.was-validated .form-control:invalid, .form-control.is-invalid {
+    background-image:none;
+}
+.was-validated .form-control:valid, .form-control.is-valid {
+background-image:none;
+ border-color:none;
+}
+.was-validated .form-select:valid:not([multiple]):not([size]), .was-validated .form-select:valid:not([multiple])[size="1"], .form-select.is-valid:not([multiple]):not([size]), .form-select.is-valid:not([multiple])[size="1"] {
+--x-form-select-bg-icon: none;
+
+}
+.was-validated .form-control.is-invalid {
+    border-color:  #f36 !important;
+}

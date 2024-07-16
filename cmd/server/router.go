@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
@@ -83,25 +84,44 @@ func NewRouter(
 		projectgroup.POST("/create", projectHandler.CreateProject)
 		projectgroup.POST("/validation/name", projectHandler.ProjectNameValidation)
 		projectgroup.POST("/validation/domain", projectHandler.ProjectDomainValidation)
+		projectgroup.GET("/webhooks/:projectId", projectHandler.CheckWebHooks)
+		projectgroup.GET("/:projectId", projectHandler.CheckWebHooks)
 	}
 	//woocommerce group
 	woocommercegroup := e.Group("/woocommerce")
 	{
-		woocommercegroup.POST("/order/created", WooCommerceHandler.OrderCreatedWebHook)
-		woocommercegroup.POST("/order/updated", WooCommerceHandler.OrderUpdatesWebHook)
-		woocommercegroup.POST("/order/deleted", WooCommerceHandler.OrderDeletedWebHook)
+		woocommercegroup.POST("/order/created", r.ExtractWebhookHeaders(WooCommerceHandler.OrderCreatedWebHook))
+		woocommercegroup.POST("/order/updated", r.ExtractWebhookHeaders(WooCommerceHandler.OrderUpdatesWebHook))
+		woocommercegroup.POST("/order/deleted", r.ExtractWebhookHeaders(WooCommerceHandler.OrderDeletedWebHook))
 
-		woocommercegroup.POST("/coupon/created", WooCommerceHandler.CouponCreatedWebHook)
-		woocommercegroup.POST("/coupon/updated", WooCommerceHandler.CouponUpdatedWebHook)
-		woocommercegroup.POST("/coupon/deleted", WooCommerceHandler.CouponDeletedWebHook)
+		woocommercegroup.POST("/coupon/created", r.ExtractWebhookHeaders(WooCommerceHandler.CouponCreatedWebHook))
+		woocommercegroup.POST("/coupon/updated", r.ExtractWebhookHeaders(WooCommerceHandler.CouponUpdatedWebHook))
+		woocommercegroup.POST("/coupon/deleted", r.ExtractWebhookHeaders(WooCommerceHandler.CouponDeletedWebHook))
 
-		woocommercegroup.POST("/customer/created", WooCommerceHandler.CustomerCreatedWebHook)
-		woocommercegroup.POST("/customer/updated", WooCommerceHandler.CustomerUpdatedWebHook)
-		woocommercegroup.POST("/customer/deleted", WooCommerceHandler.CustomerDeletedWebHook)
+		woocommercegroup.POST("/customer/created", r.ExtractWebhookHeaders(WooCommerceHandler.CustomerCreatedWebHook))
+		woocommercegroup.POST("/customer/updated", r.ExtractWebhookHeaders(WooCommerceHandler.CustomerUpdatedWebHook))
+		woocommercegroup.POST("/customer/deleted", r.ExtractWebhookHeaders(WooCommerceHandler.CustomerDeletedWebHook))
 
-		woocommercegroup.POST("/product/created", WooCommerceHandler.ProductCreatedWebHook)
-		woocommercegroup.POST("/product/updated", WooCommerceHandler.ProductUpdatedWebHook)
-		woocommercegroup.POST("/product/deleted", WooCommerceHandler.ProductDeletedWebHook)
+		woocommercegroup.POST("/product/created", r.ExtractWebhookHeaders(WooCommerceHandler.ProductCreatedWebHook))
+		woocommercegroup.POST("/product/updated", r.ExtractWebhookHeaders(WooCommerceHandler.ProductUpdatedWebHook))
+		woocommercegroup.POST("/product/deleted", r.ExtractWebhookHeaders(WooCommerceHandler.ProductDeletedWebHook))
+
+		webhookgroup := e.Group("/webhook")
+		{
+			webhookgroup.Use(configureJWT())
+			webhookgroup.Use(auth.TokenRefresherMiddleware)
+			webhookgroup.GET("/:projectId/:webhookId", nil)
+			webhookgroup.GET("/:projectId", WooCommerceHandler.FindWebHooks)
+			webhookgroup.GET("/progress/:projectId", WooCommerceHandler.WebHooksProgressPage)
+			webhookgroup.GET("/progress/done/:projectId", WooCommerceHandler.WebHooksProgressPageDone)
+			webhookgroup.POST("/update/:projectId/:webhookId", nil)
+			webhookgroup.POST("/delete/:projectId/:webhookId", nil)
+			webhookgroup.POST("/create/:projectId/:webhookId", nil)
+			webhookgroup.GET("/:projectId/:eventname", func(c echo.Context) error {
+				time.Sleep(2 * time.Second)
+				return c.NoContent(286)
+			})
+		}
 
 	}
 

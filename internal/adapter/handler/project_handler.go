@@ -2,12 +2,13 @@ package handler
 
 import (
 	"log/slog"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	er "github.com/stelgkio/otoo/internal/adapter/web/view/component/error"
 	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/create"
 	l "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/list"
-	pr "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/progress"
+	wp "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/progress/webhooks"
 	v "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/validation"
 	d "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/view"
 	"github.com/stelgkio/otoo/internal/core/auth"
@@ -50,7 +51,7 @@ func (ph *ProjectHandler) CreateProject(ctx echo.Context) error {
 	}
 
 	slog.Info("Create new project", "log_info", dom)
-	return r.Render(ctx, pr.CreateProjectProgress())
+	return r.Render(ctx, wp.WebHooksProgress(dom.Id.String(), nil))
 }
 
 // GET /project/createform
@@ -118,8 +119,8 @@ func (ph *ProjectHandler) ProjectDomainValidation(ctx echo.Context) error {
 		return r.Render(ctx, v.DomainUrlValidation(false, req.Domain, validationErrors))
 
 	}
-
-	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{Domain: req.Domain}, 1, 10)
+	trimmedDomain := strings.TrimRight(req.Domain, "/")
+	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{Domain: trimmedDomain}, 1, 10)
 	if err != nil {
 		return err
 	}
@@ -131,4 +132,18 @@ func (ph *ProjectHandler) ProjectDomainValidation(ctx echo.Context) error {
 	}
 
 	return r.Render(ctx, v.DomainUrlValidation(valid, req.Domain, errors))
+}
+
+// GET /project/webhooks/:projectId
+func (ph *ProjectHandler) CheckWebHooks(ctx echo.Context) error {
+	projectId := ctx.Param("projectId")
+	userId, err := auth.GetUserId(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := ph.userSvc.GetUserById(ctx, userId)
+	if err != nil {
+		return err
+	}
+	return r.Render(ctx, wp.CheckWebhookProgress(user, projectId))
 }

@@ -24,38 +24,41 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 
 	s := StartServer(logger)
 
-	// Dependency injection
-
-	//smtp
-	smtpService := service.NewSmtpService()
-	// Contact
+	// Repo
 	contactRepo := mongorepo.NewContactRepository(mongodb)
-	contactService := service.NewContactService(contactRepo, smtpService)
-	// User
 	userRepo := repository.NewUserRepository(db)
+	authService := service.NewAuthService(userRepo, nil)
+	woocommerceRepo := mongorepo.NewWoocommerceRepository(mongodb)
+	projectRepo := repository.NewProjectRepository(db)
+
+	//Smtp
+	smtpService := service.NewSmtpService()
+
+	//Contact
+	contactService := service.NewContactService(contactRepo, smtpService)
+
+	//User
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
 
-	// Auth
-	authService := service.NewAuthService(userRepo, nil)
+	//Auth
 	authHandler := handler.NewAuthHandler(authService, userService)
 
 	//WooCommerce
-	woocommerceRepo := mongorepo.NewWoocommerceRepository(mongodb)
-	woocommerceService := woocommerce.NewWoocommerceService()
+	woocommerceWebhookService := woocommerce.NewWoocommerceWebhookService(woocommerceRepo)
 	WooCommerceHandler := woocommerce.NewWooCommerceHandler(woocommerceRepo)
 
-	// Project
-	projectRepo := repository.NewProjectRepository(db)
-	projectService := service.NewProjectService(projectRepo, woocommerceService)
+	//Project
+	projectService := service.NewProjectService(projectRepo, woocommerceWebhookService)
 	projectHandler := handler.NewProjectHandler(projectService, userService)
 
 	//Home
 	homeHandler := handler.NewHomeHandler(projectService, contactService)
 
+	//Dashboard
 	dashboardHandler := handler.NewDashboardHandler(projectService, userService)
 
-	//profile handler
+	//Profile
 	profileHandler := handler.NewProfileHandler(userService, projectService, authService)
 	//Router
 	_, err := NewRouter(s, userHandler, authHandler, homeHandler, projectHandler, WooCommerceHandler, dashboardHandler, profileHandler)

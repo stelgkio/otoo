@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 
 	"github.com/labstack/echo/v4"
+	wp "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/progress/webhooks"
 	"github.com/stelgkio/otoo/internal/core/port"
-
+	"github.com/stelgkio/otoo/internal/core/util"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -175,4 +176,43 @@ func (w WooCommerceHandler) ProductDeletedWebHook(ctx echo.Context) error {
 		return err
 	}
 	return nil
+}
+
+//Webhook UI Pages Endpoints
+
+func (w WooCommerceHandler) FindWebHooks(ctx echo.Context) error {
+	return nil
+}
+
+// GET  /progress/:projectId
+func (w WooCommerceHandler) WebHooksProgressPage(ctx echo.Context) error {
+	projectId := ctx.Param("projectId")
+	webhooks, err := w.p.WebhookFindByProjectId(projectId)
+
+	if err != nil {
+		return err
+	}
+	if len(webhooks) == 12 {
+		ctx.Response().Header().Set("HX-Trigger", "done")
+
+		return util.Render(ctx, wp.WebhooksProgressDone(projectId, webhooks, util.AllErrorsEmpty(webhooks)))
+	}
+
+	return util.Render(ctx, wp.WebHooksProgress(projectId, webhooks))
+}
+
+// GET /progress/done/:projectId
+func (w WooCommerceHandler) WebHooksProgressPageDone(ctx echo.Context) error {
+	projectId := ctx.Param("projectId")
+	webhooks, err := w.p.WebhookFindByProjectId(projectId)
+
+	if err != nil {
+		return err
+	}
+	if len(webhooks) == 12 {
+		ctx.Response().Header().Set("HX-Trigger", "done")
+		return util.Render(ctx, wp.WebhooksProgressDone(projectId, webhooks, util.AllErrorsEmpty(webhooks)))
+	}
+
+	return util.Render(ctx, wp.WebHooksProgress(projectId, webhooks))
 }

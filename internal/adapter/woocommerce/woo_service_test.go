@@ -1,50 +1,54 @@
 package woocommerce
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/google/uuid"
+)
 
 func TestWoocommerceService_WoocommerceCreateAllWebHook(t *testing.T) {
 	type args struct {
 		customerKey    string
 		customerSecret string
 		domainUrl      string
-		projectId      string
+		projectId      uuid.UUID
 	}
 	tests := []struct {
 		name    string
-		s       *WoocommerceService
+		s       *WoocommerceWebhookService
 		args    args
 		wantErr bool
 	}{
 		{
 			name: "Valid Inputs",
-			s:    &WoocommerceService{},
+			s:    &WoocommerceWebhookService{},
 			args: args{
 				customerKey:    "valid_customer_key",
 				customerSecret: "valid_customer_secret",
 				domainUrl:      "https://example.com",
-				projectId:      "valid_project_id",
+				projectId:      uuid.New(),
 			},
 			wantErr: false,
 		},
 		{
 			name: "Empty Domain URL",
-			s:    &WoocommerceService{},
+			s:    &WoocommerceWebhookService{},
 			args: args{
 				customerKey:    "valid_customer_key",
 				customerSecret: "valid_customer_secret",
 				domainUrl:      "",
-				projectId:      "valid_project_id",
+				projectId:      uuid.New(),
 			},
 			wantErr: true,
 		},
 		{
 			name: "Invalid HTTPS URL",
-			s:    &WoocommerceService{},
+			s:    &WoocommerceWebhookService{},
 			args: args{
 				customerKey:    "valid_customer_key",
 				customerSecret: "valid_customer_secret",
 				domainUrl:      "http://example.com", // Not HTTPS
-				projectId:      "valid_project_id",
+				projectId:      uuid.New(),
 			},
 			wantErr: true,
 		},

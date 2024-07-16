@@ -2,8 +2,13 @@ package repository
 
 import (
 	"context"
+	"time"
 
+	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type WoocommerceRepository struct {
@@ -107,4 +112,56 @@ func (repo WoocommerceRepository) ProductFindByProjectId(projectId string) error
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
 	coll.FindOne(context.TODO(), projectId)
 	return nil
+}
+
+// woocommerce
+func (repo *WoocommerceRepository) WebhookCreate(data w.WebhookRecord) error {
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_webhooks")
+	_, err := coll.InsertOne(context.TODO(), data)
+	return err
+}
+
+func (repo *WoocommerceRepository) WebhookUpdate(data w.WebhookRecord) (*w.WebhookRecord, error) {
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_webhookss")
+	filter := bson.M{"projectId": data.ProjectID}
+	update := bson.M{"$set": data}
+	opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
+
+	var updatedRecord w.WebhookRecord
+	err := coll.FindOneAndUpdate(context.TODO(), filter, update, opts).Decode(&updatedRecord)
+	if err != nil {
+		return nil, err
+	}
+	return &updatedRecord, nil
+}
+
+func (repo *WoocommerceRepository) WebhookDelete(id primitive.ObjectID) error {
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_webhooks")
+	filter := bson.M{"_id": id}
+	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now()}}
+	_, err := coll.UpdateOne(context.TODO(), filter, update)
+	return err
+}
+
+func (repo *WoocommerceRepository) WebhookFindByProjectId(projectId string) ([]w.WebhookRecord, error) {
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_webhooks")
+	filter := bson.M{"projectId": projectId, "is_active": true}
+	cursor, err := coll.Find(context.TODO(), filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	var results []w.WebhookRecord
+	for cursor.Next(context.TODO()) {
+		var record w.WebhookRecord
+		if err := cursor.Decode(&record); err != nil {
+			return nil, err
+		}
+		results = append(results, record)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+	return results, nil
 }

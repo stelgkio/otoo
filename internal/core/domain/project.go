@@ -108,6 +108,10 @@ func (p *ProjectRequest) Validate() map[string](string) {
 	if p.ConsumerSecret == "" {
 		errors["consumer_secret"] = "Consumer secret is required"
 	}
+	if p.ConsumerKey == p.ConsumerSecret {
+		errors["consumer_key"] = "Consumer Key is the same as Consumer Secret"
+		errors["consumer_secret"] = "Consumer Secret is the same as Consumer Key"
+	}
 
 	return errors
 }

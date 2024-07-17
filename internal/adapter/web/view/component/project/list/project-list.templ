@@ -2,6 +2,7 @@ package views
 
 import (
 	"github.com/stelgkio/otoo/internal/core/domain"
+	
 )
 
 templ ProjectListPage(projects []*domain.Project) {
@@ -68,7 +69,7 @@ templ ProjectListPage(projects []*domain.Project) {
 																<div class="justify-content-center">
 																	<img src="./assets/img/marketing/shopify-logo.svg" class="w-rem-5 flex-none " alt="..."/>
 																	<a
-																		href="#"
+																		href={ templ.URL("dashboard/project/"+p.Id.String()) }
 																		class="stretched-link text-heading fw-bold"
 																	>{ p.Name }</a>
 																</div>
@@ -83,7 +84,7 @@ templ ProjectListPage(projects []*domain.Project) {
 																<div class="justify-content-center">
 																	<img src="./assets/img/marketing/WooCommerce_logo.svg.png" class="w-rem-5 flex-none " alt="..."/>
 																	<a
-																		href="#"
+																		href={ templ.URL("dashboard/project/"+p.Id.String()) }
 																		class="stretched-link text-heading fw-bold"
 																	>{ p.Name }</a>
 																</div>

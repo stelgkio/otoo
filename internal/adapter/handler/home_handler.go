@@ -47,7 +47,7 @@ func (h HomeHandler) ContactForm(ctx echo.Context) error {
 	return r.Render(ctx, v.IndexTemplate()) // add notification message
 }
 
-// Post /contact
+// Post /dashboard/contact
 func (h HomeHandler) DashboardContactForm(ctx echo.Context) error {
 	req := new(domain.ContactRequest)
 	if err := ctx.Bind(req); err != nil {

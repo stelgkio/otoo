@@ -70,6 +70,8 @@ func NewRouter(
 		})
 		dashboardgroup.POST("/contact", homeHandler.DashboardContactForm)
 
+		dashboardgroup.GET("/project/:projectId", dashboardHandler.ProjectDashboard)
+
 	}
 	//Project group
 	projectgroup := e.Group("/project")

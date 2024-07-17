@@ -84,6 +84,6 @@ func (repo *ProjectRepository) DeleteProjectsByUserId(ctx echo.Context, userId u
 	return nil
 }
 
-func (repo *ProjectRepository) GetProjectByID(ctx echo.Context, id uuid.UUID) (*domain.Project, error) {
+func (repo *ProjectRepository) GetProjectByID(ctx echo.Context, id string) (*domain.Project, error) {
 	return nil, nil
 }

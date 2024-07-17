@@ -1,0 +1,11 @@
+package views
+
+import (
+	t "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/template"
+)
+
+templ WalletTemplate() {
+	@t.DashboardTemplate() {
+		@WalletDashboard()
+	}
+}

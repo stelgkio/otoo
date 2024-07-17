@@ -11,7 +11,7 @@ import "io"
 import "bytes"
 
 import (
-	d "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard"
+	t "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/template"
 )
 
 func DeafultTemplate() templ.Component {
@@ -33,7 +33,7 @@ func DeafultTemplate() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			templ_7745c5c3_Err = d.DeafultDashboard().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = DeafultDashboard().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -42,7 +42,7 @@ func DeafultTemplate() templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = DashboardTemplate().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = t.DashboardTemplate().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

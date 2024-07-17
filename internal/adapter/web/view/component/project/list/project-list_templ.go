@@ -70,16 +70,25 @@ func ProjectListPage(projects []*domain.Project) templ.Component {
 			}
 			for _, p := range projects {
 				if p.ProjectType == "Shopify" {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div data-project-type=\"pro\" class=\"position-relative d-flex gap-3 p-4 rounded bg-body-secondary-hover\"><div class=\"d-flex flex-fill justify-content-center\"><div class=\"justify-content-center\"><img src=\"./assets/img/marketing/shopify-logo.svg\" class=\"w-rem-5 flex-none \" alt=\"...\"> <a href=\"#\" class=\"stretched-link text-heading fw-bold\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div data-project-type=\"pro\" class=\"position-relative d-flex gap-3 p-4 rounded bg-body-secondary-hover\"><div class=\"d-flex flex-fill justify-content-center\"><div class=\"justify-content-center\"><img src=\"./assets/img/marketing/shopify-logo.svg\" class=\"w-rem-5 flex-none \" alt=\"...\"> <a href=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					var templ_7745c5c3_Var5 string
-					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(p.Name)
+					var templ_7745c5c3_Var5 templ.SafeURL = templ.URL("dashboard/project/" + p.Id.String())
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var5)))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/list/project-list.templ`, Line: 72, Col: 26}
+						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"stretched-link text-heading fw-bold\">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var6 string
+					templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(p.Name)
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/list/project-list.templ`, Line: 73, Col: 26}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -88,16 +97,25 @@ func ProjectListPage(projects []*domain.Project) templ.Component {
 						return templ_7745c5c3_Err
 					}
 				} else {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div data-project-type=\"pro\" class=\"position-relative d-flex gap-3 p-4 rounded bg-body-secondary-hover\"><div class=\"d-flex flex-fill justify-content-center\"><div class=\"justify-content-center\"><img src=\"./assets/img/marketing/WooCommerce_logo.svg.png\" class=\"w-rem-5 flex-none \" alt=\"...\"> <a href=\"#\" class=\"stretched-link text-heading fw-bold\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div data-project-type=\"pro\" class=\"position-relative d-flex gap-3 p-4 rounded bg-body-secondary-hover\"><div class=\"d-flex flex-fill justify-content-center\"><div class=\"justify-content-center\"><img src=\"./assets/img/marketing/WooCommerce_logo.svg.png\" class=\"w-rem-5 flex-none \" alt=\"...\"> <a href=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					var templ_7745c5c3_Var6 string
-					templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(p.Name)
+					var templ_7745c5c3_Var7 templ.SafeURL = templ.URL("dashboard/project/" + p.Id.String())
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var7)))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/list/project-list.templ`, Line: 87, Col: 26}
+						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"stretched-link text-heading fw-bold\">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var8 string
+					templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(p.Name)
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/list/project-list.templ`, Line: 88, Col: 26}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -111,8 +129,8 @@ func ProjectListPage(projects []*domain.Project) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Var7 := `Create New`
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
+			templ_7745c5c3_Var9 := `Create New`
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -120,8 +138,8 @@ func ProjectListPage(projects []*domain.Project) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Var8 := `Project`
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
+			templ_7745c5c3_Var10 := `Project`
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

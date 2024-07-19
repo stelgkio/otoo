@@ -69,6 +69,7 @@ func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
 		IsActive:  true,
 		CreatedAt: time.Now(),		
 		Timestamp: time.Now(),
+		Status: req.Status,
 	}
 	err = w.p.OrderCreate(orderRecord)
 	if err != nil {
@@ -108,6 +109,7 @@ func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
 		IsActive:  true,
 		UpdatedAt: time.Now(),		
 		Timestamp: time.Now(),
+		Status: req.Status,
 	}
 
 	err = w.p.OrderUpdate(updateOrderRecord,req.ID)
@@ -203,6 +205,7 @@ func (w WooCommerceHandler) CustomerCreatedWebHook(ctx echo.Context) error {
 		Error: "",		
 		Event:     "customer.created",
 		CustomerID:   req.ID,
+		Email:  req.Email,
 		Customer: *req,
 		IsActive:  true,
 		CreatedAt: time.Now(),		
@@ -241,6 +244,7 @@ func (w WooCommerceHandler) CustomerUpdatedWebHook(ctx echo.Context) error {
 		Error: "",		
 		Event:     "customer.updated",
 		CustomerID:   req.ID,
+		Email:  req.Email,
 		Customer: *req,
 		IsActive:  true,
 		UpdatedAt: time.Now(),	

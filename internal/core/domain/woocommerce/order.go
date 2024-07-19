@@ -20,6 +20,7 @@ type OrderRecord struct {
 	UpdatedAt time.Time          `json:"updated_at"  bson:"updated_at,omitempty"`
 	DeletedAt time.Time         `json:"deleted_at"  bson:"deleted_at,omitempty"`
 	IsActive  bool               `json:"is_active" bson:"is_active,omitempty"`
+	Status   string              `bson:"status,omitempty"`
 }
 
 func NewOrderRecord(projectID uuid.UUID, event string, orderId int64, order woocommerce.Order) OrderRecord {

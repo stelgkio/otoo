@@ -23,6 +23,7 @@ type ProductRecord struct {
 	IsActive  bool               `json:"is_active" bson:"is_active,omitempty"`
 	Orders    []int64           `bson:"orders,omitempty"`
 	ParentId  int64              `bson:"parentId,omitempty"`
+		
 }
 
 func NewProductRecord(projectID uuid.UUID, event string, productId int64, product woocommerce.Product,parentId int64) ProductRecord {
@@ -36,6 +37,7 @@ func NewProductRecord(projectID uuid.UUID, event string, productId int64, produc
 		Timestamp: time.Now(), // Initialize Timestamp with the current time
 		Orders: []int64{},
 		ParentId: parentId,
+
 	}
 }
 

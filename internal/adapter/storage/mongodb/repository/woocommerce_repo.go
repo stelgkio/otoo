@@ -27,7 +27,6 @@ func (repo WoocommerceRepository) OrderCreate(data *w.OrderRecord) error {
 	coll.InsertOne(context.TODO(), data)
 	return nil
 }
-
 func (repo WoocommerceRepository) OrderUpdate(order *w.OrderRecord, orderId int64) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
 
@@ -56,15 +55,24 @@ func (repo WoocommerceRepository) OrderFindByProjectId(projectId string) error {
 }
 
 // Customer
-func (repo WoocommerceRepository) CustomerCreate(data any) error {
+func (repo WoocommerceRepository) CustomerCreate(data *w.CustomerRecord) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_customers")
 	coll.InsertOne(context.TODO(), data)
 	return nil
 }
-
-func (repo WoocommerceRepository) CustomerUpdate(data any) error {
+func (repo WoocommerceRepository) CustomerUpdate(data *w.CustomerRecord, customerId int64) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_customers")
-	coll.UpdateByID(context.TODO(), 1, data)
+	filter := bson.M{ "customerId": customerId, "is_active": true }
+	update := bson.M{"$set": data}
+
+    // Set upsert option to true
+    opt := options.Update().SetUpsert(true)
+
+    // Perform the upsert operation
+    _, err := coll.UpdateOne(context.TODO(), filter, update, opt)
+    if err != nil {
+        return err
+    }
 	return nil
 }
 func (repo WoocommerceRepository) CustomerDelete(data any) error {
@@ -72,9 +80,40 @@ func (repo WoocommerceRepository) CustomerDelete(data any) error {
 	coll.DeleteOne(context.TODO(), data)
 	return nil
 }
-
 func (repo WoocommerceRepository) CustomerFindByProjectId(projectId string) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_customers")
+	coll.FindOne(context.TODO(), projectId)
+	return nil
+}
+
+// Product
+func (repo WoocommerceRepository) ProductCreate(data *w.ProductRecord) error {
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
+	coll.InsertOne(context.TODO(), data)
+	return nil
+}
+func (repo WoocommerceRepository) ProductUpdate(data *w.ProductRecord, productId int64) error {
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
+	filter := bson.M{ "productId": productId, "is_active": true }
+	update := bson.M{"$set": data}
+
+    // Set upsert option to true
+    opt := options.Update().SetUpsert(true)
+
+    // Perform the upsert operation
+    _, err := coll.UpdateOne(context.TODO(), filter, update, opt)
+    if err != nil {
+        return err
+    }
+	return nil
+}
+func (repo WoocommerceRepository) ProductDelete(data any) error {
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
+	coll.DeleteOne(context.TODO(), data)
+	return nil
+}
+func (repo WoocommerceRepository) ProductFindByProjectId(projectId string) error {
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
 	coll.FindOne(context.TODO(), projectId)
 	return nil
 }
@@ -85,7 +124,6 @@ func (repo WoocommerceRepository) CouponCreate(data any) error {
 	coll.InsertOne(context.TODO(), data)
 	return nil
 }
-
 func (repo WoocommerceRepository) CouponUpdate(data any) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_coupons")
 	coll.UpdateByID(context.TODO(), 1, data)
@@ -102,28 +140,9 @@ func (repo WoocommerceRepository) CouponFindByProjectId(projectId string) error 
 	return nil
 }
 
-// Product
-func (repo WoocommerceRepository) ProductCreate(data any) error {
-	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
-	coll.InsertOne(context.TODO(), data)
-	return nil
-}
 
-func (repo WoocommerceRepository) ProductUpdate(data any) error {
-	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
-	coll.UpdateByID(context.TODO(), 1, data)
-	return nil
-}
-func (repo WoocommerceRepository) ProductDelete(data any) error {
-	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
-	coll.DeleteOne(context.TODO(), data)
-	return nil
-}
-func (repo WoocommerceRepository) ProductFindByProjectId(projectId string) error {
-	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
-	coll.FindOne(context.TODO(), projectId)
-	return nil
-}
+
+
 
 // woocommerce
 func (repo *WoocommerceRepository) WebhookCreate(data w.WebhookRecord) error {

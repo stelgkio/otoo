@@ -42,7 +42,7 @@ func ExtractWebhookHeaders(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func ValidateWebhookSignature(c echo.Context, secretKey string) error {
+func ValidateWebhookSignature2(c echo.Context, secretKey string) error {
 	// Extract the signature from the headers
 	signature := c.Get("webhookSignature").(string)
 	if signature == "" {
@@ -68,10 +68,13 @@ func ValidateWebhookSignature(c echo.Context, secretKey string) error {
 
     return nil
 }
-func ValidateWebhookSignature2(ctx echo.Context, secret string, body []byte) error {
+func ValidateWebhookSignature(ctx echo.Context, secret string, body []byte) error {
     
 
-    signature := ctx.Request().Header.Get("X-WC-Webhook-Signature")
+	signature := ctx.Get("webhookSignature").(string)
+	if signature == "" {
+		return errors.New("missing signature")
+	}
     
     mac := hmac.New(sha256.New, []byte(secret))
     mac.Write(body)

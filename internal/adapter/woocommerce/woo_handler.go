@@ -42,24 +42,24 @@ func readAndResetBody(ctx echo.Context) ([]byte, error) {
 func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
 	body, err := readAndResetBody(ctx)
 	if err != nil {
-		slog.Error("error reading body order_created request", "error", err)
+		slog.Error("error reading body order_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
 	req := new(woocommerce.Order)
 	if err := ctx.Bind(req); err != nil {
-		slog.Error("error binding order_created request", "error", err)
+		slog.Error("error binding order_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
 	domain := ctx.Get("webhookSource").(string)
 	project ,err := w.s.GetProjectByDomain(ctx, domain)
 	
 	if err != nil {
-		slog.Error("error GetProjectByDomain order_created request", "error", err)
+		slog.Error("error GetProjectByDomain order_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
-	err = util.ValidateWebhookSignature2(ctx, project.Id.String(),body)
+	err = util.ValidateWebhookSignature(ctx, project.Id.String(),body)
 	if err != nil {
-		slog.Error("error invalid signature order_created request", "error", err)
+		slog.Error("error invalid signature order_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
 	orderRecord := &woo.OrderRecord{
@@ -79,6 +79,7 @@ func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
 
+	
 	//TODO: extract cutomer from order and save them
 	//TODO: extract product from order and save them
 	return ctx.String(http.StatusCreated, "created")
@@ -89,24 +90,24 @@ func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
 func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
 	body, err := readAndResetBody(ctx)
 	if err != nil {
-		slog.Error("error reading body order_created request", "error", err)
+		slog.Error("error reading body order_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
 	req := new(woocommerce.Order)
 	if err := ctx.Bind(req); err != nil {
-		slog.Error("error binding order_updated request", "error", err)
+		slog.Error("error binding order_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
 	domain := ctx.Get("webhookSource").(string)
 	project ,err := w.s.GetProjectByDomain(ctx, domain)
 	if err != nil {
-		slog.Error("error GetProjectByDomain order_updated request", "error", err)
+		slog.Error("error GetProjectByDomain order_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
 
-	err = util.ValidateWebhookSignature2(ctx, project.Id.String(),body)
+	err = util.ValidateWebhookSignature(ctx, project.Id.String(),body)
 	if err != nil {
-		slog.Error("error invalid signature order_updated request", "error", err)
+		slog.Error("error invalid signature order_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
 	updateOrderRecord := &woo.OrderRecord{
@@ -195,31 +196,95 @@ func (w WooCommerceHandler) CouponDeletedWebHook(ctx echo.Context) error {
 // Webhook Customer Create
 // POST /webhook/customer/create
 func (w WooCommerceHandler) CustomerCreatedWebHook(ctx echo.Context) error {
-	var order bson.M
-	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
-		return err
-	}
-	//fmt.Println(order)
-	err := w.p.CustomerCreate(order)
+	body, err := readAndResetBody(ctx)
 	if err != nil {
-		return err
+		slog.Error("error reading body customer_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
 	}
-	return nil
+	req := new(woocommerce.Customer)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("error binding customer_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	domain := ctx.Get("webhookSource").(string)
+	project ,err := w.s.GetProjectByDomain(ctx, domain)
+	
+	if err != nil {
+		slog.Error("error GetProjectByDomain customer_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	err = util.ValidateWebhookSignature(ctx, project.Id.String(),body)
+	if err != nil {
+		slog.Error("error invalid signature customer_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	customerRecord := &woo.CustomerRecord{
+		ProjectID: project.Id.String(),
+		Error: "",		
+		Event:     "customer.created",
+		CustomerID:   req.ID,
+		Customer: *req,
+		IsActive:  true,
+		CreatedAt: time.Now(),		
+		Timestamp: time.Now(),
+
+
+	}
+	err = w.p.CustomerCreate(customerRecord)
+	if err != nil {
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	//TODO: extract cutomer from order and save them
+	//TODO: extract product from order and save them
+	return ctx.String(http.StatusCreated, "created")
 }
 
 // Webhook Customer Update
 // POST /webhook/customer/update
 func (w WooCommerceHandler) CustomerUpdatedWebHook(ctx echo.Context) error {
-	var order bson.M
-	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
-		return err
-	}
-	//fmt.Println(order)
-	err := w.p.CustomerUpdate(order)
+	body, err := readAndResetBody(ctx)
 	if err != nil {
-		return err
+		slog.Error("error reading body customer_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
 	}
-	return nil
+	req := new(woocommerce.Customer)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("error binding customer_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	domain := ctx.Get("webhookSource").(string)
+	project ,err := w.s.GetProjectByDomain(ctx, domain)
+	
+	if err != nil {
+		slog.Error("error GetProjectByDomain customer_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	err = util.ValidateWebhookSignature(ctx, project.Id.String(),body)
+	if err != nil {
+		slog.Error("error invalid signature customer_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	customerRecord := &woo.CustomerRecord{
+		ProjectID: project.Id.String(),
+		Error: "",		
+		Event:     "customer.updated",
+		CustomerID:   req.ID,
+		Customer: *req,
+		IsActive:  true,
+		UpdatedAt: time.Now(),	
+		Timestamp: time.Now(),
+
+
+	}
+	err = w.p.CustomerUpdate(customerRecord,req.ID)
+	if err != nil {
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	//TODO: extract cutomer from order and save them
+	//TODO: extract product from order and save them
+	return ctx.String(http.StatusCreated, "created")
 }
 
 // Webhook Customer Delete
@@ -240,31 +305,95 @@ func (w WooCommerceHandler) CustomerDeletedWebHook(ctx echo.Context) error {
 //  Webhook Product Create
 // POST /webhook/product/create
 func (w WooCommerceHandler) ProductCreatedWebHook(ctx echo.Context) error {
-	var order bson.M
-	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
-		return err
-	}
-	//fmt.Println(order)
-	err := w.p.ProductCreate(order)
+	body, err := readAndResetBody(ctx)
 	if err != nil {
-		return err
+		slog.Error("error reading body product_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
 	}
-	return nil
+	req := new(woocommerce.Product)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("error binding product_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	domain := ctx.Get("webhookSource").(string)
+	project ,err := w.s.GetProjectByDomain(ctx, domain)
+	
+	if err != nil {
+		slog.Error("error GetProjectByDomain product_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	err = util.ValidateWebhookSignature(ctx, project.Id.String(),body)
+	if err != nil {
+		slog.Error("error invalid signature product_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	productRecord := &woo.ProductRecord{
+		ProjectID: project.Id.String(),
+		Error: "",		
+		Event:     "product.created",
+		ProductID:   req.ID,
+		Product: *req,
+		IsActive:  true,
+		CreatedAt: time.Now(),		
+		Timestamp: time.Now(),
+
+
+	}
+	err = w.p.ProductCreate(productRecord)
+	if err != nil {
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	//TODO: extract cutomer from order and save them
+	//TODO: extract product from order and save them
+	return ctx.String(http.StatusCreated, "created")
 }
 
 //  Webhook Product Update
 // POST /webhook/product/update
 func (w WooCommerceHandler) ProductUpdatedWebHook(ctx echo.Context) error {
-	var order bson.M
-	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
-		return err
-	}
-	//fmt.Println(order)
-	err := w.p.ProductUpdate(order)
+	body, err := readAndResetBody(ctx)
 	if err != nil {
-		return err
+		slog.Error("error reading body product_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
 	}
-	return nil
+	req := new(woocommerce.Product)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("error binding product_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	domain := ctx.Get("webhookSource").(string)
+	project ,err := w.s.GetProjectByDomain(ctx, domain)
+	
+	if err != nil {
+		slog.Error("error GetProjectByDomain product_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	err = util.ValidateWebhookSignature(ctx, project.Id.String(),body)
+	if err != nil {
+		slog.Error("error invalid signature product_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	productRecord := &woo.ProductRecord{
+		ProjectID: project.Id.String(),
+		Error: "",		
+		Event:     "product.updated",
+		ProductID:   req.ID,
+		Product: *req,
+		IsActive:  true,
+		UpdatedAt: time.Now(),		
+		Timestamp: time.Now(),
+
+
+	}
+	err = w.p.ProductUpdate(productRecord,req.ID)
+	if err != nil {
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	//TODO: extract cutomer from order and save them
+	//TODO: extract product from order and save them
+	return ctx.String(http.StatusCreated, "created")
 }
 //  Webhook Product Delete
 // POST /webhook/product/delete

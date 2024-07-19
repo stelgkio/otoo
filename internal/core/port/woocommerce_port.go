@@ -13,13 +13,13 @@ type WoocommerceRepository interface {
 	OrderDelete(data any) error
 	OrderFindByProjectId(projectId string) error
 
-	CustomerCreate(data any) error
-	CustomerUpdate(data any) error
+	CustomerCreate(data *w.CustomerRecord) error
+	CustomerUpdate(data *w.CustomerRecord,cutomerId int64) error
 	CustomerDelete(data any) error
 	CustomerFindByProjectId(projectId string) error
 
-	ProductCreate(data any) error
-	ProductUpdate(data any) error
+	ProductCreate(data *w.ProductRecord) error
+	ProductUpdate(data *w.ProductRecord, productId int64) error
 	ProductDelete(data any) error
 	ProductFindByProjectId(projectId string) error
 

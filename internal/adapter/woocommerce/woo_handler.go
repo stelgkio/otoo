@@ -69,8 +69,6 @@ func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
 		IsActive:  true,
 		CreatedAt: time.Now(),		
 		Timestamp: time.Now(),
-
-
 	}
 	err = w.p.OrderCreate(orderRecord)
 	if err != nil {
@@ -110,8 +108,6 @@ func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
 		IsActive:  true,
 		UpdatedAt: time.Now(),		
 		Timestamp: time.Now(),
-
-
 	}
 
 	err = w.p.OrderUpdate(updateOrderRecord,req.ID)
@@ -211,8 +207,6 @@ func (w WooCommerceHandler) CustomerCreatedWebHook(ctx echo.Context) error {
 		IsActive:  true,
 		CreatedAt: time.Now(),		
 		Timestamp: time.Now(),
-
-
 	}
 	err = w.p.CustomerCreate(customerRecord)
 	if err != nil {
@@ -251,8 +245,6 @@ func (w WooCommerceHandler) CustomerUpdatedWebHook(ctx echo.Context) error {
 		IsActive:  true,
 		UpdatedAt: time.Now(),	
 		Timestamp: time.Now(),
-
-
 	}
 	err = w.p.CustomerUpdate(customerRecord,req.ID)
 	if err != nil {
@@ -311,8 +303,6 @@ func (w WooCommerceHandler) ProductCreatedWebHook(ctx echo.Context) error {
 		CreatedAt: time.Now(),		
 		Timestamp: time.Now(),
 		ParentId: req.ParentId,
-
-
 	}
 	err = w.p.ProductUpdate(productRecord,req.ID)
 	if err != nil {
@@ -356,8 +346,6 @@ func (w WooCommerceHandler) ProductUpdatedWebHook(ctx echo.Context) error {
 		UpdatedAt: time.Now(),		
 		Timestamp: time.Now(),
 		ParentId: req.ParentId,
-
-
 	}
 	err = w.p.ProductUpdate(productRecord,req.ID)
 	if err != nil {
@@ -389,7 +377,6 @@ func (w WooCommerceHandler) ProductDeletedWebHook(ctx echo.Context) error {
 		slog.Error("error validateWebhook product_deleted request", "error", err)
 		return err
 	}
-	
 	
 	err = w.p.ProductDelete(req.ID)
 	if err != nil {

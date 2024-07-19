@@ -35,7 +35,7 @@ func readAndResetBody(ctx echo.Context) ([]byte, error) {
 		return nil, err
 	}
 	// Print the request body
-	fmt.Println("Request Body:", string(body))
+	//fmt.Println("Request Body:", string(body))
 	// Reset the request body to its original state so it can be read again if needed
 	ctx.Request().Body = io.NopCloser(bytes.NewBuffer(body))
 	return body, nil
@@ -410,16 +410,39 @@ func (w WooCommerceHandler) ProductUpdatedWebHook(ctx echo.Context) error {
 //  Webhook Product Delete
 // POST /webhook/product/delete
 func (w WooCommerceHandler) ProductDeletedWebHook(ctx echo.Context) error {
-	var order bson.M
-	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
-		return err
-	}
-	//fmt.Println(order)
-	err := w.p.ProductDelete(order)
+	body, err := readAndResetBody(ctx)
 	if err != nil {
-		return err
+		slog.Error(fmt.Sprintf("error reading body product_deleted request: %s" ,ctx.Get("webhookTopic").(string)), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
 	}
-	return nil
+	req := new(woocommerce.Product)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error(fmt.Sprintf("error binding product_deleted request: %s", ctx.Get("webhookTopic").(string)), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	if req.ID == 0 {
+		return ctx.String(http.StatusOK, "bad request")
+	}
+	domain := ctx.Get("webhookSource").(string)
+	project ,err := w.s.GetProjectByDomain(ctx, domain)
+	
+	if err != nil {
+		slog.Error( fmt.Sprintf("error GetProjectByDomain product_deleted request: %s", ctx.Get("webhookTopic").(string)), "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	err = util.ValidateWebhookSignature(ctx, project.Id.String(),body)
+	if err != nil {
+		slog.Error("error invalid signature product_deleted request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	
+	
+	err = w.p.ProductDelete(req.ID)
+	if err != nil {
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	return ctx.String(http.StatusCreated, "deleted")
 }
 
 //Webhook UI Pages Endpoints

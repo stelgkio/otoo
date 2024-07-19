@@ -107,10 +107,12 @@ func (repo WoocommerceRepository) ProductUpdate(data *w.ProductRecord, productId
     }
 	return nil
 }
-func (repo WoocommerceRepository) ProductDelete(data any) error {
+func (repo WoocommerceRepository) ProductDelete(productId int64) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
-	coll.DeleteOne(context.TODO(), data)
-	return nil
+	filter := bson.M{"productId": productId}
+	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now()}}
+	_, err := coll.UpdateOne(context.TODO(), filter, update)
+	return err
 }
 func (repo WoocommerceRepository) ProductFindByProjectId(projectId string) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")

@@ -20,7 +20,7 @@ type WoocommerceRepository interface {
 
 	ProductCreate(data *w.ProductRecord) error
 	ProductUpdate(data *w.ProductRecord, productId int64) error
-	ProductDelete(data any) error
+	ProductDelete(productId int64) error
 	ProductFindByProjectId(projectId string) error
 
 	CouponCreate(data any) error

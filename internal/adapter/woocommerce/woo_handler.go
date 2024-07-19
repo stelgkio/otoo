@@ -11,6 +11,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	wp "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/progress/webhooks"
+	"github.com/stelgkio/otoo/internal/core/domain"
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/port"
 	"github.com/stelgkio/otoo/internal/core/util"
@@ -53,17 +54,11 @@ func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
 		slog.Error("error binding order_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
-	domain := ctx.Get("webhookSource").(string)
-	project ,err := w.s.GetProjectByDomain(ctx, domain)
 	
+	project, err := w.validateWebhook(ctx,body ,"order_created")
 	if err != nil {
-		slog.Error("error GetProjectByDomain order_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
-		return ctx.String(http.StatusBadRequest, "bad request")
-	}
-	err = util.ValidateWebhookSignature(ctx, project.Id.String(),body)
-	if err != nil {
-		slog.Error("error invalid signature order_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
-		return ctx.String(http.StatusBadRequest, "bad request")
+		slog.Error("error validateWebhook order_created request", "error", err)
+		return err
 	}
 	orderRecord := &woo.OrderRecord{
 		ProjectID: project.Id.String(),
@@ -93,7 +88,7 @@ func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
 func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
 	body, err := readAndResetBody(ctx)
 	if err != nil {
-		slog.Error("error reading body order_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
+		slog.Error("error reading body order_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
 	req := new(woocommerce.Order)
@@ -101,17 +96,10 @@ func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
 		slog.Error("error binding order_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
-	domain := ctx.Get("webhookSource").(string)
-	project ,err := w.s.GetProjectByDomain(ctx, domain)
+	project, err := w.validateWebhook(ctx,body ,"order_updated")
 	if err != nil {
-		slog.Error("error GetProjectByDomain order_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
-		return ctx.String(http.StatusBadRequest, "bad request")
-	}
-
-	err = util.ValidateWebhookSignature(ctx, project.Id.String(),body)
-	if err != nil {
-		slog.Error("error invalid signature order_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
-		return ctx.String(http.StatusBadRequest, "bad request")
+		slog.Error("error validateWebhook order_updated request", "error", err)
+		return err
 	}
 	updateOrderRecord := &woo.OrderRecord{
 		ProjectID: project.Id.String(),
@@ -209,17 +197,10 @@ func (w WooCommerceHandler) CustomerCreatedWebHook(ctx echo.Context) error {
 		slog.Error("error binding customer_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
-	domain := ctx.Get("webhookSource").(string)
-	project ,err := w.s.GetProjectByDomain(ctx, domain)
-	
+	project, err := w.validateWebhook(ctx,body ,"customer_created")
 	if err != nil {
-		slog.Error("error GetProjectByDomain customer_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
-		return ctx.String(http.StatusBadRequest, "bad request")
-	}
-	err = util.ValidateWebhookSignature(ctx, project.Id.String(),body)
-	if err != nil {
-		slog.Error("error invalid signature customer_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
-		return ctx.String(http.StatusBadRequest, "bad request")
+		slog.Error("error validateWebhook customer_created request", "error", err)
+		return err
 	}
 	customerRecord := &woo.CustomerRecord{
 		ProjectID: project.Id.String(),
@@ -256,17 +237,10 @@ func (w WooCommerceHandler) CustomerUpdatedWebHook(ctx echo.Context) error {
 		slog.Error("error binding customer_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
-	domain := ctx.Get("webhookSource").(string)
-	project ,err := w.s.GetProjectByDomain(ctx, domain)
-	
+	project, err := w.validateWebhook(ctx,body ,"customer_updated")
 	if err != nil {
-		slog.Error("error GetProjectByDomain customer_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
-		return ctx.String(http.StatusBadRequest, "bad request")
-	}
-	err = util.ValidateWebhookSignature(ctx, project.Id.String(),body)
-	if err != nil {
-		slog.Error("error invalid signature customer_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
-		return ctx.String(http.StatusBadRequest, "bad request")
+		slog.Error("error validateWebhook customer_updated request", "error", err)
+		return err
 	}
 	customerRecord := &woo.CustomerRecord{
 		ProjectID: project.Id.String(),
@@ -322,17 +296,10 @@ func (w WooCommerceHandler) ProductCreatedWebHook(ctx echo.Context) error {
 	if req.ID == 0 {
 		return ctx.String(http.StatusOK, "bad request")
 	}
-	domain := ctx.Get("webhookSource").(string)
-	project ,err := w.s.GetProjectByDomain(ctx, domain)
-	
+	project, err := w.validateWebhook(ctx,body ,"product_created")
 	if err != nil {
-		slog.Error("error GetProjectByDomain product_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
-		return ctx.String(http.StatusBadRequest, "bad request")
-	}
-	err = util.ValidateWebhookSignature(ctx, project.Id.String(),body)
-	if err != nil {
-		slog.Error("error invalid signature product_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
-		return ctx.String(http.StatusBadRequest, "bad request")
+		slog.Error("error validateWebhook product_created request", "error", err)
+		return err
 	}
 	productRecord := &woo.ProductRecord{
 		ProjectID: project.Id.String(),
@@ -373,18 +340,12 @@ func (w WooCommerceHandler) ProductUpdatedWebHook(ctx echo.Context) error {
 	if req.ID == 0 {
 		return ctx.String(http.StatusOK, "bad request")
 	}
-	domain := ctx.Get("webhookSource").(string)
-	project ,err := w.s.GetProjectByDomain(ctx, domain)
+	project, err := w.validateWebhook(ctx,body ,"product_updated")
+	if err != nil {
+		slog.Error("error validateWebhook product_updated request", "error", err)
+		return err
+	}
 	
-	if err != nil {
-		slog.Error("error GetProjectByDomain product_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
-		return ctx.String(http.StatusBadRequest, "bad request")
-	}
-	err = util.ValidateWebhookSignature(ctx, project.Id.String(),body)
-	if err != nil {
-		slog.Error("error invalid signature product_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
-		return ctx.String(http.StatusBadRequest, "bad request")
-	}
 	productRecord := &woo.ProductRecord{
 		ProjectID: project.Id.String(),
 		Error: "",		
@@ -423,17 +384,10 @@ func (w WooCommerceHandler) ProductDeletedWebHook(ctx echo.Context) error {
 	if req.ID == 0 {
 		return ctx.String(http.StatusOK, "bad request")
 	}
-	domain := ctx.Get("webhookSource").(string)
-	project ,err := w.s.GetProjectByDomain(ctx, domain)
-	
+	_, err = w.validateWebhook(ctx,body ,"product_deleted")
 	if err != nil {
-		slog.Error( fmt.Sprintf("error GetProjectByDomain product_deleted request: %s", ctx.Get("webhookTopic").(string)), "error", err)
-		return ctx.String(http.StatusBadRequest, "bad request")
-	}
-	err = util.ValidateWebhookSignature(ctx, project.Id.String(),body)
-	if err != nil {
-		slog.Error("error invalid signature product_deleted request", "error", err)
-		return ctx.String(http.StatusBadRequest, "bad request")
+		slog.Error("error validateWebhook product_deleted request", "error", err)
+		return err
 	}
 	
 	
@@ -482,4 +436,22 @@ func (w WooCommerceHandler) WebHooksProgressPageDone(ctx echo.Context) error {
 	}
 
 	return util.Render(ctx, wp.WebHooksProgress(projectId, webhooks))
+}
+
+
+func (w WooCommerceHandler) validateWebhook(ctx echo.Context, body []byte, event string) (*domain.Project, error) {
+	domain := ctx.Get("webhookSource").(string)
+	project, err := w.s.GetProjectByDomain(ctx, domain)
+	if err != nil {
+		slog.Error(fmt.Sprintf("error GetProjectByDomain request: %s event: %s", ctx.Get("webhookTopic").(string),event), "error", err)
+		return nil, ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	err = util.ValidateWebhookSignature(ctx, project.Id.String(), body)
+	if err != nil {
+		slog.Error(fmt.Sprintf("error invalid signature request: %s  event: %s", ctx.Get("webhookTopic").(string),event), "error", err)
+		return nil, ctx.String(http.StatusUnauthorized, "unauthorized")
+	}
+
+	return project, nil
 }

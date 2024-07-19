@@ -3,6 +3,7 @@ package woocommerce
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
@@ -33,6 +34,8 @@ func readAndResetBody(ctx echo.Context) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	// Print the request body
+	fmt.Println("Request Body:", string(body))
 	// Reset the request body to its original state so it can be read again if needed
 	ctx.Request().Body = io.NopCloser(bytes.NewBuffer(body))
 	return body, nil
@@ -312,8 +315,12 @@ func (w WooCommerceHandler) ProductCreatedWebHook(ctx echo.Context) error {
 	}
 	req := new(woocommerce.Product)
 	if err := ctx.Bind(req); err != nil {
+		fmt.Println(req)
 		slog.Error("error binding product_created request:"+ ctx.Get("webhookTopic").(string), "error", err)
 		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	if req.ID == 0 {
+		return ctx.String(http.StatusOK, "bad request")
 	}
 	domain := ctx.Get("webhookSource").(string)
 	project ,err := w.s.GetProjectByDomain(ctx, domain)
@@ -336,10 +343,11 @@ func (w WooCommerceHandler) ProductCreatedWebHook(ctx echo.Context) error {
 		IsActive:  true,
 		CreatedAt: time.Now(),		
 		Timestamp: time.Now(),
+		ParentId: req.ParentId,
 
 
 	}
-	err = w.p.ProductCreate(productRecord)
+	err = w.p.ProductUpdate(productRecord,req.ID)
 	if err != nil {
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
@@ -362,6 +370,9 @@ func (w WooCommerceHandler) ProductUpdatedWebHook(ctx echo.Context) error {
 		slog.Error("error binding product_updated request:"+ ctx.Get("webhookTopic").(string), "error", err)
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
+	if req.ID == 0 {
+		return ctx.String(http.StatusOK, "bad request")
+	}
 	domain := ctx.Get("webhookSource").(string)
 	project ,err := w.s.GetProjectByDomain(ctx, domain)
 	
@@ -383,6 +394,7 @@ func (w WooCommerceHandler) ProductUpdatedWebHook(ctx echo.Context) error {
 		IsActive:  true,
 		UpdatedAt: time.Now(),		
 		Timestamp: time.Now(),
+		ParentId: req.ParentId,
 
 
 	}

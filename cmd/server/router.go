@@ -70,7 +70,25 @@ func NewRouter(
 		})
 		dashboardgroup.POST("/contact", homeHandler.DashboardContactForm)
 
-		dashboardgroup.GET("/project/:projectId", dashboardHandler.ProjectDashboard)
+		dashboardgroup.GET("/project/:projectId", dashboardHandler.ProjectDashboard)	
+
+		
+		customergroup := dashboardgroup.Group("/customer")
+		{
+			customergroup.GET("/:projectId", dashboardHandler.CustomerDashboard)
+		}
+
+		
+		ordergroup := dashboardgroup.Group("/order")
+		{
+			ordergroup.GET("/:projectId", dashboardHandler.OrderDashboard)
+		}
+		
+		
+		productgroup := dashboardgroup.Group("/product")
+		{
+			productgroup.GET("/:projectId", dashboardHandler.ProductDashboard)
+		}
 
 	}
 	//Project group
@@ -108,23 +126,43 @@ func NewRouter(
 		woocommercegroup.POST("/product/updated", r.ExtractWebhookHeaders(WooCommerceHandler.ProductUpdatedWebHook))
 		woocommercegroup.POST("/product/deleted", r.ExtractWebhookHeaders(WooCommerceHandler.ProductDeletedWebHook))
 
-		webhookgroup := e.Group("/webhook")
-		{
-			webhookgroup.Use(configureJWT())
-			webhookgroup.Use(auth.TokenRefresherMiddleware)
-			webhookgroup.GET("/:projectId/:webhookId", nil)
-			webhookgroup.GET("/:projectId", WooCommerceHandler.FindWebHooks)
-			webhookgroup.GET("/progress/:projectId", WooCommerceHandler.WebHooksProgressPage)
-			webhookgroup.GET("/progress/done/:projectId", WooCommerceHandler.WebHooksProgressPageDone)
-			webhookgroup.POST("/update/:projectId/:webhookId", nil)
-			webhookgroup.POST("/delete/:projectId/:webhookId", nil)
-			webhookgroup.POST("/create/:projectId/:webhookId", nil)
-			webhookgroup.GET("/:projectId/:eventname", func(c echo.Context) error {
-				time.Sleep(2 * time.Second)
-				return c.NoContent(286)
-			})
-		}
+	}
 
+	webhookgroup := e.Group("/webhook")
+	{
+		webhookgroup.Use(configureJWT())
+		webhookgroup.Use(auth.TokenRefresherMiddleware)
+		webhookgroup.GET("/:projectId/:webhookId", nil)
+		webhookgroup.GET("/:projectId", WooCommerceHandler.FindWebHooks)
+		webhookgroup.GET("/progress/:projectId", WooCommerceHandler.WebHooksProgressPage)
+		webhookgroup.GET("/progress/done/:projectId", WooCommerceHandler.WebHooksProgressPageDone)
+		webhookgroup.POST("/update/:projectId/:webhookId", nil)
+		webhookgroup.POST("/delete/:projectId/:webhookId", nil)
+		webhookgroup.POST("/create/:projectId/:webhookId", nil)
+		webhookgroup.GET("/:projectId/:eventname", func(c echo.Context) error {
+			time.Sleep(2 * time.Second)
+			return c.NoContent(286)
+		})
+	}
+
+	customergroup := e.Group("/customer")
+	{
+		customergroup.Use(configureJWT())
+		customergroup.Use(auth.TokenRefresherMiddleware)
+		
+	}
+
+	ordergroup := e.Group("/order")
+	{
+		ordergroup.Use(configureJWT())
+		ordergroup.Use(auth.TokenRefresherMiddleware)
+		
+	}
+	productgroup := e.Group("/product")
+	{
+		productgroup.Use(configureJWT())
+		productgroup.Use(auth.TokenRefresherMiddleware)
+		
 	}
 
 	//Profile

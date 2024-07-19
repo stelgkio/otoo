@@ -8,8 +8,8 @@ import (
 
 type WoocommerceRepository interface {
 	// InsertWoocommerceOrder inserts a new order into the database
-	OrderCreate(data any) error
-	OrderUpdate(data any) error
+	OrderCreate(data *w.OrderRecord) error
+	OrderUpdate(data *w.OrderRecord, orderId int64) error
 	OrderDelete(data any) error
 	OrderFindByProjectId(projectId string) error
 

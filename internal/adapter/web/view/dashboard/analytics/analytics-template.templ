@@ -2,10 +2,11 @@ package views
 
 import (
 	t "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/template"
+	o "github.com/stelgkio/otoo/internal/adapter/web/view/component/order/overview"
 )
 
 templ AnalyticsTemplate() {
 	@t.DashboardTemplate() {
-		@AnalyticsDashboard()
+		@o.OrderOverView()
 	}
 }

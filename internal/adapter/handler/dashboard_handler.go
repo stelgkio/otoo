@@ -27,3 +27,28 @@ func (ph *DashboardHandler) ProjectDashboard(ctx echo.Context) error {
 	}
 	return util.Render(ctx, t.DeafultTemplate())
 }
+
+func (ph *DashboardHandler) CustomerDashboard(ctx echo.Context) error {
+	projectId := ctx.Param("projectId")
+	_, err := ph.projectSvc.GetProjectByID(ctx, projectId)
+	if err != nil {
+		return err
+	}
+	return util.Render(ctx, t.DeafultTemplate())
+}
+func (ph *DashboardHandler) ProductDashboard(ctx echo.Context) error {
+	projectId := ctx.Param("projectId")
+	_, err := ph.projectSvc.GetProjectByID(ctx, projectId)
+	if err != nil {
+		return err
+	}
+	return util.Render(ctx, t.DeafultTemplate())
+}
+func (ph *DashboardHandler) OrderDashboard(ctx echo.Context) error {
+	projectId := ctx.Param("projectId")
+	_, err := ph.projectSvc.GetProjectByID(ctx, projectId)
+	if err != nil {
+		return err
+	}
+	return util.Render(ctx, t.DeafultTemplate())
+}

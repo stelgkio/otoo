@@ -87,3 +87,19 @@ func (repo *ProjectRepository) DeleteProjectsByUserId(ctx echo.Context, userId u
 func (repo *ProjectRepository) GetProjectByID(ctx echo.Context, id string) (*domain.Project, error) {
 	return nil, nil
 }
+
+func (repo *ProjectRepository) GetProjectByDomain(ctx echo.Context, domainUrl string) (*domain.Project, error) {
+	project := domain.Project{}
+	err := repo.db.Model(&project).	
+		Where("is_active = ?", true).
+		Where("woocommerce_domain =?", domainUrl).
+		First()
+		
+	
+	if err != nil {
+		return nil, err
+	}
+
+	
+	return &project, nil
+}

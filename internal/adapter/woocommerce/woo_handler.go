@@ -1,50 +1,139 @@
 package woocommerce
 
 import (
+	"bytes"
 	"encoding/json"
+	"io"
+	"log/slog"
+	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	wp "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/progress/webhooks"
+	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/port"
 	"github.com/stelgkio/otoo/internal/core/util"
+	"github.com/stelgkio/woocommerce"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
 type WooCommerceHandler struct {
 	p port.WoocommerceRepository
+	s port.ProjectRepository
 }
 
-func NewWooCommerceHandler(repo port.WoocommerceRepository) *WooCommerceHandler {
+func NewWooCommerceHandler(repo port.WoocommerceRepository ,projrepo port.ProjectRepository) *WooCommerceHandler {
 	return &WooCommerceHandler{
 		repo,
+		projrepo,
 	}
+}
+func readAndResetBody(ctx echo.Context) ([]byte, error) {
+	body, err := io.ReadAll(ctx.Request().Body)
+	if err != nil {
+		return nil, err
+	}
+	// Reset the request body to its original state so it can be read again if needed
+	ctx.Request().Body = io.NopCloser(bytes.NewBuffer(body))
+	return body, nil
+}
+// Webhook Order Create
+// POST /webhook/order/create
+func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
+	body, err := readAndResetBody(ctx)
+	if err != nil {
+		slog.Error("error reading body order_created request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	req := new(woocommerce.Order)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("error binding order_created request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	domain := ctx.Get("webhookSource").(string)
+	project ,err := w.s.GetProjectByDomain(ctx, domain)
+	
+	if err != nil {
+		slog.Error("error GetProjectByDomain order_created request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	err = util.ValidateWebhookSignature2(ctx, project.Id.String(),body)
+	if err != nil {
+		slog.Error("error invalid signature order_created request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	orderRecord := &woo.OrderRecord{
+		ProjectID: project.Id.String(),
+		Error: "",		
+		Event:     "order.created",
+		OrderID:   req.ID,
+		Order: *req,
+		IsActive:  true,
+		CreatedAt: time.Now(),		
+		Timestamp: time.Now(),
+
+
+	}
+	err = w.p.OrderCreate(orderRecord)
+	if err != nil {
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	//TODO: extract cutomer from order and save them
+	//TODO: extract product from order and save them
+	return ctx.String(http.StatusCreated, "created")
 }
 
-// Order
-func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
-	var order bson.M
-	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
-		return err
-	}
-	//fmt.Println(order)
-	err := w.p.OrderCreate(order)
-	if err != nil {
-		return err
-	}
-	return nil
-}
+// Webhook Order Update
+// POST /webhook/order/update
 func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
-	var order bson.M
-	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
-		return err
+	body, err := readAndResetBody(ctx)
+	if err != nil {
+		slog.Error("error reading body order_created request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
 	}
-	//fmt.Println(order)
-	err := w.p.OrderUpdate(order)
+	req := new(woocommerce.Order)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("error binding order_updated request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	domain := ctx.Get("webhookSource").(string)
+	project ,err := w.s.GetProjectByDomain(ctx, domain)
+	if err != nil {
+		slog.Error("error GetProjectByDomain order_updated request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	err = util.ValidateWebhookSignature2(ctx, project.Id.String(),body)
+	if err != nil {
+		slog.Error("error invalid signature order_updated request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+	updateOrderRecord := &woo.OrderRecord{
+		ProjectID: project.Id.String(),
+		Error: "",		
+		Event:     "order.updated",
+		OrderID:   req.ID,
+		Order: *req,
+		IsActive:  true,
+		UpdatedAt: time.Now(),		
+		Timestamp: time.Now(),
+
+
+	}
+
+	err = w.p.OrderUpdate(updateOrderRecord,req.ID)
 	if err != nil {
 		return err
 	}
+
+	//TODO: extract cutomer from order and save them
+	//TODO: extract product from order and save the
 	return nil
 }
+
+// Webhook Order Delete
+// POST /webhook/order/delete
 func (w WooCommerceHandler) OrderDeletedWebHook(ctx echo.Context) error {
 	var order bson.M
 	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
@@ -58,7 +147,8 @@ func (w WooCommerceHandler) OrderDeletedWebHook(ctx echo.Context) error {
 	return nil
 }
 
-// Coupon
+// Webhook Coupon Create
+// POST /webhook/coupon/create
 func (w WooCommerceHandler) CouponCreatedWebHook(ctx echo.Context) error {
 	var order bson.M
 	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
@@ -72,6 +162,8 @@ func (w WooCommerceHandler) CouponCreatedWebHook(ctx echo.Context) error {
 	return nil
 }
 
+// Webhook Coupon Update
+// POST /webhook/coupon/update
 func (w WooCommerceHandler) CouponUpdatedWebHook(ctx echo.Context) error {
 	var order bson.M
 	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
@@ -85,6 +177,8 @@ func (w WooCommerceHandler) CouponUpdatedWebHook(ctx echo.Context) error {
 	return nil
 }
 
+// Webhook Coupon Delete
+// POST /webhook/coupon/delete
 func (w WooCommerceHandler) CouponDeletedWebHook(ctx echo.Context) error {
 	var order bson.M
 	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
@@ -98,7 +192,8 @@ func (w WooCommerceHandler) CouponDeletedWebHook(ctx echo.Context) error {
 	return nil
 }
 
-// Customer
+// Webhook Customer Create
+// POST /webhook/customer/create
 func (w WooCommerceHandler) CustomerCreatedWebHook(ctx echo.Context) error {
 	var order bson.M
 	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
@@ -112,6 +207,8 @@ func (w WooCommerceHandler) CustomerCreatedWebHook(ctx echo.Context) error {
 	return nil
 }
 
+// Webhook Customer Update
+// POST /webhook/customer/update
 func (w WooCommerceHandler) CustomerUpdatedWebHook(ctx echo.Context) error {
 	var order bson.M
 	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
@@ -125,6 +222,8 @@ func (w WooCommerceHandler) CustomerUpdatedWebHook(ctx echo.Context) error {
 	return nil
 }
 
+// Webhook Customer Delete
+// POST /webhook/customer/delete
 func (w WooCommerceHandler) CustomerDeletedWebHook(ctx echo.Context) error {
 	var order bson.M
 	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
@@ -138,7 +237,8 @@ func (w WooCommerceHandler) CustomerDeletedWebHook(ctx echo.Context) error {
 	return nil
 }
 
-// Product
+//  Webhook Product Create
+// POST /webhook/product/create
 func (w WooCommerceHandler) ProductCreatedWebHook(ctx echo.Context) error {
 	var order bson.M
 	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
@@ -152,6 +252,8 @@ func (w WooCommerceHandler) ProductCreatedWebHook(ctx echo.Context) error {
 	return nil
 }
 
+//  Webhook Product Update
+// POST /webhook/product/update
 func (w WooCommerceHandler) ProductUpdatedWebHook(ctx echo.Context) error {
 	var order bson.M
 	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
@@ -164,7 +266,8 @@ func (w WooCommerceHandler) ProductUpdatedWebHook(ctx echo.Context) error {
 	}
 	return nil
 }
-
+//  Webhook Product Delete
+// POST /webhook/product/delete
 func (w WooCommerceHandler) ProductDeletedWebHook(ctx echo.Context) error {
 	var order bson.M
 	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
@@ -179,7 +282,7 @@ func (w WooCommerceHandler) ProductDeletedWebHook(ctx echo.Context) error {
 }
 
 //Webhook UI Pages Endpoints
-
+// GET  /webhook/:projectId
 func (w WooCommerceHandler) FindWebHooks(ctx echo.Context) error {
 	return nil
 }

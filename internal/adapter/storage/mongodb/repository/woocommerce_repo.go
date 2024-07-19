@@ -22,15 +22,26 @@ func NewWoocommerceRepository(mongo *mongo.Client) *WoocommerceRepository {
 }
 
 // Order
-func (repo WoocommerceRepository) OrderCreate(data any) error {
+func (repo WoocommerceRepository) OrderCreate(data *w.OrderRecord) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
 	coll.InsertOne(context.TODO(), data)
 	return nil
 }
 
-func (repo WoocommerceRepository) OrderUpdate(data any) error {
+func (repo WoocommerceRepository) OrderUpdate(order *w.OrderRecord, orderId int64) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
-	coll.UpdateByID(context.TODO(), 1, data)
+
+	filter := bson.M{ "orderId": orderId, "is_active": true }
+	update := bson.M{"$set": order}
+
+    // Set upsert option to true
+    opt := options.Update().SetUpsert(true)
+
+    // Perform the upsert operation
+    _, err := coll.UpdateOne(context.TODO(), filter, update, opt)
+    if err != nil {
+        return err
+    }
 	return nil
 }
 func (repo WoocommerceRepository) OrderDelete(data any) error {

@@ -10,7 +10,7 @@ import (
 
 type OrderRecord struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
-	ProjectID uuid.UUID          `bson:"projectId"`
+	ProjectID string             `bson:"projectId"`
 	Event     string             `bson:"event"`
 	Error     string             `bson:"error,omitempty"`
 	Timestamp time.Time          `bson:"timestamp,omitempty"`
@@ -18,13 +18,13 @@ type OrderRecord struct {
 	Order     woocommerce.Order  `bson:"order,omitempty"`
 	CreatedAt time.Time          `json:"created_at"  bson:"created_at,omitempty"`
 	UpdatedAt time.Time          `json:"updated_at"  bson:"updated_at,omitempty"`
-	DeletedAt *time.Time         `json:"deleted_at"  bson:"deleted_at,omitempty"`
+	DeletedAt time.Time         `json:"deleted_at"  bson:"deleted_at,omitempty"`
 	IsActive  bool               `json:"is_active" bson:"is_active,omitempty"`
 }
 
 func NewOrderRecord(projectID uuid.UUID, event string, orderId int64, order woocommerce.Order) OrderRecord {
 	return OrderRecord{
-		ProjectID: projectID,
+		ProjectID: projectID.String(),
 		Event:     event,
 		OrderID:   orderId,
 		Order:     order,
@@ -38,5 +38,6 @@ func NewOrderRecord(projectID uuid.UUID, event string, orderId int64, order wooc
 func (o *OrderRecord) SoftDelete() {
 	o.IsActive = false
 	now := time.Now()
-	o.DeletedAt = &now
+	o.DeletedAt = now
+	o.Timestamp = now
 }

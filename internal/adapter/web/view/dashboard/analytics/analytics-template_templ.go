@@ -11,6 +11,7 @@ import "io"
 import "bytes"
 
 import (
+	o "github.com/stelgkio/otoo/internal/adapter/web/view/component/order/overview"
 	t "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/template"
 )
 
@@ -33,7 +34,7 @@ func AnalyticsTemplate() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			templ_7745c5c3_Err = AnalyticsDashboard().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = o.OrderOverView().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

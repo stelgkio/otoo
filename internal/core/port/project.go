@@ -11,8 +11,8 @@ type ProjectRepository interface {
 	CreateProject(ctx echo.Context, project *domain.Project) (*domain.Project, error)
 	// // GetProjectByID selects a project by id
 	GetProjectByID(ctx echo.Context, id string) (*domain.Project, error)
-	// // GetUserByEmail selects a user by email
-	//GetUserByEmail(ctx echo.Context, email string) (*domain.User, error)
+	// // GetProjectByDomain selects a project by domain
+	GetProjectByDomain(ctx echo.Context, id string) (*domain.Project, error)
 	// // ListProject selects a list of project with pagination
 	FindProjects(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error)
 	// // UpdateUser updates a user

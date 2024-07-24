@@ -27,8 +27,8 @@ type ProductService struct {
 
 func NewProductService(woorepo port.WoocommerceRepository ,projrepo port.ProjectRepository) *ProductService {
 	return &ProductService{
-		woorepo,
-		projrepo,
+		p: woorepo,
+		s: projrepo,
 	}
 }
 
@@ -147,4 +147,13 @@ func (s *ProductService) saveWebhookResult(data *w.ProductRecord) error {
 
 func (ps *ProductService) ExtractProductFromOrderAndUpsert(ctx echo.Context, req *w.OrderRecord) error {
 	panic("unimplemented")
+}
+
+
+func (ps *ProductService) GetProductCount(ctx echo.Context, projectId string ,results chan<- int64, errors chan<- error) {
+	productCount, err := ps.p.GetProductCount( projectId)
+	if err != nil {
+		errors <- err
+	}
+	results <- productCount
 }

@@ -4,9 +4,10 @@ import (
 	"fmt"
 	o "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/order/history"
 	p "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/product/best_seller"
+	 woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 )
 
-templ DeafultDashboard(projectId string) {
+templ DeafultDashboard(projectId string,counts map[string]string,orders []*woo.OrderRecord) {
 	<div
 		id="dashboard-content"
 		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
@@ -50,7 +51,7 @@ templ DeafultDashboard(projectId string) {
 												Orders
 											</a>
 										</div>
-										<div class="text-sm fw-semibold mt-3">32893</div>
+										<div class="text-sm fw-semibold mt-3">{ counts["order_count"] }</div>
 										<!-- <div class="d-flex align-items-center gap-2 mt-1 text-xs"><span
                                                         class="badge badge-xs bg-success"><i
                                                             class="bi bi-arrow-up-right"></i> </span><span>+13.7%</span>
@@ -70,7 +71,7 @@ templ DeafultDashboard(projectId string) {
 												class="h6 stretched-link"
 											>Customers</a>
 										</div>
-										<div class="text-sm fw-semibold mt-3">1745 </div>
+										<div class="text-sm fw-semibold mt-3">{ counts["customer_count"] } </div>
 										<!-- <div class="d-flex align-items-center gap-2 mt-1 text-xs"><span
                                                         class="badge badge-xs bg-danger"><i
                                                             class="bi bi-arrow-up-right"></i> </span><span>-3.2%</span>
@@ -90,7 +91,7 @@ templ DeafultDashboard(projectId string) {
 												class="h6 stretched-link"
 											>Products</a>
 										</div>
-										<div class="text-sm fw-semibold mt-3">890 </div>
+										<div class="text-sm fw-semibold mt-3">{ counts["product_count"] } </div>
 										<!-- <div class="d-flex align-items-center gap-2 mt-1 text-xs"><span
                                                         class="badge badge-xs bg-danger"><i
                                                             class="bi bi-arrow-up-right"></i> </span><span>-2.2%</span>
@@ -139,7 +140,7 @@ templ DeafultDashboard(projectId string) {
                                         </div>
                                     </div>
                                 </div> -->
-						@o.LatestOrderHistory()
+						@o.LatestOrderHistory(orders)
 					</div>
 				</div>
 				<div class="col-xxl-4">

@@ -3,10 +3,11 @@ package views
 import (
 	t "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/template"
 	"github.com/stelgkio/otoo/internal/core/domain"
+	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 )
 
-templ DeafultTemplate(user *domain.User, projectName string, projectId string) {
+templ DeafultTemplate(user *domain.User, projectName string, projectId string,counts map[string]string,orders []*woo.OrderRecord) {
 	@t.DashboardTemplate(user,projectName,projectId) {
-		@DeafultDashboard(projectId)
+		@DeafultDashboard(projectId,counts,orders)
 	}
 }

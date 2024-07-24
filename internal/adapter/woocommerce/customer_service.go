@@ -18,8 +18,8 @@ type CustomerService struct {
 
 func NewCustomerService(woorepo port.WoocommerceRepository ,projrepo port.ProjectRepository) *CustomerService {
 	return &CustomerService{
-		woorepo,
-		projrepo,
+		p: woorepo,
+		s: projrepo,
 	}
 }
 
@@ -91,3 +91,11 @@ func (c *CustomerService) ExtractCustomerFromOrderAndUpsert(ctx echo.Context, re
 	return err
 }
 
+
+func (ps *CustomerService) GetCustomerCount(ctx echo.Context, projectId string ,results chan<- int64, errors chan<- error) {
+	customerCount, err := ps.p.GetCustomerCount( projectId)
+	if err != nil {
+		errors <- err
+	}
+	results <- customerCount
+}

@@ -48,10 +48,48 @@ func (repo WoocommerceRepository) OrderDelete(data any) error {
 	coll.DeleteOne(context.TODO(), data)
 	return nil
 }
-func (repo WoocommerceRepository) OrderFindByProjectId(projectId string) error {
+func (repo WoocommerceRepository) OrderFindByProjectId(projectId string, size, page int) ([]*w.OrderRecord, error) {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
-	coll.FindOne(context.TODO(), projectId)
-	return nil
+	//ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	//defer cancel()
+
+	filter := bson.M{"projectId": projectId,"is_active": true}
+	findOptions := options.Find()
+	findOptions.SetLimit(int64(size))
+	findOptions.SetSkip(int64(size * (page - 1)))
+	findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
+	cursor, err := coll.Find(context.TODO(), filter, findOptions)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	var orders []*w.OrderRecord
+	for cursor.Next(context.TODO()) {
+		var order w.OrderRecord
+		if err := cursor.Decode(&order); err != nil {
+			return nil, err
+		}
+		orders = append(orders, &order)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return orders, nil
+}
+func (repo WoocommerceRepository) GetOrderCount(projectId string) (int64 ,error) {
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	filter := bson.M{ "projectId": projectId, "is_active": true }
+	res, err :=  coll.CountDocuments(ctx, filter)
+
+	if err != nil {
+		return 0, err
+	}
+	return res, nil
 }
 
 // Customer
@@ -98,6 +136,21 @@ func (repo WoocommerceRepository) CustomerFindByEmail(email string) (*w.Customer
 	}
 	return result , nil
 }
+
+
+func (repo WoocommerceRepository) GetCustomerCount(projectId string) (int64 ,error) {
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_customers")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	filter := bson.M{ "projectId": projectId, "is_active": true }
+	res, err :=  coll.CountDocuments(ctx, filter)
+
+	if err != nil {
+		return 0, err
+	}
+	return res, nil
+}
+
 // Product
 func (repo WoocommerceRepository) ProductCreate(data *w.ProductRecord) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
@@ -130,6 +183,19 @@ func (repo WoocommerceRepository) ProductFindByProjectId(projectId string) error
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
 	coll.FindOne(context.TODO(), projectId)
 	return nil
+}
+
+func (repo WoocommerceRepository) GetProductCount(projectId string) (int64 ,error) {
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	filter := bson.M{ "projectId": projectId, "is_active": true }
+	res, err :=  coll.CountDocuments(ctx, filter)
+
+	if err != nil {
+		return 0, err
+	}
+	return res, nil
 }
 
 // Coupon

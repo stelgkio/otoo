@@ -31,6 +31,11 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	woocommerceRepo := mongorepo.NewWoocommerceRepository(mongodb)
 	projectRepo := repository.NewProjectRepository(db)
 
+	//WooCommerceCustomerServer
+	woocommerceCustomerService := woocommerce.NewCustomerService(woocommerceRepo,projectRepo)
+	//WooCommerceProductServer
+	woocommerceProductService := woocommerce.NewProductService(woocommerceRepo,projectRepo)
+
 	//Smtp
 	smtpService := service.NewSmtpService()
 
@@ -46,10 +51,10 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 
 	//WooCommerce
 	woocommerceWebhookService := woocommerce.NewWoocommerceWebhookService(woocommerceRepo)
-	WooCommerceHandler := woocommerce.NewWooCommerceHandler(woocommerceRepo,projectRepo)
+	WooCommerceHandler := woocommerce.NewWooCommerceHandler(woocommerceRepo,projectRepo,woocommerceCustomerService)
 
 	//Project
-	projectService := service.NewProjectService(projectRepo, woocommerceWebhookService)
+	projectService := service.NewProjectService(projectRepo, woocommerceWebhookService,woocommerceProductService)
 	projectHandler := handler.NewProjectHandler(projectService, userService)
 
 	//Home

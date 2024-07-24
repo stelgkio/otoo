@@ -22,12 +22,14 @@ import (
 type WooCommerceHandler struct {
 	p port.WoocommerceRepository
 	s port.ProjectRepository
+	c port.CustomerService
 }
 
-func NewWooCommerceHandler(repo port.WoocommerceRepository ,projrepo port.ProjectRepository) *WooCommerceHandler {
+func NewWooCommerceHandler(repo port.WoocommerceRepository ,projrepo port.ProjectRepository,ctm port.CustomerService) *WooCommerceHandler {
 	return &WooCommerceHandler{
 		repo,
 		projrepo,
+		ctm,
 	}
 }
 func readAndResetBody(ctx echo.Context) ([]byte, error) {
@@ -36,7 +38,7 @@ func readAndResetBody(ctx echo.Context) ([]byte, error) {
 		return nil, err
 	}
 	// Print the request body
-	//fmt.Println("Request Body:", string(body))
+	fmt.Println("Request Body:", string(body))
 	// Reset the request body to its original state so it can be read again if needed
 	ctx.Request().Body = io.NopCloser(bytes.NewBuffer(body))
 	return body, nil
@@ -69,15 +71,18 @@ func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
 		IsActive:  true,
 		CreatedAt: time.Now(),		
 		Timestamp: time.Now(),
-		Status: req.Status,
+	}
+	orderRecord.Status , err  =  woo.StringToOrderStatus(req.Status)
+	if err != nil {
+		slog.Error("error converting order status", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
 	}
 	err = w.p.OrderCreate(orderRecord)
 	if err != nil {
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
 
-	
-	//TODO: extract cutomer from order and save them
+	go w.c.ExtractCustomerFromOrderAndUpsert(ctx,orderRecord)
 	//TODO: extract product from order and save them
 	return ctx.String(http.StatusCreated, "created")
 }
@@ -100,6 +105,7 @@ func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
 		slog.Error("error validateWebhook order_updated request", "error", err)
 		return err
 	}
+
 	updateOrderRecord := &woo.OrderRecord{
 		ProjectID: project.Id.String(),
 		Error: "",		
@@ -109,7 +115,12 @@ func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
 		IsActive:  true,
 		UpdatedAt: time.Now(),		
 		Timestamp: time.Now(),
-		Status: req.Status,
+		
+	}
+	updateOrderRecord.Status , err  =  woo.StringToOrderStatus(req.Status)
+	if err != nil {
+		slog.Error("error converting order status", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
 	}
 
 	err = w.p.OrderUpdate(updateOrderRecord,req.ID)
@@ -117,7 +128,7 @@ func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
 		return err
 	}
 
-	//TODO: extract cutomer from order and save them
+	go w.c.ExtractCustomerFromOrderAndUpsert(ctx,updateOrderRecord)
 	//TODO: extract product from order and save the
 	return nil
 }
@@ -250,7 +261,7 @@ func (w WooCommerceHandler) CustomerUpdatedWebHook(ctx echo.Context) error {
 		UpdatedAt: time.Now(),	
 		Timestamp: time.Now(),
 	}
-	err = w.p.CustomerUpdate(customerRecord,req.ID)
+	err = w.p.CustomerUpdate(customerRecord,req.Email)
 	if err != nil {
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}

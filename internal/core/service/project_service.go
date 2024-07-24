@@ -13,13 +13,15 @@ import (
 type ProjectService struct {
 	repo port.ProjectRepository
 	wp   port.WoocommerceWebhookService
+	wc   port.ProductService
 }
 
 // NewUserService creates a new user service instance
-func NewProjectService(repo port.ProjectRepository, wp port.WoocommerceWebhookService) *ProjectService {
+func NewProjectService(repo port.ProjectRepository, wp port.WoocommerceWebhookService,wc port.ProductService) *ProjectService {
 	return &ProjectService{
 		repo,
 		wp,
+		wc,
 	}
 }
 
@@ -62,7 +64,6 @@ func (ps *ProjectService) CreateProject(ctx echo.Context, req *domain.ProjectReq
 	}
 
 	go ps.wp.WoocommerceCreateAllWebHook(req.ConsumerKey, req.ConsumerSecret, req.Domain, pr.Id)
-
 	return pr, nil
 }
 

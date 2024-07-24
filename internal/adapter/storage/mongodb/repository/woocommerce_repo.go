@@ -60,9 +60,9 @@ func (repo WoocommerceRepository) CustomerCreate(data *w.CustomerRecord) error {
 	coll.InsertOne(context.TODO(), data)
 	return nil
 }
-func (repo WoocommerceRepository) CustomerUpdate(data *w.CustomerRecord, customerId int64) error {
+func (repo WoocommerceRepository) CustomerUpdate(data *w.CustomerRecord, email string) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_customers")
-	filter := bson.M{ "customerId": customerId, "is_active": true }
+	filter := bson.M{ "email": email, "is_active": true }
 	update := bson.M{"$set": data}
 
     // Set upsert option to true
@@ -85,7 +85,19 @@ func (repo WoocommerceRepository) CustomerFindByProjectId(projectId string) erro
 	coll.FindOne(context.TODO(), projectId)
 	return nil
 }
-
+func (repo WoocommerceRepository) CustomerFindByEmail(email string) (*w.CustomerRecord,error) {
+	var result *w.CustomerRecord
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_customers")
+	filter := bson.M{ "email": email, "is_active": true }
+	err := coll.FindOne(context.TODO(),filter).Decode(&result)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return result , nil
+}
 // Product
 func (repo WoocommerceRepository) ProductCreate(data *w.ProductRecord) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")

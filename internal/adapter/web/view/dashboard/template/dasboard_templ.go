@@ -11,9 +11,10 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	h "github.com/stelgkio/otoo/internal/adapter/web/view/component/header"
 	n "github.com/stelgkio/otoo/internal/adapter/web/view/component/navigation"
+	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-func DashboardTemplate() templ.Component {
+func DashboardTemplate(user *domain.User, projectName string, projectId string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -43,7 +44,7 @@ func DashboardTemplate() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = n.SideBar().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = n.SideBar(user, projectName, projectId).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -51,7 +52,7 @@ func DashboardTemplate() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = n.TopBar().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = n.TopBar(user, projectName).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

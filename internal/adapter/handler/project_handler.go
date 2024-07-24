@@ -147,3 +147,17 @@ func (ph *ProjectHandler) CheckWebHooks(ctx echo.Context) error {
 	}
 	return r.Render(ctx, wp.CheckWebhookProgress(user, projectId))
 }
+
+// GET /project/settings/:projectId
+func (ph *ProjectHandler) ProjectSettings(ctx echo.Context) error {
+	projectId := ctx.Param("projectId")
+	userId, err := auth.GetUserId(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := ph.userSvc.GetUserById(ctx, userId)
+	if err != nil {
+		return err
+	}
+	return r.Render(ctx, wp.CheckWebhookProgress(user, projectId))
+}

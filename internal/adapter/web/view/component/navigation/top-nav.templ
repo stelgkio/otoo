@@ -1,6 +1,7 @@
 package views
+import "github.com/stelgkio/otoo/internal/core/domain"
 
-templ TopBar() {
+templ TopBar(user *domain.User , projectName string) {
 	<div class="d-none d-lg-flex py-3">
 		<div class="flex-none">
 			<div class="input-group input-group-sm input-group-inline w-rem-64 rounded-pill">
@@ -20,8 +21,9 @@ templ TopBar() {
 				class="btn btn-xs btn-primary rounded-pill text-nowrap"
 				data-bs-target="#connectWalletModal"
 				data-bs-toggle="modal"
-			>MyProjectName</button>
-			<div class="dropdown d-none">
+			><i class="bi bi-cpu-fill me-3"></i>
+			{ projectName }</button>
+			<div class="dropdown">
 				<a
 					href="#"
 					class="nav-link"
@@ -87,46 +89,48 @@ templ TopBar() {
 			</div>
 			<div class="dropdown">
 				<a
-					class="avatar avatar-sm text-bg-dark rounded-circle"
+					class="avatar avatar-sm rounded-circle"
 					href="#"
 					role="button"
 					data-bs-toggle="dropdown"
 					aria-haspopup="false"
 					aria-expanded="false"
 				>
-					<img
-						src="../img/memoji/memoji-1.svg"
-					/>
+					<i class="bi bi-person-circle h5"></i>
 				</a>
 				<div class="dropdown-menu dropdown-menu-end">
 					<div class="dropdown-header">
-						<span class="d-block text-sm text-muted mb-1">
-							Signed in
-							as
-						</span> <span class="d-block text-heading fw-semibold">Test User</span>
+						// <span class="d-block text-sm text-muted mb-1">
+						// 	Signed in
+						// 	as
+						// </span>
+						 <span class="d-block text-heading fw-semibold">{ user.Name }{ user.LastName }</span>
 					</div>
 					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="#">
+					// <a class="dropdown-item" href="#">
+					// 	<i
+					// 		class="bi bi-house me-3"
+					// 	></i>Home 
+					// </a>
+					<a
+						class="dropdown-item"
+						href="/dashboard"									
+					>
 						<i
 							class="bi bi-house me-3"
-						></i>Home 
-					</a>
-					<a class="dropdown-item" href="#">
-						<i
-							class="bi bi-pencil me-3"
-						></i>Edit profile
+						></i>Projects 
 					</a>
 					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="#">
-						<i
-							class="bi bi-gear me-3"
-						></i>Settings 
-					</a>
+					// <a class="dropdown-item" href="#">
+					// 	<i
+					// 		class="bi bi-gear me-3"
+					// 	></i>Settings 
+					// </a>
 					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="#">
+					<a class="dropdown-item" hx-get="/dashboard/logout">
 						<i
 							class="bi bi-person me-3"
-						></i>Login
+						></i>Logout
 					</a>
 				</div>
 			</div>

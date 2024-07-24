@@ -75,6 +75,6 @@ func (os *ProjectService) SoftDeleteProjects(ctx echo.Context, userId uuid.UUID)
 	return os.repo.DeleteProjectsByUserId(ctx, userId)
 }
 
-func (repo *ProjectService) GetProjectByID(ctx echo.Context, id string) (*domain.Project, error) {
-	return nil, nil
+func (os *ProjectService) GetProjectByID(ctx echo.Context, id string) (*domain.Project, error) {
+	return os.repo.GetProjectByID(ctx, id)
 }

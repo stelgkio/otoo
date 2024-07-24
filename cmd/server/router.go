@@ -70,7 +70,8 @@ func NewRouter(
 		})
 		dashboardgroup.POST("/contact", homeHandler.DashboardContactForm)
 
-		dashboardgroup.GET("/project/:projectId", dashboardHandler.ProjectDashboard)	
+		dashboardgroup.GET("/project/:projectId", dashboardHandler.DefaultDashboard)	
+		dashboardgroup.GET("/default/:projectId", dashboardHandler.DefaultDashboardOverView)	
 
 		
 		customergroup := dashboardgroup.Group("/customer")
@@ -90,6 +91,8 @@ func NewRouter(
 			productgroup.GET("/:projectId", dashboardHandler.ProductDashboard)
 		}
 
+		
+
 	}
 	//Project group
 	projectgroup := e.Group("/project")
@@ -106,6 +109,11 @@ func NewRouter(
 		projectgroup.POST("/validation/domain", projectHandler.ProjectDomainValidation)
 		projectgroup.GET("/webhooks/:projectId", projectHandler.CheckWebHooks)
 		projectgroup.GET("/:projectId", projectHandler.CheckWebHooks)
+
+		settingsroup := projectgroup.Group("/settings")
+		{
+			settingsroup.GET("/:projectId", projectHandler.ProjectSettings)
+		}
 	}
 	//woocommerce group
 	woocommercegroup := e.Group("/woocommerce")

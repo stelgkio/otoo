@@ -1,8 +1,13 @@
 package views
 
-import c "github.com/stelgkio/otoo/internal/adapter/web/view/component/contact/contact-btn"
+import (
+	"fmt"
+	"unicode/utf8"
+	c "github.com/stelgkio/otoo/internal/adapter/web/view/component/contact/contact-btn"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
 
-templ SideBar() {
+templ SideBar(user *domain.User, projectName , projectId string) {
 	<nav
 		class="flex-none navbar navbar-vertical navbar-expand-lg navbar-light bg-transparent show vh-lg-100 px-0 py-2"
 		id="sidebar"
@@ -38,43 +43,44 @@ templ SideBar() {
 						aria-expanded="false"
 					>
 						<div>
-							<div class="avatar avatar-sm text-bg-secondary rounded-circle">AE</div>
+							<div class="avatar avatar-sm text-bg-secondary rounded-circle">{ getInitials(user.Name,user.LastName) }</div>
 						</div>
-						<div class="d-none d-sm-block ms-3"><span class="h6">TestUser</span></div>
+						<div class="d-none d-sm-block ms-3"><span class="h6">{ user.Name }{ user.LastName }</span></div>
 						<div class="d-none d-md-block ms-md-2">
 							<i class="bi bi-chevron-down text-muted text-xs"></i>
 						</div>
 					</a>
 					<div class="dropdown-menu dropdown-menu-end">
 						<div class="dropdown-header">
-							<span class="d-block text-heading fw-semibold">TestUser</span>
+								<span class="d-block text-heading fw-semibold">{ user.Name }{ user.LastName }</span>
 						</div>
 						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="#">
 							<i
-								class="bi bi-house me-3"
-							></i>MyProjectName 
-						</a>
-						<a class="dropdown-item" href="#">
-							<i class="bi bi-house me-3"></i>Home 
+								class="bi bi-cpu-fill me-3"
+							></i> { projectName } 
 						</a>
 						<a
 							class="dropdown-item"
-							href="#"
+							class="dropdown-item"
+							href="/dashboard"							
+							
 						>
-							<i class="bi bi-pencil me-3"></i>Edit profile
+							<i class="bi bi-house me-3"></i>Projects 
 						</a>
+						// <a
+						// 	class="dropdown-item"
+						// 	href="javascript:void(0)"
+						// 	hx-get="/profile"
+						// 	hx-target="#dashboard-content"
+						// >
+						// 	<i class="bi bi-pencil me-3"></i>Edit profile
+						// </a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">
-							<i
-								class="bi bi-gear me-3"
-							></i>Settings 
-						</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">
+						<a class="dropdown-item" hx-get="/dashboard/logout">
 							<i
 								class="bi bi-person me-3"
-							></i>Login
+							></i>Logout
 						</a>
 					</div>
 				</div>
@@ -101,29 +107,52 @@ templ SideBar() {
 								<li class="nav-item">
 									<a
 										href="javascript:void(0)"
-										hx-get="/default"
-										hx-target="#dashboard-content"
-										hx-replace-url="/dashboard/default"
+										hx-get={ fmt.Sprintf("/dashboard/default/%s",projectId) } 
+										hx-target="#dashboard-content"									
 										class="nav-link fw-bold"
 									>Default</a>
 								</li>
+								// <li class="nav-item">
+								// 	<a
+								// 		href="javascript:void(0)"
+								// 		hx-get="/analytics"
+								// 		hx-target="#dashboard-content"
+								// 		hx-push-url="/dashboard/analytics"
+								// 		class="nav-link"
+								// 	>Analytics</a>
+								// </li>
+								// <li class="nav-item">
+								// 	<a
+								// 		href="javascript:void(0)"
+								// 		hx-get="/wallet"
+								// 		hx-target="#dashboard-content"
+								// 		hx-push-url="/dashboard/wallet"
+								// 		class="nav-link"
+								// 	>Wallet</a>
+								// </li>
 								<li class="nav-item">
 									<a
 										href="javascript:void(0)"
-										hx-get="/analytics"
+										hx-get={ fmt.Sprintf("/dashboard/customer/%s",projectId) } 
 										hx-target="#dashboard-content"
-										hx-push-url="/dashboard/analytics"
 										class="nav-link"
-									>Analytics</a>
+									>Customers</a>
+								</li>
+								<li class="nav-item">
+									<a
+										href="javascript:void(0)"										
+										hx-get={ fmt.Sprintf("/dashboard/product/%s",projectId) } 
+										hx-target="#dashboard-content"
+										class="nav-link"
+									>Products</a>
 								</li>
 								<li class="nav-item">
 									<a
 										href="javascript:void(0)"
-										hx-get="/wallet"
+										hx-get={ fmt.Sprintf("/dashboard/order/%s",projectId) } 
 										hx-target="#dashboard-content"
-										hx-push-url="/dashboard/wallet"
 										class="nav-link"
-									>Wallet</a>
+									>Orders</a>
 								</li>
 							</ul>
 						</div>
@@ -192,10 +221,38 @@ templ SideBar() {
 							</span>
 						</a>
 					</li>
+					<li class="nav-item my-1">
+					<a
+							class="nav-link d-flex align-items-center rounded-pill"
+							href="javascript:void(0)"
+							hx-get={ fmt.Sprintf("/project/settings/%s",projectId) } 
+							hx-target="#dashboard-content"
+						>
+						<i
+							class="bi bi-gear-fill"
+						></i><span>
+								Settings
+							</span>
+					</a>
+					</li>
 				</ul>
 				<div class="mt-auto"></div>
 				@c.ContactBtn()
 			</div>
 		</div>
 	</nav>
+}
+
+func getInitials(name, lastName string) (string, error) {
+	if name == "" || lastName == "" {
+		return "", fmt.Errorf("name and last name must not be empty")
+	}
+
+	// Extract the first rune (Unicode code point) from each string
+	nameInitial, _ := utf8.DecodeRuneInString(name)
+	lastNameInitial, _ := utf8.DecodeRuneInString(lastName)
+
+	// Combine the initials into a single string
+	initials := string(nameInitial) + string(lastNameInitial)
+	return initials, nil
 }

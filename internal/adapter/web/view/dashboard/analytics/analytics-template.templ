@@ -2,11 +2,12 @@ package views
 
 import (
 	t "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/template"
-	o "github.com/stelgkio/otoo/internal/adapter/web/view/component/order/overview"
+	o "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/order/overview"
+	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-templ AnalyticsTemplate() {
-	@t.DashboardTemplate() {
-		@o.OrderOverView()
+templ AnalyticsTemplate(user *domain.User, projectName string, projectId string) {
+	@t.DashboardTemplate(user,projectName,projectId) {
+		@o.OrderOverView(projectId)
 	}
 }

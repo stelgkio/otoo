@@ -3,9 +3,10 @@ package views
 import (
 	n "github.com/stelgkio/otoo/internal/adapter/web/view/component/navigation"
 	h "github.com/stelgkio/otoo/internal/adapter/web/view/component/header"
+	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-templ DashboardTemplate() {
+templ DashboardTemplate(user *domain.User, projectName string, projectId string) {
 	<!DOCTYPE html>
 	<html lang="en">
 		@h.HeaderComponent()
@@ -13,9 +14,9 @@ templ DashboardTemplate() {
 			class="bg-body-tertiary"
 		>
 			<div class="d-flex flex-column flex-lg-row h-lg-100 gap-1">
-				@n.SideBar()
+				@n.SideBar(user,projectName,projectId)
 				<div class="flex-lg-fill overflow-x-auto ps-lg-1 vstack vh-lg-100 position-relative">
-					@n.TopBar()
+					@n.TopBar(user,projectName)
 					{ children... }
 				</div>
 			</div>

@@ -17,9 +17,11 @@ import (
 	"github.com/stelgkio/otoo/internal/adapter/storage/postgres/repository"
 
 	"github.com/stelgkio/otoo/internal/adapter/woocommerce"
+	"github.com/stelgkio/otoo/internal/core/cronjob"
 	"github.com/stelgkio/otoo/internal/core/service"
 )
 
+// NewServer starts the server
 func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *config.Container) *echo.Echo {
 
 	s := StartServer(logger)
@@ -32,11 +34,11 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	projectRepo := repository.NewProjectRepository(db)
 
 	//WooCommerceCustomerServer
-	woocommerceCustomerService := woocommerce.NewCustomerService(woocommerceRepo,projectRepo)
+	woocommerceCustomerService := woocommerce.NewCustomerService(woocommerceRepo, projectRepo)
 	//WooCommerceProductServer
-	woocommerceProductService := woocommerce.NewProductService(woocommerceRepo,projectRepo)
+	woocommerceProductService := woocommerce.NewProductService(woocommerceRepo, projectRepo)
 
-	woocommerceOrderService := woocommerce.NewOrderService(woocommerceRepo,projectRepo)
+	woocommerceOrderService := woocommerce.NewOrderService(woocommerceRepo, projectRepo)
 
 	//Smtp
 	smtpService := service.NewSmtpService()
@@ -53,22 +55,24 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 
 	//WooCommerce
 	woocommerceWebhookService := woocommerce.NewWoocommerceWebhookService(woocommerceRepo)
-	WooCommerceHandler := woocommerce.NewWooCommerceHandler(woocommerceRepo,projectRepo,woocommerceCustomerService)
+	WooCommerceHandler := woocommerce.NewWooCommerceHandler(woocommerceRepo, projectRepo, woocommerceCustomerService)
 
 	//Project
-	projectService := service.NewProjectService(projectRepo, woocommerceWebhookService,woocommerceProductService)
+	projectService := service.NewProjectService(projectRepo, woocommerceWebhookService, woocommerceProductService)
 	projectHandler := handler.NewProjectHandler(projectService, userService)
 
 	//Home
 	homeHandler := handler.NewHomeHandler(projectService, contactService)
 
 	//Dashboard
-	dashboardHandler := handler.NewDashboardHandler(projectService, userService,woocommerceCustomerService,woocommerceProductService,woocommerceOrderService)
+	dashboardHandler := handler.NewDashboardHandler(projectService, userService, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
 
 	//Profile
 	profileHandler := handler.NewProfileHandler(userService, projectService, authService)
+	analyticsCron := cronjob.NewOrderAnalyticsCron(projectService, userService, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
+
 	//Router
-	_, err := NewRouter(s, userHandler, authHandler, homeHandler, projectHandler, WooCommerceHandler, dashboardHandler, profileHandler)
+	_, err := NewRouter(s, userHandler, authHandler, homeHandler, projectHandler, WooCommerceHandler, dashboardHandler, profileHandler, analyticsCron)
 	if err != nil {
 		return nil
 	}
@@ -76,6 +80,7 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	return s
 }
 
+// StartServer starts the server and returns it.
 func StartServer(logger *slog.Logger) *echo.Echo {
 	e := echo.New()
 

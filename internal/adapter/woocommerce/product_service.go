@@ -19,13 +19,13 @@ const (
 	workerCount = 100 // Number of worker goroutines
 	batchSize   = 100 // Number of products to process per batch
 )
+
 type ProductService struct {
 	p port.WoocommerceRepository
 	s port.ProjectRepository
 }
 
-
-func NewProductService(woorepo port.WoocommerceRepository ,projrepo port.ProjectRepository) *ProductService {
+func NewProductService(woorepo port.WoocommerceRepository, projrepo port.ProjectRepository) *ProductService {
 	return &ProductService{
 		p: woorepo,
 		s: projrepo,
@@ -46,14 +46,12 @@ func (s *ProductService) GetAllProductFromWoocommerce(customerKey string, custom
 	return nil
 }
 
-
-
 // createAndSaveAllWebhooks creates WooCommerce products and saves results to MongoDB concurrently
 func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectId uuid.UUID) error {
 
 	var wg sync.WaitGroup
 	productCh := make(chan *w.ProductRecord, batchSize) // Channel to distribute products to workers
-	errorCh := make(chan *w.ProductRecord, 1)   // Buffered channel for error results
+	errorCh := make(chan *w.ProductRecord, 1)           // Buffered channel for error results
 
 	// Worker pool to process products
 	for i := 0; i < workerCount; i++ {
@@ -131,7 +129,6 @@ func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectId 
 	return nil
 }
 
-
 // saveWebhookResult saves webhook creation result to MongoDB
 func (s *ProductService) saveWebhookResult(data *w.ProductRecord) error {
 
@@ -142,16 +139,12 @@ func (s *ProductService) saveWebhookResult(data *w.ProductRecord) error {
 	return nil
 }
 
-
-
-
 func (ps *ProductService) ExtractProductFromOrderAndUpsert(ctx echo.Context, req *w.OrderRecord) error {
 	panic("unimplemented")
 }
 
-
-func (ps *ProductService) GetProductCount(ctx echo.Context, projectId string ,results chan<- int64, errors chan<- error) {
-	productCount, err := ps.p.GetProductCount( projectId)
+func (ps *ProductService) GetProductCount(ctx echo.Context, projectId string, results chan<- int64, errors chan<- error) {
+	productCount, err := ps.p.GetProductCount(projectId)
 	if err != nil {
 		errors <- err
 	}

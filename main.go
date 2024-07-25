@@ -23,6 +23,8 @@ func main() {
 
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	slog.SetDefault(logger)
+	slog.SetLogLoggerLevel(slog.LevelDebug)
+	logger.Info("Starting the application...")
 
 	config, err := config.New()
 	if err != nil {
@@ -70,7 +72,9 @@ func main() {
 
 	// slog.Info("Successfully connected to the cache server")
 
-	//
+	c := server.InitCronScheduler()
+	defer c.Stop()
+
 	app := server.NewServer(db, mongodb, logger, config)
 	// Serve static files from embedded FS
 	app.GET("/assets/*", echo.WrapHandler(http.FileServer(http.FS(assetsFS))))
@@ -78,5 +82,6 @@ func main() {
 	// app.Static("/css", "./css")
 	// app.Static("/assets", "./assets")
 	// app.Static("/fonts", "./fonts")
-	logger.Error("failed to start server", app.Start(":8081"))
+	logger.Error("failed to start server", "error", app.Start(":8081"))
+
 }

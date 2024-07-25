@@ -13,14 +13,17 @@ import (
 	conf "github.com/stelgkio/otoo/internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form"
 	w "github.com/stelgkio/otoo/internal/adapter/woocommerce"
 	auth "github.com/stelgkio/otoo/internal/core/auth"
+	cr "github.com/stelgkio/otoo/internal/core/cronjob"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	r "github.com/stelgkio/otoo/internal/core/util"
 )
 
+// Router is the router for the application
 type Router struct {
 	*echo.Echo
 }
 
+// NewRouter creates a new router
 func NewRouter(
 	e *echo.Echo,
 	userHandler *h.UserHandler,
@@ -30,6 +33,8 @@ func NewRouter(
 	WooCommerceHandler *w.WooCommerceHandler,
 	dashboardHandler *h.DashboardHandler,
 	profileHandler *h.ProfileHandler,
+	orderAnalyticsCron *cr.OrderAnalyticsCron,
+
 ) (*Router, error) {
 
 	e.GET("/index", func(c echo.Context) error {
@@ -38,6 +43,21 @@ func NewRouter(
 
 	e.GET("/contact", func(c echo.Context) error {
 		return r.Render(c, con.ContantComponent())
+	})
+
+	e.GET("/RunAnalyticsJob", func(c echo.Context) error {
+		err := orderAnalyticsCron.RunAnalyticsJob()
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+
+		return c.JSON(http.StatusAccepted, "OK")
+	})
+	e.GET("/RunAProductBestSellerJob", func(c echo.Context) error {
+		return c.JSON(http.StatusAccepted, "OK")
+	})
+	e.GET("/RunCustomerBestBuyerJob", func(c echo.Context) error {
+		return c.JSON(http.StatusAccepted, "OK")
 	})
 	e.POST("/contact", homeHandler.ContactForm)
 
@@ -70,28 +90,23 @@ func NewRouter(
 		})
 		dashboardgroup.POST("/contact", homeHandler.DashboardContactForm)
 
-		dashboardgroup.GET("/project/:projectId", dashboardHandler.DefaultDashboard)	
-		dashboardgroup.GET("/default/:projectId", dashboardHandler.DefaultDashboardOverView)	
+		dashboardgroup.GET("/project/:projectId", dashboardHandler.DefaultDashboard)
+		dashboardgroup.GET("/default/:projectId", dashboardHandler.DefaultDashboardOverView)
 
-		
 		customergroup := dashboardgroup.Group("/customer")
 		{
 			customergroup.GET("/:projectId", dashboardHandler.CustomerDashboard)
 		}
 
-		
 		ordergroup := dashboardgroup.Group("/order")
 		{
 			ordergroup.GET("/:projectId", dashboardHandler.OrderDashboard)
 		}
-		
-		
+
 		productgroup := dashboardgroup.Group("/product")
 		{
 			productgroup.GET("/:projectId", dashboardHandler.ProductDashboard)
 		}
-
-		
 
 	}
 	//Project group
@@ -157,20 +172,20 @@ func NewRouter(
 	{
 		customergroup.Use(configureJWT())
 		customergroup.Use(auth.TokenRefresherMiddleware)
-		
+
 	}
 
 	ordergroup := e.Group("/order")
 	{
 		ordergroup.Use(configureJWT())
 		ordergroup.Use(auth.TokenRefresherMiddleware)
-		
+
 	}
 	productgroup := e.Group("/product")
 	{
 		productgroup.Use(configureJWT())
 		productgroup.Use(auth.TokenRefresherMiddleware)
-		
+
 	}
 
 	//Profile

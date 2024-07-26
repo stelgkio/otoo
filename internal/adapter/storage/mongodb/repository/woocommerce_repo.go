@@ -2,6 +2,8 @@ package repository
 
 import (
 	"context"
+	"log"
+	"log/slog"
 	"time"
 
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
@@ -91,11 +93,11 @@ func (repo WoocommerceRepository) OrderFindByProjectID(projectID string, size, p
 }
 
 // GetOrderCount get number of orders
-func (repo WoocommerceRepository) GetOrderCount(projectID string) (int64, error) {
+func (repo WoocommerceRepository) GetOrderCount(projectID string, orderStatus w.OrderStatus) (int64, error) {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
-	filter := bson.M{"projectId": projectID, "is_active": true}
+	filter := bson.M{"projectId": projectID, "is_active": true, "status": orderStatus}
 	res, err := coll.CountDocuments(ctx, filter)
 
 	if err != nil {
@@ -105,11 +107,11 @@ func (repo WoocommerceRepository) GetOrderCount(projectID string) (int64, error)
 }
 
 // GetOrdersCountBetweenOrEquals get number of orders between or equals to timeperiod
-func (repo WoocommerceRepository) GetOrdersCountBetweenOrEquals(projectID string, timeperiod time.Time) (int64, error) {
+func (repo WoocommerceRepository) GetOrdersCountBetweenOrEquals(projectID string, timeperiod time.Time, orderStatus w.OrderStatus) (int64, error) {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
-	filter := bson.M{"projectId": projectID, "is_active": true, "timestamp": bson.M{"$gte": timeperiod}}
+	filter := bson.M{"projectId": projectID, "is_active": true, "status": orderStatus, "timestamp": bson.M{"$gte": timeperiod}}
 	totalcount, err := coll.CountDocuments(ctx, filter)
 	return totalcount, err
 }
@@ -225,6 +227,23 @@ func (repo WoocommerceRepository) ProductFindByProjectID(projectID string) error
 	return nil
 }
 
+// GetProductByID get product by projectID and orderID
+func (repo WoocommerceRepository) GetProductByID(projectID string, productID int64) (*w.ProductRecord, error) {
+	var result *w.ProductRecord
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	filter := bson.M{"projectId": projectID, "is_active": true, "productId": productID}
+	err := coll.FindOne(ctx, filter).Decode(&result)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return result, nil
+}
+
 // GetProductCount get number of products
 func (repo WoocommerceRepository) GetProductCount(projectID string) (int64, error) {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
@@ -237,6 +256,57 @@ func (repo WoocommerceRepository) GetProductCount(projectID string) (int64, erro
 		return 0, err
 	}
 	return res, nil
+}
+
+// GetProductBestSeller get best seller products
+func (repo WoocommerceRepository) ProductBestSellerAggregate(projectID string) ([]bson.M, error) {
+	collection := repo.mongo.Database("otoo").Collection("woocommerce_products")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	// Define the aggregation pipeline
+	// Define the aggregation pipeline
+	pipeline := mongo.Pipeline{
+		{{Key: "$match", Value: bson.D{{Key: "projectId", Value: projectID}}}},
+		{{Key: "$unwind", Value: "$orders"}},
+		{{Key: "$group", Value: bson.D{
+			{Key: "_id", Value: "$productId"},
+			{Key: "orderCount", Value: bson.D{{Key: "$sum", Value: 1}}},
+		}}},
+		{{Key: "$sort", Value: bson.D{{Key: "orderCount", Value: -1}}}},
+		{{Key: "$limit", Value: 5}},
+		{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: "woocommerce_products"},
+			{Key: "localField", Value: "_id"},
+			{Key: "foreignField", Value: "productId"},
+			{Key: "as", Value: "product"},
+		}}},
+		{{Key: "$unwind", Value: "$product"}},
+		{{Key: "$project", Value: bson.D{
+			{Key: "_id", Value: 0},
+			{Key: "productId", Value: "$_id"},
+			{Key: "orderCount", Value: 1},
+			{Key: "product", Value: 1},
+		}}},
+	}
+
+	// Execute the aggregation
+	cursor, err := collection.Aggregate(ctx, pipeline)
+	if err != nil {
+		slog.Error("collection.Aggregate", "error", err)
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	//var products []*w.ProductRecord
+
+	defer cursor.Close(ctx)
+
+	var results []bson.M
+	if err := cursor.All(ctx, &results); err != nil {
+		log.Fatal("Error decoding cursor result: ", err)
+	}
+
+	return results, nil
 }
 
 // Coupon

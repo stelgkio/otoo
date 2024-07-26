@@ -17,7 +17,7 @@ type ProjectService struct {
 }
 
 // NewUserService creates a new user service instance
-func NewProjectService(repo port.ProjectRepository, wp port.WoocommerceWebhookService,wc port.ProductService) *ProjectService {
+func NewProjectService(repo port.ProjectRepository, wp port.WoocommerceWebhookService, wc port.ProductService) *ProjectService {
 	return &ProjectService{
 		repo,
 		wp,
@@ -67,14 +67,22 @@ func (ps *ProjectService) CreateProject(ctx echo.Context, req *domain.ProjectReq
 	return pr, nil
 }
 
-func (os *ProjectService) FindProjects(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error) {
-	return os.repo.FindProjects(ctx, filters, skip, limit)
+// FindProjects finds projects in the database
+func (ps *ProjectService) FindProjects(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error) {
+	return ps.repo.FindProjects(ctx, filters, skip, limit)
 }
 
-func (os *ProjectService) SoftDeleteProjects(ctx echo.Context, userId uuid.UUID) error {
-	return os.repo.DeleteProjectsByUserId(ctx, userId)
+// SoftDeleteProjects is doing a soft delete to this projects
+func (ps *ProjectService) SoftDeleteProjects(ctx echo.Context, userID uuid.UUID) error {
+	return ps.repo.DeleteProjectsByUserID(ctx, userID)
 }
 
-func (os *ProjectService) GetProjectByID(ctx echo.Context, id string) (*domain.Project, error) {
-	return os.repo.GetProjectByID(ctx, id)
+// GetProjectByID gets a project by its ID
+func (ps *ProjectService) GetProjectByID(ctx echo.Context, id string) (*domain.Project, error) {
+	return ps.repo.GetProjectByID(ctx, id)
+}
+
+// GetAllProjects returns all projects
+func (ps *ProjectService) GetAllProjects() ([]*domain.Project, error) {
+	return ps.repo.GetAllProjects()
 }

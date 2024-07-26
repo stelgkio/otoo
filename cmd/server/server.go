@@ -16,9 +16,9 @@ import (
 	mongorepo "github.com/stelgkio/otoo/internal/adapter/storage/mongodb/repository"
 	"github.com/stelgkio/otoo/internal/adapter/storage/postgres/repository"
 
-	"github.com/stelgkio/otoo/internal/adapter/woocommerce"
-	"github.com/stelgkio/otoo/internal/core/cronjob"
+	cronjob "github.com/stelgkio/otoo/internal/core/cron_job"
 	"github.com/stelgkio/otoo/internal/core/service"
+	"github.com/stelgkio/otoo/internal/core/service/woocommerce"
 )
 
 // NewServer starts the server
@@ -70,9 +70,9 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	//Profile
 	profileHandler := handler.NewProfileHandler(userService, projectService, authService)
 	analyticsCron := cronjob.NewOrderAnalyticsCron(projectService, userService, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
-
+	bestSellerCron := cronjob.NewProductBestSellerCron(projectService, userService, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
 	//Router
-	_, err := NewRouter(s, userHandler, authHandler, homeHandler, projectHandler, WooCommerceHandler, dashboardHandler, profileHandler, analyticsCron)
+	_, err := NewRouter(s, userHandler, authHandler, homeHandler, projectHandler, WooCommerceHandler, dashboardHandler, profileHandler, analyticsCron, bestSellerCron)
 	if err != nil {
 		return nil
 	}

@@ -58,7 +58,7 @@ func (dh *DashboardHandler) DefaultDashboard(ctx echo.Context) error {
 	// Fetch order count
 	go func() {
 		defer wg.Done()
-		dh.orderSvc.GetOrderCountAsync(ctx, projectID, orderResults, orderErrors)
+		dh.orderSvc.GetOrderCountAsync(ctx, projectID, w.OrderStatusCompleted, orderResults, orderErrors)
 	}()
 
 	// Fetch product count
@@ -158,7 +158,7 @@ func (dh *DashboardHandler) DefaultDashboardOverView(ctx echo.Context) error {
 	// Fetch order count
 	go func() {
 		defer wg.Done()
-		dh.orderSvc.GetOrderCountAsync(ctx, projectID, orderResults, orderErrors)
+		dh.orderSvc.GetOrderCountAsync(ctx, projectID, w.OrderStatusCompleted, orderResults, orderErrors)
 	}()
 
 	// Fetch product count

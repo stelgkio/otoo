@@ -11,10 +11,10 @@ import (
 	v "github.com/stelgkio/otoo/internal/adapter/web/view"
 	con "github.com/stelgkio/otoo/internal/adapter/web/view/component/contact"
 	conf "github.com/stelgkio/otoo/internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form"
-	w "github.com/stelgkio/otoo/internal/adapter/woocommerce"
 	auth "github.com/stelgkio/otoo/internal/core/auth"
-	cr "github.com/stelgkio/otoo/internal/core/cronjob"
+	cr "github.com/stelgkio/otoo/internal/core/cron_job"
 	"github.com/stelgkio/otoo/internal/core/domain"
+	w "github.com/stelgkio/otoo/internal/core/service/woocommerce"
 	r "github.com/stelgkio/otoo/internal/core/util"
 )
 
@@ -34,6 +34,7 @@ func NewRouter(
 	dashboardHandler *h.DashboardHandler,
 	profileHandler *h.ProfileHandler,
 	orderAnalyticsCron *cr.OrderAnalyticsCron,
+	productBestSellerCron *cr.ProductBestSellerCron,
 
 ) (*Router, error) {
 
@@ -53,7 +54,15 @@ func NewRouter(
 
 		return c.JSON(http.StatusAccepted, "OK")
 	})
-	e.GET("/RunAProductBestSellerJob", func(c echo.Context) error {
+	e.GET("/RunAProductBestSellerDailyJob", func(c echo.Context) error {
+		return c.JSON(http.StatusAccepted, "OK")
+	})
+	e.GET("/RunAProductBestSellerInitializerJob", func(c echo.Context) error {
+		err := productBestSellerCron.RunAProductBestSellerInitializerJob("72eabb24-0fc6-428b-b7cf-f1e35608d3fe")
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+
 		return c.JSON(http.StatusAccepted, "OK")
 	})
 	e.GET("/RunCustomerBestBuyerJob", func(c echo.Context) error {

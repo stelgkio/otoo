@@ -21,7 +21,7 @@ func NewProjectRepository(db *pg.DB) *ProjectRepository {
 	}
 }
 
-// CreatProject creates a newProject in the database
+// CreateProject creates a newProject in the database
 func (repo *ProjectRepository) CreateProject(ctx echo.Context, project *domain.Project) (*domain.Project, error) {
 
 	_, err := repo.db.Model(project).Insert()
@@ -32,6 +32,7 @@ func (repo *ProjectRepository) CreateProject(ctx echo.Context, project *domain.P
 	return project, nil
 }
 
+// FindProjects finds projects in the database
 func (repo *ProjectRepository) FindProjects(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error) {
 
 	var projects []*domain.Project
@@ -64,13 +65,13 @@ func (repo *ProjectRepository) FindProjects(ctx echo.Context, filters *domain.Fi
 	return projects, nil
 }
 
-// DeleteProjectsByUserId is doing a soft delete to this projects
-func (repo *ProjectRepository) DeleteProjectsByUserId(ctx echo.Context, userId uuid.UUID) error {
+// DeleteProjectsByUserID is doing a soft delete to this projects
+func (repo *ProjectRepository) DeleteProjectsByUserID(ctx echo.Context, userID uuid.UUID) error {
 	project := &domain.Project{}
 	res, err := repo.db.Model(project).
 		Set("is_active = ?", false).
 		Set("deleted_at = ?", time.Now()).
-		Where("user_id = ?", userId).
+		Where("user_id = ?", userID).
 		//Returning("*"). // This ensures the updated project is returned
 		Update()
 	if res.RowsAffected() == 0 {
@@ -84,34 +85,44 @@ func (repo *ProjectRepository) DeleteProjectsByUserId(ctx echo.Context, userId u
 	return nil
 }
 
+// GetProjectByID returns a project by id
 func (repo *ProjectRepository) GetProjectByID(ctx echo.Context, id string) (*domain.Project, error) {
 	project := domain.Project{}
-	err := repo.db.Model(&project).	
+	err := repo.db.Model(&project).
 		Where("is_active = ?", true).
 		Where("id =?", id).
 		Select()
-		
-	
+
 	if err != nil {
 		return nil, err
 	}
 
-	
 	return &project, nil
 }
 
-func (repo *ProjectRepository) GetProjectByDomain(ctx echo.Context, domainUrl string) (*domain.Project, error) {
+// GetProjectByDomain returns a project by domaiL
+func (repo *ProjectRepository) GetProjectByDomain(ctx echo.Context, domainURL string) (*domain.Project, error) {
 	project := domain.Project{}
-	err := repo.db.Model(&project).	
+	err := repo.db.Model(&project).
 		Where("is_active = ?", true).
-		Where("woocommerce_domain =?", domainUrl).
+		Where("woocommerce_domain =?", domainURL).
 		First()
-		
-	
+
 	if err != nil {
 		return nil, err
 	}
 
-	
 	return &project, nil
+}
+
+// GetAllProjects returns all projects
+func (repo *ProjectRepository) GetAllProjects() ([]*domain.Project, error) {
+	var projects []*domain.Project
+	err := repo.db.Model(&projects).
+		Where("is_active = ?", true).
+		Select()
+	if err != nil {
+		return nil, err
+	}
+	return projects, nil
 }

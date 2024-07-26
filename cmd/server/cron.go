@@ -18,13 +18,14 @@ func InitCronScheduler() *cron.Cron {
 	// Start the cron scheduler
 	c.Start()
 	// Add a cron job that runs every 10 seconds
-	_, err := c.AddFunc("@every 10s", RunAnalyticsJob)
-	_, err = c.AddFunc("@every 10s", RunAProductBestSellerJob)
-	_, err = c.AddFunc("@every 10s", RunCustomerBestBuyerJob)
+	// _, err := c.AddFunc("@every 10s", RunAnalyticsJob)
+	// _, err = c.AddFunc("@every 10s", RunAProductBestSellerJob)
+	// _, err = c.AddFunc("@every 10s", RunCustomerBestBuyerJob)
+	// _, err = c.AddFunc("@every 10s", RunAProductBestSellerInitializerJob)
 
-	if err != nil {
-		fmt.Println("Error reading the response body:", err)
-	}
+	// if err != nil {
+	// 	fmt.Println("Error reading the response body:", err)
+	// }
 	fmt.Println("Cron scheduler initialized")
 
 	return c
@@ -52,7 +53,26 @@ func RunAnalyticsJob() {
 // RunAProductBestSellerJob is the function to be executed by the cron job
 func RunAProductBestSellerJob() {
 	domain := os.Getenv("SITE_URL")
-	resp, err := http.Get(fmt.Sprintf("%s/RunAProductBestSellerJob", domain))
+	resp, err := http.Get(fmt.Sprintf("%s/RunAProductBestSellerDailyJob", domain))
+	if err != nil {
+		fmt.Println("Error while calling the API:", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("Error reading the response body:", err)
+		return
+	}
+
+	fmt.Println(string(body))
+}
+
+// RunAProductBestSellerInitializerJob is the function to be executed by the cron job
+func RunAProductBestSellerInitializerJob() {
+	domain := os.Getenv("SITE_URL")
+	resp, err := http.Get(fmt.Sprintf("%s/RunAProductBestSellerInitializerJob", domain))
 	if err != nil {
 		fmt.Println("Error while calling the API:", err)
 		return

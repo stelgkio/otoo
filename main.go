@@ -72,10 +72,10 @@ func main() {
 
 	// slog.Info("Successfully connected to the cache server")
 
+	app := server.NewServer(db, mongodb, logger, config)
+
 	c := server.InitCronScheduler()
 	defer c.Stop()
-
-	app := server.NewServer(db, mongodb, logger, config)
 	// Serve static files from embedded FS
 	app.GET("/assets/*", echo.WrapHandler(http.FileServer(http.FS(assetsFS))))
 

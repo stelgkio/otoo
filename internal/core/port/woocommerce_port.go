@@ -8,6 +8,7 @@ import (
 	domain "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -18,8 +19,8 @@ type WoocommerceRepository interface {
 	OrderUpdate(data *w.OrderRecord, orderID int64) error
 	OrderDelete(data any) error
 	OrderFindByProjectID(projectID string, size, page int) ([]*w.OrderRecord, error)
-	GetOrderCount(projectID string) (int64, error)
-	GetOrdersCountBetweenOrEquals(projectID string, timeperiod time.Time) (int64, error)
+	GetOrderCount(projectID string, orderStatus w.OrderStatus) (int64, error)
+	GetOrdersCountBetweenOrEquals(projectID string, timeperiod time.Time, orderStatus w.OrderStatus) (int64, error)
 
 	CustomerCreate(data *w.CustomerRecord) error
 	CustomerUpdate(data *w.CustomerRecord, email string) error
@@ -33,6 +34,8 @@ type WoocommerceRepository interface {
 	ProductUpdate(data *w.ProductRecord, productID int64) error
 	ProductFindByProjectID(projectID string) error
 	GetProductCount(projectID string) (int64, error)
+	GetProductByID(projectID string, orderID int64) (*w.ProductRecord, error)
+	ProductBestSellerAggregate(projectID string) ([]bson.M, error)
 
 	CouponCreate(data any) error
 	CouponUpdate(data any) error
@@ -62,12 +65,14 @@ type ProductService interface {
 	ExtractProductFromOrderAndUpsert(ctx echo.Context, req *woo.OrderRecord) error
 	GetAllProductFromWoocommerce(ccustomerKey string, customerSecret string, domainURL string, projectID uuid.UUID) error
 	GetProductCount(ctx echo.Context, projectID string, results chan<- int64, errors chan<- error)
+	GetProductBestSeller(projectID string, results chan<- []*domain.ProductBestSellerRecord, errors chan<- error)
 }
 
 // OrderService defines the methods for interacting with the Order service
 type OrderService interface {
 	Get10LatestOrders(ctx echo.Context, projectID string, results chan<- []*domain.OrderRecord, errors chan<- error)
-	GetOrderCountAsync(ctx echo.Context, projectID string, results chan<- int64, errors chan<- error)
-	GetOrdersCountBetweenOrEquals(projectID string, timePeriod time.Time) (int64, error)
-	GetOrderCount(projectID string) (int64, error)
+	GetOrderCountAsync(ctx echo.Context, projectID string, orderStatus w.OrderStatus, results chan<- int64, errors chan<- error)
+	GetOrdersCountBetweenOrEquals(projectID string, timePeriod time.Time, orderStatus w.OrderStatus) (int64, error)
+	GetOrderCount(projectID string, orderStatus w.OrderStatus) (int64, error)
+	FindOrderByProjectIDAsync(projectID string, size, page int, results chan<- []*domain.OrderRecord, errors chan<- error)
 }

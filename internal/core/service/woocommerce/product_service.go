@@ -182,7 +182,7 @@ func (s *ProductService) GetProductCount(ctx echo.Context, projectID string, res
 }
 
 // GetProductBestSeller gets product best seller from MongoDB
-func (s *ProductService) GetProductBestSeller(projectID string, results chan<- []*domain.ProductBestSellerRecord, errors chan<- error) {
+func (s *ProductService) GetProductBestSeller(projectID string, totalCount int64, results chan<- []*domain.ProductBestSellerRecord, errors chan<- error) {
 	products, err := s.p.ProductBestSellerAggregate(projectID)
 	if err != nil {
 		errors <- err
@@ -230,6 +230,7 @@ func (s *ProductService) GetProductBestSeller(projectID string, results chan<- [
 			Timestamp:   time.Now(),
 			IsActive:    true,
 		}
+		newProductBestSellerRecord.CalculatePercentages(totalCount)
 		bestSellers = append(bestSellers, newProductBestSellerRecord)
 	}
 	if err != nil {

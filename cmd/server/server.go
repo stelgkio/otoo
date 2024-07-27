@@ -31,6 +31,7 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	userRepo := repository.NewUserRepository(db)
 	authService := service.NewAuthService(userRepo, nil)
 	woocommerceRepo := mongorepo.NewWoocommerceRepository(mongodb)
+	analyticsRepo := mongorepo.NewAnalyticsRepository(mongodb)
 	projectRepo := repository.NewProjectRepository(db)
 
 	//WooCommerceCustomerServer
@@ -55,7 +56,7 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 
 	//WooCommerce
 	woocommerceWebhookService := woocommerce.NewWoocommerceWebhookService(woocommerceRepo)
-	WooCommerceHandler := woocommerce.NewWooCommerceHandler(woocommerceRepo, projectRepo, woocommerceCustomerService)
+	WooCommerceHandler := handler.NewWooCommerceHandler(woocommerceRepo, projectRepo, woocommerceCustomerService)
 
 	//Project
 	projectService := service.NewProjectService(projectRepo, woocommerceWebhookService, woocommerceProductService)
@@ -65,12 +66,12 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	homeHandler := handler.NewHomeHandler(projectService, contactService)
 
 	//Dashboard
-	dashboardHandler := handler.NewDashboardHandler(projectService, userService, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
+	dashboardHandler := handler.NewDashboardHandler(projectService, userService, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService, analyticsRepo)
 
 	//Profile
 	profileHandler := handler.NewProfileHandler(userService, projectService, authService)
 	analyticsCron := cronjob.NewOrderAnalyticsCron(projectService, userService, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
-	bestSellerCron := cronjob.NewProductBestSellerCron(projectService, userService, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
+	bestSellerCron := cronjob.NewProductBestSellerCron(projectService, analyticsRepo, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
 	//Router
 	_, err := NewRouter(s, userHandler, authHandler, homeHandler, projectHandler, WooCommerceHandler, dashboardHandler, profileHandler, analyticsCron, bestSellerCron)
 	if err != nil {

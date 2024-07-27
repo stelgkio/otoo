@@ -14,7 +14,7 @@ import (
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 )
 
-func DeafultTemplate(user *domain.User, projectName string, projectId string, counts map[string]string, orders []*woo.OrderRecord) templ.Component {
+func DeafultTemplate(user *domain.User, projectName string, projectId string, counts map[string]string, orders []*woo.OrderRecord, bestSeller []*woo.ProductBestSellerRecord) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -44,7 +44,7 @@ func DeafultTemplate(user *domain.User, projectName string, projectId string, co
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = DeafultDashboard(projectId, counts, orders).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = DeafultDashboard(projectId, counts, orders, bestSeller).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

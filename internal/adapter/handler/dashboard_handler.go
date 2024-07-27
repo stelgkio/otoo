@@ -23,16 +23,18 @@ type DashboardHandler struct {
 	customerSvc port.CustomerService
 	productSvc  port.ProductService
 	orderSvc    port.OrderService
+	bestSeller  port.BestSellers
 }
 
 // NewDashboardHandler returns a new DashboardHandler
-func NewDashboardHandler(projectSvc port.ProjectService, userSvc port.UserService, customerSvc port.CustomerService, productSvc port.ProductService, orderSvc port.OrderService) *DashboardHandler {
+func NewDashboardHandler(projectSvc port.ProjectService, userSvc port.UserService, customerSvc port.CustomerService, productSvc port.ProductService, orderSvc port.OrderService, bestSeller port.BestSellers) *DashboardHandler {
 	return &DashboardHandler{
 		projectSvc:  projectSvc,
 		userSvc:     userSvc,
 		customerSvc: customerSvc,
 		productSvc:  productSvc,
 		orderSvc:    orderSvc,
+		bestSeller:  bestSeller,
 	}
 }
 
@@ -132,8 +134,12 @@ func (dh *DashboardHandler) DefaultDashboard(ctx echo.Context) error {
 		"product_count":  fmt.Sprintf("%d", productCount),
 		"customer_count": fmt.Sprintf("%d", customerCount),
 	}
+	bestSeller, err := dh.bestSeller.FindBestSellers(projectID, 5, 1)
+	if err != nil {
+		return fmt.Errorf("bestSeller error: %v", err)
+	}
 
-	return util.Render(ctx, t.DeafultTemplate(user, project.Name, projectID, response, orderList))
+	return util.Render(ctx, t.DeafultTemplate(user, project.Name, projectID, response, orderList, bestSeller))
 }
 
 // DefaultDashboardOverView returns the default dashboard
@@ -232,8 +238,12 @@ func (dh *DashboardHandler) DefaultDashboardOverView(ctx echo.Context) error {
 		"product_count":  fmt.Sprintf("%d", productCount),
 		"customer_count": fmt.Sprintf("%d", customerCount),
 	}
+	bestSeller, err := dh.bestSeller.FindBestSellers(projectID, 5, 1)
+	if err != nil {
+		return fmt.Errorf("bestSeller error: %v", err)
+	}
 
-	return util.Render(ctx, t.DeafultDashboard(projectID, response, orderList))
+	return util.Render(ctx, t.DeafultDashboard(projectID, response, orderList, bestSeller))
 }
 
 // CustomerDashboard returns the customer dashboard

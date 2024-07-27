@@ -12,21 +12,21 @@ import (
 
 // ProductBestSellerCron  represents the cron job for order analytics
 type ProductBestSellerCron struct {
-	projectSvc  port.ProjectService
-	userSvc     port.UserService
-	customerSvc port.CustomerService
-	productSvc  port.ProductService
-	orderSvc    port.OrderService
+	projectSvc    port.ProjectService
+	bestSellerSvc port.BestSellers
+	customerSvc   port.CustomerService
+	productSvc    port.ProductService
+	orderSvc      port.OrderService
 }
 
 // NewProductBestSellerCron creates a new OrderAnalyticsCron instance
-func NewProductBestSellerCron(projectSvc port.ProjectService, userSvc port.UserService, customerSvc port.CustomerService, productSvc port.ProductService, orderSvc port.OrderService) *ProductBestSellerCron {
+func NewProductBestSellerCron(projectSvc port.ProjectService, bestSellerSvc port.BestSellers, customerSvc port.CustomerService, productSvc port.ProductService, orderSvc port.OrderService) *ProductBestSellerCron {
 	return &ProductBestSellerCron{
-		projectSvc:  projectSvc,
-		userSvc:     userSvc,
-		customerSvc: customerSvc,
-		productSvc:  productSvc,
-		orderSvc:    orderSvc,
+		projectSvc:    projectSvc,
+		bestSellerSvc: bestSellerSvc,
+		customerSvc:   customerSvc,
+		productSvc:    productSvc,
+		orderSvc:      orderSvc,
 	}
 }
 
@@ -127,17 +127,16 @@ func (as *ProductBestSellerCron) RunAProductBestSellerInitializerJob(projectID s
 	bestSellerWg.Add(1)
 	go func() {
 		defer bestSellerWg.Done()
-		as.productSvc.GetProductBestSeller(projectID, productBestSellers, productBestSellersErrors)
+		as.productSvc.GetProductBestSeller(projectID, totalCount, productBestSellers, productBestSellersErrors)
 	}()
 
 	bestSellerWg.Wait()
 	close(productBestSellers)
 	close(productBestSellersErrors)
 
+	//TODO: find best seller rates
 	for items := range productBestSellers {
-		for _, product := range items {
-			fmt.Println(product)
-		}
+		as.bestSellerSvc.CreateBestSellers(projectID, items)
 	}
 	for err := range productBestSellersErrors {
 		fmt.Println("Error finding orders:", err)

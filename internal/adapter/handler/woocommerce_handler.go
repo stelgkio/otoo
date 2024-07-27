@@ -1,4 +1,4 @@
-package woocommerce
+package handler
 
 import (
 	"bytes"

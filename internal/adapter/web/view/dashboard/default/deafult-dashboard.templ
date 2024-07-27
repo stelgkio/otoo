@@ -7,7 +7,7 @@ import (
 	 woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 )
 
-templ DeafultDashboard(projectId string,counts map[string]string,orders []*woo.OrderRecord) {
+templ DeafultDashboard(projectId string,counts map[string]string,orders []*woo.OrderRecord,bestSeller []*woo.ProductBestSellerRecord) {
 	<div
 		id="dashboard-content"
 		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
@@ -202,8 +202,8 @@ templ DeafultDashboard(projectId string,counts map[string]string,orders []*woo.O
 										</div>
 									</div>
 								</div>
-								<hr class="my-0 d-xxl-none"/>
-								@p.ProductBestSeller()
+								<hr class="my-0 d-xxl-none"/>								
+								@p.ProductBestSeller(bestSeller)
 								<hr class="my-0 d-xxl-none"/>
 							</div>
 						</div>

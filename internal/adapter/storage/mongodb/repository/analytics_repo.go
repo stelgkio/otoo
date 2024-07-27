@@ -33,7 +33,7 @@ func (r *AnalyticsRepository) FindBestSellers(projectID string, size, page int) 
 	findOptions := options.Find()
 	findOptions.SetLimit(int64(size))
 	findOptions.SetSkip(int64(size * (page - 1)))
-	findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
+	findOptions.SetSort(bson.D{{Key: "total_orders", Value: -1}})
 	cursor, err := coll.Find(ctx, filter, findOptions)
 	if err != nil {
 		return nil, err

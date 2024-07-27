@@ -65,7 +65,7 @@ type ProductService interface {
 	ExtractProductFromOrderAndUpsert(ctx echo.Context, req *woo.OrderRecord) error
 	GetAllProductFromWoocommerce(ccustomerKey string, customerSecret string, domainURL string, projectID uuid.UUID) error
 	GetProductCount(ctx echo.Context, projectID string, results chan<- int64, errors chan<- error)
-	GetProductBestSeller(projectID string, results chan<- []*domain.ProductBestSellerRecord, errors chan<- error)
+	GetProductBestSeller(projectID string, totalCount int64, results chan<- []*domain.ProductBestSellerRecord, errors chan<- error)
 }
 
 // OrderService defines the methods for interacting with the Order service

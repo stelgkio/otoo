@@ -14,7 +14,6 @@ import (
 	auth "github.com/stelgkio/otoo/internal/core/auth"
 	cr "github.com/stelgkio/otoo/internal/core/cron_job"
 	"github.com/stelgkio/otoo/internal/core/domain"
-	w "github.com/stelgkio/otoo/internal/core/service/woocommerce"
 	r "github.com/stelgkio/otoo/internal/core/util"
 )
 
@@ -30,7 +29,7 @@ func NewRouter(
 	authHandler *h.AuthHandler,
 	homeHandler *h.HomeHandler,
 	projectHandler *h.ProjectHandler,
-	WooCommerceHandler *w.WooCommerceHandler,
+	WooCommerceHandler *h.WooCommerceHandler,
 	dashboardHandler *h.DashboardHandler,
 	profileHandler *h.ProfileHandler,
 	orderAnalyticsCron *cr.OrderAnalyticsCron,

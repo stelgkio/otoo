@@ -9,8 +9,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// OrderStatus enum
 type OrderStatus string
+
 const (
+	OrderStatusAll           OrderStatus = "all"
 	OrderStatusPending       OrderStatus = "pending"
 	OrderStatusProcessing    OrderStatus = "processing"
 	OrderStatusOnHold        OrderStatus = "on-hold"
@@ -58,6 +61,8 @@ func (o *OrderRecord) SoftDelete() {
 
 func StringToOrderStatus(status string) (OrderStatus, error) {
 	switch status {
+	case string(OrderStatusAll):
+		return OrderStatusAll, nil
 	case string(OrderStatusPending):
 		return OrderStatusPending, nil
 	case string(OrderStatusProcessing):
@@ -75,4 +80,23 @@ func StringToOrderStatus(status string) (OrderStatus, error) {
 	default:
 		return "", errors.New("invalid order status")
 	}
+}
+
+type OrderTableList struct {
+	ID          primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	ProjectID   string             `bson:"projectId" json:"projectId"`
+	Timestamp   time.Time          `bson:"timestamp,omitempty" json:"timestamp,omitempty"`
+	OrderID     int64              `bson:"orderId,omitempty" json:"orderId,omitempty"`
+	TotalAmount string             `bson:"total_amount,omitempty" json:"total_amount,omitempty"`
+	Status      OrderStatus        `bson:"status,omitempty" json:"status,omitempty"`
+}
+type Meta struct {
+	TotalItems   int `json:"totalItems"`
+	CurrentPage  int `json:"currentPage"`
+	ItemsPerPage int `json:"itemsPerPage"`
+	TotalPages   int `json:"totalPages"`
+}
+type OrderTableResponde struct {
+	Data []OrderTableList `json:"data"`
+	Meta Meta             `json:"meta"`
 }

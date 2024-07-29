@@ -42,8 +42,8 @@ func (os *OrderService) GetOrderCount(projectID string, orderStatus w.OrderStatu
 }
 
 // Get10LatestOrders retrieves the latest 10 orders for a given project ID
-func (os *OrderService) Get10LatestOrders(ctx echo.Context, projectID string, results chan<- []*domain.OrderRecord, errors chan<- error) {
-	orders, err := os.p.OrderFindByProjectID(projectID, 10, 1)
+func (os *OrderService) Get10LatestOrders(ctx echo.Context, projectID string, orderStatus w.OrderStatus, results chan<- []*domain.OrderRecord, errors chan<- error) {
+	orders, err := os.p.OrderFindByProjectID(projectID, 10, 1, orderStatus)
 	if err != nil {
 		errors <- err
 	}
@@ -61,8 +61,8 @@ func (os *OrderService) GetOrdersCountBetweenOrEquals(projectID string, timePeri
 }
 
 // FindOrderByProjectIDAsync retrieves orders for a given project ID
-func (os *OrderService) FindOrderByProjectIDAsync(projectID string, size, page int, results chan<- []*domain.OrderRecord, errors chan<- error) {
-	orderCount, err := os.p.OrderFindByProjectID(projectID, size, page)
+func (os *OrderService) FindOrderByProjectIDAsync(projectID string, size, page int, orderStatus w.OrderStatus, results chan<- []*domain.OrderRecord, errors chan<- error) {
+	orderCount, err := os.p.OrderFindByProjectID(projectID, size, page, orderStatus)
 	if err != nil {
 		errors <- err
 	}

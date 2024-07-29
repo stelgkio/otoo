@@ -13884,3 +13884,21 @@ span.flatpickr-weekday {
     transform: translateY(-50%);
     cursor: pointer;
 }
+th {
+    cursor: pointer;
+}
+tbody tr {
+    height: 40px; /* Adjust this value based on your desired row height */
+}
+/* Smooth transitions for table rows */
+.table tbody tr {
+    transition: opacity 0.5s ease-in-out;
+}
+
+.table tbody.tr.hidden {
+    opacity: 0;
+}
+
+.table tbody.tr.visible {
+    opacity: 1;
+}

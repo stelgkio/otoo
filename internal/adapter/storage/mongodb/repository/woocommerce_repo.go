@@ -60,21 +60,24 @@ func (repo WoocommerceRepository) OrderDelete(data any) error {
 }
 
 // OrderFindByProjectID find all orders by projectID
-func (repo WoocommerceRepository) OrderFindByProjectID(projectID string, size, page int) ([]*w.OrderRecord, error) {
+func (repo WoocommerceRepository) OrderFindByProjectID(projectID string, size, page int, orderStatus w.OrderStatus) ([]*w.OrderRecord, error) {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
-	//ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	//defer cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	filter := bson.M{"projectId": projectID, "is_active": true, "status": orderStatus}
+	if orderStatus == w.OrderStatusAll {
+		filter = bson.M{"projectId": projectID, "is_active": true}
+	}
 
-	filter := bson.M{"projectId": projectID, "is_active": true}
 	findOptions := options.Find()
 	findOptions.SetLimit(int64(size))
 	findOptions.SetSkip(int64(size * (page - 1)))
 	findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
-	cursor, err := coll.Find(context.TODO(), filter, findOptions)
+	cursor, err := coll.Find(ctx, filter, findOptions)
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.TODO())
+	defer cursor.Close(ctx)
 
 	var orders []*w.OrderRecord
 	for cursor.Next(context.TODO()) {
@@ -97,7 +100,11 @@ func (repo WoocommerceRepository) GetOrderCount(projectID string, orderStatus w.
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
+
 	filter := bson.M{"projectId": projectID, "is_active": true, "status": orderStatus}
+	if orderStatus == w.OrderStatusAll {
+		filter = bson.M{"projectId": projectID, "is_active": true}
+	}
 	res, err := coll.CountDocuments(ctx, filter)
 
 	if err != nil {

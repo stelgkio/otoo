@@ -1,0 +1,201 @@
+package views
+
+templ OrderTable(projectId string) {
+	<div id="dashboard-order-table" x-data="orderTable()" x-init="init()">
+		<div class="px-6 px-lg-7 pt-8 border-bottom">
+			<ul class="nav nav-tabs nav-tabs-flush gap-8 overflow-x border-0 mt-4">
+				<li class="nav-item">
+					<a href="#" :class="{'nav-link': true, 'active': currentTab === 'all'}" @click.prevent="selectTab('all')">All</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" :class="{'nav-link': true, 'active': currentTab === 'completed'}" @click.prevent="selectTab('completed')">Completed</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" :class="{'nav-link': true, 'active': currentTab === 'pending'}" @click.prevent="selectTab('pending')">Pending</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" :class="{'nav-link': true, 'active': currentTab === 'processing'}" @click.prevent="selectTab('processing')">Processing</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" :class="{'nav-link': true, 'active': currentTab === 'cancelled'}" @click.prevent="selectTab('cancelled')">Canceled</a>
+				</li>
+			</ul>
+		</div>
+		<div class="d-flex gap-2 scrollable-x py-3 px-7 border-bottom">
+			<!-- Your filter buttons here -->
+		</div>
+		<div class="table-responsive">
+			<table class="table">
+				<thead>
+					<tr>
+						<th><input type="checkbox" @change="selectAll()" x-model="selectAllCheckbox"/></th>
+						<th @click="sortTable('orderId')">Order ID</th>
+						<th @click="sortTable('timestamp')">Date</th>
+						<th @click="sortTable('total_amount')">Total Amount</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					<template x-if="loading">
+						<tr>
+							<td colspan="5">Loading...</td>
+						</tr>
+					</template>
+					<template x-if="!loading && totalItems === 0">
+						<tr>
+							<td colspan="5">No orders found.</td>
+						</tr>
+					</template>
+					<template x-for="order in paginatedOrders" :key="order.id">
+						<tr>
+							<td><input type="checkbox" :value="order.orderId" x-model="selectedOrders"/></td>
+							<td x-text="order.orderId"></td>
+							<td x-text="new Date(order.timestamp).toLocaleString()"></td>
+							<td x-text="order.total_amount"></td>
+							<td x-text="order.status"></td>
+						</tr>
+					</template>
+					<!-- Fill remaining rows if less than 10 -->
+					<template x-for="i in 10 - paginatedOrders.length" :key="'empty' + i">
+						<tr>
+							<td colspan="5" class="py-5"></td>
+						</tr>
+					</template>
+				</tbody>
+			</table>
+		</div>
+		<!-- Pagination Controls -->
+		<div class="py-4 px-6">
+			<div class="row align-items-center justify-content-between">
+				<div class="col-md-6 d-none d-md-block">
+					<span class="text-muted text-sm">
+						Showing <span x-text="currentPageStart"></span> to <span x-text="currentPageEnd"></span> of <span x-text="totalItems"></span> results
+					</span>
+				</div>
+				<div class="col-md-auto">
+					<nav aria-label="Page navigation example">
+						<ul class="pagination pagination-spaced gap-1">
+							<li class="page-item" :class="{'disabled': currentPage === 1}">
+								<a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)">
+									<i class="bi bi-chevron-left"></i>
+								</a>
+							</li>
+							<template x-for="page in totalPages" :key="page">
+								<li class="page-item" :class="{'active': currentPage === page}">
+									<a class="page-link" href="#" @click.prevent="changePage(page)" x-text="page"></a>
+								</li>
+							</template>
+							<li class="page-item" :class="{'disabled': currentPage === totalPages}">
+								<a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)">
+									<i class="bi bi-chevron-right"></i>
+								</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+function orderTable() {
+    return {
+        currentTab: 'all',
+        orders: [],
+        selectedOrders: [],
+        selectAllCheckbox: false,
+        sortKey: 'orderId',
+        sortAsc: true,
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 0,
+        totalPages: 0,
+        loading: false,
+
+        async init() {
+            await this.fetchOrders(this.currentPage);
+        },
+
+        async fetchOrders(page = 1) {
+            this.loading = true;
+            try {
+                const url = this.getUrlForTab(this.currentTab, page);
+                const response = await fetch(url);
+                const result = await response.json();
+                if (response.ok) {
+                    this.orders = result.data || [];
+                    this.totalItems = result.meta.totalItems || 0;
+                    this.currentPage = result.meta.currentPage || 1;
+                    this.itemsPerPage = result.meta.itemsPerPage || 10;
+                    this.totalPages = result.meta.totalPages || 0;
+                } else {
+                    console.error('Error fetching data:', result.message);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        getUrlForTab(tab, page) {
+            const baseUrl = 'http://localhost:8081/order/table/72eabb24-0fc6-428b-b7cf-f1e35608d3fe';
+            switch (tab) {
+                case 'all':
+                    return `${baseUrl}/all/${page}`;
+                case 'completed':
+                    return `${baseUrl}/completed/${page}`;
+                case 'processing':
+                    return `${baseUrl}/processing/${page}`;
+                case 'pending':
+                    return `${baseUrl}/pending/${page}`;
+                case 'cancelled':
+                    return `${baseUrl}/cancelled/${page}`;
+                default:
+                    return `${baseUrl}/completed/${page}`;
+            }
+        },
+
+        selectTab(tab) {
+            this.currentTab = tab;
+            this.currentPage = 1; // Reset to first page
+            this.fetchOrders(this.currentPage);
+        },
+
+        selectAll() {
+            this.selectedOrders = this.selectAllCheckbox ? this.orders.map(order => order.orderId) : [];
+        },
+
+        sortTable(key) {
+            if (this.sortKey === key) {
+                this.sortAsc = !this.sortAsc;
+            } else {
+                this.sortKey = key;
+                this.sortAsc = true;
+            }
+            this.orders.sort((a, b) => {
+                if (a[this.sortKey] < b[this.sortKey]) return this.sortAsc ? -1 : 1;
+                if (a[this.sortKey] > b[this.sortKey]) return this.sortAsc ? 1 : -1;
+                return 0;
+            });
+        },
+
+        changePage(page) {
+            if (page < 1 || page > this.totalPages) return;
+            this.fetchOrders(page);
+        },
+
+        get paginatedOrders() {
+            return this.orders;
+        },
+
+        get currentPageStart() {
+            return (this.currentPage - 1) * this.itemsPerPage + 1;
+        },
+
+        get currentPageEnd() {
+            return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
+        }
+    };
+}
+</script>
+}

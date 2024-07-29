@@ -4,10 +4,10 @@ import (
 	"fmt"
 	o "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/order/history"
 	p "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/product/best_seller"
-	 woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
+	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 )
 
-templ DeafultDashboard(projectId string,counts map[string]string,orders []*woo.OrderRecord,bestSeller []*woo.ProductBestSellerRecord) {
+templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo.OrderRecord, bestSeller []*woo.ProductBestSellerRecord) {
 	<div
 		id="dashboard-content"
 		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
@@ -44,7 +44,7 @@ templ DeafultDashboard(projectId string,counts map[string]string,orders []*woo.O
 											<i class="bi bi-bag-plus"></i>
 											<a
 												href="javascript:void(0)"
-												hx-get={ fmt.Sprintf("/dashboard/order/%s",projectId) } 
+												hx-get={ fmt.Sprintf("/dashboard/order/%s", projectId) }
 												hx-target="#dashboard-content"
 												class="h6 stretched-link"
 											>
@@ -66,7 +66,7 @@ templ DeafultDashboard(projectId string,counts map[string]string,orders []*woo.O
 											<i class="bi bi-file-earmark-person"></i>
 											<a
 												href="javascript:void(0)"
-												hx-get={ fmt.Sprintf("/dashboard/customer/%s",projectId) } 
+												hx-get={ fmt.Sprintf("/dashboard/customer/%s", projectId) }
 												hx-target="#dashboard-content"
 												class="h6 stretched-link"
 											>Customers</a>
@@ -86,7 +86,7 @@ templ DeafultDashboard(projectId string,counts map[string]string,orders []*woo.O
 											<i class="bi bi-shop"></i>
 											<a
 												href="javascript:void(0)"
-											hx-get={ fmt.Sprintf("/dashboard/product/%s",projectId) } 
+												hx-get={ fmt.Sprintf("/dashboard/product/%s", projectId) }
 												hx-target="#dashboard-content"
 												class="h6 stretched-link"
 											>Products</a>
@@ -202,7 +202,7 @@ templ DeafultDashboard(projectId string,counts map[string]string,orders []*woo.O
 										</div>
 									</div>
 								</div>
-								<hr class="my-0 d-xxl-none"/>								
+								<hr class="my-0 d-xxl-none"/>
 								@p.ProductBestSeller(bestSeller)
 								<hr class="my-0 d-xxl-none"/>
 							</div>

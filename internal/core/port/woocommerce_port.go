@@ -18,7 +18,7 @@ type WoocommerceRepository interface {
 	OrderCreate(data *w.OrderRecord) error
 	OrderUpdate(data *w.OrderRecord, orderID int64) error
 	OrderDelete(data any) error
-	OrderFindByProjectID(projectID string, size, page int) ([]*w.OrderRecord, error)
+	OrderFindByProjectID(projectID string, size, page int, orderStatus w.OrderStatus) ([]*w.OrderRecord, error)
 	GetOrderCount(projectID string, orderStatus w.OrderStatus) (int64, error)
 	GetOrdersCountBetweenOrEquals(projectID string, timeperiod time.Time, orderStatus w.OrderStatus) (int64, error)
 
@@ -70,9 +70,9 @@ type ProductService interface {
 
 // OrderService defines the methods for interacting with the Order service
 type OrderService interface {
-	Get10LatestOrders(ctx echo.Context, projectID string, results chan<- []*domain.OrderRecord, errors chan<- error)
+	Get10LatestOrders(ctx echo.Context, projectID string, orderStatus w.OrderStatus, results chan<- []*domain.OrderRecord, errors chan<- error)
 	GetOrderCountAsync(ctx echo.Context, projectID string, orderStatus w.OrderStatus, results chan<- int64, errors chan<- error)
 	GetOrdersCountBetweenOrEquals(projectID string, timePeriod time.Time, orderStatus w.OrderStatus) (int64, error)
 	GetOrderCount(projectID string, orderStatus w.OrderStatus) (int64, error)
-	FindOrderByProjectIDAsync(projectID string, size, page int, results chan<- []*domain.OrderRecord, errors chan<- error)
+	FindOrderByProjectIDAsync(projectID string, size, page int, orderStatus w.OrderStatus, results chan<- []*domain.OrderRecord, errors chan<- error)
 }

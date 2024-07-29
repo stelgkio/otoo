@@ -91,7 +91,9 @@ func (as *ProductBestSellerCron) RunAProductBestSellerInitializerJob(projectID s
 	if err != nil {
 		return err
 	}
+
 	worker := int(math.Ceil(float64(totalCount) / 10))
+
 	wg.Add(worker)
 	orderListResults := make(chan []*w.OrderRecord, worker)
 	orderListErrors := make(chan error, 1)
@@ -99,7 +101,7 @@ func (as *ProductBestSellerCron) RunAProductBestSellerInitializerJob(projectID s
 		go func(i int) {
 			defer wg.Done()
 
-			as.orderSvc.FindOrderByProjectIDAsync(projectID, 10, i+1, orderListResults, orderListErrors)
+			as.orderSvc.FindOrderByProjectIDAsync(projectID, 10, i+1, w.OrderStatusCompleted, orderListResults, orderListErrors)
 		}(i)
 	}
 

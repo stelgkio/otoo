@@ -109,6 +109,7 @@ func NewRouter(
 		ordergroup := dashboardgroup.Group("/order")
 		{
 			ordergroup.GET("/:projectId", dashboardHandler.OrderDashboard)
+			ordergroup.GET("/table/:projectId/:status", dashboardHandler.OrderTable)
 		}
 
 		productgroup := dashboardgroup.Group("/product")
@@ -185,8 +186,9 @@ func NewRouter(
 
 	ordergroup := e.Group("/order")
 	{
-		ordergroup.Use(configureJWT())
-		ordergroup.Use(auth.TokenRefresherMiddleware)
+		// ordergroup.Use(configureJWT())
+		// ordergroup.Use(auth.TokenRefresherMiddleware)
+		ordergroup.GET("/table/:projectId/:status/:page", dashboardHandler.OrderTable)
 
 	}
 	productgroup := e.Group("/product")

@@ -2,6 +2,8 @@ package handler
 
 import (
 	"fmt"
+	"net/http"
+	"strconv"
 	"sync"
 
 	"github.com/labstack/echo/v4"
@@ -78,7 +80,7 @@ func (dh *DashboardHandler) DefaultDashboard(ctx echo.Context) error {
 	// Fetch latest 10 order count
 	go func() {
 		defer wg.Done()
-		dh.orderSvc.Get10LatestOrders(ctx, projectID, orderListResults, orderListErrors)
+		dh.orderSvc.Get10LatestOrders(ctx, projectID, w.OrderStatusCompleted, orderListResults, orderListErrors)
 	}()
 	// Wait for all goroutines to finish
 	go func() {
@@ -182,7 +184,7 @@ func (dh *DashboardHandler) DefaultDashboardOverView(ctx echo.Context) error {
 	// Fetch latest 10 order count
 	go func() {
 		defer wg.Done()
-		dh.orderSvc.Get10LatestOrders(ctx, projectID, orderListResults, orderListErrors)
+		dh.orderSvc.Get10LatestOrders(ctx, projectID, w.OrderStatusCompleted, orderListResults, orderListErrors)
 	}()
 	// Wait for all goroutines to finish
 	go func() {
@@ -263,6 +265,93 @@ func (dh *DashboardHandler) OrderDashboard(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 
 	return util.Render(ctx, o.OrderOverView(projectID))
+}
+
+// OrderTable returns the order dashboard
+func (dh *DashboardHandler) OrderTable(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	page := ctx.Param("page")
+	status, err := w.StringToOrderStatus(ctx.Param("status"))
+	pageNum, err := strconv.Atoi(page)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, fmt.Errorf("invalid page number: %v", err))
+	}
+
+	var wg sync.WaitGroup
+	// Fetch	var wg sync.WaitGroup
+	wg.Add(2)
+
+	orderCountChan := make(chan int64, 1)
+	orderListChan := make(chan []*w.OrderRecord, 1)
+	errChan := make(chan error, 2)
+
+	go func() {
+		defer wg.Done()
+		dh.orderSvc.GetOrderCountAsync(ctx, projectID, status, orderCountChan, errChan)
+	}()
+
+	// Fetch  10 orders
+	go func() {
+		defer wg.Done()
+		dh.orderSvc.FindOrderByProjectIDAsync(projectID, 10, pageNum, status, orderListChan, errChan)
+	}()
+	// Wait for all goroutines to finish
+	go func() {
+		wg.Wait()
+		close(orderCountChan)
+		close(orderListChan)
+		close(errChan)
+	}()
+
+	var totalItems int64
+	var orderRecords []*w.OrderRecord
+
+	select {
+	case count := <-orderCountChan:
+		totalItems = count
+	case err := <-errChan:
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"failed to fetch order count": err.Error()})
+	}
+
+	select {
+	case list := <-orderListChan:
+		orderRecords = list
+	case err := <-errChan:
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
+	// Convert orderRecords to OrderTableList for the response
+	var orders []w.OrderTableList
+	for _, record := range orderRecords {
+		orders = append(orders, w.OrderTableList{
+			ID:          record.ID,
+			ProjectID:   record.ProjectID,
+			Timestamp:   record.Timestamp,
+			OrderID:     record.OrderID,
+			TotalAmount: record.Order.Total,
+			Status:      record.Status,
+		})
+	}
+
+	// Prepare metadata
+	itemsPerPage := 10
+	totalPages := int(totalItems) / itemsPerPage
+	if int(totalItems)%itemsPerPage > 0 {
+		totalPages++
+	}
+
+	// Create response object
+	response := w.OrderTableResponde{
+		Data: orders,
+		Meta: w.Meta{
+			TotalItems:   int(totalItems),
+			CurrentPage:  pageNum,
+			ItemsPerPage: itemsPerPage,
+			TotalPages:   totalPages,
+		},
+	}
+
+	return ctx.JSON(http.StatusOK, response)
 }
 
 // GetProjectAndUser retrieves project and user details from the context

@@ -1,110 +1,254 @@
 package views
 
+import "fmt"
+
 templ OrderTable(projectId string) {
-	<div id="dashboard-order-table" x-data="orderTable()" x-init="init()">
-		<div class="px-6 px-lg-7 pt-8 border-bottom">
-			<ul class="nav nav-tabs nav-tabs-flush gap-8 overflow-x border-0 mt-4">
-				<li class="nav-item">
-					<a href="#" :class="{'nav-link': true, 'active': currentTab === 'all'}" @click.prevent="selectTab('all')">All</a>
-				</li>
-				<li class="nav-item">
-					<a href="#" :class="{'nav-link': true, 'active': currentTab === 'completed'}" @click.prevent="selectTab('completed')">Completed</a>
-				</li>
-				<li class="nav-item">
-					<a href="#" :class="{'nav-link': true, 'active': currentTab === 'pending'}" @click.prevent="selectTab('pending')">Pending</a>
-				</li>
-				<li class="nav-item">
-					<a href="#" :class="{'nav-link': true, 'active': currentTab === 'processing'}" @click.prevent="selectTab('processing')">Processing</a>
-				</li>
-				<li class="nav-item">
-					<a href="#" :class="{'nav-link': true, 'active': currentTab === 'cancelled'}" @click.prevent="selectTab('cancelled')">Canceled</a>
-				</li>
-			</ul>
-		</div>
-		<div class="d-flex gap-2 scrollable-x py-3 px-7 border-bottom">
-			<!-- Your filter buttons here -->
-		</div>
-		<div class="table-responsive">
-			<table class="table">
-				<thead>
-					<tr>
-						<th><input type="checkbox" @change="selectAll()" x-model="selectAllCheckbox"/></th>
-						<th @click="sortTable('orderId')">Order ID</th>
-						<th @click="sortTable('timestamp')">Date</th>
-						<th @click="sortTable('total_amount')">Total Amount</th>
-						<th>Status</th>
-					</tr>
-				</thead>
-				<tbody>
-					<template x-if="loading">
-						<tr>
-							<td colspan="5">Loading...</td>
-						</tr>
-					</template>
-					<template x-if="!loading && totalItems === 0">
-						<tr>
-							<td colspan="5">No orders found.</td>
-						</tr>
-					</template>
-					<template x-for="order in paginatedOrders" :key="order.id">
-						<tr>
-							<td><input type="checkbox" :value="order.orderId" x-model="selectedOrders"/></td>
-							<td x-text="order.orderId"></td>
-							<td x-text="new Date(order.timestamp).toLocaleString()"></td>
-							<td x-text="order.total_amount"></td>
-							<td x-text="order.status"></td>
-						</tr>
-					</template>
-					<!-- Fill remaining rows if less than 10 -->
-					<template x-for="i in 10 - paginatedOrders.length" :key="'empty' + i">
-						<tr>
-							<td colspan="5" class="py-5"></td>
-						</tr>
-					</template>
-				</tbody>
-			</table>
-		</div>
-		<!-- Pagination Controls -->
-		<div class="py-4 px-6">
-			<div class="row align-items-center justify-content-between">
-				<div class="col-md-6 d-none d-md-block">
-					<span class="text-muted text-sm">
-						Showing <span x-text="currentPageStart"></span> to <span x-text="currentPageEnd"></span> of <span x-text="totalItems"></span> results
-					</span>
+	<div id="dashboard-order">
+		<div class="mb-1 mb-xl-10">
+			<div class="col">
+				<div class="hstack gap-2 justify-content-start">
+					<button
+						class="btn btn-sm btn-neutral "
+						type="button"
+						hx-get={ fmt.Sprintf("/order/chart/%s", projectId) }
+						hx-target="#dashboard-order"
+					>
+						<i class="bi bi-bar-chart-fill"></i> <span class="ms-2">Charts</span>
+					</button>
 				</div>
-				<div class="col-md-auto">
-					<nav aria-label="Page navigation example">
-						<ul class="pagination pagination-spaced gap-1">
-							<li class="page-item" :class="{'disabled': currentPage === 1}">
-								<a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)">
-									<i class="bi bi-chevron-left"></i>
-								</a>
-							</li>
-							<template x-for="page in totalPages" :key="page">
-								<li class="page-item" :class="{'active': currentPage === page}">
-									<a class="page-link" href="#" @click.prevent="changePage(page)" x-text="page"></a>
+			</div>
+		</div>
+		<div id="dashboard-order-table" x-data={ fmt.Sprintf("orderTable('%s')", projectId) } x-init="init()">
+			<div class="px-6 px-lg-7 pt-1 border-bottom">
+				<ul class="nav nav-tabs nav-tabs-flush gap-8 overflow-x border-0 mt-4">
+					<li class="nav-item">
+						<a href="#" :class="{'nav-link': true, 'active': currentTab === 'all'}" @click.prevent="selectTab('all')">All</a>
+					</li>
+					<li class="nav-item">
+						<a href="#" :class="{'nav-link': true, 'active': currentTab === 'completed'}" @click.prevent="selectTab('completed')">Completed</a>
+					</li>
+					<li class="nav-item">
+						<a href="#" :class="{'nav-link': true, 'active': currentTab === 'pending'}" @click.prevent="selectTab('pending')">Pending</a>
+					</li>
+					<li class="nav-item">
+						<a href="#" :class="{'nav-link': true, 'active': currentTab === 'processing'}" @click.prevent="selectTab('processing')">Processing</a>
+					</li>
+					<li class="nav-item">
+						<a href="#" :class="{'nav-link': true, 'active': currentTab === 'cancelled'}" @click.prevent="selectTab('cancelled')">Canceled</a>
+					</li>
+				</ul>
+			</div>
+			<div class="d-flex gap-2 py-3 px-7 border-bottom">
+				// <div class="dropdown">
+				// 	<button class="btn btn-sm btn-neutral dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false">
+				// 	</button>
+				// 	<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+				// 		<li>
+				// 			<a class="dropdown-item py-1 d-flex align-items-center">
+				// 				<div class="text-lg">
+				// 					<input class="form-check-input" type="radio" name="statusOption" id="statusCompleted" value="completed"/>
+				// 				</div>
+				// 				<div class="ms-3 me-5">
+				// 					<label for="statusCompleted">Mark as Completed</label>
+				// 				</div>
+				// 			</a>
+				// 		</li>
+				// 		<li>
+				// 			<a class="dropdown-item py-1 d-flex align-items-center">
+				// 				<div class="text-lg">
+				// 					<input class="form-check-input" type="radio" name="statusOption" id="statusProcessing" value="processing"/>
+				// 				</div>
+				// 				<div class="ms-3 me-5">
+				// 					<label for="statusProcessing">Mark as Processing</label>
+				// 				</div>
+				// 			</a>
+				// 		</li>
+				// 		<li>
+				// 			<a class="dropdown-item py-1 d-flex align-items-center">
+				// 				<div class="text-lg">
+				// 					<input class="form-check-input" type="radio" name="statusOption" id="statusPending" value="pending"/>
+				// 				</div>
+				// 				<div class="ms-3 me-5">
+				// 					<label for="statusPending">Mark as Pending</label>
+				// 				</div>
+				// 			</a>
+				// 		</li>
+				// 		<li>
+				// 			<a class="dropdown-item py-1 d-flex align-items-center">
+				// 				<div class="text-lg">
+				// 					<input class="form-check-input" type="radio" name="statusOption" id="statusCancelled" value="cancelled"/>
+				// 				</div>
+				// 				<div class="ms-3 me-5">
+				// 					<label for="statusCancelled">Mark as Cancelled</label>
+				// 				</div>
+				// 			</a>
+				// 		</li>
+				// 		<li class="mt-3">
+				// 			<button type="button" class="btn btn-sm btn-neutral d-sm-inline-flex"><span class="pe-2"></span><span>Apply</span></button>
+				// 		</li>
+				// 	</ul>
+				// </div>
+				<div class="dropdown">
+					<button class="btn btn-sm btn-neutral dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="true">
+						<i class="bi bi-plus-circle"></i> <span class="ms-2">Bulk Action</span>
+					</button>
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
+							<div class="text-lg">
+								<input class="form-check-input" type="radio" name="statusOption" id="statusBacklog" value="backlog"/>
+							</div>
+							<div class="ms-3 me-5">
+								<label for="statusBacklog">Send to Couries and update to completed</label>
+							</div>
+						</div>
+						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
+							<div class="text-lg">
+								<input class="form-check-input" type="radio" name="statusOption" id="statusTodo" value="todo"/>
+							</div>
+							<div class="ms-3 me-5">
+								<label for="statusTodo">Change status to completed</label>
+							</div>
+							// <div class="ms-auto">
+							// 	<span class="badge rounded-pill bg-opacity-25 bg-success text-success">23</span>
+							// </div>
+						</div>
+						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
+							<div class="text-lg">
+								<input class="form-check-input" type="radio" name="statusOption" id="statusInProgress" value="in-progress"/>
+							</div>
+							<div class="ms-3 me-5">
+								<label for="statusInProgress">Change status to completed</label>
+							</div>
+						</div>
+						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
+							<div class="text-lg">
+								<input class="form-check-input" type="radio" name="statusOption" id="statusDone" value="done"/>
+							</div>
+							<div class="ms-3 me-5">
+								<label for="statusDone">Change status to processing</label>
+							</div>
+							// <div class="ms-auto">
+							// 	<span class="badge rounded-pill bg-opacity-25 bg-warning text-warning">190</span>
+							// </div>
+						</div>
+						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
+							<div class="text-lg">
+								<input class="form-check-input" type="radio" name="statusOption" id="statusCancelled" value="cancelled"/>
+							</div>
+							<div class="ms-3 me-5">
+								<label for="statusCancelled">Change status to cancelled</label>
+							</div>
+						</div>
+						<div class="mt-3">
+							<button type="button" class="btn btn-sm btn-primary d-sm-inline-flex"><span class="pe-2"></span><span>Apply </span><i class="px-3 bi bi-arrow-right"></i></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="table-responsive">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>
+								<div class="text-base">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" @change="selectAll()" x-model="selectAllCheckbox"/>
+									</div>
+								</div>
+							</th>
+							<th @click="sortTable('orderId')">
+								Order ID
+								<i :class="getSortIcon('orderId')"></i>
+							</th>
+							<th @click="sortTable('timestamp')">
+								Date
+								<i :class="getSortIcon('timestamp')"></i>
+							</th>
+							<th @click="sortTable('total_amount')">
+								Total Amount
+								<i :class="getSortIcon('total_amount')"></i>
+							</th>
+							<th>Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						// <template x-if="loading">
+						// 	<tr>
+						// 		<td colspan="5">Loading...</td>
+						// 	</tr>
+						// </template>
+						<template x-if="!loading && totalItems === 0">
+							<tr>
+								<td colspan="5">No orders found.</td>
+							</tr>
+						</template>
+						<template x-for="order in paginatedOrders" :key="order.id">
+							<tr>
+								<td>
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" :value="order.orderId" x-model="selectedOrders"/>
+									</div>
+								</td>
+								<td x-text="order.orderId"></td>
+								<td x-text="new Date(order.timestamp).toLocaleString()"></td>
+								<td x-text="order.total_amount"></td>
+								<td>
+									<span :class="badgeClass(order.status)" x-text="order.status"></span>
+								</td>
+							</tr>
+						</template>
+						<!-- Fill remaining rows if less than 10 -->
+						<template x-for="i in 10 - paginatedOrders.length" :key="'empty' + i">
+							<tr>
+								<td colspan="5" class="py-5"></td>
+							</tr>
+						</template>
+					</tbody>
+				</table>
+			</div>
+			<!-- Pagination Controls -->
+			<div class="py-4 px-6">
+				<div class="row align-items-center justify-content-between">
+					<div class="col-md-6 d-none d-md-block">
+						<span class="text-muted text-sm">
+							Showing <span x-text="currentPageEnd"></span> of <span x-text="totalItems"></span> results
+						</span>
+					</div>
+					<div class="col-md-auto">
+						<nav aria-label="Page navigation example">
+							<ul class="pagination pagination-spaced gap-1">
+								<li class="page-item" :class="{'disabled': currentPage === 1}">
+									<a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)">
+										<i class="bi bi-chevron-left"></i>
+									</a>
 								</li>
-							</template>
-							<li class="page-item" :class="{'disabled': currentPage === totalPages}">
-								<a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)">
-									<i class="bi bi-chevron-right"></i>
-								</a>
-							</li>
-						</ul>
-					</nav>
+								<template x-for="page in totalPages" :key="page">
+									<li class="page-item" :class="{'active': currentPage === page}">
+										<a class="page-link" href="#" @click.prevent="changePage(page)" x-text="page"></a>
+									</li>
+								</template>
+								<li class="page-item" :class="{'disabled': currentPage === totalPages}">
+									<a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)">
+										<i class="bi bi-chevron-right"></i>
+									</a>
+								</li>
+							</ul>
+						</nav>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<script>
-function orderTable() {
+function orderTable(projectId) {
     return {
+		projectID: projectId,
         currentTab: 'all',
         orders: [],
         selectedOrders: [],
         selectAllCheckbox: false,
-        sortKey: 'orderId',
-        sortAsc: true,
+        sortKey: 'timestamp',
+        sortAsc: false,
         currentPage: 1,
         itemsPerPage: 10,
         totalItems: 0,
@@ -137,21 +281,22 @@ function orderTable() {
             }
         },
 
-        getUrlForTab(tab, page) {
-            const baseUrl = 'http://localhost:8081/order/table/72eabb24-0fc6-428b-b7cf-f1e35608d3fe';
+         getUrlForTab(tab, page) {
+            const baseUrl = `http://localhost:8081/order/table/${this.projectID}`;
+            const sortDirection = this.sortAsc ? 'asc' : 'desc'; // Determine sort direction
             switch (tab) {
                 case 'all':
-                    return `${baseUrl}/all/${page}`;
+                    return `${baseUrl}/all/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
                 case 'completed':
-                    return `${baseUrl}/completed/${page}`;
+                    return `${baseUrl}/completed/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
                 case 'processing':
-                    return `${baseUrl}/processing/${page}`;
+                    return `${baseUrl}/processing/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
                 case 'pending':
-                    return `${baseUrl}/pending/${page}`;
+                    return `${baseUrl}/pending/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
                 case 'cancelled':
-                    return `${baseUrl}/cancelled/${page}`;
+                    return `${baseUrl}/cancelled/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
                 default:
-                    return `${baseUrl}/completed/${page}`;
+                    return `${baseUrl}/completed/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
             }
         },
 
@@ -165,18 +310,18 @@ function orderTable() {
             this.selectedOrders = this.selectAllCheckbox ? this.orders.map(order => order.orderId) : [];
         },
 
-        sortTable(key) {
+      	sortTable(key) {
             if (this.sortKey === key) {
-                this.sortAsc = !this.sortAsc;
+                this.sortAsc = !this.sortAsc; // Toggle sort direction if the same column is clicked
             } else {
-                this.sortKey = key;
-                this.sortAsc = true;
+                this.sortKey = key; // Set new sort key
+                this.sortAsc = true; // Default to ascending if a new column is selected
             }
-            this.orders.sort((a, b) => {
-                if (a[this.sortKey] < b[this.sortKey]) return this.sortAsc ? -1 : 1;
-                if (a[this.sortKey] > b[this.sortKey]) return this.sortAsc ? 1 : -1;
-                return 0;
-            });
+            this.fetchOrders(this.currentPage); // Fetch sorted data
+        },
+		  getSortIcon(key) {
+            if (this.sortKey !== key) return '';
+            return this.sortAsc ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
         },
 
         changePage(page) {
@@ -194,7 +339,22 @@ function orderTable() {
 
         get currentPageEnd() {
             return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
-        }
+        },
+		 badgeClass(status) {
+				const baseClass = 'badge bg-body-secondary badge-custom'; // Add badge-custom class
+				switch (status) {
+					case 'pending':
+						return `${baseClass} text-warning`;
+					case 'completed':
+						return `${baseClass} text-success`;
+					case 'cancelled':
+						return `${baseClass} text-danger`;
+					case 'processing':
+						return `${baseClass} text-warning`;
+					default:
+						return baseClass;
+				}
+		}		
     };
 }
 </script>

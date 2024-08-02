@@ -181,20 +181,25 @@ func NewRouter(
 	{
 		customergroup.Use(configureJWT())
 		customergroup.Use(auth.TokenRefresherMiddleware)
+		customergroup.GET("/table/:projectId/:page", dashboardHandler.CustomerTable)
 
 	}
 
 	ordergroup := e.Group("/order")
 	{
-		// ordergroup.Use(configureJWT())
-		// ordergroup.Use(auth.TokenRefresherMiddleware)
+		ordergroup.Use(configureJWT())
+		ordergroup.Use(auth.TokenRefresherMiddleware)
 		ordergroup.GET("/table/:projectId/:status/:page", dashboardHandler.OrderTable)
+		ordergroup.GET("/chart/:projectId", dashboardHandler.OrderCharts)
+		ordergroup.GET("/tablehtml/:projectId", dashboardHandler.OrderTableHTML)
 
 	}
 	productgroup := e.Group("/product")
 	{
 		productgroup.Use(configureJWT())
 		productgroup.Use(auth.TokenRefresherMiddleware)
+		productgroup.GET("/table/:projectId/:page", dashboardHandler.ProductTable)
+		// ordergroup.GET("/tablehtml/:projectId", dashboardHandler.ProductTableHTML)
 
 	}
 

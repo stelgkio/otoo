@@ -13884,12 +13884,16 @@ span.flatpickr-weekday {
     transform: translateY(-50%);
     cursor: pointer;
 }
+
 th {
     cursor: pointer;
 }
+
 tbody tr {
-    height: 40px; /* Adjust this value based on your desired row height */
+    height: 40px;
+    /* Adjust this value based on your desired row height */
 }
+
 /* Smooth transitions for table rows */
 .table tbody tr {
     transition: opacity 0.5s ease-in-out;
@@ -13901,4 +13905,11 @@ tbody tr {
 
 .table tbody.tr.visible {
     opacity: 1;
+}
+
+.badge-custom {
+    font-size: inherit;
+    /* This will inherit the font size of the parent element */
+    padding: 0.25em 0.4em;
+    /* Adjust padding if necessary */
 }

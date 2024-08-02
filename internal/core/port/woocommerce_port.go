@@ -18,22 +18,22 @@ type WoocommerceRepository interface {
 	OrderCreate(data *w.OrderRecord) error
 	OrderUpdate(data *w.OrderRecord, orderID int64) error
 	OrderDelete(data any) error
-	OrderFindByProjectID(projectID string, size, page int, orderStatus w.OrderStatus) ([]*w.OrderRecord, error)
-	GetOrderCount(projectID string, orderStatus w.OrderStatus) (int64, error)
+	OrderFindByProjectID(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string) ([]*w.OrderRecord, error)
+	GetOrderCount(projectID string, orderStatus w.OrderStatus, timeRange string) (int64, error)
 	GetOrdersCountBetweenOrEquals(projectID string, timeperiod time.Time, orderStatus w.OrderStatus) (int64, error)
 
-	CustomerCreate(data *w.CustomerRecord) error
+	CustomerCreate(data *w.CustomerRecord, email string) error
 	CustomerUpdate(data *w.CustomerRecord, email string) error
 	CustomerDelete(data any) error
-	CustomerFindByProjectID(projectID string) error
+	CustomerFindByProjectID(projectID string, size, page int, sort, direction string) ([]*w.CustomerRecord, error)
 	CustomerFindByEmail(email string) (*w.CustomerRecord, error)
 	GetCustomerCount(projectID string) (int64, error)
 
 	ProductCreate(data *w.ProductRecord) error
 	ProductDelete(productID int64) error
 	ProductUpdate(data *w.ProductRecord, productID int64) error
-	ProductFindByProjectID(projectID string) error
-	GetProductCount(projectID string) (int64, error)
+	ProductFindByProjectID(projectID string, size, page int, sort, direction string, productType w.ProductType) ([]*w.ProductRecord, error)
+	GetProductCount(projectID string, productType w.ProductType) (int64, error)
 	GetProductByID(projectID string, orderID int64) (*w.ProductRecord, error)
 	ProductBestSellerAggregate(projectID string) ([]bson.M, error)
 
@@ -58,21 +58,23 @@ type WoocommerceWebhookService interface {
 type CustomerService interface {
 	ExtractCustomerFromOrderAndUpsert(ctx echo.Context, req *woo.OrderRecord) error
 	GetCustomerCount(ctx echo.Context, projectID string, results chan<- int64, errors chan<- error)
+	FindCustomerByProjectIDAsync(projectID string, size, page int, sort, direction string, results chan<- []*domain.CustomerRecord, errors chan<- error)
 }
 
 // ProductService defines the methods for interacting with the Product service
 type ProductService interface {
 	ExtractProductFromOrderAndUpsert(ctx echo.Context, req *woo.OrderRecord) error
 	GetAllProductFromWoocommerce(ccustomerKey string, customerSecret string, domainURL string, projectID uuid.UUID) error
-	GetProductCount(ctx echo.Context, projectID string, results chan<- int64, errors chan<- error)
+	GetProductCount(ctx echo.Context, projectID string, productType w.ProductType, results chan<- int64, errors chan<- error)
 	GetProductBestSeller(projectID string, totalCount int64, results chan<- []*domain.ProductBestSellerRecord, errors chan<- error)
+	FindProductByProjectIDAsync(projectID string, size, page int, sort, direction string, productType w.ProductType, results chan<- []*domain.ProductRecord, errors chan<- error)
 }
 
 // OrderService defines the methods for interacting with the Order service
 type OrderService interface {
 	Get10LatestOrders(ctx echo.Context, projectID string, orderStatus w.OrderStatus, results chan<- []*domain.OrderRecord, errors chan<- error)
-	GetOrderCountAsync(ctx echo.Context, projectID string, orderStatus w.OrderStatus, results chan<- int64, errors chan<- error)
+	GetOrderCountAsync(ctx echo.Context, projectID string, orderStatus w.OrderStatus, timeRange string, results chan<- int64, errors chan<- error)
 	GetOrdersCountBetweenOrEquals(projectID string, timePeriod time.Time, orderStatus w.OrderStatus) (int64, error)
-	GetOrderCount(projectID string, orderStatus w.OrderStatus) (int64, error)
-	FindOrderByProjectIDAsync(projectID string, size, page int, orderStatus w.OrderStatus, results chan<- []*domain.OrderRecord, errors chan<- error)
+	GetOrderCount(projectID string, orderStatus w.OrderStatus, timeRange string) (int64, error)
+	FindOrderByProjectIDAsync(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string, results chan<- []*domain.OrderRecord, errors chan<- error)
 }

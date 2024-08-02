@@ -1,18 +1,20 @@
 package views
+
 import "github.com/stelgkio/otoo/internal/core/domain"
 
-templ TopBar(user *domain.User , projectName string) {
+templ TopBar(user *domain.User, projectName string) {
 	<div class="d-none d-lg-flex py-3">
 		<div class="flex-none">
 			<div class="input-group input-group-sm input-group-inline w-rem-64 rounded-pill">
 				<span
 					class="input-group-text rounded-start-pill"
-				><i class="bi bi-search me-2"></i> </span><input
-	type="search"
-	class="form-control ps-0 rounded-end-pill"
-	placeholder="Search"
-	aria-label="Search"
-/>
+				><i class="bi bi-search me-2"></i> </span>
+				<input
+					type="search"
+					class="form-control ps-0 rounded-end-pill"
+					placeholder="Search"
+					aria-label="Search"
+				/>
 			</div>
 		</div>
 		<div class="hstack flex-fill justify-content-end flex-nowrap gap-6 ms-auto px-6 px-xxl-8">
@@ -21,8 +23,10 @@ templ TopBar(user *domain.User , projectName string) {
 				class="btn btn-xs btn-primary rounded-pill text-nowrap"
 				data-bs-target="#connectWalletModal"
 				data-bs-toggle="modal"
-			><i class="bi bi-cpu-fill me-3"></i>
-			{ projectName }</button>
+			>
+				<i class="bi bi-cpu-fill me-3"></i>
+				{ projectName }
+			</button>
 			<div class="dropdown">
 				<a
 					href="#"
@@ -41,11 +45,6 @@ templ TopBar(user *domain.User , projectName string) {
 						class="dropdown-item d-flex align-items-center"
 						data-bs-theme-value="dark"
 					>Dark</button>
-					<button
-						type="button"
-						class="dropdown-item d-flex align-items-center"
-						data-bs-theme-value="auto"
-					>System</button>
 				</div>
 			</div>
 			<div class="dropdown">
@@ -104,7 +103,7 @@ templ TopBar(user *domain.User , projectName string) {
 						// 	Signed in
 						// 	as
 						// </span>
-						 <span class="d-block text-heading fw-semibold">{ user.Name }{ user.LastName }</span>
+						<span class="d-block text-heading fw-semibold">{ user.Name }{ user.LastName }</span>
 					</div>
 					<div class="dropdown-divider"></div>
 					// <a class="dropdown-item" href="#">
@@ -114,7 +113,7 @@ templ TopBar(user *domain.User , projectName string) {
 					// </a>
 					<a
 						class="dropdown-item"
-						href="/dashboard"									
+						href="/dashboard"
 					>
 						<i
 							class="bi bi-house me-3"

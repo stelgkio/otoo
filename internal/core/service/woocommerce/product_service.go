@@ -173,8 +173,8 @@ func (s *ProductService) ExtractProductFromOrderAndUpsert(ctx echo.Context, req 
 }
 
 // GetProductCount gets product count from MongoDB
-func (s *ProductService) GetProductCount(ctx echo.Context, projectID string, results chan<- int64, errors chan<- error) {
-	productCount, err := s.p.GetProductCount(projectID)
+func (s *ProductService) GetProductCount(ctx echo.Context, projectID string, productType w.ProductType, results chan<- int64, errors chan<- error) {
+	productCount, err := s.p.GetProductCount(projectID, productType)
 	if err != nil {
 		errors <- err
 	}
@@ -237,4 +237,13 @@ func (s *ProductService) GetProductBestSeller(projectID string, totalCount int64
 		errors <- err
 	}
 	results <- bestSellers
+}
+
+// FindProductByProjectIDAsync finds product by project ID asynchronously
+func (s *ProductService) FindProductByProjectIDAsync(projectID string, size, page int, sort, direction string, productType w.ProductType, results chan<- []*domain.ProductRecord, errors chan<- error) {
+	products, err := s.p.ProductFindByProjectID(projectID, size, page, sort, direction, productType)
+	if err != nil {
+		errors <- err
+	}
+	results <- products
 }

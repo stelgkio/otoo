@@ -63,6 +63,14 @@ func (r *AnalyticsRepository) CreateBestSellers(projectID string, data []*domain
 	return nil
 }
 
+// DeleteBestSellers creates the best sellers for a given project
+func (r *AnalyticsRepository) DeleteBestSellers(projectID string) error {
+	coll := r.mongo.Database("otoo").Collection("woocommerce_product_best_seller")
+	filter := bson.M{"projectId": projectID, "is_active": true}
+	coll.DeleteMany(context.TODO(), filter)
+	return nil
+}
+
 // convertToInterfaceSlice converts a slice of ProductBestSellerRecord to a slice of interface{}
 func convertToInterfaceSlice(data []*domain.ProductBestSellerRecord) []interface{} {
 	var result []interface{}

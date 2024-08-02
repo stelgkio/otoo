@@ -44,7 +44,7 @@ func AnalyticsTemplate(user *domain.User, projectName string, projectId string) 
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = o.OrderOverView(projectId).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = o.OrderOverView(projectId, "", "", "", "").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -48,7 +48,7 @@ func (as *ProductBestSellerCron) RunAProductBestSellerDailyJob() error {
 	for _, project := range allProjects {
 		projectID := project.Id.String()
 
-		totalCount, err := as.orderSvc.GetOrderCount(projectID, w.OrderStatusCompleted)
+		totalCount, err := as.orderSvc.GetOrderCount(projectID, w.OrderStatusCompleted, "")
 		if err != nil {
 			return err
 		}
@@ -87,7 +87,7 @@ func (as *ProductBestSellerCron) RunAProductBestSellerInitializerJob(projectID s
 
 	var wg sync.WaitGroup
 
-	totalCount, err := as.orderSvc.GetOrderCount(projectID, w.OrderStatusCompleted)
+	totalCount, err := as.orderSvc.GetOrderCount(projectID, w.OrderStatusCompleted, "")
 	if err != nil {
 		return err
 	}
@@ -101,7 +101,7 @@ func (as *ProductBestSellerCron) RunAProductBestSellerInitializerJob(projectID s
 		go func(i int) {
 			defer wg.Done()
 
-			as.orderSvc.FindOrderByProjectIDAsync(projectID, 10, i+1, w.OrderStatusCompleted, orderListResults, orderListErrors)
+			as.orderSvc.FindOrderByProjectIDAsync(projectID, 10, i+1, w.OrderStatusCompleted, "", "", orderListResults, orderListErrors)
 		}(i)
 	}
 
@@ -136,6 +136,7 @@ func (as *ProductBestSellerCron) RunAProductBestSellerInitializerJob(projectID s
 	close(productBestSellers)
 	close(productBestSellersErrors)
 
+	as.bestSellerSvc.DeleteBestSellers(projectID)
 	//TODO: find best seller rates
 	for items := range productBestSellers {
 		as.bestSellerSvc.CreateBestSellers(projectID, items)

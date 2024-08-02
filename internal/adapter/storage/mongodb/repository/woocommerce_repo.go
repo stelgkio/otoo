@@ -60,21 +60,45 @@ func (repo WoocommerceRepository) OrderDelete(data any) error {
 }
 
 // OrderFindByProjectID find all orders by projectID
-func (repo WoocommerceRepository) OrderFindByProjectID(projectID string, size, page int, orderStatus w.OrderStatus) ([]*w.OrderRecord, error) {
+func (repo WoocommerceRepository) OrderFindByProjectID(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string) ([]*w.OrderRecord, error) {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
+
 	filter := bson.M{"projectId": projectID, "is_active": true, "status": orderStatus}
 	if orderStatus == w.OrderStatusAll {
 		filter = bson.M{"projectId": projectID, "is_active": true}
 	}
 
-	findOptions := options.Find()
-	findOptions.SetLimit(int64(size))
-	findOptions.SetSkip(int64(size * (page - 1)))
-	findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
-	cursor, err := coll.Find(ctx, filter, findOptions)
+	sortOrder := 1
+	if direction == "desc" {
+		sortOrder = -1
+	} else if direction == "" {
+		sortOrder = -1
+	}
+
+	// Set sort field
+	sortField := sort
+	if sort == "total_amount" {
+		sortField = "order_total_amount_float"
+	} else if sort == "" {
+		sortField = "timestamp"
+	}
+
+	// Create an aggregation pipeline
+	pipeline := mongo.Pipeline{
+		{{Key: "$match", Value: filter}},
+		{{Key: "$addFields", Value: bson.M{"order_total_amount_float": bson.M{"$toDouble": "$order.total"}}}},
+		{{Key: "$sort", Value: bson.D{{Key: sortField, Value: sortOrder}}}},
+		{{Key: "$skip", Value: int64(size * (page - 1))}},
+		{{Key: "$limit", Value: int64(size)}},
+	}
+
+	cursor, err := coll.Aggregate(ctx, pipeline)
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
 		return nil, err
 	}
 	defer cursor.Close(ctx)
@@ -96,18 +120,36 @@ func (repo WoocommerceRepository) OrderFindByProjectID(projectID string, size, p
 }
 
 // GetOrderCount get number of orders
-func (repo WoocommerceRepository) GetOrderCount(projectID string, orderStatus w.OrderStatus) (int64, error) {
+func (repo WoocommerceRepository) GetOrderCount(projectID string, orderStatus w.OrderStatus, timeRange string) (int64, error) {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	filter := bson.M{"projectId": projectID, "is_active": true, "status": orderStatus}
-	if orderStatus == w.OrderStatusAll {
-		filter = bson.M{"projectId": projectID, "is_active": true}
-	}
-	res, err := coll.CountDocuments(ctx, filter)
+	// Calculate the time range based on the current time
+	var startTime time.Time
+	now := time.Now()
 
+	switch timeRange {
+	case "24h":
+		startTime = now.Add(-24 * time.Hour)
+	case "7d":
+		startTime = now.Add(-7 * 24 * time.Hour)
+	case "1m":
+		startTime = now.AddDate(0, -1, 0)
+	default:
+		startTime = time.Time{} // Default to the epoch time for no filtering
+	}
+
+	filter := bson.M{"projectId": projectID, "is_active": true, "status": orderStatus, "timestamp": bson.M{"$gte": startTime}}
+	if orderStatus == w.OrderStatusAll {
+		filter = bson.M{"projectId": projectID, "is_active": true, "timestamp": bson.M{"$gte": startTime}}
+	}
+
+	res, err := coll.CountDocuments(ctx, filter)
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return 0, nil
+		}
 		return 0, err
 	}
 	return res, nil
@@ -126,9 +168,16 @@ func (repo WoocommerceRepository) GetOrdersCountBetweenOrEquals(projectID string
 // Customer
 
 // CustomerCreate create customer
-func (repo WoocommerceRepository) CustomerCreate(data *w.CustomerRecord) error {
+func (repo WoocommerceRepository) CustomerCreate(data *w.CustomerRecord, email string) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_customers")
-	coll.InsertOne(context.TODO(), data)
+	filter := bson.M{"email": email, "is_active": true}
+	update := bson.M{"$set": data}
+	// Set upsert option to true
+	opt := options.Update().SetUpsert(true)
+	_, err := coll.UpdateOne(context.TODO(), filter, update, opt)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -157,10 +206,54 @@ func (repo WoocommerceRepository) CustomerDelete(data any) error {
 }
 
 // CustomerFindByProjectID find all customers by projectID
-func (repo WoocommerceRepository) CustomerFindByProjectID(projectID string) error {
+func (repo WoocommerceRepository) CustomerFindByProjectID(projectID string, size, page int, sort, direction string) ([]*w.CustomerRecord, error) {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_customers")
-	coll.FindOne(context.TODO(), projectID)
-	return nil
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	sortOrder := 1
+	if direction == "desc" {
+		sortOrder = -1
+	} else if direction == "" {
+		sortOrder = -1
+	}
+	pipeline := mongo.Pipeline{
+		// Match active customers by projectID
+		{{"$match", bson.D{{"projectId", projectID}, {"is_active", true}}}},
+	}
+
+	// Conditionally add order count and sort by it
+	if sort == "order_count" {
+		pipeline = append(pipeline, bson.D{{"$addFields", bson.D{{"order_count", bson.D{{"$size", bson.D{{"$ifNull", bson.A{"$orders", bson.A{}}}}}}}}}})
+		pipeline = append(pipeline, bson.D{{"$sort", bson.D{{"order_count", sortOrder}}}})
+	} else {
+		pipeline = append(pipeline, bson.D{{"$sort", bson.D{{sort, sortOrder}}}})
+	}
+
+	// Pagination: skip and limit
+	pipeline = append(pipeline, bson.D{{"$skip", int64(size * (page - 1))}})
+	pipeline = append(pipeline, bson.D{{"$limit", int64(size)}})
+
+	cursor, err := coll.Aggregate(ctx, pipeline)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var customers []*w.CustomerRecord
+	for cursor.Next(context.TODO()) {
+		var customer w.CustomerRecord
+		if err := cursor.Decode(&customer); err != nil {
+			return nil, err
+		}
+		customers = append(customers, &customer)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return customers, nil
 }
 
 // CustomerFindByEmail find customer by email
@@ -228,10 +321,38 @@ func (repo WoocommerceRepository) ProductDelete(productID int64) error {
 }
 
 // ProductFindByProjectID find all products by projectID
-func (repo WoocommerceRepository) ProductFindByProjectID(projectID string) error {
+func (repo WoocommerceRepository) ProductFindByProjectID(projectID string, size, page int, sort, direction string, productType w.ProductType) ([]*w.ProductRecord, error) {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
-	coll.FindOne(context.TODO(), projectID)
-	return nil
+	// OrderFindByProjectID find all orders by projectID
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	filter := bson.M{"projectId": projectID, "is_active": true, "product.type": bson.M{"$ne": productType.String()}}
+
+	findOptions := options.Find()
+	findOptions.SetLimit(int64(size))
+	findOptions.SetSkip(int64(size * (page - 1)))
+	findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
+	cursor, err := coll.Find(ctx, filter, findOptions)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var products []*w.ProductRecord
+	for cursor.Next(context.TODO()) {
+		var product w.ProductRecord
+		if err := cursor.Decode(&product); err != nil {
+			return nil, err
+		}
+		products = append(products, &product)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return products, nil
 }
 
 // GetProductByID get product by projectID and orderID
@@ -252,11 +373,11 @@ func (repo WoocommerceRepository) GetProductByID(projectID string, productID int
 }
 
 // GetProductCount get number of products
-func (repo WoocommerceRepository) GetProductCount(projectID string) (int64, error) {
+func (repo WoocommerceRepository) GetProductCount(projectID string, productType w.ProductType) (int64, error) {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
-	filter := bson.M{"projectId": projectID, "is_active": true}
+	filter := bson.M{"projectId": projectID, "is_active": true, "product.type": bson.M{"$ne": productType.String()}}
 	res, err := coll.CountDocuments(ctx, filter)
 
 	if err != nil {
@@ -265,7 +386,7 @@ func (repo WoocommerceRepository) GetProductCount(projectID string) (int64, erro
 	return res, nil
 }
 
-// GetProductBestSeller get best seller products
+// ProductBestSellerAggregate get best seller products
 func (repo WoocommerceRepository) ProductBestSellerAggregate(projectID string) ([]bson.M, error) {
 	collection := repo.mongo.Database("otoo").Collection("woocommerce_products")
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)

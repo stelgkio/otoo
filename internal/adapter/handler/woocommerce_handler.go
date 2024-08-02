@@ -222,7 +222,7 @@ func (w WooCommerceHandler) CustomerCreatedWebHook(ctx echo.Context) error {
 		CreatedAt:  time.Now(),
 		Timestamp:  time.Now(),
 	}
-	err = w.p.CustomerCreate(customerRecord)
+	err = w.p.CustomerCreate(customerRecord, req.Email)
 	if err != nil {
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
@@ -422,7 +422,7 @@ func (w WooCommerceHandler) WebHooksProgressPage(ctx echo.Context) error {
 	if len(webhooks) == 12 {
 		ctx.Response().Header().Set("HX-Trigger", "done")
 
-		return util.Render(ctx, wp.WebhooksProgressDone(projectID, webhooks, util.AllErrorsEmpty(webhooks)))
+		//	return util.Render(ctx, wp.WebhooksProgressDone(projectID, webhooks, util.AllErrorsEmpty(webhooks)))
 	}
 
 	return util.Render(ctx, wp.WebHooksProgress(projectID, webhooks))

@@ -46,7 +46,7 @@ func (as *OrderAnalyticsCron) RunAnalyticsJob() error {
 	for _, project := range allProjects {
 		projectID := project.Id.String()
 
-		totalCount, err := as.orderSvc.GetOrderCount(projectID, w.OrderStatusCompleted)
+		totalCount, err := as.orderSvc.GetOrderCount(projectID, w.OrderStatusCompleted, "")
 		if err != nil {
 			return err
 		}

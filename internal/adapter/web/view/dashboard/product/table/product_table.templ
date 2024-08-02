@@ -1,0 +1,213 @@
+package views
+
+import "fmt"
+
+templ ProductTable(projectId string) {
+	<div id="dashboard-order-table" x-data={ fmt.Sprintf("productTable('%s')", projectId) } x-init="init()">
+		<div class="row align-items-center g-6 mt-0 mb-6">
+			<div class="col-sm-6">
+				<div class="d-flex gap-2">
+					<div class="input-group input-group-sm input-group-inline w-100 w-md-50">
+						<span class="input-group-text">
+							<i
+								class="bi bi-search me-2"
+							></i>
+						</span>
+						<input
+							type="search"
+							class="form-control ps-0"
+							placeholder="Search all products"
+							aria-label="Search"
+						/>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="border-top">
+			<div class="table-responsive">
+				<table class="table table-hover table-striped table-nowrap">
+					<thead>
+						<tr>
+							<th scope="col">Image</th>
+							<th scope="col">Product ID</th>
+							<th scope="col">Name</th>
+							<th scope="col">SKU</th>
+							<th scope="col">Price</th>
+							<th scope="col">Category</th>
+							<th scope="col">Type</th>
+							<th scope="col">Total Orders</th>
+							<th scope="col">Timestamp</th>
+						</tr>
+					</thead>
+					<tbody>
+						<template x-if="!loading && totalItems === 0">
+							<tr>
+								<td colspan="8">No products found.</td>
+							</tr>
+						</template>
+						<template x-for="product in paginatedProducts" :key="product.id">
+							<tr>
+								<td>
+									<template x-if="product.product_image_url">
+										<img
+											:src="product.product_image_url"
+											class="avatar avatar-sm rounded-circle"
+											alt="Product Image"
+										/>
+									</template>
+								</td>
+								<td x-text="product.productId"></td>
+								<td x-text="product.name"></td>
+								<td x-text="product.sku"></td>
+								<td x-text="product.price"></td>
+								<td x-text="product.category"></td>
+								<td x-text="product.product_type"></td>
+								<td x-text="product.total_orders"></td>
+								<td x-text="new Date(product.timestamp).toLocaleDateString()"></td>
+							</tr>
+						</template>
+					</tbody>
+				</table>
+			</div>
+			<div class="py-4 px-6">
+				<div class="row align-items-center justify-content-between">
+					<div class="col-md-6 d-none d-md-block">
+						<span class="text-muted text-sm">
+							Showing  <span x-text="currentPageEnd"></span> of <span x-text="totalItems"></span> results found
+						</span>
+					</div>
+					<div class="col-md-auto">
+						<nav aria-label="Page navigation example">
+							<ul class="pagination pagination-spaced gap-1">
+								<li class="page-item"><a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)"><i class="bi bi-chevron-left"></i></a></li>
+								<template x-for="page in totalPages" :key="page">
+									<li class="page-item" :class="{'active': page === currentPage}"><a class="page-link" href="#" @click.prevent="changePage(page)" x-text="page"></a></li>
+								</template>
+								<li class="page-item"><a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)"><i class="bi bi-chevron-right"></i></a></li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+function productTable(projectId) {
+    return {
+		projectID: projectId,
+        currentTab: 'all',
+        products: [],
+        selectedProducts: [],
+        selectAllCheckbox: false,
+        sortKey: 'timestamp',
+        sortAsc: false,
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 0,
+        totalPages: 0,
+        loading: false,
+
+        async init() {
+            await this.fetchProducts(this.currentPage);
+        },
+
+        async fetchProducts(page = 1) {
+            this.loading = true;
+            try {
+                const url = this.getUrlForTab(this.currentTab, page);
+                const response = await fetch(url);
+                const result = await response.json();
+                if (response.ok) {
+                    this.products = result.data || [];
+                    this.totalItems = result.meta.totalItems || 0;
+                    this.currentPage = result.meta.currentPage || 1;
+                    this.itemsPerPage = result.meta.itemsPerPage || 10;
+                    this.totalPages = result.meta.totalPages || 0;
+                } else {
+                    console.error('Error fetching data:', result.message);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+         getUrlForTab(tab, page) {
+            const baseUrl = `http://localhost:8081/product/table/${this.projectID}`;
+            const sortDirection = this.sortAsc ? 'asc' : 'desc'; // Determine sort direction
+            switch (tab) {
+                case 'all':
+                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'completed':
+                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'processing':
+                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'pending':
+                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'cancelled':
+                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                default:
+                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+            }
+        },
+
+        selectTab(tab) {
+            this.currentTab = tab;
+            this.currentPage = 1; // Reset to first page
+            this.fetchProducts(this.currentPage);
+        },
+
+        selectAll() {
+            this.selectedProducts = this.selectAllCheckbox ? this.products.map(order => order.orderId) : [];
+        },
+
+      	sortTable(key) {
+            if (this.sortKey === key) {
+                this.sortAsc = !this.sortAsc; // Toggle sort direction if the same column is clicked
+            } else {
+                this.sortKey = key; // Set new sort key
+                this.sortAsc = true; // Default to ascending if a new column is selected
+            }
+            this.fetchProducts(this.currentPage); // Fetch sorted data
+        },
+		  getSortIcon(key) {
+            if (this.sortKey !== key) return '';
+            return this.sortAsc ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
+        },
+
+        changePage(page) {
+            if (page < 1 || page > this.totalPages) return;
+            this.fetchProducts(page);
+        },
+
+        get paginatedProducts() {
+            return this.products;
+        },
+
+        get currentPageStart() {
+            return (this.currentPage - 1) * this.itemsPerPage + 1;
+        },
+
+        get currentPageEnd() {
+            return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
+        },
+		 badgeClass(status) {
+				const baseClass = 'badge bg-body-secondary badge-custom'; // Add badge-custom class
+				switch (status) {
+					case 'pending':
+						return `${baseClass} text-warning`;
+					case 'completed':
+						return `${baseClass} text-success`;
+					case 'cancelled':
+						return `${baseClass} text-danger`;
+					case 'processing':
+						return `${baseClass} text-warning`;
+					default:
+						return baseClass;
+				}
+		}		
+    };
+}
+</script>
+}

@@ -6,4 +6,5 @@ import domain "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 type BestSellers interface {
 	FindBestSellers(projectID string, size, page int) ([]*domain.ProductBestSellerRecord, error)
 	CreateBestSellers(projectID string, data []*domain.ProductBestSellerRecord) error
+	DeleteBestSellers(projectID string) error
 }

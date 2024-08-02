@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	domain "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/port"
 	"github.com/stelgkio/woocommerce"
@@ -82,7 +83,7 @@ func (c *CustomerService) ExtractCustomerFromOrderAndUpsert(ctx echo.Context, re
 			},
 		}
 		customer.Orders = []int64{req.Order.ID}
-		err = c.p.CustomerCreate(customer)
+		err = c.p.CustomerCreate(customer, req.Order.Billing.Email)
 	}
 
 	return err
@@ -95,4 +96,13 @@ func (c *CustomerService) GetCustomerCount(ctx echo.Context, projectID string, r
 		errors <- err
 	}
 	results <- customerCount
+}
+
+// FindCustomerByProjectIDAsync finds customer by project ID asynchronously
+func (c *CustomerService) FindCustomerByProjectIDAsync(projectID string, size, page int, sort, direction string, results chan<- []*domain.CustomerRecord, errors chan<- error) {
+	products, err := c.p.CustomerFindByProjectID(projectID, size, page, sort, direction)
+	if err != nil {
+		errors <- err
+	}
+	results <- products
 }

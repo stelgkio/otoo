@@ -36,7 +36,6 @@ func ExtractWebhookHeaders(next echo.HandlerFunc) echo.HandlerFunc {
 		c.Set("webhookResource", resource)
 		c.Set("webhookTopic", topic)
 		c.Set("webhookSource", trimmedDomain)
-		
 
 		return next(c)
 	}
@@ -50,42 +49,40 @@ func ValidateWebhookSignature2(c echo.Context, secretKey string) error {
 	}
 
 	// Read the body of the request
-    body, err := io.ReadAll(c.Request().Body)
-    if err != nil {
-        return err
-    }
-   defer c.Request().Body.Close()
+	body, err := io.ReadAll(c.Request().Body)
+	if err != nil {
+		return err
+	}
+	defer c.Request().Body.Close()
 
-    // Compute the HMAC SHA256 hash
-    hash := hmac.New(sha256.New, []byte(secretKey))
-    hash.Write(body)
-    expectedMAC := base64.StdEncoding.EncodeToString(hash.Sum(nil))
+	// Compute the HMAC SHA256 hash
+	hash := hmac.New(sha256.New, []byte(secretKey))
+	hash.Write(body)
+	expectedMAC := base64.StdEncoding.EncodeToString(hash.Sum(nil))
 
-    // Compare the computed hash with the signature
-    if !hmac.Equal([]byte(signature), []byte(expectedMAC)) {
-        return errors.New("invalid signature")
-    }
+	// Compare the computed hash with the signature
+	if !hmac.Equal([]byte(signature), []byte(expectedMAC)) {
+		return errors.New("invalid signature")
+	}
 
-    return nil
+	return nil
 }
 func ValidateWebhookSignature(ctx echo.Context, secret string, body []byte) error {
-    
 
 	signature := ctx.Get("webhookSignature").(string)
 	if signature == "" {
 		return errors.New("missing signature")
 	}
-    
-    mac := hmac.New(sha256.New, []byte(secret))
-    mac.Write(body)
+
+	mac := hmac.New(sha256.New, []byte(secret))
+	mac.Write(body)
 	expectedSignature := base64.StdEncoding.EncodeToString(mac.Sum(nil))
 
-    if signature != expectedSignature {
-        return errors.New("invalid signature")
-    }
+	if signature != expectedSignature {
+		return errors.New("invalid signature")
+	}
 
-
-    return nil
+	return nil
 }
 
 // AllErrorsEmpty checks if all elements in the webhooks slice have an empty Error field

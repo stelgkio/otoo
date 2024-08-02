@@ -90,12 +90,7 @@ type OrderTableList struct {
 	TotalAmount string             `bson:"total_amount,omitempty" json:"total_amount,omitempty"`
 	Status      OrderStatus        `bson:"status,omitempty" json:"status,omitempty"`
 }
-type Meta struct {
-	TotalItems   int `json:"totalItems"`
-	CurrentPage  int `json:"currentPage"`
-	ItemsPerPage int `json:"itemsPerPage"`
-	TotalPages   int `json:"totalPages"`
-}
+
 type OrderTableResponde struct {
 	Data []OrderTableList `json:"data"`
 	Meta Meta             `json:"meta"`

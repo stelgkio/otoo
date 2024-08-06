@@ -10,9 +10,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
+	d "github.com/stelgkio/otoo/internal/core/domain"
 	domain "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/port"
+	"github.com/stelgkio/otoo/internal/core/util"
 	"github.com/stelgkio/woocommerce"
 	woo "github.com/stelgkio/woocommerce"
 	"go.mongodb.org/mongo-driver/bson"
@@ -23,11 +25,13 @@ const (
 	batchSize   = 100 // Number of products to process per batch
 )
 
+// ProductService represents the service for managing products
 type ProductService struct {
 	p port.WoocommerceRepository
 	s port.ProjectRepository
 }
 
+// NewProductService creates a new ProductService instance
 func NewProductService(woorepo port.WoocommerceRepository, projrepo port.ProjectRepository) *ProductService {
 	return &ProductService{
 		p: woorepo,
@@ -35,11 +39,12 @@ func NewProductService(woorepo port.WoocommerceRepository, projrepo port.Project
 	}
 }
 
-func (s *ProductService) GetAllProductFromWoocommerce(customerKey string, customerSecret string, domainUrl string, projectId uuid.UUID) error {
-	client := InitClient(customerKey, customerSecret, domainUrl)
+// GetAllProductFromWoocommerce gets all products from WooCommerce and saves them to MongoDB
+func (s *ProductService) GetAllProductFromWoocommerce(customerKey string, customerSecret string, domainURL string, projectID uuid.UUID) error {
+	client := InitClient(customerKey, customerSecret, domainURL)
 
 	// Create all webhooks
-	err := s.createAndSaveAllProducts(client, projectId)
+	err := s.createAndSaveAllProducts(client, projectID)
 	if err != nil {
 		slog.Error("create all products error", "error", err)
 		return errors.Wrap(err, "create all products error")
@@ -142,9 +147,11 @@ func (s *ProductService) saveWebhookResult(data *w.ProductRecord) error {
 	return nil
 }
 
-// ExtractProductFromOrderAndUpsert extracts product from order and upsert to MongoDB
-func (s *ProductService) ExtractProductFromOrderAndUpsert(ctx echo.Context, req *w.OrderRecord) error {
+// ExtractProductFromOrderAndUpsert upserts product data into the database
+func (s *ProductService) ExtractProductFromOrderAndUpsert(ctx echo.Context, req *w.OrderRecord, proj *d.Project) error {
+	client := InitClient(proj.WoocommerceProject.ConsumerKey, proj.WoocommerceProject.ConsumerSecret, proj.WoocommerceProject.Domain)
 	for _, orderItem := range req.Order.LineItems {
+
 		if orderItem.ProductID != 0 {
 			product, err := s.p.GetProductByID(req.ProjectID, orderItem.ProductID)
 			if err != nil {
@@ -162,8 +169,57 @@ func (s *ProductService) ExtractProductFromOrderAndUpsert(ctx echo.Context, req 
 					}
 				}
 				if !orderExists {
-					product.Orders = append(product.Orders, req.Order.ID)
+					if req.Order.Status != domain.OrderStatusCancelled.String() {
+						product.Orders = append(product.Orders, req.Order.ID)
+					} else {
+						product.Orders = util.RemoveElement(product.Orders, util.FindIndex(product.Orders, req.Order.ID))
+					}
+
 					err = s.p.ProductUpdate(product, product.ProductID)
+				}
+			} else {
+				wooproduct, err := client.Product.Get(orderItem.ProductID, nil)
+				if err != nil {
+					return err
+				}
+				productRecord := &domain.ProductRecord{
+					ProjectID: proj.Id.String(),
+					Error:     "",
+					Event:     "product.created",
+					ProductID: wooproduct.ID,
+					Product:   *wooproduct,
+					IsActive:  true,
+					CreatedAt: time.Now().UTC(),
+					Timestamp: time.Now().UTC(),
+					ParentId:  wooproduct.ParentId,
+				}
+				if req.Order.Status != "cancelled" {
+					productRecord.Orders = []int64{req.Order.ID}
+				}
+				err = s.p.ProductCreate(productRecord)
+
+				if wooproduct.Type == domain.Variable.String() {
+					for _, variationID := range wooproduct.Variations {
+						variation, err := client.ProductVariation.Get(wooproduct.ID, variationID, nil)
+						if err != nil {
+							return err
+						}
+
+						variationRecord := &domain.ProductRecord{
+							ProjectID: proj.Id.String(),
+							Error:     "",
+							Event:     "product.created",
+							ProductID: variation.ID,
+							Product:   *variation,
+							IsActive:  true,
+							CreatedAt: time.Now().UTC(),
+							Timestamp: time.Now().UTC(),
+							ParentId:  wooproduct.ID,
+						}
+
+						err = s.p.ProductUpdate(variationRecord, variation.ID)
+					}
+
 				}
 			}
 		}

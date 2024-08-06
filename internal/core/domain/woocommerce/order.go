@@ -23,6 +23,12 @@ const (
 	OrderStatusCheckoutDraft OrderStatus = "checkout-draft"
 )
 
+// String returns the string representation of the ProductType
+func (pt OrderStatus) String() string {
+	return string(pt)
+}
+
+// OrderRecord represents an order record in MongoDB
 type OrderRecord struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
 	ProjectID string             `bson:"projectId"`
@@ -38,11 +44,12 @@ type OrderRecord struct {
 	Status    OrderStatus        `bson:"status,omitempty"`
 }
 
-func NewOrderRecord(projectID uuid.UUID, event string, orderId int64, order woocommerce.Order) OrderRecord {
+// NewOrderRecord creates a new OrderRecord
+func NewOrderRecord(projectID uuid.UUID, event string, orderID int64, order woocommerce.Order) OrderRecord {
 	return OrderRecord{
 		ProjectID: projectID.String(),
 		Event:     event,
-		OrderID:   orderId,
+		OrderID:   orderID,
 		Order:     order,
 		IsActive:  true,             // Default value
 		CreatedAt: time.Now().UTC(), // Initialize CreatedAt with the current time
@@ -52,6 +59,7 @@ func NewOrderRecord(projectID uuid.UUID, event string, orderId int64, order wooc
 	}
 }
 
+// SoftDelete updates the order record
 func (o *OrderRecord) SoftDelete() {
 	o.IsActive = false
 	now := time.Now().UTC()
@@ -59,6 +67,7 @@ func (o *OrderRecord) SoftDelete() {
 	o.Timestamp = now
 }
 
+// StringToOrderStatus converts a string to an OrderStatus
 func StringToOrderStatus(status string) (OrderStatus, error) {
 	switch status {
 	case string(OrderStatusAll):
@@ -82,6 +91,7 @@ func StringToOrderStatus(status string) (OrderStatus, error) {
 	}
 }
 
+// OrderTableList represents an order table list
 type OrderTableList struct {
 	ID          primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 	ProjectID   string             `bson:"projectId" json:"projectId"`
@@ -91,6 +101,7 @@ type OrderTableList struct {
 	Status      OrderStatus        `bson:"status,omitempty" json:"status,omitempty"`
 }
 
+// OrderTableResponde represents an order table response
 type OrderTableResponde struct {
 	Data []OrderTableList `json:"data"`
 	Meta Meta             `json:"meta"`

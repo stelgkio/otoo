@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	d "github.com/stelgkio/otoo/internal/core/domain"
 	domain "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
@@ -64,7 +65,7 @@ type CustomerService interface {
 
 // ProductService defines the methods for interacting with the Product service
 type ProductService interface {
-	ExtractProductFromOrderAndUpsert(ctx echo.Context, req *woo.OrderRecord) error
+	ExtractProductFromOrderAndUpsert(ctx echo.Context, req *woo.OrderRecord, project *d.Project) error
 	GetAllProductFromWoocommerce(ccustomerKey string, customerSecret string, domainURL string, projectID uuid.UUID) error
 	GetProductCount(ctx echo.Context, projectID string, productType w.ProductType, results chan<- int64, errors chan<- error)
 	GetProductBestSeller(projectID string, totalCount int64, results chan<- []*domain.ProductBestSellerRecord, errors chan<- error)

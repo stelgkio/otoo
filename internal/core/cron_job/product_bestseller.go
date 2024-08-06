@@ -87,6 +87,7 @@ func (as *ProductBestSellerCron) RunAProductBestSellerInitializerJob(projectID s
 
 	var wg sync.WaitGroup
 
+	project, err := as.projectSvc.GetProjectByID(nil, projectID)
 	totalCount, err := as.orderSvc.GetOrderCount(projectID, w.OrderStatusCompleted, "")
 	if err != nil {
 		return err
@@ -113,7 +114,7 @@ func (as *ProductBestSellerCron) RunAProductBestSellerInitializerJob(projectID s
 
 	for items := range orderListResults {
 		for _, order := range items {
-			as.productSvc.ExtractProductFromOrderAndUpsert(nil, order)
+			as.productSvc.ExtractProductFromOrderAndUpsert(nil, order, project)
 		}
 	}
 

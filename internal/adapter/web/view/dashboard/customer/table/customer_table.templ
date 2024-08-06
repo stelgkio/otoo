@@ -1,6 +1,9 @@
 package views
 
-import "fmt"
+import (
+	"fmt"
+	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/pagination"
+)
 
 templ CustomerTable(projectId string) {
 	<div id="dashboard-order-table" x-data={ fmt.Sprintf("customerTable('%s')", projectId) } x-init="init()">
@@ -57,26 +60,7 @@ templ CustomerTable(projectId string) {
 					</tbody>
 				</table>
 			</div>
-			<div class="py-4 px-6">
-				<div class="row align-items-center justify-content-between">
-					<div class="col-md-6 d-none d-md-block">
-						<span class="text-muted text-sm">
-							Showing  <span x-text="currentPageEnd"></span> of <span x-text="totalItems"></span> results found
-						</span>
-					</div>
-					<div class="col-md-auto">
-						<nav aria-label="Page navigation example">
-							<ul class="pagination pagination-spaced gap-1">
-								<li class="page-item"><a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)"><i class="bi bi-chevron-left"></i></a></li>
-								<template x-for="page in totalPages" :key="page">
-									<li class="page-item" :class="{'active': page === currentPage}"><a class="page-link" href="#" @click.prevent="changePage(page)" x-text="page"></a></li>
-								</template>
-								<li class="page-item"><a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)"><i class="bi bi-chevron-right"></i></a></li>
-							</ul>
-						</nav>
-					</div>
-				</div>
-			</div>
+			@p.PaginationControl()
 		</div>
 	</div>
 	<script>
@@ -87,7 +71,7 @@ function customerTable(projectId) {
         customers: [],
         selectedcustomers: [],
         selectAllCheckbox: false,
-        sortKey: 'timestamp',
+        sortKey: 'order_count',
         sortAsc: false,
         currentPage: 1,
         itemsPerPage: 10,

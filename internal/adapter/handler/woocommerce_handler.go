@@ -71,8 +71,8 @@ func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
 		OrderID:   req.ID,
 		Order:     *req,
 		IsActive:  true,
-		CreatedAt: time.Now(),
-		Timestamp: time.Now(),
+		CreatedAt: time.Now().UTC(),
+		Timestamp: time.Now().UTC(),
 	}
 	orderRecord.Status, err = woo.StringToOrderStatus(req.Status)
 	if err != nil {
@@ -114,8 +114,8 @@ func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
 		OrderID:   req.ID,
 		Order:     *req,
 		IsActive:  true,
-		UpdatedAt: time.Now(),
-		Timestamp: time.Now(),
+		UpdatedAt: time.Now().UTC(),
+		Timestamp: time.Now().UTC(),
 	}
 	updateOrderRecord.Status, err = woo.StringToOrderStatus(req.Status)
 	if err != nil {
@@ -219,8 +219,8 @@ func (w WooCommerceHandler) CustomerCreatedWebHook(ctx echo.Context) error {
 		Email:      req.Email,
 		Customer:   *req,
 		IsActive:   true,
-		CreatedAt:  time.Now(),
-		Timestamp:  time.Now(),
+		CreatedAt:  time.Now().UTC(),
+		Timestamp:  time.Now().UTC(),
 	}
 	err = w.p.CustomerCreate(customerRecord, req.Email)
 	if err != nil {
@@ -258,8 +258,8 @@ func (w WooCommerceHandler) CustomerUpdatedWebHook(ctx echo.Context) error {
 		Email:      req.Email,
 		Customer:   *req,
 		IsActive:   true,
-		UpdatedAt:  time.Now(),
-		Timestamp:  time.Now(),
+		UpdatedAt:  time.Now().UTC(),
+		Timestamp:  time.Now().UTC(),
 	}
 	err = w.p.CustomerUpdate(customerRecord, req.Email)
 	if err != nil {
@@ -316,8 +316,8 @@ func (w WooCommerceHandler) ProductCreatedWebHook(ctx echo.Context) error {
 		ProductID: req.ID,
 		Product:   *req,
 		IsActive:  true,
-		CreatedAt: time.Now(),
-		Timestamp: time.Now(),
+		CreatedAt: time.Now().UTC(),
+		Timestamp: time.Now().UTC(),
 		ParentId:  req.ParentId,
 	}
 	err = w.p.ProductUpdate(productRecord, req.ID)
@@ -360,8 +360,8 @@ func (w WooCommerceHandler) ProductUpdatedWebHook(ctx echo.Context) error {
 		ProductID: req.ID,
 		Product:   *req,
 		IsActive:  true,
-		UpdatedAt: time.Now(),
-		Timestamp: time.Now(),
+		UpdatedAt: time.Now().UTC(),
+		Timestamp: time.Now().UTC(),
 		ParentId:  req.ParentId,
 	}
 	err = w.p.ProductUpdate(productRecord, req.ID)

@@ -70,7 +70,7 @@ func (repo *ProjectRepository) DeleteProjectsByUserID(ctx echo.Context, userID u
 	project := &domain.Project{}
 	res, err := repo.db.Model(project).
 		Set("is_active = ?", false).
-		Set("deleted_at = ?", time.Now()).
+		Set("deleted_at = ?", time.Now().UTC()).
 		Where("user_id = ?", userID).
 		//Returning("*"). // This ensures the updated project is returned
 		Update()

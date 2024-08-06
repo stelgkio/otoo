@@ -50,9 +50,9 @@ func (c *CustomerService) ExtractCustomerFromOrderAndUpsert(ctx echo.Context, re
 			Event:      "customer_created",
 			CustomerID: req.Order.CustomerId,
 			Email:      req.Order.Billing.Email,
-			Timestamp:  time.Now(),
+			Timestamp:  time.Now().UTC(),
 			IsActive:   true,
-			CreatedAt:  time.Now(),
+			CreatedAt:  time.Now().UTC(),
 			Customer: woocommerce.Customer{
 				ID:        req.Order.CustomerId,
 				Email:     req.Order.Billing.Email,

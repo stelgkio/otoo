@@ -33,7 +33,7 @@ func NewProductBestSellerCron(projectSvc port.ProjectService, bestSellerSvc port
 // RunAProductBestSellerDailyJob runs the analytics job
 func (as *ProductBestSellerCron) RunAProductBestSellerDailyJob() error {
 	// Get the current time
-	now := time.Now()
+	now := time.Now().UTC()
 
 	// Define time ranges
 	last24Hours := now.Add(-24 * time.Hour)

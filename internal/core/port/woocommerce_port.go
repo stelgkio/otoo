@@ -18,6 +18,7 @@ type WoocommerceRepository interface {
 	OrderCreate(data *w.OrderRecord) error
 	OrderUpdate(data *w.OrderRecord, orderID int64) error
 	OrderDelete(data any) error
+	GetOrderByID(projectID string, orderID int64) (*w.OrderRecord, error)
 	OrderFindByProjectID(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string) ([]*w.OrderRecord, error)
 	GetOrderCount(projectID string, orderStatus w.OrderStatus, timeRange string) (int64, error)
 	GetOrdersCountBetweenOrEquals(projectID string, timeperiod time.Time, orderStatus w.OrderStatus) (int64, error)
@@ -76,5 +77,6 @@ type OrderService interface {
 	GetOrderCountAsync(ctx echo.Context, projectID string, orderStatus w.OrderStatus, timeRange string, results chan<- int64, errors chan<- error)
 	GetOrdersCountBetweenOrEquals(projectID string, timePeriod time.Time, orderStatus w.OrderStatus) (int64, error)
 	GetOrderCount(projectID string, orderStatus w.OrderStatus, timeRange string) (int64, error)
+	GetOrderByID(projectID string, orderID int64) (*domain.OrderRecord, error)
 	FindOrderByProjectIDAsync(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string, results chan<- []*domain.OrderRecord, errors chan<- error)
 }

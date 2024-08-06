@@ -27,14 +27,14 @@ func NewWebhookRecord(projectID uuid.UUID, event string, webhookID int64, webhoo
 		Event:     event,
 		WebhookID: webhookID,
 		Webhook:   webhook,
-		IsActive:  true,       // Default value
-		CreatedAt: time.Now(), // Initialize CreatedAt with the current time
-		UpdatedAt: time.Now(), // Initialize UpdatedAt with the current time
+		IsActive:  true,             // Default value
+		CreatedAt: time.Now().UTC(), // Initialize CreatedAt with the current time
+		UpdatedAt: time.Now().UTC(), // Initialize UpdatedAt with the current time
 	}
 }
 
 func (wr *WebhookRecord) SoftDelete() {
 	wr.IsActive = false
-	now := time.Now()
+	now := time.Now().UTC()
 	wr.DeletedAt = &now
 }

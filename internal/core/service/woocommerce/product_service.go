@@ -100,7 +100,7 @@ func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectID 
 				ProjectID: projectID.String(),
 				Event:     "Product.List",
 				Error:     err.Error(),
-				CreatedAt: time.Now(),
+				CreatedAt: time.Now().UTC(),
 				ProductID: 0,
 				Product:   woo.Product{}, // Assuming empty product
 				IsActive:  false,
@@ -115,7 +115,7 @@ func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectID 
 				ProjectID: projectID.String(),
 				Event:     "Product.List",
 				Error:     "",
-				CreatedAt: time.Now(),
+				CreatedAt: time.Now().UTC(),
 				ProductID: item.ID,
 				Product:   item,
 				IsActive:  true,
@@ -224,10 +224,10 @@ func (s *ProductService) GetProductBestSeller(projectID string, totalCount int64
 			ProjectID:   projectID,
 			ProductID:   productID,
 			TotalOrders: int64(orderCount),
-			StartDate:   time.Now(),
-			EndDate:     time.Now(),
+			StartDate:   time.Now().UTC(),
+			EndDate:     time.Now().UTC(),
 			ProductName: product.Name,
-			Timestamp:   time.Now(),
+			Timestamp:   time.Now().UTC(),
 			IsActive:    true,
 		}
 		newProductBestSellerRecord.CalculatePercentages(totalCount)

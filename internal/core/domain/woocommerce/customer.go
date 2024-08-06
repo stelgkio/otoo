@@ -31,16 +31,16 @@ func NewCustomerRecord(projectID uuid.UUID, event string, customerId int64, cust
 		CustomerID: customerId,
 		Email:      customer.Email,
 		Customer:   customer,
-		IsActive:   true,       // Default value
-		CreatedAt:  time.Now(), // Initialize CreatedAt with the current time
-		Timestamp:  time.Now(), // Initialize Timestamp with the current time
+		IsActive:   true,             // Default value
+		CreatedAt:  time.Now().UTC(), // Initialize CreatedAt with the current time
+		Timestamp:  time.Now().UTC(), // Initialize Timestamp with the current time
 		Orders:     []int64{},
 	}
 }
 
 func (o *CustomerRecord) SoftDelete() {
 	o.IsActive = false
-	now := time.Now()
+	now := time.Now().UTC()
 	o.DeletedAt = now
 	o.Timestamp = now
 }

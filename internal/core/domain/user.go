@@ -37,7 +37,7 @@ func NewUser(email string, password string, name string, last_name string) (*Use
 		return u, err
 	}
 
-	now := time.Now()
+	now := time.Now().UTC()
 	u.Role = Client
 	u.Email = email
 	u.CreatedAt = now

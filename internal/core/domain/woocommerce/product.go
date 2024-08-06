@@ -30,9 +30,9 @@ func NewProductRecord(projectID uuid.UUID, event string, productId int64, produc
 		Event:     event,
 		ProductID: productId,
 		Product:   product,
-		IsActive:  true,       // Default value
-		CreatedAt: time.Now(), // Initialize CreatedAt with the current time
-		Timestamp: time.Now(), // Initialize Timestamp with the current time
+		IsActive:  true,             // Default value
+		CreatedAt: time.Now().UTC(), // Initialize CreatedAt with the current time
+		Timestamp: time.Now().UTC(), // Initialize Timestamp with the current time
 		Orders:    []int64{},
 		ParentId:  parentId,
 	}
@@ -41,7 +41,7 @@ func NewProductRecord(projectID uuid.UUID, event string, productId int64, produc
 // UpdateProductRecord updates the product record
 func (o *ProductRecord) SoftDelete() {
 	o.IsActive = false
-	now := time.Now()
+	now := time.Now().UTC()
 	o.DeletedAt = now
 	o.Timestamp = now
 }

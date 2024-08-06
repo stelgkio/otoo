@@ -44,17 +44,17 @@ func NewOrderRecord(projectID uuid.UUID, event string, orderId int64, order wooc
 		Event:     event,
 		OrderID:   orderId,
 		Order:     order,
-		IsActive:  true,       // Default value
-		CreatedAt: time.Now(), // Initialize CreatedAt with the current time
-		UpdatedAt: time.Now(), // Initialize UpdatedAt with the current time
-		Timestamp: time.Now(), // Initialize Timestamp with the current time
+		IsActive:  true,             // Default value
+		CreatedAt: time.Now().UTC(), // Initialize CreatedAt with the current time
+		UpdatedAt: time.Now().UTC(), // Initialize UpdatedAt with the current time
+		Timestamp: time.Now().UTC(), // Initialize Timestamp with the current time
 
 	}
 }
 
 func (o *OrderRecord) SoftDelete() {
 	o.IsActive = false
-	now := time.Now()
+	now := time.Now().UTC()
 	o.DeletedAt = now
 	o.Timestamp = now
 }

@@ -127,7 +127,7 @@ func (repo WoocommerceRepository) GetOrderCount(projectID string, orderStatus w.
 
 	// Calculate the time range based on the current time
 	var startTime time.Time
-	now := time.Now()
+	now := time.Now().UTC()
 
 	switch timeRange {
 	case "24h":
@@ -163,6 +163,23 @@ func (repo WoocommerceRepository) GetOrdersCountBetweenOrEquals(projectID string
 	filter := bson.M{"projectId": projectID, "is_active": true, "status": orderStatus, "timestamp": bson.M{"$gte": timeperiod}}
 	totalcount, err := coll.CountDocuments(ctx, filter)
 	return totalcount, err
+}
+
+// GetOrderByID get order by id
+func (repo WoocommerceRepository) GetOrderByID(projectID string, orderID int64) (*w.OrderRecord, error) {
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	filter := bson.M{"projectId": projectID, "is_active": true, "orderId": orderID}
+	var order w.OrderRecord
+	err := coll.FindOne(ctx, filter).Decode(&order)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &order, nil
 }
 
 // Customer
@@ -219,20 +236,22 @@ func (repo WoocommerceRepository) CustomerFindByProjectID(projectID string, size
 	}
 	pipeline := mongo.Pipeline{
 		// Match active customers by projectID
-		{{"$match", bson.D{{"projectId", projectID}, {"is_active", true}}}},
+		{{Key: "$match", Value: bson.D{{Key: "projectId", Value: projectID}, {Key: "is_active", Value: true}}}},
 	}
 
 	// Conditionally add order count and sort by it
 	if sort == "order_count" {
-		pipeline = append(pipeline, bson.D{{"$addFields", bson.D{{"order_count", bson.D{{"$size", bson.D{{"$ifNull", bson.A{"$orders", bson.A{}}}}}}}}}})
-		pipeline = append(pipeline, bson.D{{"$sort", bson.D{{"order_count", sortOrder}}}})
+		pipeline = append(pipeline, bson.D{{Key: "$addFields", Value: bson.D{{Key: "order_count",
+			Value: bson.D{{Key: "$size", Value: bson.D{{Key: "$ifNull", Value: bson.A{"$orders", bson.A{}}}}}}}}}})
+		pipeline = append(pipeline, bson.D{{Key: "$sort", Value: bson.D{{Key: "order_count", Value: sortOrder}}}})
 	} else {
-		pipeline = append(pipeline, bson.D{{"$sort", bson.D{{sort, sortOrder}}}})
+		pipeline = append(pipeline, bson.D{{Key: "$sort",
+			Value: bson.D{{Key: sort, Value: sortOrder}}}})
 	}
 
 	// Pagination: skip and limit
-	pipeline = append(pipeline, bson.D{{"$skip", int64(size * (page - 1))}})
-	pipeline = append(pipeline, bson.D{{"$limit", int64(size)}})
+	pipeline = append(pipeline, bson.D{{Key: "$skip", Value: int64(size * (page - 1))}})
+	pipeline = append(pipeline, bson.D{{Key: "$limit", Value: int64(size)}})
 
 	cursor, err := coll.Aggregate(ctx, pipeline)
 	if err != nil {
@@ -315,7 +334,7 @@ func (repo WoocommerceRepository) ProductUpdate(data *w.ProductRecord, productID
 func (repo WoocommerceRepository) ProductDelete(productID int64) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
 	filter := bson.M{"productId": productID}
-	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now()}}
+	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now().UTC()}}
 	_, err := coll.UpdateOne(context.TODO(), filter, update)
 	return err
 }
@@ -495,7 +514,7 @@ func (repo *WoocommerceRepository) WebhookUpdate(data w.WebhookRecord) (*w.Webho
 func (repo *WoocommerceRepository) WebhookDelete(id primitive.ObjectID) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_webhooks")
 	filter := bson.M{"_id": id}
-	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now()}}
+	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now().UTC()}}
 	_, err := coll.UpdateOne(context.TODO(), filter, update)
 	return err
 }

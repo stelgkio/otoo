@@ -1,10 +1,10 @@
 package views
 
 import (
-	"time"
 	"fmt"
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/util"
+	"time"
 )
 
 templ LatestOrderHistory(orders []*woo.OrderRecord) {
@@ -23,59 +23,56 @@ templ LatestOrderHistory(orders []*woo.OrderRecord) {
 				</div>
 			</div>
 			<div class="list-group list-group-flush">
-			for _, item := range orders {
-				<div
-					class="list-group-item d-flex align-items-center justify-content-between gap-6"
-				>
-					<div class="d-flex align-items-center gap-3">
-						<div
-							class="icon icon-shape rounded-circle icon-sm flex-none w-rem-10 h-rem-10 text-sm bg-primary bg-opacity-25 text-primary"
-						>
-							<i class="bi bi-send-fill"></i>
-						</div>
-						<div class="">
-							<span
-								class="d-block text-heading text-sm fw-semibold"
+				for _, item := range orders {
+					<div
+						class="list-group-item d-flex align-items-center justify-content-between gap-6"
+					>
+						<div class="d-flex align-items-center gap-3">
+							<div
+								class="icon icon-shape rounded-circle icon-sm flex-none w-rem-10 h-rem-10 text-sm bg-primary bg-opacity-25 text-primary"
 							>
-								# { fmt.Sprintf("%d",item.OrderID) }
-							</span>
-							<span class="d-none d-sm-block text-muted text-xs">
-								{ util.CalculateTimeDifference(item.Timestamp.Format("2006-01-02 15:04:05"),time.Now().Format("2006-01-02 15:04:05")) }							
-							</span>
+								<i class="bi bi-send-fill"></i>
+							</div>
+							<div class="">
+								<span
+									class="d-block text-heading text-sm fw-semibold"
+								>
+									# { fmt.Sprintf("%d",item.OrderID) }
+								</span>
+								<span class="d-none d-sm-block text-muted text-xs">
+									{ util.CalculateTimeDifference(item.Timestamp.Format("2006-01-02 15:04:05"),time.Now().UTC().Format("2006-01-02 15:04:05")) }
+								</span>
+							</div>
+						</div>
+						<div class="d-md-block">
+							if item.Status == woo.OrderStatusPending {
+								<span class="badge bg-body-secondary text-warning">
+									{ fmt.Sprintf("%s",item.Status) }
+								</span>
+							} else if item.Status == woo.OrderStatusCompleted {
+								<span class="badge bg-body-secondary text-success">
+									{ fmt.Sprintf("%s",item.Status) }
+								</span>
+							} else if item.Status == woo.OrderStatusCancelled {
+								<span class="badge bg-body-secondary text-danger">
+									{ fmt.Sprintf("%s",item.Status) }
+								</span>
+							} else if item.Status == woo.OrderStatusProcessing {
+								<span class="badge bg-body-secondary text-warning">
+									{ fmt.Sprintf("%s",item.Status) }
+								</span>
+							} else {
+								{ fmt.Sprintf("%s",item.Status) }
+							}
+						</div>
+						<div class="text-end">
+							<span
+								class="d-block text-heading text-sm fw-bold"
+							>{ item.Order.Total } { item.Order.Currency }</span>
 						</div>
 					</div>
-					<div class="d-md-block">
-					if item.Status == woo.OrderStatusPending {
-							<span class="badge bg-body-secondary text-warning">
-						{ fmt.Sprintf("%s",item.Status) }
-						</span>
-					} else if item.Status == woo.OrderStatusCompleted {
-							<span class="badge bg-body-secondary text-success">
-						{ fmt.Sprintf("%s",item.Status) }
-						</span>
-					} else if item.Status == woo.OrderStatusCancelled {
-							<span class="badge bg-body-secondary text-danger">
-						{ fmt.Sprintf("%s",item.Status) }
-						</span>
-					} else if item.Status == woo.OrderStatusProcessing {
-							<span class="badge bg-body-secondary text-warning">
-						{ fmt.Sprintf("%s",item.Status) }
-						</span>
-					} else {
-						{ fmt.Sprintf("%s",item.Status) }
-					}
-						
-					</div>
-					<div class="text-end">
-						<span
-							class="d-block text-heading text-sm fw-bold"
-						> { item.Order.Total } { item.Order.Currency }</span> 
-					</div>
-				</div>
-				
-			}
+				}
 			</div>
 		</div>
 	</div>
 }
-

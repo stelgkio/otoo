@@ -1,6 +1,9 @@
 package views
 
-import "fmt"
+import (
+	"fmt"
+	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/pagination"
+)
 
 templ ProductTable(projectId string) {
 	<div id="dashboard-order-table" x-data={ fmt.Sprintf("productTable('%s')", projectId) } x-init="init()">
@@ -28,15 +31,15 @@ templ ProductTable(projectId string) {
 				<table class="table table-hover table-striped table-nowrap">
 					<thead>
 						<tr>
-							<th scope="col">Image</th>
+							//<th scope="col">Image</th>
 							<th scope="col">Product ID</th>
 							<th scope="col">Name</th>
-							<th scope="col">SKU</th>
+							//	<th scope="col">SKU</th>
 							<th scope="col">Price</th>
 							<th scope="col">Category</th>
 							<th scope="col">Type</th>
 							<th scope="col">Total Orders</th>
-							<th scope="col">Timestamp</th>
+							// <th scope="col">Timestamp</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -47,48 +50,29 @@ templ ProductTable(projectId string) {
 						</template>
 						<template x-for="product in paginatedProducts" :key="product.id">
 							<tr>
-								<td>
-									<template x-if="product.product_image_url">
-										<img
-											:src="product.product_image_url"
-											class="avatar avatar-sm rounded-circle"
-											alt="Product Image"
-										/>
-									</template>
-								</td>
+								//<td>
+								// <template x-if="product.product_image_url">
+								// 	<img
+								// 		:src="product.product_image_url"
+								// 		class="avatar avatar-sm rounded-circle"
+								// 		alt="Product Image"
+								// 	/>
+								// </template>
+								//</td>
 								<td x-text="product.productId"></td>
 								<td x-text="product.name"></td>
-								<td x-text="product.sku"></td>
+								//<td x-text="product.sku"></td>
 								<td x-text="product.price"></td>
 								<td x-text="product.category"></td>
 								<td x-text="product.product_type"></td>
 								<td x-text="product.total_orders"></td>
-								<td x-text="new Date(product.timestamp).toLocaleDateString()"></td>
+								// <td x-text="new Date(product.timestamp).toLocaleDateString()"></td>
 							</tr>
 						</template>
 					</tbody>
 				</table>
 			</div>
-			<div class="py-4 px-6">
-				<div class="row align-items-center justify-content-between">
-					<div class="col-md-6 d-none d-md-block">
-						<span class="text-muted text-sm">
-							Showing  <span x-text="currentPageEnd"></span> of <span x-text="totalItems"></span> results found
-						</span>
-					</div>
-					<div class="col-md-auto">
-						<nav aria-label="Page navigation example">
-							<ul class="pagination pagination-spaced gap-1">
-								<li class="page-item"><a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)"><i class="bi bi-chevron-left"></i></a></li>
-								<template x-for="page in totalPages" :key="page">
-									<li class="page-item" :class="{'active': page === currentPage}"><a class="page-link" href="#" @click.prevent="changePage(page)" x-text="page"></a></li>
-								</template>
-								<li class="page-item"><a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)"><i class="bi bi-chevron-right"></i></a></li>
-							</ul>
-						</nav>
-					</div>
-				</div>
-			</div>
+			@p.PaginationControl()
 		</div>
 	</div>
 	<script>

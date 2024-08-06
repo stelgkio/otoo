@@ -31,7 +31,7 @@ func NewOrderAnalyticsCron(projectSvc port.ProjectService, userSvc port.UserServ
 // RunAnalyticsJob runs the analytics job
 func (as *OrderAnalyticsCron) RunAnalyticsJob() error {
 	// Get the current time
-	now := time.Now()
+	now := time.Now().UTC()
 
 	// Define time ranges
 	last24Hours := now.Add(-24 * time.Hour)

@@ -45,7 +45,7 @@ func LatestOrderHistory(orders []*woo.OrderRecord) templ.Component {
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", item.OrderID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 40, Col: 42}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 40, Col: 43}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -56,9 +56,9 @@ func LatestOrderHistory(orders []*woo.OrderRecord) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
-			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(util.CalculateTimeDifference(item.Timestamp.Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05")))
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(util.CalculateTimeDifference(item.Timestamp.Format("2006-01-02 15:04:05"), time.Now().UTC().Format("2006-01-02 15:04:05")))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 43, Col: 125}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 43, Col: 132}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -76,7 +76,7 @@ func LatestOrderHistory(orders []*woo.OrderRecord) templ.Component {
 				var templ_7745c5c3_Var4 string
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%s", item.Status))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 50, Col: 37}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 50, Col: 40}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
@@ -94,7 +94,7 @@ func LatestOrderHistory(orders []*woo.OrderRecord) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%s", item.Status))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 54, Col: 37}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 54, Col: 40}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
@@ -112,7 +112,7 @@ func LatestOrderHistory(orders []*woo.OrderRecord) templ.Component {
 				var templ_7745c5c3_Var6 string
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%s", item.Status))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 58, Col: 37}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 58, Col: 40}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 				if templ_7745c5c3_Err != nil {
@@ -130,7 +130,7 @@ func LatestOrderHistory(orders []*woo.OrderRecord) templ.Component {
 				var templ_7745c5c3_Var7 string
 				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%s", item.Status))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 62, Col: 37}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 62, Col: 40}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 				if templ_7745c5c3_Err != nil {
@@ -144,7 +144,7 @@ func LatestOrderHistory(orders []*woo.OrderRecord) templ.Component {
 				var templ_7745c5c3_Var8 string
 				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%s", item.Status))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 65, Col: 37}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 65, Col: 39}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 				if templ_7745c5c3_Err != nil {
@@ -158,7 +158,7 @@ func LatestOrderHistory(orders []*woo.OrderRecord) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(item.Order.Total)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 72, Col: 26}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 71, Col: 26}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -171,7 +171,7 @@ func LatestOrderHistory(orders []*woo.OrderRecord) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(item.Order.Currency)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 72, Col: 50}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 71, Col: 50}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {

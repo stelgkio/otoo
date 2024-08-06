@@ -23,8 +23,8 @@ type MongoBase struct {
 
 func NewMongoBase() MongoBase {
 	return MongoBase{
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
 		IsActive:  true,
 	}
 }

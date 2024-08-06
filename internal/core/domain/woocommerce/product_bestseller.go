@@ -36,7 +36,7 @@ func NewProductBestSellerRecord(projectID, productName string, productID int64, 
 		TotalMoneyMade: totalMoneyMade,
 		ProductName:    productName,
 		IsActive:       true,
-		Timestamp:      time.Now(),
+		Timestamp:      time.Now().UTC(),
 		CreatedAt:      time.Time{},
 		DeletedAt:      time.Time{},
 	}

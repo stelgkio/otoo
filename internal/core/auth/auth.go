@@ -65,14 +65,14 @@ func RemoveTokensAndDeleteCookies(user *user.User, c echo.Context) error {
 
 func generateAccessToken(user *user.User) (string, time.Time, error) {
 	// Declare the expiration time of the token
-	expirationTime := time.Now().Add(24 * time.Hour)
+	expirationTime := time.Now().UTC().Add(24 * time.Hour)
 
 	return generateToken(user, expirationTime, []byte(GetJWTSecret()))
 }
 
 func generateRefreshToken(user *user.User) (string, time.Time, error) {
 	// Declare the expiration time of the token
-	expirationTime := time.Now().Add(24 * time.Hour)
+	expirationTime := time.Now().UTC().Add(24 * time.Hour)
 
 	return generateToken(user, expirationTime, []byte(GetRefreshJWTSecret()))
 }
@@ -84,7 +84,7 @@ func generateToken(user *user.User, expirationTime time.Time, secret []byte) (st
 		Admin: true,
 		RegisteredClaims: jwt.RegisteredClaims{
 			// In JWT, the expiry time is expressed as unix milliseconds
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().UTC().Add(time.Hour * 72)),
 			ID:        user.Id.String(),
 		},
 	}
@@ -95,7 +95,7 @@ func generateToken(user *user.User, expirationTime time.Time, secret []byte) (st
 	// Create the JWT string
 	tokenString, err := token.SignedString(secret)
 	if err != nil {
-		return "", time.Now(), err
+		return "", time.Now().UTC(), err
 	}
 
 	return tokenString, expirationTime, nil
@@ -159,7 +159,7 @@ func TokenRefresherMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		// We ensure that a new token is not issued until enough time has elapsed
 		// In this case, a new token will only be issued if the old token is within
 		// 15 mins of expiry.
-		if time.Unix(claims.ExpiresAt.Unix(), 0).Sub(time.Now()) < 15*time.Minute {
+		if time.Unix(claims.ExpiresAt.Unix(), 0).Sub(time.Now().UTC()) < 15*time.Minute {
 			// Gets the refresh token from the cookie.
 			rc, err := c.Cookie(refreshTokenCookieName)
 			if err == nil && rc != nil {
@@ -203,7 +203,7 @@ func GetUserId(c echo.Context) (uuid.UUID, error) {
 
 func GenerateWebHookAccessToken(projectId string) (string, time.Time, error) {
 	// Declare the expiration time of the token
-	expirationTime := time.Now().Add(5 * time.Hour)
+	expirationTime := time.Now().UTC().Add(5 * time.Hour)
 
 	return generateWebHookToken(projectId, expirationTime, []byte(GetJWTSecret()))
 }
@@ -214,7 +214,7 @@ func generateWebHookToken(projectId string, expirationTime time.Time, secret []b
 		Admin: true,
 		RegisteredClaims: jwt.RegisteredClaims{
 			// In JWT, the expiry time is expressed as unix milliseconds
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().UTC().Add(time.Hour * 72)),
 			ID:        projectId,
 		},
 	}
@@ -225,7 +225,7 @@ func generateWebHookToken(projectId string, expirationTime time.Time, secret []b
 	// Create the JWT string
 	tokenString, err := token.SignedString(secret)
 	if err != nil {
-		return "", time.Now(), err
+		return "", time.Now().UTC(), err
 	}
 
 	return tokenString, expirationTime, nil

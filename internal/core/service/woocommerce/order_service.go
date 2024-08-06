@@ -71,3 +71,12 @@ func (os *OrderService) FindOrderByProjectIDAsync(projectID string, size, page i
 		results <- orderCount
 	}
 }
+
+// GetOrderByID retrieves an order by its ID
+func (os *OrderService) GetOrderByID(projectID string, orderID int64) (*domain.OrderRecord, error) {
+	order, err := os.p.GetOrderByID(projectID, orderID)
+	if err != nil {
+		return nil, err
+	}
+	return order, nil
+}

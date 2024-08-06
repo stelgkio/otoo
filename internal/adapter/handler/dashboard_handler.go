@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/labstack/echo/v4"
@@ -327,13 +328,33 @@ func (dh *DashboardHandler) CustomerTable(ctx echo.Context) error {
 	var customers []w.CustomerTableList
 	if customerRecords != nil {
 		for _, record := range customerRecords {
+			totalSpent := 0.0
+			if record.Orders != nil || len(record.Orders) > 0 {
+				for _, order := range record.Orders {
+					order, err := dh.orderSvc.GetOrderByID(projectID, order)
+					if err != nil {
+						totalSpent += 0.0
+						continue
+					}
+					floatValue, err := strconv.ParseFloat(order.Order.Total, 64)
+					if err != nil {
+						totalSpent += 0.0
+						continue
+					}
+					totalSpent += floatValue
+				}
+			}
+			fullName := record.Customer.FirstName + " " + record.Customer.LastName
+			if strings.Trim(fullName, " ") == "" {
+				fullName = record.Customer.Billing.FirstName + " " + record.Customer.Billing.LastName
+			}
 
 			customers = append(customers, w.CustomerTableList{
 				ID:          record.ID,
-				Name:        record.Customer.FirstName + " " + record.Customer.LastName,
+				Name:        fullName,
 				Email:       record.Email,
 				TotalOrders: len(record.Orders),
-				TotalSpent:  record.Customer.TotalSpent,
+				TotalSpent:  fmt.Sprintf("%.2f", totalSpent),
 			})
 		}
 	}

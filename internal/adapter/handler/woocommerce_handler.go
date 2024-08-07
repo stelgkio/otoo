@@ -21,17 +21,19 @@ import (
 
 // WooCommerceHandler represents the WooCommerce handler
 type WooCommerceHandler struct {
-	p port.WoocommerceRepository
-	s port.ProjectRepository
-	c port.CustomerService
+	p  port.WoocommerceRepository
+	s  port.ProjectRepository
+	c  port.CustomerService
+	pr port.ProductService
 }
 
 // NewWooCommerceHandler creates a new instance of WooCommerceHandler
-func NewWooCommerceHandler(repo port.WoocommerceRepository, projrepo port.ProjectRepository, ctm port.CustomerService) *WooCommerceHandler {
+func NewWooCommerceHandler(repo port.WoocommerceRepository, projrepo port.ProjectRepository, ctm port.CustomerService, proj port.ProductService) *WooCommerceHandler {
 	return &WooCommerceHandler{
 		repo,
 		projrepo,
 		ctm,
+		proj,
 	}
 }
 func readAndResetBody(ctx echo.Context) ([]byte, error) {
@@ -85,7 +87,7 @@ func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
 	}
 
 	go w.c.ExtractCustomerFromOrderAndUpsert(ctx, orderRecord)
-	//TODO: extract product from order and save them
+	go w.pr.ExtractProductFromOrderAndUpsert(ctx, orderRecord, project)
 	return ctx.String(http.StatusCreated, "created")
 }
 
@@ -129,7 +131,7 @@ func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
 	}
 
 	go w.c.ExtractCustomerFromOrderAndUpsert(ctx, updateOrderRecord)
-	//TODO: extract product from order and save the
+	go w.pr.ExtractProductFromOrderAndUpsert(ctx, updateOrderRecord, project)
 	return nil
 }
 

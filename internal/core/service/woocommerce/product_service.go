@@ -196,7 +196,7 @@ func (s *ProductService) ExtractProductFromOrderAndUpsert(ctx echo.Context, req 
 				if req.Order.Status != "cancelled" {
 					productRecord.Orders = []int64{req.Order.ID}
 				}
-				err = s.p.ProductCreate(productRecord)
+				err = s.p.ProductUpdate(productRecord, wooproduct.ID)
 
 				if wooproduct.Type == domain.Variable.String() {
 					for _, variationID := range wooproduct.Variations {
@@ -223,8 +223,9 @@ func (s *ProductService) ExtractProductFromOrderAndUpsert(ctx echo.Context, req 
 				}
 			}
 		}
-	}
 
+		return nil
+	}
 	return nil
 }
 

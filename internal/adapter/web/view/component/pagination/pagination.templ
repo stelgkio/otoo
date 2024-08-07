@@ -11,19 +11,34 @@ templ PaginationControl() {
 			<div class="col-md-auto">
 				<nav aria-label="Page navigation example">
 					<ul class="pagination pagination-spaced gap-1">
+						<!-- First Page Button -->
+						<li class="page-item" :class="{'disabled': currentPage === 1}">
+							<a class="page-link" href="#" @click.prevent="changePage(1)">
+								<i class="bi bi-chevron-double-left"></i>
+							</a>
+						</li>
+						<!-- Previous Page Button -->
 						<li class="page-item" :class="{'disabled': currentPage === 1}">
 							<a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)">
 								<i class="bi bi-chevron-left"></i>
 							</a>
 						</li>
-						<template x-for="page in totalPages" :key="page">
+						<!-- Page Number Buttons -->
+						<template x-for="page in pageNumbers" :key="page">
 							<li class="page-item" :class="{'active': currentPage === page}">
 								<a class="page-link" href="#" @click.prevent="changePage(page)" x-text="page"></a>
 							</li>
 						</template>
+						<!-- Next Page Button -->
 						<li class="page-item" :class="{'disabled': currentPage === totalPages}">
 							<a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)">
 								<i class="bi bi-chevron-right"></i>
+							</a>
+						</li>
+						<!-- Last Page Button -->
+						<li class="page-item" :class="{'disabled': currentPage === totalPages}">
+							<a class="page-link" href="#" @click.prevent="changePage(totalPages)">
+								<i class="bi bi-chevron-double-right"></i>
 							</a>
 						</li>
 					</ul>

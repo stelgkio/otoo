@@ -589,6 +589,7 @@ func (dh *DashboardHandler) OrderTable(ctx echo.Context) error {
 	pageNum, err := strconv.Atoi(page)
 	sort := ctx.QueryParam("sort")
 	direction := ctx.QueryParam("direction")
+	itemsPerPage := 10
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, fmt.Errorf("invalid page number: %v", err))
 	}
@@ -617,7 +618,7 @@ func (dh *DashboardHandler) OrderTable(ctx echo.Context) error {
 	// Fetch  10 orders
 	go func() {
 		defer wg.Done()
-		dh.orderSvc.FindOrderByProjectIDAsync(projectID, 10, pageNum, status, sort, direction, orderListChan, errListChan)
+		dh.orderSvc.FindOrderByProjectIDAsync(projectID, itemsPerPage, pageNum, status, sort, direction, orderListChan, errListChan)
 	}()
 	// Wait for all goroutines to finish
 	go func() {
@@ -665,7 +666,7 @@ func (dh *DashboardHandler) OrderTable(ctx echo.Context) error {
 	}
 
 	// Prepare metadata
-	itemsPerPage := 10
+
 	totalPages := int(totalItems) / itemsPerPage
 	if int(totalItems)%itemsPerPage > 0 {
 		totalPages++

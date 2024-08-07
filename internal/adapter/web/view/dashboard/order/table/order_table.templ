@@ -157,7 +157,7 @@ templ OrderTable(projectId string) {
 						<!-- Fill remaining rows if less than 10 -->
 						<template x-for="i in 10 - paginatedOrders.length" :key="'empty' + i">
 							<tr>
-								<td colspan="5" class="py-5"></td>
+								<td colspan="5" class="py-7"></td>
 							</tr>
 						</template>
 					</tbody>
@@ -266,6 +266,22 @@ function orderTable(projectId) {
 
         get currentPageEnd() {
             return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
+        },
+		get pageNumbers() {
+            const range = 2; // Number of pages to show around the current page
+            let start = Math.max(1, this.currentPage - range);
+            let end = Math.min(this.totalPages, this.currentPage + range);
+
+            // Adjust range if there are not enough pages on one side
+            if (this.totalPages - end < range) {
+                end = this.totalPages;
+                start = Math.max(1, end - 2 * range);
+            } else if (start <= range) {
+                start = 1;
+                end = Math.min(this.totalPages, start + 2 * range);
+            }
+			
+            return Array.from({ length: end - start + 1 }, (_, i) => start + i);
         },
 		 badgeClass(status) {
 				const baseClass = 'badge bg-body-secondary badge-custom'; // Add badge-custom class

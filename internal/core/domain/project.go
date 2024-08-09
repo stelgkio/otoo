@@ -20,6 +20,7 @@ const (
 	Shopify     ProjectType = "Shopify"
 )
 
+// Project represents a project
 type Project struct {
 	Base
 	Name        string      `json:"name" pg:"name,notnull"`
@@ -43,6 +44,7 @@ func NewProject(p *ProjectRequest) (*Project, error) {
 
 }
 
+// WoocommerceProject represents a shopify project
 type WoocommerceProject struct {
 	Name           string `json:"woocommerce_name" pg:"woocommerce_name"`
 	Description    string `json:"woocommerce_description" pg:"woocommerce_description"`
@@ -51,6 +53,7 @@ type WoocommerceProject struct {
 	ConsumerSecret string `json:"woocommerce_consumer_secret" pg:"woocommerce_consumer_secret"`
 }
 
+// NewWoocommerceProject creates a instance of user with hashed password
 func NewWoocommerceProject(p *ProjectRequest) (WoocommerceProject, error) {
 	wc := WoocommerceProject{}
 	wc.Name = p.Name
@@ -61,6 +64,7 @@ func NewWoocommerceProject(p *ProjectRequest) (WoocommerceProject, error) {
 	return wc, nil
 }
 
+// ShopifyProject represents a shopify project
 type ShopifyProject struct {
 	Name           string `json:"shopify_consumer_name" pg:"shopify_consumer_name"`
 	Description    string `json:"shopify_description" pg:"shopify_description"`
@@ -69,6 +73,7 @@ type ShopifyProject struct {
 	ConsumerSecret string `json:"shopify_consumer_secret" pg:"shopify_consumer_secret"`
 }
 
+// NewShopifyProject creates a instance of user with hashed password
 func NewShopifyProject(p *ProjectRequest) (ShopifyProject, error) {
 	sp := ShopifyProject{}
 	sp.Name = p.Name
@@ -79,7 +84,7 @@ func NewShopifyProject(p *ProjectRequest) (ShopifyProject, error) {
 	return sp, nil
 }
 
-// projectRequest represents the request body for creating a user
+// ProjectRequest represents the request body for creating a user
 type ProjectRequest struct {
 	Name           string      `json:"name" form:"name"`
 	Description    string      `json:"description" form:"description"`
@@ -90,6 +95,7 @@ type ProjectRequest struct {
 	AccessToken    string      `json:"accesstoken" form:"accesstoken"`
 }
 
+// Validate validates the request body
 func (p *ProjectRequest) Validate() map[string](string) {
 
 	errors := make(map[string]string)
@@ -116,6 +122,7 @@ func (p *ProjectRequest) Validate() map[string](string) {
 	return errors
 }
 
+// FindProjectRequest represents the request body for creating a user
 type FindProjectRequest struct {
 	Name        string      `json:"name" form:"name"`
 	Description string      `json:"description" form:"description"`

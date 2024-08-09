@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Base represents the base model for all models
 type Base struct {
 	Id        uuid.UUID  `json:"id" pg:"id,pk,type:uuid,default:gen_random_uuid()" bson:"_id,omitempty"`
 	CreatedAt time.Time  `json:"created_at" pg:"created_at,default:now()" bson:"created_at,omitempty"`
@@ -14,6 +15,7 @@ type Base struct {
 	IsActive  bool       `pg:"is_active,default:true" bson:"is_active,omitempty"`
 }
 
+// MongoBase creates a new base model
 type MongoBase struct {
 	CreatedAt time.Time `bson:"created_at,omitempty"`
 	UpdatedAt time.Time `bson:"updated_at,omitempty"`
@@ -21,6 +23,7 @@ type MongoBase struct {
 	IsActive  bool      `bson:"is_active,omitempty"`
 }
 
+// NewMongoBase creates a new base model
 func NewMongoBase() MongoBase {
 	return MongoBase{
 		CreatedAt: time.Now().UTC(),

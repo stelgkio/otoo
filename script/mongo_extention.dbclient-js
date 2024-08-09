@@ -1,19 +1,29 @@
-db('otoo').collection('extention').insertOne({
+db('otoo').collection('extentions').insertOne({
             title: "ACS Courier",
-            description: "Courier service for ACS send your order fast and easy",
-            type: "TypeA",
+            description: "Accelerate your shipping process with Otoo ASC Courier. Manage and send orders with speed and ease.",
+            code: "asc-courier",
             created_at: new Date(),
             updated_at: new Date(),
             is_active: true,
             price: 10,
         },)
 
-db('otoo').collection('extention').insertOne({
-            title: "Data Synchronize",
-            description: "Synchronize data between your eshop and your otoo. Get product, customer and order data",
-            type: "TypeB",
+db('otoo').collection('extentions').insertOne({
+            title: "Wallet & Expenses",
+            description: "Track and manage your expenses, from Facebook ad spend to courier fees and taxes, seamlessly integrated with your Otoo account.",
+            code: "wallet-expences",
             created_at: new Date(),
             updated_at: new Date(),
             is_active: true,
-            price: 10,
+            price: 13,
         },)
+
+db('otoo').collection('extentions').insertOne({
+        title: "Data Synchronize",
+        description: "Keep your eShop and Otoo perfectly in sync. Effortlessly transfer product details, customer information, and order data.",
+        code: "data-synchronizer",
+        created_at: new Date(),
+        updated_at: new Date(),
+        is_active: true,
+        price: 29,
+    },)

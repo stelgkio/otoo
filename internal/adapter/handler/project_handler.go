@@ -17,7 +17,7 @@ import (
 	r "github.com/stelgkio/otoo/internal/core/util"
 )
 
-// UserHandler represents the HTTP handler for user-related requests
+// ProjectHandler represents the HTTP handler for user-related requests
 type ProjectHandler struct {
 	svc     port.ProjectService
 	userSvc port.UserService
@@ -31,7 +31,7 @@ func NewProjectHandler(svc port.ProjectService, userSvc port.UserService) *Proje
 	}
 }
 
-// POST /project/create
+// CreateProject POST /project/create
 func (ph *ProjectHandler) CreateProject(ctx echo.Context) error {
 	req := new(domain.ProjectRequest)
 	if err := ctx.Bind(req); err != nil {
@@ -54,12 +54,12 @@ func (ph *ProjectHandler) CreateProject(ctx echo.Context) error {
 	return r.Render(ctx, wp.WebHooksProgress(dom.Id.String(), nil))
 }
 
-// GET /project/createform
+// ProjectCreateForm GET /project/createform
 func (ph *ProjectHandler) ProjectCreateForm(ctx echo.Context) error {
 	return r.Render(ctx, p.ProjectCreateForm(false, nil, new(domain.ProjectRequest)))
 }
 
-// GET /project/list
+// ProjectListPage  GET /project/list
 func (ph *ProjectHandler) ProjectListPage(ctx echo.Context) error {
 
 	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{}, 1, 10)
@@ -69,18 +69,18 @@ func (ph *ProjectHandler) ProjectListPage(ctx echo.Context) error {
 	return r.Render(ctx, l.ProjectListPage(projects))
 }
 
-// GET /dashboard
+// GetProjectDashboardPage GET /dashboard
 func (ph *ProjectHandler) GetProjectDashboardPage(ctx echo.Context) error {
 
 	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{}, 1, 10)
 	if err != nil {
 		return err
 	}
-	userId, err := auth.GetUserId(ctx)
+	userID, err := auth.GetUserID(ctx)
 	if err != nil {
 		return err
 	}
-	user, err := ph.userSvc.GetUserById(ctx, userId)
+	user, err := ph.userSvc.GetUserById(ctx, userID)
 	if err != nil {
 		return err
 	}
@@ -88,7 +88,7 @@ func (ph *ProjectHandler) GetProjectDashboardPage(ctx echo.Context) error {
 	return r.Render(ctx, d.ProjectDashboard(projects, user))
 }
 
-// POST /project/validation/name
+// ProjectNameValidation POST /project/validation/name
 func (ph *ProjectHandler) ProjectNameValidation(ctx echo.Context) error {
 	req := new(domain.ProjectRequest)
 	if err := ctx.Bind(req); err != nil {
@@ -105,7 +105,7 @@ func (ph *ProjectHandler) ProjectNameValidation(ctx echo.Context) error {
 	return r.Render(ctx, v.ProjectNameValidation(valid, req.Name))
 }
 
-// POST /project/validation/domain
+// ProjectDomainValidation POST /project/validation/domain
 func (ph *ProjectHandler) ProjectDomainValidation(ctx echo.Context) error {
 	errors := make(map[string]string)
 	errors["domain"] = ""
@@ -134,30 +134,30 @@ func (ph *ProjectHandler) ProjectDomainValidation(ctx echo.Context) error {
 	return r.Render(ctx, v.DomainUrlValidation(valid, req.Domain, errors))
 }
 
-// GET /project/webhooks/:projectId
+// CheckWebHooks GET /project/webhooks/:projectId
 func (ph *ProjectHandler) CheckWebHooks(ctx echo.Context) error {
-	projectId := ctx.Param("projectId")
-	userId, err := auth.GetUserId(ctx)
+	projectID := ctx.Param("projectId")
+	userID, err := auth.GetUserID(ctx)
 	if err != nil {
 		return err
 	}
-	user, err := ph.userSvc.GetUserById(ctx, userId)
+	user, err := ph.userSvc.GetUserById(ctx, userID)
 	if err != nil {
 		return err
 	}
-	return r.Render(ctx, wp.CheckWebhookProgress(user, projectId))
+	return r.Render(ctx, wp.CheckWebhookProgress(user, projectID))
 }
 
-// GET /project/settings/:projectId
+// ProjectSettings GET /project/settings/:projectId
 func (ph *ProjectHandler) ProjectSettings(ctx echo.Context) error {
-	projectId := ctx.Param("projectId")
-	userId, err := auth.GetUserId(ctx)
+	projectID := ctx.Param("projectId")
+	userID, err := auth.GetUserID(ctx)
 	if err != nil {
 		return err
 	}
-	user, err := ph.userSvc.GetUserById(ctx, userId)
+	user, err := ph.userSvc.GetUserById(ctx, userID)
 	if err != nil {
 		return err
 	}
-	return r.Render(ctx, wp.CheckWebhookProgress(user, projectId))
+	return r.Render(ctx, wp.CheckWebhookProgress(user, projectID))
 }

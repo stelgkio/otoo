@@ -188,7 +188,7 @@ func TokenRefresherMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 }
 
-func GetUserId(c echo.Context) (uuid.UUID, error) {
+func GetUserID(c echo.Context) (uuid.UUID, error) {
 	u := c.Get("user").(*jwt.Token)
 
 	claims := u.Claims.(*JwtCustomClaims)

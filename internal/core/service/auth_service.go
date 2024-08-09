@@ -7,11 +7,7 @@ import (
 	e "github.com/stelgkio/otoo/internal/core/util"
 )
 
-/**
- * AuthService implements port.AuthService interface
- * and provides an access to the user repository
- * and token service
- */
+// AuthService defines the methods for interacting with the Auth service
 type AuthService struct {
 	repo port.UserRepository
 	ts   port.TokenService
@@ -48,13 +44,14 @@ func (as *AuthService) Login(ctx echo.Context, email, password string) (string, 
 	return "", nil
 }
 
+// Logout logs out a user by removing the access token and refresh token from the cookies
 func (as *AuthService) Logout(ctx echo.Context) error {
 
-	userId, err := auth.GetUserId(ctx)
+	userID, err := auth.GetUserID(ctx)
 	if err != nil {
 		return e.ErrInternal
 	}
-	user, err := as.repo.GetUserById(ctx, userId)
+	user, err := as.repo.GetUserById(ctx, userID)
 	if err != nil {
 		if err == e.ErrDataNotFound {
 			return e.ErrInvalidCredentials
@@ -69,6 +66,7 @@ func (as *AuthService) Logout(ctx echo.Context) error {
 	return nil
 }
 
+// ForgotPassword sends a password reset link to the user's email
 func (as *AuthService) ForgotPassword(ctx echo.Context, email string) error {
 	user, err := as.repo.GetUserByEmail(ctx, email)
 	if err != nil {
@@ -82,6 +80,7 @@ func (as *AuthService) ForgotPassword(ctx echo.Context, email string) error {
 	return nil
 }
 
+// ResetPassword resets the user's password
 func (as *AuthService) ResetPassword(ctx echo.Context) error {
 	return nil
 }

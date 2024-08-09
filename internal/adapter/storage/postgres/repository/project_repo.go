@@ -11,10 +11,12 @@ import (
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
+// ProjectRepository is the repository for the Project model
 type ProjectRepository struct {
 	db *pg.DB
 }
 
+// NewProjectRepository returns a new ProjectRepository
 func NewProjectRepository(db *pg.DB) *ProjectRepository {
 	return &ProjectRepository{
 		db,
@@ -37,7 +39,7 @@ func (repo *ProjectRepository) FindProjects(ctx echo.Context, filters *domain.Fi
 
 	var projects []*domain.Project
 
-	userId, err := auth.GetUserId(ctx)
+	userID, err := auth.GetUserID(ctx)
 	if err != nil {
 		return nil, errors.New("user is not found")
 	}
@@ -52,7 +54,7 @@ func (repo *ProjectRepository) FindProjects(ctx echo.Context, filters *domain.Fi
 		query = query.WhereOr("woocommerce_domain =?", filters.Domain)
 	}
 	query = query.
-		Where("user_id =?", userId).
+		Where("user_id =?", userID).
 		Where("is_active =true").
 		Order("name ASC").
 		Limit(limit).

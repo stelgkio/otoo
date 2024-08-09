@@ -750,7 +750,7 @@ func GetProjectAndUser(ctx echo.Context, dh *DashboardHandler) (*domain.Project,
 	}
 
 	// Get user ID from the authentication context
-	userID, err := auth.GetUserId(ctx)
+	userID, err := auth.GetUserID(ctx)
 	if err != nil {
 		return nil, nil, "", err
 	}

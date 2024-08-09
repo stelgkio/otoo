@@ -6,13 +6,13 @@ import (
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-// createSchema creates database schema for User and Story models.
+// CreateSchema creates database schema for User and Story models.
 func CreateSchema(db *pg.DB) error {
 	models := []interface{}{
 		(*domain.User)(nil),
 		(*domain.Project)(nil),
-		(*domain.WooCommerce_Topic)(nil),
-		(*domain.Shopify_Topic)(nil),
+		// (*domain.WooCommerce_Topic)(nil),
+		// (*domain.Shopify_Topic)(nil),
 	}
 
 	for _, model := range models {

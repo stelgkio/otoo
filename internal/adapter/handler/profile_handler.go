@@ -36,13 +36,13 @@ func NewProfileHandler(svc port.UserService, psvc port.ProjectService, asrc port
 	}
 }
 
-// @Router			/profile [get]
+// Profile  @Router			/profile [get]
 func (ph *ProfileHandler) Profile(ctx echo.Context) error {
-	userId, err := auth.GetUserId(ctx)
+	userID, err := auth.GetUserID(ctx)
 	if err != nil {
 		return err
 	}
-	user, err := ph.svc.GetUserById(ctx, userId)
+	user, err := ph.svc.GetUserById(ctx, userID)
 	if err != nil {
 		return err
 	}
@@ -51,22 +51,24 @@ func (ph *ProfileHandler) Profile(ctx echo.Context) error {
 
 }
 
+// ProfilePassword 	@Router			/profile/password [get]
 func (ph *ProfileHandler) ProfilePassword(ctx echo.Context) error {
 
 	return r.Render(ctx, p.ProfilePassword())
 }
 
+// ProfileUpdate 	@Router			/profile/update [post]
 func (ph *ProfileHandler) ProfileUpdate(ctx echo.Context) error {
 	req := new(updateProfileRequest)
 	if err := ctx.Bind(req); err != nil {
 		return r.Render(ctx, h.Profile(nil))
 		//return ctx.String(http.StatusBadRequest, "bad request")
 	}
-	userId, err := auth.GetUserId(ctx)
+	userID, err := auth.GetUserID(ctx)
 	if err != nil {
 		return err
 	}
-	user, err := ph.svc.GetUserById(ctx, userId)
+	user, err := ph.svc.GetUserById(ctx, userID)
 	if err != nil {
 		return err
 	}
@@ -94,13 +96,14 @@ func (ph *ProfileHandler) ProfileUpdate(ctx echo.Context) error {
 
 }
 
+// ProfileDelete 	@Router			/profile/delete [post]
 func (ph *ProfileHandler) ProfileDelete(ctx echo.Context) error {
-	userId, err := auth.GetUserId(ctx)
+	userID, err := auth.GetUserID(ctx)
 	if err != nil {
 		return err
 	}
 
-	err = ph.psrv.SoftDeleteProjects(ctx, userId)
+	err = ph.psrv.SoftDeleteProjects(ctx, userID)
 	if err != nil {
 		return err
 	}
@@ -110,7 +113,7 @@ func (ph *ProfileHandler) ProfileDelete(ctx echo.Context) error {
 		ctx.Response().Header().Set("HX-Redirect", "/index")
 		return ctx.Redirect(http.StatusAccepted, "/index")
 	}
-	err = ph.svc.DeleteUser(ctx, userId)
+	err = ph.svc.DeleteUser(ctx, userID)
 	if err != nil {
 		return err
 	}

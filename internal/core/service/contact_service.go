@@ -8,12 +8,13 @@ import (
 	"github.com/stelgkio/otoo/internal/core/port"
 )
 
+// ContactService defines the methods for interacting with the Contact service
 type ContactService struct {
 	repo port.ContactRepository
 	smtp port.SmtpService
 }
 
-// NewUserService creates a new user service instance
+// NewContactService creates a new contact service instance
 func NewContactService(repo port.ContactRepository, smtp port.SmtpService) *ContactService {
 	return &ContactService{
 		repo,
@@ -21,6 +22,7 @@ func NewContactService(repo port.ContactRepository, smtp port.SmtpService) *Cont
 	}
 }
 
+// InsertContact inserts a new contact
 func (c *ContactService) InsertContact(ctx echo.Context, req *domain.ContactRequest) error {
 
 	contact, err := domain.NewContact(req)

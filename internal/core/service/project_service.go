@@ -16,7 +16,7 @@ type ProjectService struct {
 	wc   port.ProductService
 }
 
-// NewUserService creates a new user service instance
+// NewProjectService creates a new user service instance
 func NewProjectService(repo port.ProjectRepository, wp port.WoocommerceWebhookService, wc port.ProductService) *ProjectService {
 	return &ProjectService{
 		repo,
@@ -25,9 +25,10 @@ func NewProjectService(repo port.ProjectRepository, wp port.WoocommerceWebhookSe
 	}
 }
 
+// CreateProject creates a new Project
 func (ps *ProjectService) CreateProject(ctx echo.Context, req *domain.ProjectRequest) (*domain.Project, error) {
 
-	userId, err := auth.GetUserId(ctx)
+	userID, err := auth.GetUserID(ctx)
 	if err != nil {
 		return nil, errors.New("user is not found")
 	}
@@ -55,7 +56,7 @@ func (ps *ProjectService) CreateProject(ctx echo.Context, req *domain.ProjectReq
 		project.ShopifyProject = shop
 		project.WoocommerceProject = domain.WoocommerceProject{}
 	}
-	project.UserId = userId
+	project.UserId = userID
 	project.IsActive = true
 
 	pr, err := ps.repo.CreateProject(ctx, project)

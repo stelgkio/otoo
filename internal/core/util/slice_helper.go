@@ -1,6 +1,10 @@
 package util
 
-import "sort"
+import (
+	"fmt"
+	"sort"
+	"strconv"
+)
 
 // RemoveElement removes an element from a slice at a given index
 func RemoveElement[T any](s []T, index int) []T {
@@ -29,4 +33,20 @@ func FindIndex[T comparable](s []T, element T) int {
 		}
 	}
 	return -1
+}
+
+// ConvertStringsToInt64 converts a slice of strings to a slice of int64
+func ConvertStringsToInt64(stringSlice []string) ([]int64, error) {
+	var intSlice []int64
+
+	for _, str := range stringSlice {
+		// Convert each string to an int64
+		num, err := strconv.ParseInt(str, 10, 64)
+		if err != nil {
+			return nil, fmt.Errorf("error converting '%s' to int64: %v", str, err)
+		}
+		intSlice = append(intSlice, num)
+	}
+
+	return intSlice, nil
 }

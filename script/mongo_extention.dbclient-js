@@ -1,0 +1,19 @@
+db('otoo').collection('extention').insertOne({
+            title: "ACS Courier",
+            description: "Courier service for ACS send your order fast and easy",
+            type: "TypeA",
+            created_at: new Date(),
+            updated_at: new Date(),
+            is_active: true,
+            price: 10,
+        },)
+
+db('otoo').collection('extention').insertOne({
+            title: "Data Synchronize",
+            description: "Synchronize data between your eshop and your otoo. Get product, customer and order data",
+            type: "TypeB",
+            created_at: new Date(),
+            updated_at: new Date(),
+            is_active: true,
+            price: 10,
+        },)

@@ -98,7 +98,7 @@
     --x-highlight-bg: #fcf8e3;
     --x-border-width: 1px;
     --x-border-style: solid;
-    --x-border-color: #e2e8f0;
+    --x-border-color: #cfd0d1;
     --x-border-color-translucent: rgba(0, 0, 0, .176);
     --x-border-radius: .375rem;
     --x-border-radius-sm: .25rem;
@@ -11216,7 +11216,7 @@ textarea.form-control-lg {
 }
 
 .form-check-input {
-    --x-form-check-bg: var(--x-body-bg);
+    /* --x-form-check-bg: var(--x-body-bg); */
     vertical-align: top;
     -webkit-appearance: none;
     -moz-appearance: none;

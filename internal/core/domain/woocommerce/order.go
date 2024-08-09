@@ -106,3 +106,9 @@ type OrderTableResponde struct {
 	Data []OrderTableList `json:"data"`
 	Meta Meta             `json:"meta"`
 }
+
+// BulkActionRequest represents a bulk action request
+type BulkActionRequest struct {
+	Status string   `json:"status"`
+	Orders []string `json:"orders"`
+}

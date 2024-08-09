@@ -692,6 +692,46 @@ func (dh *DashboardHandler) OrderTableHTML(ctx echo.Context) error {
 	return util.Render(ctx, tab.OrderTable(projectID))
 }
 
+// OrderBulkAction bulk action for orders
+func (dh *DashboardHandler) OrderBulkAction(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+
+	var request w.BulkActionRequest
+
+	if err := ctx.Bind(&request); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
+	}
+	intOrders, err := util.ConvertStringsToInt64(request.Orders)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
+	}
+	// Get project details using the project service
+	project, err := dh.projectSvc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
+	}
+
+	switch request.Status {
+	case "asc_courier":
+		dh.orderSvc.BatchUpdateOrdersStatus(projectID, intOrders, "completed", project)
+		//TODO: check is use has this extention and then perform action
+	case "completed":
+		dh.orderSvc.BatchUpdateOrdersStatus(projectID, intOrders, request.Status, project)
+	case "pending":
+		dh.orderSvc.BatchUpdateOrdersStatus(projectID, intOrders, request.Status, project)
+	case "processing":
+		dh.orderSvc.BatchUpdateOrdersStatus(projectID, intOrders, request.Status, project)
+	case "cancelled":
+		dh.orderSvc.BatchUpdateOrdersStatus(projectID, intOrders, request.Status, project)
+	default:
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
+	}
+
+	return ctx.JSON(http.StatusOK, map[string]string{"message": "Orders status updated successfully"})
+
+}
+
 // OrderCharts return charts for orders
 func (dh *DashboardHandler) OrderCharts(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")

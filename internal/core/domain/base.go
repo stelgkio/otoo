@@ -15,10 +15,10 @@ type Base struct {
 }
 
 type MongoBase struct {
-	CreatedAt time.Time  `bson:"created_at,omitempty"`
-	UpdatedAt time.Time  `bson:"updated_at,omitempty"`
-	DeletedAt *time.Time `bson:"deleted_at,omitempty"`
-	IsActive  bool       `bson:"is_active,omitempty"`
+	CreatedAt time.Time `bson:"created_at,omitempty"`
+	UpdatedAt time.Time `bson:"updated_at,omitempty"`
+	DeletedAt time.Time `bson:"deleted_at,omitempty"`
+	IsActive  bool      `bson:"is_active,omitempty"`
 }
 
 func NewMongoBase() MongoBase {

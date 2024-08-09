@@ -42,7 +42,7 @@ func readAndResetBody(ctx echo.Context) ([]byte, error) {
 		return nil, err
 	}
 	// Print the request body
-	fmt.Println("Request Body:", string(body))
+	// fmt.Println("Request Body:", string(body))
 	// Reset the request body to its original state so it can be read again if needed
 	ctx.Request().Body = io.NopCloser(bytes.NewBuffer(body))
 	return body, nil

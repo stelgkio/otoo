@@ -50,14 +50,20 @@ templ OrderTable(projectId string) {
 				</ul>
 			</div>
 			<div class="d-flex gap-2 py-3 px-7 border-bottom">
-				<div class="dropdown">
-					<button class="btn btn-sm btn-neutral dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="true">
+				<div class="dropdown" x-data="{ showDropdown: false }" @click.outside="showDropdown = false">
+					<button
+						class="btn btn-sm btn-neutral dropdown-toggle"
+						type="button"
+						id="dropdownMenuButton2"
+						@click="showDropdown = !showDropdown"
+						:aria-expanded="showDropdown.toString()"
+					>
 						<i class="bi bi-plus-circle"></i> <span class="ms-2">Bulk Action</span>
 					</button>
-					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+					<div class="dropdown-menu" :class="{ 'show': showDropdown }" aria-labelledby="dropdownMenuButton2">
 						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
 							<div class="text-lg">
-								<input class="form-check-input" type="radio" name="statusOption" id="statusBacklog" value="backlog"/>
+								<input class="form-check-input" type="radio" name="statusOption" id="statusBacklog" value="asc_courier" x-model="selectedStatus"/>
 							</div>
 							<div class="ms-3 me-5">
 								<label for="statusBacklog">Send to Couries and update to completed</label>
@@ -65,7 +71,7 @@ templ OrderTable(projectId string) {
 						</div>
 						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
 							<div class="text-lg">
-								<input class="form-check-input" type="radio" name="statusOption" id="statusTodo" value="todo"/>
+								<input class="form-check-input" type="radio" name="statusOption" id="statusCompleted" value="completed" x-model="selectedStatus"/>
 							</div>
 							<div class="ms-3 me-5">
 								<label for="statusTodo">Change status to completed</label>
@@ -76,39 +82,46 @@ templ OrderTable(projectId string) {
 						</div>
 						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
 							<div class="text-lg">
-								<input class="form-check-input" type="radio" name="statusOption" id="statusInProgress" value="in-progress"/>
+								<input class="form-check-input" type="radio" name="statusOption" id="statuSpending" value="pending" x-model="selectedStatus"/>
 							</div>
 							<div class="ms-3 me-5">
-								<label for="statusInProgress">Change status to completed</label>
+								<label for="statusInProgress">Change status to pending</label>
 							</div>
 						</div>
 						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
 							<div class="text-lg">
-								<input class="form-check-input" type="radio" name="statusOption" id="statusDone" value="done"/>
+								<input class="form-check-input" type="radio" name="statusOption" id="statusProdessing" value="processing" x-model="selectedStatus"/>
 							</div>
 							<div class="ms-3 me-5">
 								<label for="statusDone">Change status to processing</label>
 							</div>
-							// <div class="ms-auto">
-							// 	<span class="badge rounded-pill bg-opacity-25 bg-warning text-warning">190</span>
-							// </div>
 						</div>
 						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
 							<div class="text-lg">
-								<input class="form-check-input" type="radio" name="statusOption" id="statusCancelled" value="cancelled"/>
+								<input class="form-check-input" type="radio" name="statusOption" id="statusCancelled" value="cancelled" x-model="selectedStatus"/>
 							</div>
 							<div class="ms-3 me-5">
 								<label for="statusCancelled">Change status to cancelled</label>
 							</div>
 						</div>
+						<!-- Add other status options here -->
 						<div class="mt-3">
-							<button type="button" class="btn btn-sm btn-primary d-sm-inline-flex"><span class="pe-2"></span><span>Apply </span><i class="px-3 bi bi-arrow-right"></i></button>
+							<button type="button" class="btn btn-sm btn-primary d-sm-inline-flex position-relative" @click="applyAction">
+								<span x-show="!loading">Apply </span>
+								<span x-show="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+								<i class="px-3 bi bi-arrow-right"></i>
+							</button>
+						</div>
+						<div class="mt-3">
+							<div x-show="errorMessage" class="alert alert-danger" role="alert">
+								<span x-text="errorMessage"></span>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="table-responsive">
-				<table class="table">
+				<table class="table table-hover table-nowrap">
 					<thead>
 						<tr>
 							<th>
@@ -181,6 +194,7 @@ function orderTable(projectId) {
         totalItems: 0,
         totalPages: 0,
         loading: false,
+		selectedStatus: '',
 
         async init() {
             await this.fetchOrders(this.currentPage);
@@ -297,7 +311,49 @@ function orderTable(projectId) {
 					default:
 						return baseClass;
 				}
-		}		
+		},
+		async applyAction() {
+			this.loading = true;
+			this.errorMessage = ''; // Clear previous error message
+			this.showDropdown = true; // Close dropdown on action
+
+			const selectedOrderIds = this.selectedOrders.join(',');
+			if (!selectedOrderIds || !this.selectedStatus) {
+				this.errorMessage = 'Please select at least one order and a status.';
+				this.loading = false;
+				this.showDropdown = true; 
+				return;
+			}
+
+			try {
+				const response = await fetch(`/order/bulk-action/${this.projectID}`, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						status: this.selectedStatus,
+						orders: selectedOrderIds.split(','),
+					}),
+				});
+				const result = await response.json();
+
+				if (response.ok) {
+					// Handle success (e.g., show a success message or refresh the table)
+					this.fetchOrders(this.currentPage);
+					console.log('Bulk action successful:', result);
+					this.showDropdown = false;
+				} else {
+					this.errorMessage = result.message || 'An error occurred while processing the request.';
+				}
+			} catch (error) {
+				console.error('Error during bulk action:', error);
+				this.errorMessage = 'An error occurred while processing the request.';
+				this.showDropdown = true;
+			} finally {
+				this.loading = false;
+					
+			}
+		},
+		
     };
 }
 </script>

@@ -1,9 +1,11 @@
 package woocommerce
 
 import (
+	"sync"
 	"time"
 
 	"github.com/labstack/echo/v4"
+	d "github.com/stelgkio/otoo/internal/core/domain"
 	domain "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/port"
@@ -79,4 +81,74 @@ func (os *OrderService) GetOrderByID(projectID string, orderID int64) (*domain.O
 		return nil, err
 	}
 	return order, nil
+}
+
+// UpdateOrderStatusByID updates order by ID
+func (os *OrderService) UpdateOrderStatusByID(projectID string, orderID int64, status string, project *d.Project) (*domain.OrderRecord, error) {
+	panic("not implemented") // TODO: Implement
+}
+
+// BatchUpdateOrdersStatus updates batch orders
+func (os *OrderService) BatchUpdateOrdersStatus(projectID string, orders []int64, status string, proj *d.Project) ([]*domain.OrderRecord, error) {
+	client := InitClient(proj.WoocommerceProject.ConsumerKey, proj.WoocommerceProject.ConsumerSecret, proj.WoocommerceProject.Domain)
+
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+	errChan := make(chan error, len(orders))
+	ordersToUpdate := make([]*domain.OrderRecord, len(orders))
+
+	updateOrder := func(i int, orderID int64) {
+		defer wg.Done()
+		order, err := os.p.GetOrderByID(projectID, orderID)
+		if err != nil {
+			errChan <- err
+			return
+		}
+		if order == nil {
+			return
+		}
+		s, err := domain.StringToOrderStatus(status)
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		order.Status = s
+		order.Order.Status = status
+		order.Timestamp = time.Now().UTC()
+		order.UpdatedAt = time.Now().UTC()
+		err = os.p.OrderUpdate(order, orderID)
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		mu.Lock()
+		ordersToUpdate[i] = order
+		mu.Unlock()
+
+		_, err = client.Order.Update(&order.Order)
+		if err != nil {
+			errChan <- err
+			return
+		}
+	}
+
+	wg.Add(len(orders))
+	for i, orderID := range orders {
+		go updateOrder(i, orderID)
+	}
+
+	go func() {
+		wg.Wait()
+		close(errChan)
+	}()
+
+	for err := range errChan {
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return ordersToUpdate, nil
 }

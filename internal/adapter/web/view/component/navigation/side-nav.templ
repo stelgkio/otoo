@@ -2,12 +2,12 @@ package views
 
 import (
 	"fmt"
-	"unicode/utf8"
 	c "github.com/stelgkio/otoo/internal/adapter/web/view/component/contact/contact-btn"
 	"github.com/stelgkio/otoo/internal/core/domain"
+	"unicode/utf8"
 )
 
-templ SideBar(user *domain.User, projectName , projectId string) {
+templ SideBar(user *domain.User, projectName, projectId string) {
 	<nav
 		class="flex-none navbar navbar-vertical navbar-expand-lg navbar-light bg-transparent show vh-lg-100 px-0 py-2"
 		id="sidebar"
@@ -52,19 +52,18 @@ templ SideBar(user *domain.User, projectName , projectId string) {
 					</a>
 					<div class="dropdown-menu dropdown-menu-end">
 						<div class="dropdown-header">
-								<span class="d-block text-heading fw-semibold">{ user.Name }{ user.LastName }</span>
+							<span class="d-block text-heading fw-semibold">{ user.Name }{ user.LastName }</span>
 						</div>
 						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="#">
 							<i
 								class="bi bi-cpu-fill me-3"
-							></i> { projectName } 
+							></i> { projectName }
 						</a>
 						<a
 							class="dropdown-item"
 							class="dropdown-item"
-							href="/dashboard"							
-							
+							href="/dashboard"
 						>
 							<i class="bi bi-house me-3"></i>Projects 
 						</a>
@@ -107,8 +106,8 @@ templ SideBar(user *domain.User, projectName , projectId string) {
 								<li class="nav-item">
 									<a
 										href="javascript:void(0)"
-										hx-get={ fmt.Sprintf("/dashboard/default/%s",projectId) } 
-										hx-target="#dashboard-content"									
+										hx-get={ fmt.Sprintf("/dashboard/default/%s", projectId) }
+										hx-target="#dashboard-content"
 										class="nav-link fw-bold"
 									>Default</a>
 								</li>
@@ -133,15 +132,15 @@ templ SideBar(user *domain.User, projectName , projectId string) {
 								<li class="nav-item">
 									<a
 										href="javascript:void(0)"
-										hx-get={ fmt.Sprintf("/dashboard/customer/%s",projectId) } 
+										hx-get={ fmt.Sprintf("/dashboard/customer/%s", projectId) }
 										hx-target="#dashboard-content"
 										class="nav-link"
 									>Customers</a>
 								</li>
 								<li class="nav-item">
 									<a
-										href="javascript:void(0)"										
-										hx-get={ fmt.Sprintf("/dashboard/product/%s",projectId) } 
+										href="javascript:void(0)"
+										hx-get={ fmt.Sprintf("/dashboard/product/%s", projectId) }
 										hx-target="#dashboard-content"
 										class="nav-link"
 									>Products</a>
@@ -149,7 +148,7 @@ templ SideBar(user *domain.User, projectName , projectId string) {
 								<li class="nav-item">
 									<a
 										href="javascript:void(0)"
-										hx-get={ fmt.Sprintf("/dashboard/order/%s",projectId) } 
+										hx-get={ fmt.Sprintf("/dashboard/order/%s", projectId) }
 										hx-target="#dashboard-content"
 										class="nav-link"
 									>Orders</a>
@@ -206,7 +205,6 @@ templ SideBar(user *domain.User, projectName , projectId string) {
 							href="javascript:void(0)"
 							hx-get="/extension"
 							hx-target="#dashboard-content"
-							hx-replace-url="/dashboard/default"
 						>
 							<i class="bi bi-calendar2-plus-fill"></i>
 							<span>
@@ -222,18 +220,19 @@ templ SideBar(user *domain.User, projectName , projectId string) {
 						</a>
 					</li>
 					<li class="nav-item my-1">
-					<a
+						<a
 							class="nav-link d-flex align-items-center rounded-pill"
 							href="javascript:void(0)"
-							hx-get={ fmt.Sprintf("/project/settings/%s",projectId) } 
+							hx-get={ fmt.Sprintf("/project/settings/%s", projectId) }
 							hx-target="#dashboard-content"
 						>
-						<i
-							class="bi bi-gear-fill"
-						></i><span>
+							<i
+								class="bi bi-gear-fill"
+							></i>
+							<span>
 								Settings
 							</span>
-					</a>
+						</a>
 					</li>
 				</ul>
 				<div class="mt-auto"></div>

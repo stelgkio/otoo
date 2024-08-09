@@ -118,6 +118,18 @@ func NewRouter(
 		}
 
 	}
+	//Extension group
+	extensiongroup := e.Group("/extension")
+	{
+		// Add authentication
+		extensiongroup.Use(configureJWT())
+		//Attach jwt token refresher.
+		extensiongroup.Use(auth.TokenRefresherMiddleware)
+		extensiongroup.GET("", dashboardHandler.Extention)
+		extensiongroup.GET("/asc-courier", dashboardHandler.AcsCourier)
+		extensiongroup.GET("/wallet-expences", dashboardHandler.WalletExpenses)
+		extensiongroup.GET("/data-synchronizer", dashboardHandler.DataSynchronizer)
+	}
 	//Project group
 	projectgroup := e.Group("/project")
 	{
@@ -192,6 +204,8 @@ func NewRouter(
 		ordergroup.GET("/table/:projectId/:status/:page", dashboardHandler.OrderTable)
 		ordergroup.GET("/chart/:projectId", dashboardHandler.OrderCharts)
 		ordergroup.GET("/tablehtml/:projectId", dashboardHandler.OrderTableHTML)
+
+		ordergroup.POST("/bulk-action/:projectId", dashboardHandler.OrderBulkAction)
 
 	}
 	productgroup := e.Group("/product")

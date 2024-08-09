@@ -13,7 +13,7 @@ func InitClient(customerKey string, customerSecret string, domainUrl string) *wo
 
 	client := woocommerce.NewClient(app, domainUrl,
 		woocommerce.WithLog(&woocommerce.LeveledLogger{
-			Level: woocommerce.LevelDebug, // open this for debug in dev environment
+			Level: woocommerce.LevelError, // open this for debug in dev environment
 		}),
 		woocommerce.WithRetry(3),
 		woocommerce.WithVersion("v3"),

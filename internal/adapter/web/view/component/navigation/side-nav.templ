@@ -107,6 +107,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 									<a
 										href="javascript:void(0)"
 										hx-get={ fmt.Sprintf("/dashboard/default/%s", projectId) }
+										hx-push-url="true"
 										hx-target="#dashboard-content"
 										class="nav-link fw-bold"
 									>Default</a>
@@ -133,6 +134,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 									<a
 										href="javascript:void(0)"
 										hx-get={ fmt.Sprintf("/dashboard/customer/%s", projectId) }
+										hx-push-url="true"
 										hx-target="#dashboard-content"
 										class="nav-link"
 									>Customers</a>
@@ -141,6 +143,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 									<a
 										href="javascript:void(0)"
 										hx-get={ fmt.Sprintf("/dashboard/product/%s", projectId) }
+										hx-push-url="true"
 										hx-target="#dashboard-content"
 										class="nav-link"
 									>Products</a>
@@ -149,6 +152,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 									<a
 										href="javascript:void(0)"
 										hx-get={ fmt.Sprintf("/dashboard/order/%s", projectId) }
+										hx-push-url="true"
 										hx-target="#dashboard-content"
 										class="nav-link"
 									>Orders</a>
@@ -203,7 +207,8 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 						<a
 							class="nav-link d-flex align-items-center rounded-pill"
 							href="javascript:void(0)"
-							hx-get="/extension"
+							hx-get={ fmt.Sprintf("/extension/%s", projectId) }
+							hx-push-url="true"
 							hx-target="#dashboard-content"
 						>
 							<i class="bi bi-calendar2-plus-fill"></i>

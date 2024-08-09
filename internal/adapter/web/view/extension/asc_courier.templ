@@ -1,0 +1,103 @@
+package views
+
+import "fmt"
+
+templ ASC_Courier(stripePublishableKey string, projectId, extensionId string) {
+	<div
+		id="dashboard-content"
+		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
+	>
+		<main class="container-fluid px-6 pb-10">
+			<form autocomplete="off" x-data={ fmt.Sprintf("subscriptionForm('%s','%s','%s')", stripePublishableKey, projectId, extensionId) }>
+				<header class="py-4 border-bottom">
+					<div class="row align-items-center">
+						<div class="col">
+							<div class="d-flex align-items-center gap-4">
+								<div>
+									<button
+										type="button"
+										class="btn-close text-xs"
+										aria-label="Close"
+										hx-get={ fmt.Sprintf("/extension/%s", projectId) }
+										hx-target="#dashboard-content"
+									></button>
+								</div>
+								<div class="vr opacity-20 my-1"></div>
+								<h1 class="h4 ls-tight">Acs Courier</h1>
+							</div>
+						</div>
+						<div class="col">
+							<div class="hstack gap-2 justify-content-end">
+								<button
+									type="button"
+									@click="createSubscription"
+									class="btn btn-sm btn-neutral d-none d-sm-inline-flex"
+								>
+									<span class="pe-2"><i class="bi bi-plus-circle"></i> </span><span>Subscription</span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</header>
+			</form>
+			<article class="article mw-read">
+				<h2>What is Acs Courier Extention</h2>
+				<p>
+					Accelerate your shipping process with Otoo ASC Courier. Manage and send orders with speed and ease.
+				</p>
+				<ul class="list-unstyled mt-7">
+					<li class="py-2 d-flex align-items-center">
+						<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
+							<i class="bi bi-check"></i>
+						</div>
+						<p>Automatic order status updates</p>
+					</li>
+					<li class="py-2 d-flex align-items-center">
+						<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
+							<i class="bi bi-check"></i>
+						</div>
+						<p>Download shipping vouchers</p>
+					</li>
+					<li class="py-2 d-flex align-items-center">
+						<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
+							<i class="bi bi-check"></i>
+						</div>
+						<p>Send customer notifications via email</p>
+					</li>
+				</ul>
+			</article>
+		</main>
+		<script>
+		function subscriptionForm(stripePublishableKey,projectId,extensionId) {
+			return {
+
+				createSubscription() {
+					const stripe = Stripe(stripePublishableKey);
+
+					const value = {
+						
+						projectId: projectId, // Add additional data if needed
+						extensionId: extensionId // Add additional data if needed
+					};
+
+					fetch("/payment", {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(value)
+					})
+					.then(async response => {
+						const res = await response.json();
+						const id = res.id;
+						stripe.redirectToCheckout({ sessionId: id });
+					})
+					.catch(error => {
+						console.error('Error creating subscription:', error);
+					});
+				}
+			};
+		}
+	</script>
+	</div>
+}

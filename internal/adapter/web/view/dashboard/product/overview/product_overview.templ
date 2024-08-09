@@ -19,6 +19,7 @@ templ ProductOverview(projectId string) {
 						<div class="hstack gap-2 justify-content-end">
 							<button
 								hx-get={ fmt.Sprintf("/dashboard/order/%s", projectId) }
+								hx-push-url="true"
 								hx-target="#dashboard-content"
 								type="button"
 								class="btn btn-sm btn-neutral d-sm-inline-flex"
@@ -31,6 +32,7 @@ templ ProductOverview(projectId string) {
 							</button>
 							<button
 								hx-get={ fmt.Sprintf("/dashboard/customer/%s", projectId) }
+								hx-push-url="true"
 								hx-target="#dashboard-content"
 								type="button"
 								class="btn btn-sm btn-neutral d-sm-inline-flex"

@@ -23,23 +23,25 @@ import (
 
 // DashboardHandler handles the dashboard routes
 type DashboardHandler struct {
-	projectSvc  port.ProjectService
-	userSvc     port.UserService
-	customerSvc port.CustomerService
-	productSvc  port.ProductService
-	orderSvc    port.OrderService
-	bestSeller  port.BestSellers
+	projectSvc   port.ProjectService
+	userSvc      port.UserService
+	customerSvc  port.CustomerService
+	productSvc   port.ProductService
+	orderSvc     port.OrderService
+	bestSeller   port.BestSellers
+	extensionSvc port.ExtensionService
 }
 
 // NewDashboardHandler returns a new DashboardHandler
-func NewDashboardHandler(projectSvc port.ProjectService, userSvc port.UserService, customerSvc port.CustomerService, productSvc port.ProductService, orderSvc port.OrderService, bestSeller port.BestSellers) *DashboardHandler {
+func NewDashboardHandler(projectSvc port.ProjectService, userSvc port.UserService, customerSvc port.CustomerService, productSvc port.ProductService, orderSvc port.OrderService, bestSeller port.BestSellers, extension port.ExtensionService) *DashboardHandler {
 	return &DashboardHandler{
-		projectSvc:  projectSvc,
-		userSvc:     userSvc,
-		customerSvc: customerSvc,
-		productSvc:  productSvc,
-		orderSvc:    orderSvc,
-		bestSeller:  bestSeller,
+		projectSvc:   projectSvc,
+		userSvc:      userSvc,
+		customerSvc:  customerSvc,
+		productSvc:   productSvc,
+		orderSvc:     orderSvc,
+		bestSeller:   bestSeller,
+		extensionSvc: extension,
 	}
 }
 

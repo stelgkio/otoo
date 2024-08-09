@@ -5,32 +5,34 @@ import (
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-// ExtentionRepository defines the methods for interacting with the Extention repository
-type ExtentionRepository interface {
-	CreateExtention(ctx echo.Context, e *domain.Extention) error
-	GetAllExtentions(ctx echo.Context) ([]*domain.Extention, error)
-	GetExtentionsByID(ctx echo.Context, extensionID string) (*domain.Extention, error)
-	DeleteExtention(ctx echo.Context, extensionID string) error
+// ExtensionRepository defines the methods for interacting with the Extension repository
+type ExtensionRepository interface {
+	CreateExtension(ctx echo.Context, e *domain.Extension) error
+	GetAllExtensions(ctx echo.Context) ([]*domain.Extension, error)
+	GetExtensionByID(ctx echo.Context, extensionID string) (*domain.Extension, error)
+	GetExtensionByCode(ctx echo.Context, code string) (*domain.Extension, error)
+	DeleteExtension(ctx echo.Context, extensionID string) error
 
-	//////////////////PROJECT EXTENTIONS/////////////////////////
+	//////////////////PROJECT ExtensionS/////////////////////////
 
-	CreateProjectExtention(ctx echo.Context, projectID string, ex *domain.Extention) error
-	GetAllProjectExtentions(ctx echo.Context, projectID string) ([]*domain.ProjectExtention, error)
-	GetProjectExtentionsByID(ctx echo.Context, extensionID, projectID string) (*domain.ProjectExtention, error)
-	DeleteProjectExtention(ctx echo.Context, extensionID, projectID string) error
+	CreateProjectExtension(ctx echo.Context, projectID string, ex *domain.Extension) error
+	GetAllProjectExtensions(ctx echo.Context, projectID string) ([]*domain.ProjectExtension, error)
+	GetProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.ProjectExtension, error)
+	DeleteProjectExtension(ctx echo.Context, extensionID, projectID string) error
 }
 
-// ExtentionService defines the methods for interacting with the Extention service
-type ExtentionService interface {
-	CreateExtention(ctx echo.Context, e *domain.Extention) error
-	GetAllExtentions(ctx echo.Context) ([]*domain.Extention, error)
-	GetExtentionsByID(ctx echo.Context, extensionID string) (*domain.Extention, error)
-	DeleteExtention(ctx echo.Context, extensionID string) error
+// ExtensionService defines the methods for interacting with the Extension service
+type ExtensionService interface {
+	CreateExtension(ctx echo.Context, e *domain.Extension) error
+	GetAllExtensions(ctx echo.Context) ([]*domain.Extension, error)
+	GetExtensionByID(ctx echo.Context, extensionID string) (*domain.Extension, error)
+	GetExtensionByCode(ctx echo.Context, code string) (*domain.Extension, error)
+	DeleteExtension(ctx echo.Context, extensionID string) error
 
-	//////////////////PROJECT EXTENTIONS/////////////////////////
+	//////////////////PROJECT ExtensionS/////////////////////////
 
-	CreateProjectExtention(ctx echo.Context, projectID string, e *domain.Extention) error
-	GetAllProjectExtentions(ctx echo.Context, projectID string) ([]*domain.ProjectExtention, error)
-	GetProjectExtentionsByID(ctx echo.Context, extensionID, projectID string) (*domain.ProjectExtention, error)
-	DeleteProjectExtention(ctx echo.Context, extensionID, projectID string) error
+	CreateProjectExtension(ctx echo.Context, projectID string, e *domain.Extension) error
+	GetAllProjectExtensions(ctx echo.Context, projectID string) ([]*domain.ProjectExtension, error)
+	GetProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.ProjectExtension, error)
+	DeleteProjectExtension(ctx echo.Context, extensionID, projectID string) error
 }

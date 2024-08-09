@@ -20,6 +20,7 @@ templ OrderOverView(projectId, totalCount, count24h, count7d, count1m string) {
 						<div class="hstack gap-2 justify-content-end">
 							<button
 								hx-get={ fmt.Sprintf("/dashboard/product/%s", projectId) }
+								hx-push-url="true"
 								hx-target="#dashboard-content"
 								type="button"
 								class="btn btn-sm btn-neutral d-sm-inline-flex"
@@ -30,6 +31,7 @@ templ OrderOverView(projectId, totalCount, count24h, count7d, count1m string) {
 							</button>
 							<button
 								hx-get={ fmt.Sprintf("/dashboard/customer/%s", projectId) }
+								hx-push-url="true"
 								hx-target="#dashboard-content"
 								type="button"
 								class="btn btn-sm btn-neutral  d-sm-inline-flex"

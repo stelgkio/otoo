@@ -125,10 +125,23 @@ func NewRouter(
 		extensiongroup.Use(configureJWT())
 		//Attach jwt token refresher.
 		extensiongroup.Use(auth.TokenRefresherMiddleware)
-		extensiongroup.GET("", dashboardHandler.Extention)
-		extensiongroup.GET("/asc-courier", dashboardHandler.AcsCourier)
-		extensiongroup.GET("/wallet-expences", dashboardHandler.WalletExpenses)
-		extensiongroup.GET("/data-synchronizer", dashboardHandler.DataSynchronizer)
+		extensiongroup.GET("/:projectId", dashboardHandler.Extention)
+		extensiongroup.GET("/:projectId/:extensionId", dashboardHandler.StripeExtentionReturn)
+		extensiongroup.GET("/asc-courier/:projectId", dashboardHandler.AcsCourier)
+		extensiongroup.GET("/wallet-expences/:projectId", dashboardHandler.WalletExpenses)
+		extensiongroup.GET("/data-synchronizer/:projectId", dashboardHandler.DataSynchronizer)
+	}
+
+	e.POST("/payment/event", dashboardHandler.PaymentEvent)
+	//Payment group
+	paymentgroup := e.Group("/payment")
+	{
+		// Add authentication
+		paymentgroup.Use(configureJWT())
+		//Attach jwt token refresher.
+		paymentgroup.Use(auth.TokenRefresherMiddleware)
+		paymentgroup.POST("", dashboardHandler.Payment)
+
 	}
 	//Project group
 	projectgroup := e.Group("/project")

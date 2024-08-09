@@ -11,50 +11,50 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// ExtentionRepository represents the repository for Extention-related operations
-type ExtentionRepository struct {
+// ExtensionRepository represents the repository for Extension-related operations
+type ExtensionRepository struct {
 	mongo *mongo.Client
 }
 
-// NewExtentionRepository creates a new Extention repository instance
-func NewExtentionRepository(mongo *mongo.Client) *ExtentionRepository {
-	return &ExtentionRepository{
+// NewExtensionRepository creates a new Extension repository instance
+func NewExtensionRepository(mongo *mongo.Client) *ExtensionRepository {
+	return &ExtensionRepository{
 		mongo,
 	}
 }
 
-// CreateExtention creates a new Extention
-func (ex *ExtentionRepository) CreateExtention(ctx echo.Context, c *domain.Extention) error {
+// CreateExtension creates a new Extension
+func (ex *ExtensionRepository) CreateExtension(ctx echo.Context, c *domain.Extension) error {
 	panic("unimplemented")
 }
 
-// GetAllExtentions gets all Extentions
-func (ex *ExtentionRepository) GetAllExtentions(ctx echo.Context) ([]*domain.Extention, error) {
-	collection := ex.mongo.Database("otoo").Collection("extentions")
+// GetAllExtensions gets all Extensions
+func (ex *ExtensionRepository) GetAllExtensions(ctx echo.Context) ([]*domain.Extension, error) {
+	collection := ex.mongo.Database("otoo").Collection("extensions")
 	cursor, err := collection.Find(ctx.Request().Context(), bson.M{"is_active": true})
 	if err != nil {
 		return nil, err
 	}
 	defer cursor.Close(ctx.Request().Context())
 
-	var extentions []*domain.Extention
+	var Extensions []*domain.Extension
 	for cursor.Next(ctx.Request().Context()) {
-		var extention domain.Extention
-		if err := cursor.Decode(&extention); err != nil {
+		var Extension domain.Extension
+		if err := cursor.Decode(&Extension); err != nil {
 			return nil, err
 		}
-		extentions = append(extentions, &extention)
+		Extensions = append(Extensions, &Extension)
 	}
 	if err := cursor.Err(); err != nil {
 		return nil, err
 	}
 
-	return extentions, nil
+	return Extensions, nil
 }
 
-// GetExtentionsByID gets a Extention by ID
-func (ex *ExtentionRepository) GetExtentionsByID(ctx echo.Context, extensionID string) (*domain.Extention, error) {
-	collection := ex.mongo.Database("otoo").Collection("extentions")
+// GetExtensionsByID gets a Extension by ID
+func (ex *ExtensionRepository) GetExtensionByID(ctx echo.Context, extensionID string) (*domain.Extension, error) {
+	collection := ex.mongo.Database("otoo").Collection("extensions")
 
 	// Convert the extensionID from string to ObjectID
 	id, err := primitive.ObjectIDFromHex(extensionID)
@@ -69,24 +69,51 @@ func (ex *ExtentionRepository) GetExtentionsByID(ctx echo.Context, extensionID s
 	}
 
 	// Define a variable to hold the result
-	var extention domain.Extention
+	var Extension domain.Extension
 
 	// Execute the query with the filter
-	err = collection.FindOne(ctx.Request().Context(), filter).Decode(&extention)
+	err = collection.FindOne(ctx.Request().Context(), filter).Decode(&Extension)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			return nil, errors.New("Extention not found")
+			return nil, errors.New("Extension not found")
 		}
 		return nil, err
 	}
 
 	// Return the found extension
-	return &extention, nil
+	return &Extension, nil
 }
 
-// DeleteExtention deletes a Extention by ID
-func (ex *ExtentionRepository) DeleteExtention(ctx echo.Context, extensionID string) error {
-	collection := ex.mongo.Database("otoo").Collection("extentions")
+// GetExtensionsByCode gets a Extension by code
+func (ex *ExtensionRepository) GetExtensionByCode(ctx echo.Context, code string) (*domain.Extension, error) {
+	collection := ex.mongo.Database("otoo").Collection("extensions")
+
+	// Create the filter to match both the extension ID and IsActive
+	filter := bson.M{
+		"code":      code,
+		"is_active": true,
+	}
+
+	// Define a variable to hold the result
+	var Extension domain.Extension
+
+	// Execute the query with the filter
+	err := collection.FindOne(ctx.Request().Context(), filter).Decode(&Extension)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, errors.New("Extension not found")
+		}
+		return nil, err
+	}
+
+	// Return the found extension
+	return &Extension, nil
+
+}
+
+// DeleteExtension deletes a Extension by ID
+func (ex *ExtensionRepository) DeleteExtension(ctx echo.Context, extensionID string) error {
+	collection := ex.mongo.Database("otoo").Collection("Extensions")
 	id, err := primitive.ObjectIDFromHex(extensionID)
 	if err != nil {
 		return err
@@ -109,33 +136,33 @@ func (ex *ExtentionRepository) DeleteExtention(ctx echo.Context, extensionID str
 	return nil
 }
 
-//////////////////PROJECT EXTENTIONS/////////////////////////
+//////////////////PROJECT ExtensionS/////////////////////////
 
-// CreateProjectExtention creates a new ProjectExtention
-func (ex *ExtentionRepository) CreateProjectExtention(ctx echo.Context, projectID string, e *domain.Extention) error {
-	collection := ex.mongo.Database("otoo").Collection("project_extentions")
+// CreateProjectExtension creates a new ProjectExtension
+func (ex *ExtensionRepository) CreateProjectExtension(ctx echo.Context, projectID string, e *domain.Extension) error {
+	collection := ex.mongo.Database("otoo").Collection("project_extensions")
 
-	projectExtention := &domain.ProjectExtention{
+	projectExtension := &domain.ProjectExtension{
 		ID:          primitive.NewObjectID(),
 		Title:       e.Title,
 		Description: e.Description,
 		Code:        e.Code,
 		ProjectID:   projectID,
-		ExtentionID: e.ID.Hex(),
+		ExtensionID: e.ID.Hex(),
 		CreatedAt:   time.Now().UTC(),
 		IsActive:    true,
 	}
 
-	_, err := collection.InsertOne(ctx.Request().Context(), projectExtention)
+	_, err := collection.InsertOne(ctx.Request().Context(), projectExtension)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-// GetAllProjectExtentions gets all ProjectExtentions
-func (ex *ExtentionRepository) GetAllProjectExtentions(ctx echo.Context, projectID string) ([]*domain.ProjectExtention, error) {
-	collection := ex.mongo.Database("otoo").Collection("project_extentions")
+// GetAllProjectExtensions gets all ProjectExtensions
+func (ex *ExtensionRepository) GetAllProjectExtensions(ctx echo.Context, projectID string) ([]*domain.ProjectExtension, error) {
+	collection := ex.mongo.Database("otoo").Collection("project_extensions")
 
 	filter := bson.M{
 		"project_id": projectID,
@@ -151,24 +178,24 @@ func (ex *ExtentionRepository) GetAllProjectExtentions(ctx echo.Context, project
 	}
 	defer cursor.Close(ctx.Request().Context())
 
-	var projectExtentions []*domain.ProjectExtention
+	var projectExtensions []*domain.ProjectExtension
 	for cursor.Next(ctx.Request().Context()) {
-		var projectExtention domain.ProjectExtention
-		if err := cursor.Decode(&projectExtention); err != nil {
+		var projectExtension domain.ProjectExtension
+		if err := cursor.Decode(&projectExtension); err != nil {
 			return nil, err
 		}
-		projectExtentions = append(projectExtentions, &projectExtention)
+		projectExtensions = append(projectExtensions, &projectExtension)
 	}
 	if err := cursor.Err(); err != nil {
 		return nil, err
 	}
 
-	return projectExtentions, nil
+	return projectExtensions, nil
 }
 
-// GetProjectExtentionsByID gets a ProjectExtention by ID
-func (ex *ExtentionRepository) GetProjectExtentionsByID(ctx echo.Context, extensionID, projectID string) (*domain.ProjectExtention, error) {
-	collection := ex.mongo.Database("otoo").Collection("project_extentions")
+// GetProjectExtensionsByID gets a ProjectExtension by ID
+func (ex *ExtensionRepository) GetProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.ProjectExtension, error) {
+	collection := ex.mongo.Database("otoo").Collection("project_extensions")
 
 	extID, err := primitive.ObjectIDFromHex(extensionID)
 	if err != nil {
@@ -181,8 +208,8 @@ func (ex *ExtentionRepository) GetProjectExtentionsByID(ctx echo.Context, extens
 		"is_active":  true,
 	}
 
-	var projectExtention domain.ProjectExtention
-	err = collection.FindOne(ctx.Request().Context(), filter).Decode(&projectExtention)
+	var projectExtension domain.ProjectExtension
+	err = collection.FindOne(ctx.Request().Context(), filter).Decode(&projectExtension)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
@@ -190,12 +217,12 @@ func (ex *ExtentionRepository) GetProjectExtentionsByID(ctx echo.Context, extens
 		return nil, err
 	}
 
-	return &projectExtention, nil
+	return &projectExtension, nil
 }
 
-// DeleteProjectExtention deletes a ProjectExtention by ID
-func (ex *ExtentionRepository) DeleteProjectExtention(ctx echo.Context, extensionID, projectID string) error {
-	collection := ex.mongo.Database("otoo").Collection("project_extentions")
+// DeleteProjectExtension deletes a ProjectExtension by ID
+func (ex *ExtensionRepository) DeleteProjectExtension(ctx echo.Context, extensionID, projectID string) error {
+	collection := ex.mongo.Database("otoo").Collection("project_extensions")
 
 	extID, err := primitive.ObjectIDFromHex(extensionID)
 	if err != nil {
@@ -219,7 +246,7 @@ func (ex *ExtentionRepository) DeleteProjectExtention(ctx echo.Context, extensio
 		return err
 	}
 	if result.MatchedCount == 0 {
-		return errors.New("ProjectExtention not found")
+		return errors.New("ProjectExtension not found")
 	}
 
 	return nil

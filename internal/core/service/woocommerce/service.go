@@ -2,6 +2,11 @@ package woocommerce
 
 import "github.com/stelgkio/woocommerce"
 
+const (
+	workerCount = 1   // Number of worker goroutines
+	batchSize   = 100 // Number of products to process per batch
+)
+
 // initClient init woocommerce client
 func InitClient(customerKey string, customerSecret string, domainUrl string) *woocommerce.Client {
 	app := woocommerce.App{

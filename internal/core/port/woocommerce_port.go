@@ -33,7 +33,7 @@ type WoocommerceRepository interface {
 
 	ProductCreate(data *w.ProductRecord) error
 	ProductDelete(productID int64) error
-	ProductUpdate(data *w.ProductRecord, productID int64) error
+	ProductUpdate(data *w.ProductRecord, productID int64, projectID string) error
 	ProductFindByProjectID(projectID string, size, page int, sort, direction string, productType w.ProductType) ([]*w.ProductRecord, error)
 	GetProductCount(projectID string, productType w.ProductType) (int64, error)
 	GetProductByID(projectID string, orderID int64) (*w.ProductRecord, error)
@@ -61,12 +61,13 @@ type CustomerService interface {
 	ExtractCustomerFromOrderAndUpsert(ctx echo.Context, req *woo.OrderRecord) error
 	GetCustomerCount(ctx echo.Context, projectID string, results chan<- int64, errors chan<- error)
 	FindCustomerByProjectIDAsync(projectID string, size, page int, sort, direction string, results chan<- []*domain.CustomerRecord, errors chan<- error)
+	GetAllCustomerFromWoocommerce(customerKey string, customerSecret string, domainURL string, projectID string, totalProduct int64) error
 }
 
 // ProductService defines the methods for interacting with the Product service
 type ProductService interface {
 	ExtractProductFromOrderAndUpsert(ctx echo.Context, req *woo.OrderRecord, project *d.Project) error
-	GetAllProductFromWoocommerce(ccustomerKey string, customerSecret string, domainURL string, projectID uuid.UUID) error
+	GetAllProductFromWoocommerce(ccustomerKey string, customerSecret string, domainURL string, projectID string, totalProduct int64) error
 	GetProductCount(ctx echo.Context, projectID string, productType w.ProductType, results chan<- int64, errors chan<- error)
 	GetProductBestSeller(projectID string, totalCount int64, results chan<- []*domain.ProductBestSellerRecord, errors chan<- error)
 	FindProductByProjectIDAsync(projectID string, size, page int, sort, direction string, productType w.ProductType, results chan<- []*domain.ProductRecord, errors chan<- error)
@@ -80,7 +81,14 @@ type OrderService interface {
 	GetOrderCount(projectID string, orderStatus w.OrderStatus, timeRange string) (int64, error)
 	GetOrderByID(projectID string, orderID int64) (*domain.OrderRecord, error)
 	FindOrderByProjectIDAsync(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string, results chan<- []*domain.OrderRecord, errors chan<- error)
-
+	GetAllOrdersFromWoocommerce(customerKey string, customerSecret string, domainURL string, projectID string, totalProduct int64) error
 	UpdateOrderStatusByID(projectID string, orderID int64, status string, project *d.Project) (*domain.OrderRecord, error)
 	BatchUpdateOrdersStatus(projectID string, orders []int64, status string, proj *d.Project) ([]*domain.OrderRecord, error)
+}
+
+// ReportService defines the methods for interacting with the Report service
+type ReportService interface {
+	GetCustomerTotalCount(ctx echo.Context, projectID string) (int, error)
+	GetOrderTotalCount(ctx echo.Context, projectID string) (int, error)
+	GetProductTotalCount(ctx echo.Context, projectID string) (int, error)
 }

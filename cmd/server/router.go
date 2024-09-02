@@ -126,10 +126,15 @@ func NewRouter(
 		//Attach jwt token refresher.
 		extensiongroup.Use(auth.TokenRefresherMiddleware)
 		extensiongroup.GET("/:projectId", dashboardHandler.Extention)
-		extensiongroup.GET("/:projectId/:extensionId", dashboardHandler.StripeExtentionReturn)
+		extensiongroup.GET("/:projectId/:extensionId/success", dashboardHandler.StripeSuccesRedirect)
+		extensiongroup.GET("/:projectId/:extensionId/fail", dashboardHandler.StripeFailRedirect)
 		extensiongroup.GET("/asc-courier/:projectId", dashboardHandler.AcsCourier)
 		extensiongroup.GET("/wallet-expences/:projectId", dashboardHandler.WalletExpenses)
 		extensiongroup.GET("/data-synchronizer/:projectId", dashboardHandler.DataSynchronizer)
+
+		extensiongroup.GET("/page/asc-courier/:projectId", dashboardHandler.AcsCourierPage)
+		extensiongroup.GET("/page/wallet-expences/:projectId", dashboardHandler.WalletExpensesPage)
+		extensiongroup.GET("/page/data-synchronizer/:projectId", dashboardHandler.DataSynchronizerPage)
 	}
 
 	e.POST("/payment/event", dashboardHandler.PaymentEvent)
@@ -152,6 +157,10 @@ func NewRouter(
 		projectgroup.Use(auth.TokenRefresherMiddleware)
 
 		projectgroup.GET("/list", projectHandler.ProjectListPage)
+		projectgroup.GET("/test/synchronize/:projectId", projectHandler.ProjectSynchronizeTest)
+		projectgroup.GET("/synchronize/:projectId", projectHandler.ProjectSynchronize)
+		projectgroup.POST("/synchronize/start/:projectId/:customerTotal/:productTotal/:orderTotal", projectHandler.ProjectSynchronizeStart)
+		projectgroup.GET("/synchronize/done/:projectId/:customerTotal/:productTotal/:orderTotal", projectHandler.ProjectSynchronizeDone)
 		projectgroup.GET("/createform", projectHandler.ProjectCreateForm)
 		projectgroup.POST("/create", projectHandler.CreateProject)
 		projectgroup.POST("/validation/name", projectHandler.ProjectNameValidation)

@@ -7,7 +7,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
 	d "github.com/stelgkio/otoo/internal/core/domain"
@@ -18,11 +17,6 @@ import (
 	"github.com/stelgkio/woocommerce"
 	woo "github.com/stelgkio/woocommerce"
 	"go.mongodb.org/mongo-driver/bson"
-)
-
-const (
-	workerCount = 100 // Number of worker goroutines
-	batchSize   = 100 // Number of products to process per batch
 )
 
 // ProductService represents the service for managing products
@@ -40,52 +34,52 @@ func NewProductService(woorepo port.WoocommerceRepository, projrepo port.Project
 }
 
 // GetAllProductFromWoocommerce gets all products from WooCommerce and saves them to MongoDB
-func (s *ProductService) GetAllProductFromWoocommerce(customerKey string, customerSecret string, domainURL string, projectID uuid.UUID) error {
+func (s *ProductService) GetAllProductFromWoocommerce(customerKey string, customerSecret string, domainURL string, projectID string, totalProduct int64) error {
 	client := InitClient(customerKey, customerSecret, domainURL)
 
 	// Create all webhooks
-	err := s.createAndSaveAllProducts(client, projectID)
+	err := s.createAndSaveAllProducts(client, projectID, totalProduct)
 	if err != nil {
-		slog.Error("create all products error", "error", err)
+		slog.Error("get all products error", "error", err)
 		return errors.Wrap(err, "create all products error")
 	}
 
-	slog.Info("create all products success")
+	slog.Info("get all products success")
 	return nil
 }
 
 // createAndSaveAllWebhooks creates WooCommerce products and saves results to MongoDB concurrently
-func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectID uuid.UUID) error {
+func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectID string, totalProduct int64) error {
 
 	var wg sync.WaitGroup
-	productCh := make(chan *w.ProductRecord, batchSize) // Channel to distribute products to workers
-	errorCh := make(chan *w.ProductRecord, 1)           // Buffered channel for error results
+	productCh := make(chan *w.ProductRecord, totalProduct) // Channel to distribute products to workers
+	errorCh := make(chan *w.ProductRecord, 1)              // Buffered channel for error results
 
 	// Worker pool to process products
 	for i := 0; i < workerCount; i++ {
 		wg.Add(1)
-		go func() {
+		go func(projectID string) {
 			defer wg.Done()
 			for product := range productCh {
-				err := s.saveWebhookResult(product)
+				err := s.saveProductResult(product, projectID)
 				if err != nil {
 					log.Printf("Failed to save webhook result: %v", err)
 					// Handle or log the error accordingly
 				}
 			}
-		}()
+		}(projectID)
 	}
 
 	// Goroutine to save error results
-	go func() {
+	go func(projectID string) {
 		for result := range errorCh {
-			err := s.saveWebhookResult(result)
+			err := s.saveProductResult(result, projectID)
 			if err != nil {
 				log.Printf("Failed to save webhook result: %v", err)
 				// Handle or log the error accordingly
 			}
 		}
-	}()
+	}(projectID)
 
 	// Main processing goroutine
 	page := 1
@@ -102,7 +96,7 @@ func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectID 
 		resp, err := client.Product.List(options)
 		if err != nil {
 			errorCh <- &w.ProductRecord{
-				ProjectID: projectID.String(),
+				ProjectID: projectID,
 				Event:     "Product.List",
 				Error:     err.Error(),
 				CreatedAt: time.Now().UTC(),
@@ -117,14 +111,39 @@ func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectID 
 		}
 		for _, item := range resp {
 			productCh <- &w.ProductRecord{
-				ProjectID: projectID.String(),
-				Event:     "Product.List",
+				ProjectID: projectID,
+				Event:     "product.createdt",
 				Error:     "",
 				CreatedAt: time.Now().UTC(),
+				Timestamp: time.Now().UTC(),
 				ProductID: item.ID,
 				Product:   item,
 				IsActive:  true,
 			}
+			if item.Type == domain.Variable.String() {
+				for _, variationID := range item.Variations {
+					variation, err := client.ProductVariation.Get(item.ID, variationID, nil)
+					if err != nil {
+						return err
+					}
+
+					variationRecord := &domain.ProductRecord{
+						ProjectID: projectID,
+						Error:     "",
+						Event:     "product.created",
+						ProductID: variation.ID,
+						Product:   *variation,
+						IsActive:  true,
+						CreatedAt: time.Now().UTC(),
+						Timestamp: time.Now().UTC(),
+						ParentId:  item.ID,
+					}
+
+					err = s.p.ProductUpdate(variationRecord, variation.ID, projectID)
+				}
+
+			}
+
 		}
 		page++
 	}
@@ -138,9 +157,9 @@ func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectID 
 }
 
 // saveWebhookResult saves webhook creation result to MongoDB
-func (s *ProductService) saveWebhookResult(data *w.ProductRecord) error {
+func (s *ProductService) saveProductResult(data *w.ProductRecord, projectID string) error {
 
-	err := s.p.ProductCreate(data)
+	err := s.p.ProductUpdate(data, data.ProductID, projectID)
 	if err != nil {
 		return errors.Wrap(err, "failed to insert product result into MongoDB")
 	}
@@ -175,7 +194,7 @@ func (s *ProductService) ExtractProductFromOrderAndUpsert(ctx echo.Context, req 
 						product.Orders = util.RemoveElement(product.Orders, util.FindIndex(product.Orders, req.Order.ID))
 					}
 
-					err = s.p.ProductUpdate(product, product.ProductID)
+					err = s.p.ProductUpdate(product, product.ProductID, req.ProjectID)
 				}
 			} else {
 				wooproduct, err := client.Product.Get(orderItem.ProductID, nil)
@@ -196,7 +215,7 @@ func (s *ProductService) ExtractProductFromOrderAndUpsert(ctx echo.Context, req 
 				if req.Order.Status != "cancelled" {
 					productRecord.Orders = []int64{req.Order.ID}
 				}
-				err = s.p.ProductUpdate(productRecord, wooproduct.ID)
+				err = s.p.ProductUpdate(productRecord, wooproduct.ID, req.ProjectID)
 
 				if wooproduct.Type == domain.Variable.String() {
 					for _, variationID := range wooproduct.Variations {
@@ -217,7 +236,7 @@ func (s *ProductService) ExtractProductFromOrderAndUpsert(ctx echo.Context, req 
 							ParentId:  wooproduct.ID,
 						}
 
-						err = s.p.ProductUpdate(variationRecord, variation.ID)
+						err = s.p.ProductUpdate(variationRecord, variation.ID, req.ProjectID)
 					}
 
 				}
@@ -248,7 +267,7 @@ func (s *ProductService) GetProductBestSeller(projectID string, totalCount int64
 	for _, product := range products {
 		productID, ok := product["productId"].(int64)
 		if !ok {
-			slog.Info("ProductID is not of type int64: %v", product["productId"])
+			slog.Error("ProductID is not of type int64: %v", product["productId"])
 			continue
 		}
 

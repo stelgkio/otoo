@@ -65,6 +65,7 @@ templ WalletExpenses(stripePublishableKey string, projectId, extensionId string)
 						const res = await response.json();
 						const id = res.id;
 						stripe.redirectToCheckout({ sessionId: id });
+						
 					})
 					.catch(error => {
 						console.error('Error creating subscription:', error);

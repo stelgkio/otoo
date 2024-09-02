@@ -322,7 +322,7 @@ func (w WooCommerceHandler) ProductCreatedWebHook(ctx echo.Context) error {
 		Timestamp: time.Now().UTC(),
 		ParentId:  req.ParentId,
 	}
-	err = w.p.ProductUpdate(productRecord, req.ID)
+	err = w.p.ProductUpdate(productRecord, req.ID, project.Id.String())
 	if err != nil {
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
@@ -366,7 +366,7 @@ func (w WooCommerceHandler) ProductUpdatedWebHook(ctx echo.Context) error {
 		Timestamp: time.Now().UTC(),
 		ParentId:  req.ParentId,
 	}
-	err = w.p.ProductUpdate(productRecord, req.ID)
+	err = w.p.ProductUpdate(productRecord, req.ID, project.Id.String())
 	if err != nil {
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}

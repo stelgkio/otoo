@@ -63,7 +63,12 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 
 	//Project
 	projectService := service.NewProjectService(projectRepo, woocommerceWebhookService, woocommerceProductService)
-	projectHandler := handler.NewProjectHandler(projectService, userService)
+
+	//WooCommerceRepostServer
+	woocommerceReportService := woocommerce.NewWoocommerceReportService(projectService)
+	//ProjectHandler
+	bestSellerCron := cronjob.NewProductBestSellerCron(projectService, analyticsRepo, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
+	projectHandler := handler.NewProjectHandler(projectService, userService, woocommerceReportService, woocommerceProductService, woocommerceCustomerService, woocommerceOrderService, bestSellerCron)
 
 	//Home
 	homeHandler := handler.NewHomeHandler(projectService, contactService)
@@ -74,7 +79,7 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	//Profile
 	profileHandler := handler.NewProfileHandler(userService, projectService, authService)
 	analyticsCron := cronjob.NewOrderAnalyticsCron(projectService, userService, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
-	bestSellerCron := cronjob.NewProductBestSellerCron(projectService, analyticsRepo, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
+
 	//Router
 	_, err := NewRouter(s, userHandler, authHandler, homeHandler, projectHandler, WooCommerceHandler, dashboardHandler, profileHandler, analyticsCron, bestSellerCron)
 	if err != nil {

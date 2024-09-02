@@ -1,0 +1,188 @@
+package views
+
+import (
+	"fmt"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ ProjectSynchronizer(user *domain.User, projectId string, customerTotal, productTotal, orderTotal int) {
+	<div
+		id="dashboard-content"
+		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
+	>
+		<main class="container-fluid px-3 py-5 p-lg-6 p-xxl-8">
+			<form>
+				<header class="border-bottom mb-10">
+					<div class="row align-items-center">
+						<div class="col-sm-6 col-12">
+							<h1 class="ls-tight">Data Synchronization</h1>
+						</div>
+					</div>
+				</header>
+				<div class="d-flex align-items-end justify-content-between">
+					<div>
+						<h4 class="fw-semibold mb-1">Select Your Data to Sync</h4>
+						<p class="text-sm text-muted">Customize your experience by choosing the data you want to synchronize with our platform.</p>
+					</div>
+					<div class="d-none d-md-flex gap-2">
+						<button type="button" class="btn btn-sm btn-neutral">Skip for Now</button>
+						<button
+							type="submit"
+							hx-post={ fmt.Sprintf("/project/synchronize/start/%s/%d/%d/%d", projectId, customerTotal, productTotal, orderTotal) }
+							hx-indicator="#spinner"
+							class="btn btn-sm btn-primary"
+							hx-target="#dashboard-content"
+							id="submit-button"
+							disabled
+						>
+							<span id="spinner" class="htmx-indicator spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+							Sync Now
+						</button>
+					</div>
+				</div>
+				<hr class="my-6"/>
+				<div class="row g-3">
+					<div class="col-md-2"><label class="form-label mb-0">Customer Data</label></div>
+					<div class="col-md-5">
+						<div class="d-flex mb-5">
+							<div class="me-3">
+								if customerTotal == 0 {
+									<input
+										class="form-check-input"
+										type="checkbox"
+										name="check_customer"
+										id="check_customer"
+										disabled
+									/>
+								} else {
+									<input
+										class="form-check-input"
+										type="checkbox"
+										name="check_customer"
+										id="check_customer"
+										onchange="toggleSubmitButton()"
+									/>
+								}
+							</div>
+							<div>
+								<label class="form-label mb-0" for="check_customer">Total Customers</label>
+								<p class="text-sm text-muted">Stay informed with updates about your customers.</p>
+								<p class="text-sm text-muted">{ fmt.Sprintf("%d",customerTotal) } customers available to sync</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr class="my-6"/>
+				<div class="row g-3">
+					<div class="col-md-2"><label class="form-label mb-0">Product Data</label></div>
+					<div class="col-md-5">
+						<div class="d-flex mb-5">
+							<div class="me-3">
+								if productTotal == 0 {
+									<input
+										class="form-check-input"
+										type="checkbox"
+										name="check_products"
+										id="check_products"
+										disabled
+									/>
+								} else {
+									<input
+										class="form-check-input"
+										type="checkbox"
+										name="check_products"
+										id="check_products"
+										onchange="toggleSubmitButton()"
+									/>
+								}
+							</div>
+							<div>
+								<label class="form-label mb-0" for="check_products">Products in Store</label>
+								<p class="text-sm text-muted">Ensure your product catalog is up to date.</p>
+								<p class="text-sm text-muted">{ fmt.Sprintf("%d",productTotal) } products available to sync</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr class="my-6"/>
+				<div class="row g-3">
+					<div class="col-md-2"><label class="form-label mb-0">Order Data</label></div>
+					<div class="col-md-5">
+						<div class="d-flex mb-5">
+							<div class="me-3">
+								if orderTotal == 0 {
+									<input
+										class="form-check-input"
+										type="checkbox"
+										name="check_orders"
+										id="check_orders"
+										disabled
+									/>
+								} else {
+									<input
+										class="form-check-input"
+										type="checkbox"
+										name="check_orders"
+										id="check_orders"
+										onchange="toggleSubmitButton()"
+									/>
+								}
+							</div>
+							<div>
+								<label class="form-label mb-0" for="check_orders">Order History</label>
+								<p class="text-sm text-muted">Keep track of all your orders with the latest updates.</p>
+								<p class="text-sm text-muted">{ fmt.Sprintf("%d",orderTotal) } orders available to sync</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr class="my-6 d-md-none"/>
+				<div class="d-flex d-md-none justify-content-end gap-2 mb-6">
+					<button
+						type="button"
+						class="btn btn-sm btn-neutral"
+					>Skip for Now</button>
+					<button
+						type="submit"
+						hx-indicator="#spinner"
+						hx-post={ fmt.Sprintf("/project/synchronize/start/%s/%d/%d/%d", projectId, customerTotal, productTotal, orderTotal) }
+						class="btn btn-sm btn-primary"
+						hx-target="#dashboard-content"
+						id="submit-button-mobile"
+						disabled
+					>
+						<span id="spinner" class="htmx-indicator spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+						Sync Now
+					</button>
+				</div>
+			</form>
+		</main>
+	</div>
+	<script>
+	function toggleSubmitButton() {
+		const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+		const submitButton = document.getElementById('submit-button');
+		const submitButtonMobile = document.getElementById('submit-button-mobile');
+
+		let isChecked = false;
+
+		checkboxes.forEach((checkbox) => {
+			if (checkbox.checked) {
+				isChecked = true;
+			}
+		});
+
+		if (isChecked) {
+			submitButton.disabled = false;
+			if (submitButtonMobile) {
+				submitButtonMobile.disabled = false;
+			}
+		} else {
+			submitButton.disabled = true;
+			if (submitButtonMobile) {
+				submitButtonMobile.disabled = true;
+			}
+		}
+	}
+</script>
+}

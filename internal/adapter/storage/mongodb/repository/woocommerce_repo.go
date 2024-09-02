@@ -38,7 +38,7 @@ func (repo WoocommerceRepository) OrderCreate(data *w.OrderRecord) error {
 func (repo WoocommerceRepository) OrderUpdate(order *w.OrderRecord, orderID int64) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
 
-	filter := bson.M{"orderId": orderID, "is_active": true}
+	filter := bson.M{"orderId": orderID, "is_active": true, "projectId": order.ProjectID}
 	update := bson.M{"$set": order}
 
 	// Set upsert option to true
@@ -187,7 +187,7 @@ func (repo WoocommerceRepository) GetOrderByID(projectID string, orderID int64) 
 // CustomerCreate create customer
 func (repo WoocommerceRepository) CustomerCreate(data *w.CustomerRecord, email string) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_customers")
-	filter := bson.M{"email": email, "is_active": true}
+	filter := bson.M{"email": email, "is_active": true, "projectId": data.ProjectID}
 	update := bson.M{"$set": data}
 	// Set upsert option to true
 	opt := options.Update().SetUpsert(true)
@@ -201,7 +201,7 @@ func (repo WoocommerceRepository) CustomerCreate(data *w.CustomerRecord, email s
 // CustomerUpdate update customer
 func (repo WoocommerceRepository) CustomerUpdate(data *w.CustomerRecord, email string) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_customers")
-	filter := bson.M{"email": email, "is_active": true}
+	filter := bson.M{"email": email, "is_active": true, "projectId": data.ProjectID}
 	update := bson.M{"$set": data}
 
 	// Set upsert option to true
@@ -314,9 +314,9 @@ func (repo WoocommerceRepository) ProductCreate(data *w.ProductRecord) error {
 }
 
 // ProductUpdate update product
-func (repo WoocommerceRepository) ProductUpdate(data *w.ProductRecord, productID int64) error {
+func (repo WoocommerceRepository) ProductUpdate(data *w.ProductRecord, productID int64, projectID string) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
-	filter := bson.M{"productId": productID, "is_active": true}
+	filter := bson.M{"productId": productID, "is_active": true, "projectId": projectID}
 	update := bson.M{"$set": data}
 
 	// Set upsert option to true
@@ -408,7 +408,7 @@ func (repo WoocommerceRepository) GetProductCount(projectID string, productType 
 // ProductBestSellerAggregate get best seller products
 func (repo WoocommerceRepository) ProductBestSellerAggregate(projectID string) ([]bson.M, error) {
 	collection := repo.mongo.Database("otoo").Collection("woocommerce_products")
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
 	defer cancel()
 	// Define the aggregation pipeline
 	// Define the aggregation pipeline
@@ -428,9 +428,18 @@ func (repo WoocommerceRepository) ProductBestSellerAggregate(projectID string) (
 			{Key: "as", Value: "product"},
 		}}},
 		{{Key: "$unwind", Value: "$product"}},
+		{{Key: "$group", Value: bson.D{
+			{Key: "_id", Value: "$_id"},
+			{Key: "orderCount", Value: bson.D{{Key: "$first", Value: "$orderCount"}}},
+			{Key: "product", Value: bson.D{{Key: "$first", Value: "$product"}}},
+		}}},
+		// Add fields instead of project
+		{{Key: "$addFields", Value: bson.D{
+			{Key: "productId", Value: "$_id"},
+		}}},
 		{{Key: "$project", Value: bson.D{
 			{Key: "_id", Value: 0},
-			{Key: "productId", Value: "$_id"},
+			{Key: "productId", Value: 1},
 			{Key: "orderCount", Value: 1},
 			{Key: "product", Value: 1},
 		}}},

@@ -46,17 +46,21 @@ var allEvents = map[string][]string{
 	"product":  productEvents,
 }
 
+// WoocommerceWebhookService implements the WoocommerceWebhookService interface
 type WoocommerceWebhookService struct {
 	p port.WoocommerceRepository
 }
 
+// NewWoocommerceWebhookService creates a new instance of WoocommerceWebhookService
 func NewWoocommerceWebhookService(repo port.WoocommerceRepository) *WoocommerceWebhookService {
 	return &WoocommerceWebhookService{
 		repo,
 	}
 }
+
+// WoocommerceCreateAllWebHook creates WooCommerce webhooks and saves results to MongoDB concurrently
 func (s *WoocommerceWebhookService) WoocommerceCreateAllWebHook(customerKey string, customerSecret string, domainUrl string, projectId uuid.UUID) error {
-	client := initClient(customerKey, customerSecret, domainUrl)
+	client := InitClient(customerKey, customerSecret, domainUrl)
 
 	// Create all webhooks
 	err := s.createAndSaveAllWebhooks(client, projectId)
@@ -67,26 +71,6 @@ func (s *WoocommerceWebhookService) WoocommerceCreateAllWebHook(customerKey stri
 
 	slog.Info("create all webhooks success")
 	return nil
-}
-
-// initClient init woocommerce client
-func initClient(customerKey string, customerSecret string, domainUrl string) *woocommerce.Client {
-	app := woocommerce.App{
-		CustomerKey:    customerKey,
-		CustomerSecret: customerSecret,
-		AppName:        "otoo",
-		Scope:          "read_write",
-	}
-
-	client := woocommerce.NewClient(app, domainUrl,
-		woocommerce.WithLog(&woocommerce.LeveledLogger{
-			Level: woocommerce.LevelDebug, // open this for debug in dev environment
-		}),
-		woocommerce.WithRetry(3),
-		woocommerce.WithVersion("v3"),
-	)
-
-	return client
 }
 
 // createAndSaveAllWebhooks creates WooCommerce webhooks and saves results to MongoDB concurrently
@@ -161,12 +145,12 @@ func (s *WoocommerceWebhookService) createAndSaveAllWebhooks(client *woocommerce
 }
 
 // initWebhook initializes a webhook for a specific event
-func initWebhook(event string, projectId uuid.UUID) woocommerce.Webhook {
+func initWebhook(event string, projectID uuid.UUID) woocommerce.Webhook {
 	webhook := woocommerce.Webhook{
 		Name:        "Otoo:" + event,
 		Topic:       event,
 		DeliveryUrl: os.Getenv("DELIVERY_URL") + "/woocommerce/" + strings.Replace(event, ".", "/", -1), // your callback URL
-		Secret:      projectId.String(),
+		Secret:      projectID.String(),
 	}
 	return webhook
 }

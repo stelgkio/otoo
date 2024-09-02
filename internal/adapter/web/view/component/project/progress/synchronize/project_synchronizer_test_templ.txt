@@ -1,0 +1,4 @@
+<!doctype html><html lang=\"en\">
+<body class=\"bg-body-tertiary\"><div class=\"d-flex flex-column flex-lg-row h-lg-100 gap-1\">
+<div class=\"flex-lg-fill overflow-x-auto ps-lg-1 vstack vh-lg-100 position-relative\">
+</div></div><script src=\"https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js\"></script><script src=\"/assets/js/main.js\"></script><script src=\"/assets/js/switcher.js\"></script><script src=\"/assets/js/script.js\"></script></body></html>

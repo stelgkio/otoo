@@ -100,8 +100,8 @@ func checkout(email, projectID, extensionID, priceID string) (*stripe.CheckoutSe
 	// Create the Stripe Checkout session
 	paramsCheckout := &stripe.CheckoutSessionParams{
 		Customer:   stripe.String(customerID),
-		SuccessURL: stripe.String(fmt.Sprintf("%s/extension/%s/%s", os.Getenv("DELIVERY_URL"), projectID, extensionID)),
-		CancelURL:  stripe.String(fmt.Sprintf("%s/extension/%s/%s", os.Getenv("DELIVERY_URL"), projectID, extensionID)),
+		SuccessURL: stripe.String(fmt.Sprintf("%s/extension/%s/%s/success", os.Getenv("DELIVERY_URL"), projectID, extensionID)),
+		CancelURL:  stripe.String(fmt.Sprintf("%s/extension/%s/%s/fail", os.Getenv("DELIVERY_URL"), projectID, extensionID)),
 		PaymentMethodTypes: stripe.StringSlice([]string{
 			"card",
 		}),

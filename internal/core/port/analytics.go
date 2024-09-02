@@ -8,3 +8,8 @@ type BestSellers interface {
 	CreateBestSellers(projectID string, data []*domain.ProductBestSellerRecord) error
 	DeleteBestSellers(projectID string) error
 }
+
+// ProductBestSellers defines the methods for interacting with the ProductBestSellers repository
+type ProductBestSellers interface {
+	RunAProductBestSellerInitializerJob(projectID string) error
+}

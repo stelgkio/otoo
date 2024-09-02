@@ -58,8 +58,26 @@ func (ph *ProjectHandler) CreateProject(ctx echo.Context) error {
 		return r.Render(ctx, p.ProjectCreateForm(true, validationErrors, req))
 
 	}
+	validationErrors, err := ph.DomainValidation(ctx)
+	validationErrors, err = ph.KeyValidation(ctx)
+	validationErrors, err = ph.NameValidation(ctx)
+	if len(validationErrors) > 0 {
+		return r.Render(ctx, p.ProjectCreateForm(true, validationErrors, req))
 
-	//TODO: make a request to woocommerce and check if credentials are valid
+	}
+	if err != nil {
+		slog.Error("Create project error", "error", err)
+		return r.Render(ctx, p.ProjectCreateForm(true, nil, new(domain.ProjectRequest)))
+	}
+
+	_, err = ph.reportSvc.GetCustomerTotalCountTestCredential(ctx, req.ConsumerKey, req.ConsumerSecret, req.Domain)
+	if err != nil {
+		slog.Error("Create project error", "error", err)
+		validationErrors["consumer_key"] = "Consumer Key is invalid"
+		validationErrors["consumer_secret"] = "Consumer Secret is invalid "
+		validationErrors["domain"] = "Domain is not available"
+		return r.Render(ctx, p.ProjectCreateForm(true, validationErrors, req))
+	}
 
 	dom, err := ph.svc.CreateProject(ctx, req)
 	if err != nil {
@@ -149,6 +167,88 @@ func (ph *ProjectHandler) ProjectDomainValidation(ctx echo.Context) error {
 	}
 
 	return r.Render(ctx, v.DomainUrlValidation(valid, req.Domain, errors))
+}
+
+// ProjectKeyValidation POST /project/validation/key
+func (ph *ProjectHandler) ProjectKeyValidation(ctx echo.Context) error {
+	errors := make(map[string]string)
+
+	req := new(domain.ProjectRequest)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("Error binding request", "error", err)
+		return r.Render(ctx, er.ErrorPage())
+	}
+	validationErrors := req.Validate()
+	if validationErrors["consumer_key"] != "" || validationErrors["consumer_secret"] != "" {
+		return r.Render(ctx, v.DomainKeyValidation(false, req.ConsumerKey, req.ConsumerSecret, validationErrors))
+
+	}
+
+	return r.Render(ctx, v.DomainKeyValidation(true, req.ConsumerKey, req.ConsumerSecret, errors))
+}
+
+// DomainValidation validate domain
+func (ph *ProjectHandler) DomainValidation(ctx echo.Context) (map[string]string, error) {
+	errors := make(map[string]string)
+
+	req := new(domain.ProjectRequest)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("Error binding request", "error", err)
+		return errors, err
+	}
+	validationErrors := req.Validate()
+	if validationErrors["domain"] != "" {
+		return errors, nil
+
+	}
+	trimmedDomain := strings.TrimRight(req.Domain, "/")
+	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{Domain: trimmedDomain}, 1, 10)
+	if err != nil {
+		return errors, nil
+	}
+	if len(projects) > 0 {
+		errors["domain"] = "Domain url already exist!"
+	}
+
+	return errors, nil
+}
+
+// NameValidation name
+func (ph *ProjectHandler) NameValidation(ctx echo.Context) (map[string]string, error) {
+	errors := make(map[string]string)
+
+	req := new(domain.ProjectRequest)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("Error binding request", "error", err)
+		return errors, err
+	}
+	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{Name: req.Name}, 1, 10)
+	if err != nil {
+		return errors, nil
+	}
+
+	if len(projects) > 0 {
+		errors["name"] = "Project name already exists!"
+	}
+	return errors, nil
+}
+
+// KeyValidation validate consumer keys
+func (ph *ProjectHandler) KeyValidation(ctx echo.Context) (map[string]string, error) {
+	errors := make(map[string]string)
+
+	req := new(domain.ProjectRequest)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("Error binding request", "error", err)
+		return errors, err
+	}
+	validationErrors := req.Validate()
+	if validationErrors["consumer_key"] != "" || validationErrors["consumer_secret"] != "" {
+		return errors, nil
+
+	}
+
+	return errors, nil
 }
 
 // CheckWebHooks GET /project/webhooks/:projectId

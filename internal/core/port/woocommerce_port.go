@@ -91,4 +91,5 @@ type ReportService interface {
 	GetCustomerTotalCount(ctx echo.Context, projectID string) (int, error)
 	GetOrderTotalCount(ctx echo.Context, projectID string) (int, error)
 	GetProductTotalCount(ctx echo.Context, projectID string) (int, error)
+	GetCustomerTotalCountTestCredential(ctx echo.Context, customerKey string, customerSecret string, domainURL string) (int, error)
 }

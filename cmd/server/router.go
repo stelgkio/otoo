@@ -165,6 +165,8 @@ func NewRouter(
 		projectgroup.POST("/create", projectHandler.CreateProject)
 		projectgroup.POST("/validation/name", projectHandler.ProjectNameValidation)
 		projectgroup.POST("/validation/domain", projectHandler.ProjectDomainValidation)
+		projectgroup.POST("/validation/key", projectHandler.ProjectKeyValidation)
+
 		projectgroup.GET("/webhooks/:projectId", projectHandler.CheckWebHooks)
 		projectgroup.GET("/:projectId", projectHandler.CheckWebHooks)
 

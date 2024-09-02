@@ -1,10 +1,8 @@
 package views
 
-import (
-	"github.com/stelgkio/otoo/internal/core/domain"
-)
+import "github.com/stelgkio/otoo/internal/core/domain"
 
-templ ProjectCreateForm(invalid bool,errors map[string](string),values *domain.ProjectRequest) {
+templ ProjectCreateForm(invalid bool, errors map[string](string), values *domain.ProjectRequest) {
 	<div
 		id="dashboard-content"
 		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
@@ -132,20 +130,16 @@ templ ProjectCreateForm(invalid bool,errors map[string](string),values *domain.P
 						</div>
 					</div>
 				</div>
-				
-		
 				<hr class="my-6"/>
 				<div id="shopify-fields">
 					<div class="row align-items-center g-3 mt-6">
 						<div class="d-flex align-items-end justify-content-between">
-						<div>
-						
-							<p class="text-sm text-muted">
-								The domain url schema should be https for example https://example.com
-							</p>
+							<div>
+								<p class="text-sm text-muted">
+									The domain url schema should be https for example https://example.com
+								</p>
+							</div>
 						</div>
-				
-					</div>
 						<div class="col-md-2">
 							<label class="form-label mb-0">Domain</label>
 						</div>
@@ -181,50 +175,87 @@ templ ProjectCreateForm(invalid bool,errors map[string](string),values *domain.P
 								</div>
 							}
 						</div>
-						
 					</div>
 					<hr class="my-6"/>
-					<div class="row align-items-center g-3 mt-6">
-						<div class="col-md-2">
-							<label class="form-label mb-0">Consumer key</label>
+					<div id="key-validation">
+						<div class="row align-items-center g-3 mt-6">
+							<div class="col-md-2">
+								<label class="form-label mb-0">Consumer key</label>
+							</div>
+							<div class="col-md-8 col-xl-5">
+								if errors["consumer_key"] != "" {
+									<input
+										name="consumer_key"
+										type="password"
+										class="form-control is-invalid"
+										placeholder="Consumer key"
+										autocomplete="off"
+										value={ values.ConsumerKey }
+										hx-post="/project/validation/key"
+										hx-target="#key-validation"
+									/>
+									<div class="invalid-feedback" style="display: block;">
+										{ errors["consumer_key"] }
+									</div>
+								} else {
+									<input
+										name="consumer_key"
+										type="password"
+										class="form-control"
+										placeholder="Consumer key"
+										autocomplete="off"
+										value={ values.ConsumerKey }
+										hx-post="/project/validation/key"
+										hx-target="#key-validation"
+									/>
+								}
+							</div>
+							<div class="col-md-2">
+								<a href="https://woocommerce.com/document/woocommerce-rest-api/" target="_blank" class="tooltip-container">
+									<i class="bi bi-info-circle"></i>
+									<span class="tooltip-text"></span>
+								</a>
+							</div>
 						</div>
-						<div class="col-md-8 col-xl-5">
-							if errors["consumer_key"] != "" {
-								<input name="consumer_key" type="password" class="form-control  is-invalid" placeholder="Consumer key" autocomplete="off" value={ values.ConsumerKey }/>
-								<div class="invalid-feedback" style="display: block;">
-									{ errors["consumer_key"] }
-								</div>
-							} else {
-								<input name="consumer_key" type="password" class="form-control" placeholder="Consumer key" autocomplete="off" value={ values.ConsumerKey }/>
-							}
-						</div>
-						<div class="col-md-2">
-							<a href="https://woocommerce.com/document/woocommerce-rest-api/" target="_blank" class="tooltip-container">
-								<i class="bi bi-info-circle"></i>
-								<span class="tooltip-text"></span>
-							</a>
-						</div>
-					</div>
-					<hr class="my-6"/>
-					<div class="row align-items-center g-3 mt-6">
-						<div class="col-md-2">
-							<label class="form-label mb-0">Consumer secret</label>
-						</div>
-						<div class="col-md-8 col-xl-5">
-							if errors["consumer_secret"] != "" {
-								<input name="consumer_secret" type="password" class="form-control  is-invalid" placeholder="Consumer secret" autocomplete="off" value={ values.ConsumerSecret }/>
-								<div class="invalid-feedback" style="display: block;">
-									{ errors["consumer_secret"] }
-								</div>
-							} else {
-								<input name="consumer_secret" type="password" class="form-control" placeholder="Consumer secret" autocomplete="off" value={ values.ConsumerSecret }/>
-							}
-						</div>
-						<div class="col-md-2">
-							<a href="https://woocommerce.com/document/woocommerce-rest-api/" target="_blank" class="tooltip-container">
-								<i class="bi bi-info-circle"></i>
-								<span class="tooltip-text"></span>
-							</a>
+						<hr class="my-6"/>
+						<div class="row align-items-center g-3 mt-6">
+							<div class="col-md-2">
+								<label class="form-label mb-0">Consumer secret</label>
+							</div>
+							<div class="col-md-8 col-xl-5">
+								if errors["consumer_secret"] != "" {
+									<input
+										name="consumer_secret"
+										type="password"
+										class="form-control is-invalid"
+										placeholder="Consumer secret"
+										autocomplete="off"
+										value={ values.ConsumerSecret }
+										hx-post="/project/validation/key"
+										hx-target="#key-validation"
+									/>
+									<div class="invalid-feedback" style="display: block;">
+										{ errors["consumer_secret"] }
+									</div>
+								} else {
+									<input
+										name="consumer_secret"
+										type="password"
+										class="form-control"
+										placeholder="Consumer secret"
+										autocomplete="off"
+										value={ values.ConsumerSecret }
+										hx-post="/project/validation/key"
+										hx-target="#key-validation"
+									/>
+								}
+							</div>
+							<div class="col-md-2">
+								<a href="https://woocommerce.com/document/woocommerce-rest-api/" target="_blank" class="tooltip-container">
+									<i class="bi bi-info-circle"></i>
+									<span class="tooltip-text"></span>
+								</a>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -248,15 +279,7 @@ templ ProjectCreateForm(invalid bool,errors map[string](string),values *domain.P
 					</button>
 				</div>
 				<hr class="my-6 "/>
-				<div class="row justify-content-md-center">
-					<div class="col-md-auto">
-						if invalid {
-							<div class="invalid-feedback" style="display: block;">
-								Something when wrong try again later!
-							</div>
-						}
-					</div>
-				</div>
+				<div class="row justify-content-md-center"></div>
 			</form>
 		</main>
 		<script>

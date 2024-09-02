@@ -75,3 +75,19 @@ func (s *ReportService) GetProductTotalCount(ctx echo.Context, projectID string)
 	}
 	return total, nil
 }
+
+// GetCustomerTotalCountTestCredential get customer report total count
+func (s *ReportService) GetCustomerTotalCountTestCredential(ctx echo.Context, customerKey string, customerSecret string, domainURL string) (int, error) {
+
+	client := InitClient(customerKey, customerSecret, domainURL)
+	customerReportTotalCount, err := client.Report.GetTotalCustomers(nil)
+	if err != nil {
+		return 0, err
+	}
+	total := 0
+	for _, customerCount := range customerReportTotalCount {
+		total += customerCount.Total
+	}
+
+	return total, nil
+}

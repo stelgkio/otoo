@@ -2,6 +2,7 @@ package domain
 
 import (
 	"regexp"
+	"strings"
 
 	"github.com/go-pg/pg/types"
 	"github.com/google/uuid"
@@ -58,7 +59,7 @@ func NewWoocommerceProject(p *ProjectRequest) (WoocommerceProject, error) {
 	wc := WoocommerceProject{}
 	wc.Name = p.Name
 	wc.Description = p.Description
-	wc.Domain = p.Domain
+	wc.Domain = strings.TrimRight(p.Domain, "/")
 	wc.ConsumerKey = p.ConsumerKey
 	wc.ConsumerSecret = p.ConsumerSecret
 	return wc, nil
@@ -78,7 +79,7 @@ func NewShopifyProject(p *ProjectRequest) (ShopifyProject, error) {
 	sp := ShopifyProject{}
 	sp.Name = p.Name
 	sp.Description = p.Description
-	sp.Domain = p.Domain
+	sp.Domain = strings.TrimRight(p.Domain, "/")
 	sp.ConsumerKey = p.ConsumerKey
 	sp.ConsumerSecret = p.ConsumerSecret
 	return sp, nil

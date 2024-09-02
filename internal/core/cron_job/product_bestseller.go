@@ -115,6 +115,7 @@ func (as *ProductBestSellerCron) RunAProductBestSellerInitializerJob(projectID s
 	for items := range orderListResults {
 		for _, order := range items {
 			as.productSvc.ExtractProductFromOrderAndUpsert(nil, order, project)
+			as.customerSvc.ExtractCustomerFromOrderAndUpsert(nil, order)
 		}
 	}
 

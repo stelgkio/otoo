@@ -350,7 +350,7 @@ func (ph *ProjectHandler) ProjectSynchronizeDone(ctx echo.Context) error {
 		customerCount = count
 	}
 
-	if productCount == productTotal && orderCount == orderTotal && customerCount == customerTotal {
+	if productCount == productTotal && orderCount == orderTotal && (customerCount > customerTotal || customerCount == customerTotal) {
 		ctx.Response().Header().Set("HX-Trigger", "done")
 		ph.bestSellerSvc.RunAProductBestSellerInitializerJob(projectID)
 		return r.Render(ctx, syn.ProjectSynchronizerDone(user, projectID, customerTotal, productTotal, orderTotal, 100.0, 100.0, 100.0))

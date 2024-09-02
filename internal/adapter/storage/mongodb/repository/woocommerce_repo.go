@@ -276,10 +276,10 @@ func (repo WoocommerceRepository) CustomerFindByProjectID(projectID string, size
 }
 
 // CustomerFindByEmail find customer by email
-func (repo WoocommerceRepository) CustomerFindByEmail(email string) (*w.CustomerRecord, error) {
+func (repo WoocommerceRepository) CustomerFindByEmail(projectID string, email string) (*w.CustomerRecord, error) {
 	var result *w.CustomerRecord
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_customers")
-	filter := bson.M{"email": email, "is_active": true}
+	filter := bson.M{"email": email, "is_active": true, "projectId": projectID}
 	err := coll.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {

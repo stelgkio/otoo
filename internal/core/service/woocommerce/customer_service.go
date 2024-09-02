@@ -32,7 +32,7 @@ func NewCustomerService(woorepo port.WoocommerceRepository, projrepo port.Projec
 
 // ExtractCustomerFromOrderAndUpsert extracts customer from order and upserts customer to MongoDB
 func (c *CustomerService) ExtractCustomerFromOrderAndUpsert(ctx echo.Context, req *woo.OrderRecord) error {
-	ctm, err := c.p.CustomerFindByEmail(req.Order.Billing.Email)
+	ctm, err := c.p.CustomerFindByEmail(req.ProjectID, req.Order.Billing.Email)
 	if err != nil {
 		slog.Error("error customerFindByEmail", "error", err)
 		return err
@@ -50,11 +50,15 @@ func (c *CustomerService) ExtractCustomerFromOrderAndUpsert(ctx echo.Context, re
 		if !orderExists {
 			ctm.Orders = append(ctm.Orders, req.Order.ID)
 			err = c.p.CustomerUpdate(ctm, req.Order.Billing.Email)
+			if err != nil {
+				slog.Error("error customerUpdate", "error", err)
+				return err
+			}
 		}
 	} else {
 		customer := &woo.CustomerRecord{
 			ProjectID:  req.ProjectID,
-			Event:      "customer_created",
+			Event:      "customer.created",
 			CustomerID: req.Order.CustomerId,
 			Email:      req.Order.Billing.Email,
 			Timestamp:  time.Now().UTC(),
@@ -91,6 +95,10 @@ func (c *CustomerService) ExtractCustomerFromOrderAndUpsert(ctx echo.Context, re
 		}
 		customer.Orders = []int64{req.Order.ID}
 		err = c.p.CustomerCreate(customer, req.Order.Billing.Email)
+		if err != nil {
+			slog.Error("error customerCreate", "error", err)
+			return err
+		}
 	}
 
 	return err
@@ -193,7 +201,7 @@ func (c *CustomerService) createAndSaveAllCustomers(client *commerce.Client, pro
 		for _, item := range resp {
 			customerCh <- &w.CustomerRecord{
 				ProjectID:  projectID,
-				Event:      "customer.createdt",
+				Event:      "customer.created",
 				Error:      "",
 				Email:      item.Email,
 				CreatedAt:  time.Now().UTC(),

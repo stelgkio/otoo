@@ -97,7 +97,7 @@ func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectID 
 		if err != nil {
 			errorCh <- &w.ProductRecord{
 				ProjectID: projectID,
-				Event:     "Product.List",
+				Event:     "product.List",
 				Error:     err.Error(),
 				CreatedAt: time.Now().UTC(),
 				ProductID: 0,
@@ -112,7 +112,7 @@ func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectID 
 		for _, item := range resp {
 			productCh <- &w.ProductRecord{
 				ProjectID: projectID,
-				Event:     "product.createdt",
+				Event:     "product.created",
 				Error:     "",
 				CreatedAt: time.Now().UTC(),
 				Timestamp: time.Now().UTC(),

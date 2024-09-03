@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -70,6 +71,7 @@ func (ph *ProjectHandler) ProjectUpdate(ctx echo.Context) error {
 	project.WoocommerceProject.Description = req.Description
 	project.Name = req.Name
 	project.Description = req.Description
+
 	proj, err := ph.svc.UpdateProject(ctx, project)
 	return r.Render(ctx, wp.SettingsGeneral(user, proj))
 }
@@ -107,6 +109,12 @@ func (ph *ProjectHandler) ProjectSecretsUpdate(ctx echo.Context) error {
 	}
 	project.WoocommerceProject.ConsumerKey = req.ConsumerKey
 	project.WoocommerceProject.ConsumerSecret = req.ConsumerSecret
+
+	_, err = ph.reportSvc.GetCustomerTotalCountTestCredential(ctx, req.ConsumerKey, req.ConsumerSecret, project.WoocommerceProject.Domain)
+	if err != nil {
+		slog.Error("Project new secrets error", "error", err)
+		return r.Render(ctx, ps.ProjectSecretsError(project))
+	}
 	proj, err := ph.svc.UpdateProject(ctx, project)
 
 	return r.Render(ctx, ps.ProjectSecrets(proj))

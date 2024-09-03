@@ -8,6 +8,7 @@ import (
 	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stelgkio/otoo/internal/core/port"
+	e "github.com/stelgkio/otoo/internal/core/util"
 )
 
 type ProjectService struct {
@@ -86,4 +87,14 @@ func (ps *ProjectService) GetProjectByID(ctx echo.Context, id string) (*domain.P
 // GetAllProjects returns all projects
 func (ps *ProjectService) GetAllProjects() ([]*domain.Project, error) {
 	return ps.repo.GetAllProjects()
+}
+
+// UpdateProject updates a project
+func (ps *ProjectService) UpdateProject(ctx echo.Context, project *domain.Project) (*domain.Project, error) {
+	user, err := ps.repo.UpdateProject(ctx, project)
+	if err != nil && err != e.ErrDataNotFound {
+		return nil, e.ErrInternal
+	}
+	return user, nil
+
 }

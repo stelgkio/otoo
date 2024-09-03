@@ -181,15 +181,21 @@ func (s *ProductService) ExtractProductFromOrderAndUpsert(ctx echo.Context, req 
 			if product != nil {
 				// Check if the order ID already exists in the Orders slice
 				orderExists := false
-				for _, orderID := range product.Orders {
-					if orderID == req.Order.ID {
-						orderExists = true
-						break
+				if product.Orders != nil {
+					for _, orderID := range product.Orders {
+						if orderID == req.Order.ID {
+							orderExists = true
+							break
+						}
 					}
 				}
 				if !orderExists {
 					if req.Order.Status != domain.OrderStatusCancelled.String() {
-						product.Orders = append(product.Orders, req.Order.ID)
+						if product.Orders == nil {
+							product.Orders = []int64{req.Order.ID}
+						} else {
+							product.Orders = append(product.Orders, req.Order.ID)
+						}
 					} else {
 						product.Orders = util.RemoveElement(product.Orders, util.FindIndex(product.Orders, req.Order.ID))
 					}
@@ -210,9 +216,8 @@ func (s *ProductService) ExtractProductFromOrderAndUpsert(ctx echo.Context, req 
 					IsActive:  true,
 					CreatedAt: time.Now().UTC(),
 					Timestamp: time.Now().UTC(),
-					ParentId:  wooproduct.ParentId,
 				}
-				if req.Order.Status != "cancelled" {
+				if req.Order.Status != domain.OrderStatusCancelled.String() {
 					productRecord.Orders = []int64{req.Order.ID}
 				}
 				err = s.p.ProductUpdate(productRecord, wooproduct.ID, req.ProjectID)
@@ -243,7 +248,6 @@ func (s *ProductService) ExtractProductFromOrderAndUpsert(ctx echo.Context, req 
 			}
 		}
 
-		return nil
 	}
 	return nil
 }

@@ -265,20 +265,6 @@ func (ph *ProjectHandler) CheckWebHooks(ctx echo.Context) error {
 	return r.Render(ctx, wp.CheckWebhookProgress(user, projectID))
 }
 
-// ProjectSettings GET /project/settings/:projectId
-func (ph *ProjectHandler) ProjectSettings(ctx echo.Context) error {
-	projectID := ctx.Param("projectId")
-	userID, err := auth.GetUserID(ctx)
-	if err != nil {
-		return err
-	}
-	user, err := ph.userSvc.GetUserById(ctx, userID)
-	if err != nil {
-		return err
-	}
-	return r.Render(ctx, wp.CheckWebhookProgress(user, projectID))
-}
-
 // ProjectSynchronize Synchronize otoo with eshop
 // ProjectSettings GET /project/synchronize/:projectId
 func (ph *ProjectHandler) ProjectSynchronize(ctx echo.Context) error {

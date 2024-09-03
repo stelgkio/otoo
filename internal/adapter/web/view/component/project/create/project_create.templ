@@ -2,6 +2,8 @@ package views
 
 import "github.com/stelgkio/otoo/internal/core/domain"
 
+var projectPoperHandle = templ.NewOnceHandle()
+
 templ ProjectCreateForm(invalid bool, errors map[string](string), values *domain.ProjectRequest) {
 	<div
 		id="dashboard-content"
@@ -282,11 +284,13 @@ templ ProjectCreateForm(invalid bool, errors map[string](string), values *domain
 				<div class="row justify-content-md-center"></div>
 			</form>
 		</main>
-		<script>
-var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-  return new bootstrap.Tooltip(tooltipTriggerEl)
-})
-</script>
+		@projectPoperHandle.Once() {
+			<script>			
+			var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+			var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+			return new bootstrap.Tooltip(tooltipTriggerEl)
+			})
+			</script>
+		}
 	</div>
 }

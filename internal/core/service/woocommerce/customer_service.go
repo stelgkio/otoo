@@ -12,6 +12,7 @@ import (
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/port"
+	"github.com/stelgkio/otoo/internal/core/util"
 	"github.com/stelgkio/woocommerce"
 	commerce "github.com/stelgkio/woocommerce"
 )
@@ -41,14 +42,24 @@ func (c *CustomerService) ExtractCustomerFromOrderAndUpsert(ctx echo.Context, re
 	if ctm != nil {
 		// Check if the order ID already exists in the Orders slice
 		orderExists := false
-		for _, orderID := range ctm.Orders {
-			if orderID == req.Order.ID {
-				orderExists = true
-				break
+		if ctm.Orders != nil {
+			for _, orderID := range ctm.Orders {
+				if orderID == req.Order.ID {
+					orderExists = true
+					break
+				}
 			}
 		}
 		if !orderExists {
-			ctm.Orders = append(ctm.Orders, req.Order.ID)
+			if req.Order.Status != domain.OrderStatusCancelled.String() {
+				if ctm.Orders == nil {
+					ctm.Orders = []int64{req.Order.ID}
+				} else {
+					ctm.Orders = append(ctm.Orders, req.Order.ID)
+				}
+			} else {
+				ctm.Orders = util.RemoveElement(ctm.Orders, util.FindIndex(ctm.Orders, req.Order.ID))
+			}
 			err = c.p.CustomerUpdate(ctm, req.Order.Billing.Email)
 			if err != nil {
 				slog.Error("error customerUpdate", "error", err)

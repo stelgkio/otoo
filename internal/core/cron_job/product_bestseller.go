@@ -102,7 +102,7 @@ func (as *ProductBestSellerCron) RunAProductBestSellerInitializerJob(projectID s
 		go func(i int) {
 			defer wg.Done()
 
-			as.orderSvc.FindOrderByProjectIDAsync(projectID, 10, i+1, w.OrderStatusCompleted, "", "", orderListResults, orderListErrors)
+			as.orderSvc.FindOrderByProjectIDAsync(projectID, 10, i+1, w.OrderStatusCompleted, "orderId", "asc", orderListResults, orderListErrors)
 		}(i)
 	}
 

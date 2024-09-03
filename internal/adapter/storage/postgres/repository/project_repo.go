@@ -128,3 +128,13 @@ func (repo *ProjectRepository) GetAllProjects() ([]*domain.Project, error) {
 	}
 	return projects, nil
 }
+
+// UpdateProject creates a new project in the database
+func (repo *ProjectRepository) UpdateProject(ctx echo.Context, project *domain.Project) (*domain.Project, error) {
+	_, err := repo.db.Model(project).Where("id =?", project.Id).Where("is_active =true").Update()
+	if err != nil {
+		panic(err)
+	}
+
+	return project, nil
+}

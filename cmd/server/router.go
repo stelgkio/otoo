@@ -57,7 +57,7 @@ func NewRouter(
 		return c.JSON(http.StatusAccepted, "OK")
 	})
 	e.GET("/RunAProductBestSellerInitializerJob", func(c echo.Context) error {
-		err := productBestSellerCron.RunAProductBestSellerInitializerJob("72eabb24-0fc6-428b-b7cf-f1e35608d3fe")
+		err := productBestSellerCron.RunAProductBestSellerInitializerJob("e915c34b-33c5-49e8-9e2c-227c650398fa")
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, err)
 		}
@@ -103,17 +103,24 @@ func NewRouter(
 
 		customergroup := dashboardgroup.Group("/customer")
 		{
+			customergroup.Use(configureJWT())
+			customergroup.Use(auth.TokenRefresherMiddleware)
 			customergroup.GET("/:projectId", dashboardHandler.CustomerDashboard)
 		}
 
 		ordergroup := dashboardgroup.Group("/order")
 		{
+			ordergroup.Use(configureJWT())
+			ordergroup.Use(auth.TokenRefresherMiddleware)
+
 			ordergroup.GET("/:projectId", dashboardHandler.OrderDashboard)
 			ordergroup.GET("/table/:projectId/:status", dashboardHandler.OrderTable)
 		}
 
 		productgroup := dashboardgroup.Group("/product")
 		{
+			productgroup.Use(configureJWT())
+			productgroup.Use(auth.TokenRefresherMiddleware)
 			productgroup.GET("/:projectId", dashboardHandler.ProductDashboard)
 		}
 
@@ -173,6 +180,10 @@ func NewRouter(
 		settingsroup := projectgroup.Group("/settings")
 		{
 			settingsroup.GET("/:projectId", projectHandler.ProjectSettings)
+			settingsroup.GET("/secret/:projectId", projectHandler.ProjectSettingsSercrets)
+			settingsroup.POST("/update/:projectId", projectHandler.ProjectUpdate)
+			settingsroup.POST("/delete/:projectId", projectHandler.ProjectDelete)
+			settingsroup.POST("/secrets/update/:projectId", projectHandler.ProjectSecretsUpdate)
 		}
 	}
 	//woocommerce group
@@ -251,6 +262,7 @@ func NewRouter(
 		profilegroup.POST("/user/update", profileHandler.ProfileUpdate)
 		profilegroup.POST("/user/delete", profileHandler.ProfileDelete)
 	}
+
 	return &Router{e}, nil
 }
 

@@ -308,22 +308,22 @@ func (dh *DashboardHandler) CustomerTable(ctx echo.Context) error {
 	var totalItems int64
 	var customerRecords []*w.CustomerRecord
 
-	select {
-	case count := <-customerCountChan:
-		totalItems = count
-	case err = <-errChan:
+	for err := range errChan {
 		if err != nil {
 			return ctx.JSON(http.StatusInternalServerError, map[string]string{"failed to fetch customer count": err.Error()})
 		}
 	}
-
-	select {
-	case list := <-customerListChan:
-		customerRecords = list
-	case err := <-errListChan:
-		if err != nil {
-			return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	for errList := range errListChan {
+		if errList != nil {
+			return ctx.JSON(http.StatusInternalServerError, map[string]string{"error to fetch customer": errList.Error()})
 		}
+	}
+
+	for item := range customerCountChan {
+		totalItems = item
+	}
+	for item := range customerListChan {
+		customerRecords = item
 	}
 
 	// Convert customerRecords to customerTableList for the response
@@ -437,22 +437,22 @@ func (dh *DashboardHandler) ProductTable(ctx echo.Context) error {
 	var totalItems int64
 	var productRecords []*w.ProductRecord
 
-	select {
-	case count := <-productCountChan:
-		totalItems = count
-	case err = <-errChan:
+	for err := range errChan {
 		if err != nil {
 			return ctx.JSON(http.StatusInternalServerError, map[string]string{"failed to fetch product count": err.Error()})
 		}
 	}
-
-	select {
-	case list := <-productListChan:
-		productRecords = list
-	case err := <-errListChan:
-		if err != nil {
-			return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	for errList := range errListChan {
+		if errList != nil {
+			return ctx.JSON(http.StatusInternalServerError, map[string]string{"error to fetch product": errList.Error()})
 		}
+	}
+
+	for item := range productCountChan {
+		totalItems = item
+	}
+	for item := range productListChan {
+		productRecords = item
 	}
 
 	// Convert productRecords to productTableList for the response
@@ -634,22 +634,22 @@ func (dh *DashboardHandler) OrderTable(ctx echo.Context) error {
 	var totalItems int64
 	var orderRecords []*w.OrderRecord
 
-	select {
-	case count := <-orderCountChan:
-		totalItems = count
-	case err = <-errChan:
+	for err := range errChan {
 		if err != nil {
 			return ctx.JSON(http.StatusInternalServerError, map[string]string{"failed to fetch order count": err.Error()})
 		}
 	}
-
-	select {
-	case list := <-orderListChan:
-		orderRecords = list
-	case err := <-errListChan:
-		if err != nil {
-			return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	for errList := range errListChan {
+		if errList != nil {
+			return ctx.JSON(http.StatusInternalServerError, map[string]string{"error to fetch order": errList.Error()})
 		}
+	}
+
+	for item := range orderCountChan {
+		totalItems = item
+	}
+	for item := range orderListChan {
+		orderRecords = item
 	}
 
 	// Convert orderRecords to OrderTableList for the response

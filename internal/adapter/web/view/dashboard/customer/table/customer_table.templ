@@ -111,7 +111,7 @@ function customerTable(projectId) {
         },
 
          getUrlForTab(tab, page) {
-            const baseUrl = `http://localhost:8081/customer/table/${this.projectID}`;
+            const baseUrl = `${window.location.origin}/customer/table/${this.projectID}`;
             const sortDirection = this.sortAsc ? 'asc' : 'desc'; // Determine sort direction
             switch (tab) {
                 case 'all':

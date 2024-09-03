@@ -223,7 +223,7 @@ function orderTable(projectId) {
         },
 
          getUrlForTab(tab, page) {
-            const baseUrl = `http://localhost:8081/order/table/${this.projectID}`;
+            const baseUrl = `${window.location.origin}/order/table/${this.projectID}`;
             const sortDirection = this.sortAsc ? 'asc' : 'desc'; // Determine sort direction
             switch (tab) {
                 case 'all':

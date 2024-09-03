@@ -30,23 +30,23 @@ func ProjectListPage(projects []*domain.Project) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"dashboard-content\" class=\"flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2\"><main class=\"container-fluid px-3 py-5 p-lg-6 p-xxl-8\"><div class=\"mb-6 mb-xl-10\"><div class=\"row g-3 align-items-center\"><div class=\"col\"><h1 class=\"ls-tight\">Project</h1></div><div class=\"col\"></div></div></div><div class=\"row g-3 g-xxl-6 d-flex justify-content-center\"><div class=\"col-xxl-6\"><div id=\"cryptoModal\" tabindex=\"-1\" aria-labelledby=\"cryptoModalLabel\" aria-hidden=\"true\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if len(projects) == 0 {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card border-primary-hover shadow-soft-3-hover d-flex justify-content-center\"><div class=\"modal-content overflow-hidden\"><div class=\"card-body p-0\"><div class=\"px-6 py-5 bg-body-secondary d-flex justify-content-center\"><button hx-get=\"/project/createform\" hx-target=\"#dashboard-content\" class=\"btn btn-sm btn-dark\"><i class=\"bi bi-plus-circle me-2\"></i>Create New Project</button></div></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card border-primary-hover shadow-soft-3-hover d-flex justify-content-center\"><div class=\"modal-content overflow-hidden\"><div class=\"card-body p-0\"><div class=\"px-6 py-5 border-bottom\"><input id=\"project-search\" type=\"text\" class=\"form-control\" placeholder=\"Search project\" aria-label=\"Search\"></div><div id=\"project-list\" class=\"p-2\" style=\"max-height: 400px; overflow-y: auto;\"><div class=\"vstack\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			for _, p := range projects {
 				if p.ProjectType == "Shopify" {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div data-project-type=\"pro\" class=\"position-relative d-flex gap-3 p-4 rounded bg-body-secondary-hover\"><div class=\"d-flex flex-fill justify-content-center\"><div class=\"justify-content-center\"><img src=\"./assets/img/marketing/shopify-logo.svg\" class=\"w-rem-5 flex-none \" alt=\"...\"> <a href=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -55,7 +55,7 @@ func ProjectListPage(projects []*domain.Project) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"stretched-link text-heading fw-bold\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -68,12 +68,12 @@ func ProjectListPage(projects []*domain.Project) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 6)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				} else {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 7)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div data-project-type=\"pro\" class=\"position-relative d-flex gap-3 p-4 rounded bg-body-secondary-hover\"><div class=\"d-flex flex-fill justify-content-center\"><div class=\"justify-content-center\"><img src=\"./assets/img/marketing/WooCommerce_logo.svg.png\" class=\"w-rem-5 flex-none \" alt=\"...\"> <a href=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -82,7 +82,7 @@ func ProjectListPage(projects []*domain.Project) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 8)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"stretched-link text-heading fw-bold\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -95,18 +95,18 @@ func ProjectListPage(projects []*domain.Project) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 9)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 10)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div class=\"px-6 py-5 bg-body-secondary d-flex justify-content-center\"><button class=\"btn btn-sm btn-dark\" hx-get=\"/project/createform\" hx-target=\"#dashboard-content\"><i class=\"bi bi-plus-circle me-2\"></i>Create New Project</button></div></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 11)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></main></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

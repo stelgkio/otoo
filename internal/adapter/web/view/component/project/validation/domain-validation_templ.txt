@@ -1,7 +1,0 @@
-<div class=\"input-group position-relative\"><input name=\"domain\" type=\"text\" class=\"form-control is-invalid\" placeholder=\"Domain url\" value=\"
-\" aria-label=\"domain url\" hx-post=\"/project/validation/domain\" hx-target=\"#domain-validation\"> 
-<div class=\"invalid-feedback\" style=\"display: block;\">
-</div>
-</div>
-<div class=\"input-group position-relative\"><input name=\"domain\" type=\"text\" value=\"
-\" class=\"form-control\" placeholder=\"Domain url\" aria-label=\"domain url\" hx-post=\"/project/validation/domain\" hx-target=\"#domain-validation\"></div>

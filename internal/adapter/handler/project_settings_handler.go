@@ -5,8 +5,10 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	pn "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/notification"
 	ps "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/project_secrets"
 	wp "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/settings_general"
+	pw "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/webhooks"
 	"github.com/stelgkio/otoo/internal/core/auth"
 	r "github.com/stelgkio/otoo/internal/core/util"
 )
@@ -45,6 +47,28 @@ func (ph *ProjectHandler) ProjectSettingsSercrets(ctx echo.Context) error {
 		return err
 	}
 	return r.Render(ctx, ps.ProjectSecrets(project))
+}
+
+// ProjectSettingsNotification GET /project/settings/notification/:projectId
+func (ph *ProjectHandler) ProjectSettingsNotification(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+
+	project, err := ph.svc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	return r.Render(ctx, pn.SettingsNotifications(project))
+}
+
+// ProjectSettingsWebHook GET /project/settings/webhook/:projectId
+func (ph *ProjectHandler) ProjectSettingsWebHook(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+
+	project, err := ph.svc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	return r.Render(ctx, pw.SettingsWebhooks(project))
 }
 
 // ProjectUpdate POST /project/settings/update/:projectId

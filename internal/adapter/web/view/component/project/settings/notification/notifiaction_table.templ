@@ -5,7 +5,7 @@ import (
 	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/pagination"
 )
 
-templ CustomerTable(projectId string) {
+templ NotifiactionTable(projectId string) {
 	<div id="dashboard-order-table" x-data={ fmt.Sprintf("customerTable('%s')", projectId) } x-init="init()">
 		<div class="row align-items-center g-6 mt-0 mb-6">
 			<div class="col-sm-6">

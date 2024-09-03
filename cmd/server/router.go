@@ -181,6 +181,8 @@ func NewRouter(
 		{
 			settingsroup.GET("/:projectId", projectHandler.ProjectSettings)
 			settingsroup.GET("/secret/:projectId", projectHandler.ProjectSettingsSercrets)
+			settingsroup.GET("/notification/:projectId", projectHandler.ProjectSettingsNotification)
+			settingsroup.GET("/webhook/:projectId", projectHandler.ProjectSettingsWebHook)
 			settingsroup.POST("/update/:projectId", projectHandler.ProjectUpdate)
 			settingsroup.POST("/delete/:projectId", projectHandler.ProjectDelete)
 			settingsroup.POST("/secrets/update/:projectId", projectHandler.ProjectSecretsUpdate)

@@ -49,6 +49,44 @@ templ SettingsHeader(headerTitle string, active int, projectId string) {
 					>Secrets</a>
 				</li>
 			}
+			if (active==3) {
+				<li class="nav-item ">
+					<a
+						href="javascript:void(0)"
+						hx-get={ fmt.Sprintf("/project/settings/webhook/%s", projectId) }
+						hx-target="#dashboard-content"
+						class="nav-link active"
+					>Webhooks</a>
+				</li>
+			} else {
+				<li class="nav-item">
+					<a
+						href="javascript:void(0)"
+						hx-get={ fmt.Sprintf("/project/settings/webhook/%s", projectId) }
+						hx-target="#dashboard-content"
+						class="nav-link"
+					>Webhooks</a>
+				</li>
+			}
+			if (active==4) {
+				<li class="nav-item ">
+					<a
+						href="javascript:void(0)"
+						hx-get={ fmt.Sprintf("/project/settings/notification/%s", projectId) }
+						hx-target="#dashboard-content"
+						class="nav-link active"
+					>Notifications</a>
+				</li>
+			} else {
+				<li class="nav-item">
+					<a
+						href="javascript:void(0)"
+						hx-get={ fmt.Sprintf("/project/settings/notification/%s", projectId) }
+						hx-target="#dashboard-content"
+						class="nav-link"
+					>Notifications</a>
+				</li>
+			}
 			//<li class="nav-item"><a href="/pages/account-team.html" class="nav-link">Team</a></li>
 		</ul>
 	</header>

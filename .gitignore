@@ -33,7 +33,8 @@
 # Go workspace file
 go.work
 .DS_Store
-tmp/build-errors.log
+/tmp/build-errors.log
 .DS_Store
-tmp/main
-tmp/build-errors.log
+/tmp/main
+/tmp/build-errors.log
+*.tmpl

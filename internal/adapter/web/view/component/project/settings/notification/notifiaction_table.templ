@@ -6,7 +6,7 @@ import (
 )
 
 templ NotifiactionTable(projectId string) {
-	<div id="dashboard-order-table" x-data={ fmt.Sprintf("customerTable('%s')", projectId) } x-init="init()">
+	<div id="dashboard-order-table" x-data={ fmt.Sprintf("notificationTable('%s')", projectId) } x-init="init()">
 		<div class="row align-items-center g-6 mt-0 mb-6">
 			<div class="col-sm-6">
 				<div class="d-flex gap-2">
@@ -19,7 +19,7 @@ templ NotifiactionTable(projectId string) {
 						<input
 							type="search"
 							class="form-control ps-0"
-							placeholder="Search all customers"
+							placeholder="Search all notifications"
 							aria-label="Search"
 						/>
 					</div>
@@ -46,18 +46,18 @@ templ NotifiactionTable(projectId string) {
 					<tbody>
 						<template x-if="!loading && totalItems === 0">
 							<tr>
-								<td colspan="8">No customer found.</td>
+								<td colspan="8">No notification found.</td>
 							</tr>
 						</template>
-						<template x-for="customer in paginatedCustomers" :key="customer.id">
+						<template x-for="notification in paginatednotifications" :key="notification.id">
 							<tr>
-								<td x-text="customer.name"></td>
-								<td x-text="customer.email"></td>
-								<td x-text="customer.totalOrders"></td>
-								<td x-text="customer.totalSpent"></td>
+								<td x-text="notification.name"></td>
+								<td x-text="notification.email"></td>
+								<td x-text="notification.totalOrders"></td>
+								<td x-text="notification.totalSpent"></td>
 							</tr>
 						</template>
-						<template x-for="i in 10 - paginatedCustomers.length" :key="'empty' + i">
+						<template x-for="i in 10 - paginatednotifications.length" :key="'empty' + i">
 							<tr>
 								<td colspan="5" class="py-7"></td>
 							</tr>
@@ -69,14 +69,14 @@ templ NotifiactionTable(projectId string) {
 		</div>
 	</div>
 	<script>
-function customerTable(projectId) {
+function notificationTable(projectId) {
     return {
 		projectID: projectId,
         currentTab: 'all',
-        customers: [],
-        selectedcustomers: [],
+        notifications: [],
+        selectednotifications: [],
         selectAllCheckbox: false,
-        sortKey: 'order_count',
+        sortKey: 'notifiaction_count',
         sortAsc: false,
         currentPage: 1,
         itemsPerPage: 10,
@@ -85,17 +85,17 @@ function customerTable(projectId) {
         loading: false,
 
         async init() {
-            await this.fetchcustomers(this.currentPage);
+            await this.fetchnotifications(this.currentPage);
         },
 
-        async fetchcustomers(page = 1) {
+        async fetchnotifications(page = 1) {
             this.loading = true;
             try {
                 const url = this.getUrlForTab(this.currentTab, page);
                 const response = await fetch(url);
                 const result = await response.json();
                 if (response.ok) {
-                    this.customers = result.data || [];
+                    this.notifications = result.data || [];
                     this.totalItems = result.meta.totalItems || 0;
                     this.currentPage = result.meta.currentPage || 1;
                     this.itemsPerPage = result.meta.itemsPerPage || 10;
@@ -111,7 +111,7 @@ function customerTable(projectId) {
         },
 
          getUrlForTab(tab, page) {
-            const baseUrl = `${window.location.origin}/customer/table/${this.projectID}`;
+            const baseUrl = `${window.location.origin}/notification/table/${this.projectID}`;
             const sortDirection = this.sortAsc ? 'asc' : 'desc'; // Determine sort direction
             switch (tab) {
                 case 'all':
@@ -132,11 +132,11 @@ function customerTable(projectId) {
         selectTab(tab) {
             this.currentTab = tab;
             this.currentPage = 1; // Reset to first page
-            this.fetchcustomers(this.currentPage);
+            this.fetchnotifications(this.currentPage);
         },
 
         selectAll() {
-            this.selectedcustomers = this.selectAllCheckbox ? this.customers.map(order => order.orderId) : [];
+            this.selectednotifications = this.selectAllCheckbox ? this.notifications.map(order => order.orderId) : [];
         },
 
       	sortTable(key) {
@@ -146,7 +146,7 @@ function customerTable(projectId) {
                 this.sortKey = key; // Set new sort key
                 this.sortAsc = true; // Default to ascending if a new column is selected
             }
-            this.fetchcustomers(this.currentPage); // Fetch sorted data
+            this.fetchnotifications(this.currentPage); // Fetch sorted data
         },
 		getSortIcon(key) {
             if (this.sortKey !== key) return '';
@@ -155,11 +155,11 @@ function customerTable(projectId) {
 
         changePage(page) {
             if (page < 1 || page > this.totalPages) return;
-            this.fetchcustomers(page);
+            this.fetchnotifications(page);
         },
 
-        get paginatedCustomers() {
-            return this.customers;
+        get paginatednotifications() {
+            return this.notifications;
         },
 
         get currentPageStart() {

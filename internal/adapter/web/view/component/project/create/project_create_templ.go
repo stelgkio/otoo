@@ -272,7 +272,7 @@ func ProjectCreateForm(invalid bool, errors map[string](string), values *domain.
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\t\t\t\r\n\t\t\tvar tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle=\"tooltip\"]'))\r\n\t\t\tvar tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {\r\n\t\t\treturn new bootstrap.Tooltip(tooltipTriggerEl)\r\n\t\t\t})\r\n\t\t\t</script>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\t\t\t\n\t\t\tvar tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle=\"tooltip\"]'))\n\t\t\tvar tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {\n\t\t\treturn new bootstrap.Tooltip(tooltipTriggerEl)\n\t\t\t})\n\t\t\t</script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

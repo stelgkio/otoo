@@ -1,8 +1,11 @@
 package views
 
-import "github.com/stelgkio/otoo/internal/core/domain"
+import (
+	"github.com/stelgkio/otoo/internal/core/domain"
+	"fmt"
+)
 
-templ TopBar(user *domain.User, projectName string) {
+templ TopBar(user *domain.User, projectName , projectId string) {
 	<div class="d-none d-lg-flex py-3">
 		<div class="flex-none">
 			<div class="input-group input-group-sm input-group-inline w-rem-64 rounded-pill">
@@ -47,40 +50,49 @@ templ TopBar(user *domain.User, projectName string) {
 					>Dark</button>
 				</div>
 			</div>
-			<div class="dropdown">
+			<div class="dropdown" id="notification-list">
 				<a
-					href="#"
+					href="javascript:void(0)"
 					class="nav-link"
 					id="dropdown-notifications"
 					data-bs-toggle="dropdown"
 					aria-expanded="false"
-				><i class="bi bi-bell"></i></a>
+				
+					hx-trigger="load"  
+        			hx-get={ fmt.Sprintf("/dashboard/notifiaction/%s", projectId) }    
+        			hx-target="#notification-list"
+				><i class="bi bi-bell"></i>
+					<span class="position-absolute top-0 start-100 translate-middle bg-danger rounded-circle"
+						style="width: 8px; height: 8px; padding: 0; border-radius: 50%;">
+					</span>
+
+				</a>
 				<div class="dropdown-menu dropdown-menu-end px-2" aria-labelledby="dropdown-notifications">
 					<div class="dropdown-item d-flex align-items-center">
 						<h6 class="dropdown-header px-0">Notifications</h6>
 						<a
-							href="#"
+							href="javascript:void(0)"
 							class="text-sm fw-semibold ms-auto"
 						>Clear all</a>
 					</div>
-					<div class="dropdown-item py-3 d-flex">
-						<div>
-							<div class="avatar bg-primary text-white rounded-circle">RF</div>
-						</div>
-						<div class="flex-fill ms-3">
-							<div class="text-sm lg-snug w-rem-64 text-wrap">
-								<a
-									href="#"
-									class="fw-semibold text-heading text-primary-hover"
-								>New</a> product 
-							</div>
-							<span class="text-muted text-xs">30 mins ago</span>
-						</div>
-					</div>
+					// <div class="dropdown-item py-3 d-flex">
+					// 	<div>
+					// 		<div class="avatar bg-primary text-white rounded-circle">RF</div>
+					// 	</div>
+					// 	<div class="flex-fill ms-3">
+					// 		<div class="text-sm lg-snug w-rem-64 text-wrap">
+					// 			<a
+					// 				href="#"
+					// 				class="fw-semibold text-heading text-primary-hover"
+					// 			>New</a> product 
+					// 		</div>
+					// 		<span class="text-muted text-xs">30 mins ago</span>
+					// 	</div>
+					// </div>
 					<div class="dropdown-divider"></div>
 					<div class="dropdown-item py-2 text-center">
 						<a
-							href="#"
+							href="javascript:void(0)"
 							class="fw-semibold text-muted text-primary-hover"
 						>View all</a>
 					</div>

@@ -52,7 +52,7 @@ func DashboardTemplate(user *domain.User, projectName string, projectId string) 
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = n.TopBar(user, projectName).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = n.TopBar(user, projectName, projectId).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

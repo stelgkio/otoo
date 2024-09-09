@@ -173,6 +173,24 @@ func (w WooCommerceHandler) OrderDeletedWebHook(ctx echo.Context) error {
 	return nil
 }
 
+// FindWebHooks retrieves webhooks for a specific project
+// GET /webhook/:projectId
+func (w WooCommerceHandler) FindWebHooks(ctx echo.Context) error {
+	// Extract project ID from the URL parameters
+	projectID := ctx.Param("projectId")
+
+	// Fetch webhooks for the project ID from the repository
+	webhooks, err := w.p.WebhookFindByProjectID(projectID)
+	if err != nil {
+		// Log and return error if fetching fails
+		slog.Error("Error fetching webhooks", "error", err)
+		return ctx.String(http.StatusInternalServerError, "error fetching webhooks")
+	}
+
+	// Return the webhooks as JSON
+	return ctx.JSON(http.StatusOK, webhooks)
+}
+
 // CouponCreatedWebHook handles coupon creation webhook
 // POST /webhook/coupon/create
 func (w WooCommerceHandler) CouponCreatedWebHook(ctx echo.Context) error {

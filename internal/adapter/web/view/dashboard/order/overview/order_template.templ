@@ -1,0 +1,12 @@
+package views
+
+import (
+	t "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/template"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ OrderTemplate(user *domain.User, projectName string, projectId string, totalCount, count24h, count7d, count1m string) {
+	@t.DashboardTemplate(user, projectName, projectId) {
+		@OrderOverView(projectId, totalCount, count24h, count7d, count1m)
+	}
+}

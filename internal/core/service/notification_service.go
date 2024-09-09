@@ -30,7 +30,20 @@ func (ns *NotificationService) UpdateNotification(ctx echo.Context, data *domain
 	return nil
 }
 
+// DeleteNotification delete a  notification
+func (ns *NotificationService) DeleteNotification(ctx echo.Context, projectID, notificationID string) error {
+	err := ns.repo.DeleteNotification(ctx, projectID, notificationID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // FindNotification find notification not read
-func (ns *NotificationService) FindNotification(projectID string, size, page int, sort, direction string) ([]*domain.Notification, error) {
-	return nil, nil
+func (ns *NotificationService) FindNotification(projectID string, size, page int, sort, direction string, filters bool) ([]*domain.Notification, error) {
+	notification, err := ns.repo.FindNotification(projectID, size, page, sort, direction, filters)
+	if err != nil {
+		return nil, err
+	}
+	return notification, nil
 }

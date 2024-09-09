@@ -124,6 +124,13 @@ func NewRouter(
 			productgroup.GET("/:projectId", dashboardHandler.ProductDashboard)
 		}
 
+		notificationgroup := dashboardgroup.Group("/notifiaction")
+		{
+			notificationgroup.GET("/:projectId", dashboardHandler.FindNotification)
+			notificationgroup.DELETE("/delete/:projectId/:notifiactionId", dashboardHandler.DeleteNotification)
+			notificationgroup.DELETE("/delete/all/:projectId", dashboardHandler.DeleteAllNotification)
+		}
+
 	}
 	//Extension group
 	extensiongroup := e.Group("/extension")

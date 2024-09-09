@@ -24,17 +24,18 @@ import (
 
 // ProjectHandler represents the HTTP handler for user-related requests
 type ProjectHandler struct {
-	svc           port.ProjectService
-	userSvc       port.UserService
-	reportSvc     port.ReportService
-	productSvc    port.ProductService
-	customerSvc   port.CustomerService
-	orderSvc      port.OrderService
-	bestSellerSvc port.ProductBestSellers
+	svc             port.ProjectService
+	userSvc         port.UserService
+	reportSvc       port.ReportService
+	productSvc      port.ProductService
+	customerSvc     port.CustomerService
+	orderSvc        port.OrderService
+	bestSellerSvc   port.ProductBestSellers
+	notificationSvc port.NotificationService
 }
 
 // NewProjectHandler creates a new ProjectHandler instance
-func NewProjectHandler(svc port.ProjectService, userSvc port.UserService, reportSvc port.ReportService, productSvc port.ProductService, customerSvc port.CustomerService, orderSvc port.OrderService, bestSellerSvc port.ProductBestSellers) *ProjectHandler {
+func NewProjectHandler(svc port.ProjectService, userSvc port.UserService, reportSvc port.ReportService, productSvc port.ProductService, customerSvc port.CustomerService, orderSvc port.OrderService, bestSellerSvc port.ProductBestSellers, notificationSvc port.NotificationService) *ProjectHandler {
 	return &ProjectHandler{
 		svc,
 		userSvc,
@@ -43,6 +44,7 @@ func NewProjectHandler(svc port.ProjectService, userSvc port.UserService, report
 		customerSvc,
 		orderSvc,
 		bestSellerSvc,
+		notificationSvc,
 	}
 }
 

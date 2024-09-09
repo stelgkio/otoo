@@ -260,13 +260,24 @@ func (dh *DashboardHandler) DefaultDashboardOverView(ctx echo.Context) error {
 		return fmt.Errorf("bestSeller error: %v", err)
 	}
 
-	return util.Render(ctx, t.DeafultDashboard(projectID, response, orderList, bestSeller))
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return util.Render(ctx, t.DeafultDashboard(projectID, response, orderList, bestSeller))
+	}
+	project, user, projectID, err := GetProjectAndUser(ctx, dh)
+	return util.Render(ctx, t.DeafultTemplate(user, project.Name, projectID, response, orderList, bestSeller))
 }
 
 // CustomerDashboard returns the customer dashboard
 func (dh *DashboardHandler) CustomerDashboard(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
-	return util.Render(ctx, c.CustomerOverView(projectID))
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return util.Render(ctx, c.CustomerOverView(projectID))
+	}
+	project, user, projectID, err := GetProjectAndUser(ctx, dh)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	return util.Render(ctx, c.CustomerTemplate(user, project.Name, projectID))
 }
 
 // CustomerTable returns the order custmer list
@@ -395,7 +406,15 @@ func (dh *DashboardHandler) CustomerTable(ctx echo.Context) error {
 // ProductDashboard returns the product dashboard
 func (dh *DashboardHandler) ProductDashboard(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
-	return util.Render(ctx, p.ProductOverview(projectID))
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return util.Render(ctx, p.ProductOverview(projectID))
+	}
+	project, user, projectID, err := GetProjectAndUser(ctx, dh)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	return util.Render(ctx, p.ProductTemplate(user, project.Name, projectID))
+
 }
 
 // ProductTable returns the order product list
@@ -521,6 +540,7 @@ func (dh *DashboardHandler) ProductTable(ctx echo.Context) error {
 
 // OrderDashboard returns the order dashboard
 func (dh *DashboardHandler) OrderDashboard(ctx echo.Context) error {
+
 	projectID := ctx.Param("projectId")
 	var wg sync.WaitGroup
 	// Fetch	var wg sync.WaitGroup
@@ -589,8 +609,14 @@ func (dh *DashboardHandler) OrderDashboard(ctx echo.Context) error {
 			return ctx.JSON(http.StatusInternalServerError, map[string]string{"failed to fetch order count": err.Error()})
 		}
 	}
-
-	return util.Render(ctx, o.OrderOverView(projectID, fmt.Sprintf("%d", totalItems), fmt.Sprintf("%d", total24hItems), fmt.Sprintf("%d", total7hItems), fmt.Sprintf("%d", total1mItems)))
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return util.Render(ctx, o.OrderOverView(projectID, fmt.Sprintf("%d", totalItems), fmt.Sprintf("%d", total24hItems), fmt.Sprintf("%d", total7hItems), fmt.Sprintf("%d", total1mItems)))
+	}
+	project, user, projectID, err := GetProjectAndUser(ctx, dh)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	return util.Render(ctx, o.OrderTemplate(user, project.Name, projectID, fmt.Sprintf("%d", totalItems), fmt.Sprintf("%d", total24hItems), fmt.Sprintf("%d", total7hItems), fmt.Sprintf("%d", total1mItems)))
 }
 
 // OrderTable returns the order dashboard

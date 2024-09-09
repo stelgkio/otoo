@@ -9,6 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"fmt"
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
@@ -30,7 +31,7 @@ func NotifiactionTable(projectId string, notifiactions []*domain.Notification) t
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"vstack gap-3 mt-6\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"container-fluid mw-screen-lg py-10\"><div class=\"vstack gap-3 mt-6\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -42,31 +43,44 @@ func NotifiactionTable(projectId string, notifiactions []*domain.Notification) t
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(notifiaction.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/settings/notification/notifiaction_table.templ`, Line: 14, Col: 40}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/settings/notification/notifiaction_table.templ`, Line: 15, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h5><div class=\"hstack gap-3 ms-auto\"><a href=\"#\" class=\"p-1 text-muted\"><i class=\"bi bi-calendar-event\"></i></a><a href=\"#\" class=\"p-1 text-muted\"><i class=\"bi bi-three-dots\"></i></a></div></div></div><div class=\"card-body py-0\"><div class=\"list-group list-group-flush mb-5\"><div class=\"list-group-item py-3\"><div class=\"row g-3 align-items-center\"><div class=\"col-sm-6 col-12 d-flex\"><div class=\"form-check form-check-linethrough d-flex align-items-center gap-1\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h5><div class=\"hstack gap-3 ms-auto\"><a href=\"javascript:void(0)\" hx-delete=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
-			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(notifiaction.Description)
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/dashboard/notifiaction/settings/delete/%s/%s", projectId, notifiaction.ID.Hex()))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/settings/notification/notifiaction_table.templ`, Line: 26, Col: 58}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/settings/notification/notifiaction_table.templ`, Line: 19, Col: 115}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div class=\"col-sm-auto col-12 ms-sm-auto\"><div class=\"hstack gap-5 justify-content-end\"><div><span class=\"badge bg-warning-subtle text-warning\">Sean</span></div></div></div></div></div></div></div></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\" class=\"fw-semibold text-heading text-primary-hover\"><i class=\"bi bi-trash-fill\"></i></a></div></div></div><div class=\"card-body py-0\"><div class=\"list-group list-group-flush mb-5\"><div class=\"list-group-item py-3\"><div class=\"row g-3 align-items-center\"><div class=\"col-sm-6 col-12 d-flex\"><div class=\"form-check form-check-linethrough d-flex align-items-center gap-1\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var4 string
+			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(notifiaction.Description)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/settings/notification/notifiaction_table.templ`, Line: 34, Col: 37}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div class=\"col-sm-auto col-12 ms-sm-auto\"><div class=\"hstack gap-5 justify-content-end\"><div><span class=\"badge bg-success-subtle text-success\">New</span></div></div></div></div></div></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></main>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

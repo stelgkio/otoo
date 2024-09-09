@@ -57,7 +57,7 @@ func (ph *ProjectHandler) ProjectSettingsNotification(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	notifications, err := ph.notificationSvc.FindNotification(projectID, 10, 1, "timestamp", "", false)
+	notifications, err := ph.notificationSvc.FindNotification(projectID, 10, 1, "timestamp", "", true)
 	return r.Render(ctx, pn.SettingsNotifications(project, notifications))
 }
 

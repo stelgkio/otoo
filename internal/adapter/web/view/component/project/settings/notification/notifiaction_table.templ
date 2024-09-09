@@ -1,44 +1,50 @@
 package views
-import (
-"github.com/stelgkio/otoo/internal/core/domain"
 
+import (
+	"fmt"
+	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
 templ NotifiactionTable(projectId string, notifiactions []*domain.Notification) {
-
-<div class="vstack gap-3 mt-6">
-    for _, notifiaction := range notifiactions {
-    <div class="card">
-        <div class="card-header py-3">
-            <div class="d-flex align-items-center">
-                <h5>{ notifiaction.Title }</h5>
-                <div class="hstack gap-3 ms-auto"><a href="#" class="p-1 text-muted"><i
-                            class="bi bi-calendar-event"></i> </a><a href="#" class="p-1 text-muted"><i
-                            class="bi bi-three-dots"></i></a></div>
-            </div>
-        </div>
-        <div class="card-body py-0">
-            <div class="list-group list-group-flush mb-5">
-                <div class="list-group-item py-3">
-                    <div class="row g-3 align-items-center">
-                        <div class="col-sm-6 col-12 d-flex">
-                            <div class="form-check form-check-linethrough d-flex align-items-center gap-1">
-                                { notifiaction.Description }
-                            </div>
-                        </div>
-                        <div class="col-sm-auto col-12 ms-sm-auto">
-                            <div class="hstack gap-5 justify-content-end">
-                                <div><span class="badge bg-warning-subtle text-warning">Sean</span></div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    }
-</div>
-
+	<main class="container-fluid mw-screen-lg py-10">
+		<div class="vstack gap-3 mt-6">
+			for _, notifiaction := range notifiactions {
+				<div class="card">
+					<div class="card-header py-3">
+						<div class="d-flex align-items-center">
+							<h5>{ notifiaction.Title }</h5>
+							<div class="hstack gap-3 ms-auto">
+								<a
+									href="javascript:void(0)"
+									hx-delete={ fmt.Sprintf("/dashboard/notifiaction/settings/delete/%s/%s", projectId, notifiaction.ID.Hex()) }
+									hx-target="#dashboard-content"
+									class="fw-semibold text-heading text-primary-hover"
+								>
+									<i class="bi bi-trash-fill"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+					<div class="card-body py-0">
+						<div class="list-group list-group-flush mb-5">
+							<div class="list-group-item py-3">
+								<div class="row g-3 align-items-center">
+									<div class="col-sm-6 col-12 d-flex">
+										<div class="form-check form-check-linethrough d-flex align-items-center gap-1">
+											{ notifiaction.Description }
+										</div>
+									</div>
+									<div class="col-sm-auto col-12 ms-sm-auto">
+										<div class="hstack gap-5 justify-content-end">
+											<div><span class="badge bg-success-subtle text-success">New</span></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+	</main>
 }

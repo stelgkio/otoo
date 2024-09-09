@@ -128,7 +128,9 @@ func NewRouter(
 		{
 			notificationgroup.GET("/:projectId", dashboardHandler.FindNotification)
 			notificationgroup.DELETE("/delete/:projectId/:notifiactionId", dashboardHandler.DeleteNotification)
+			notificationgroup.DELETE("/settings/delete/:projectId/:notifiactionId", dashboardHandler.DeleteNotificationSettings)
 			notificationgroup.DELETE("/delete/all/:projectId", dashboardHandler.DeleteAllNotification)
+
 		}
 
 	}

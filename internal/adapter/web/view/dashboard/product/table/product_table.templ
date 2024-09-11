@@ -32,7 +32,10 @@ templ ProductTable(projectId string) {
 					<thead>
 						<tr>
 							//<th scope="col">Image</th>
-							<th scope="col">Product ID</th>
+                            <th scope="col" @click="sortTable('productId')">
+							Product ID
+							<i :class="getSortIcon('productId')"></i>
+							</th>
 							<th scope="col">Name</th>
 							//	<th scope="col">SKU</th>
 							<th scope="col">Price</th>

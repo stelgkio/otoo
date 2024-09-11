@@ -339,25 +339,44 @@ func (repo WoocommerceRepository) ProductDelete(productID int64) error {
 	return err
 }
 
-// ProductFindByProjectID find all products by projectID
 func (repo WoocommerceRepository) ProductFindByProjectID(projectID string, size, page int, sort, direction string, productType w.ProductType) ([]*w.ProductRecord, error) {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
-	// OrderFindByProjectID find all orders by projectID
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	filter := bson.M{"projectId": projectID, "is_active": true, "product.type": bson.M{"$ne": productType.String()}}
+	// Determine sort order
+	sortOrder := 1
+	if direction == "desc" {
+		sortOrder = -1
+	} else if direction == "" {
+		sortOrder = -1
+	}
 
-	findOptions := options.Find()
-	findOptions.SetLimit(int64(size))
-	findOptions.SetSkip(int64(size * (page - 1)))
-	findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
-	cursor, err := coll.Find(ctx, filter, findOptions)
+	// Start building the aggregation pipeline
+	pipeline := mongo.Pipeline{
+		// Match active products by projectID and exclude products of a certain type
+		{{Key: "$match", Value: bson.D{
+			{Key: "projectId", Value: projectID},
+			{Key: "is_active", Value: true},
+			{Key: "product.type", Value: bson.M{"$ne": productType.String()}},
+		}}},
+	}
+
+	// Sort by the field specified in 'sort' and the direction given by 'direction'
+	pipeline = append(pipeline, bson.D{{Key: "$sort", Value: bson.D{{Key: sort, Value: sortOrder}}}})
+
+	// Pagination: skip and limit
+	pipeline = append(pipeline, bson.D{{Key: "$skip", Value: int64(size * (page - 1))}})
+	pipeline = append(pipeline, bson.D{{Key: "$limit", Value: int64(size)}})
+
+	// Execute the aggregation query
+	cursor, err := coll.Aggregate(ctx, pipeline)
 	if err != nil {
 		return nil, err
 	}
 	defer cursor.Close(ctx)
 
+	// Decode the results
 	var products []*w.ProductRecord
 	for cursor.Next(context.TODO()) {
 		var product w.ProductRecord
@@ -367,10 +386,12 @@ func (repo WoocommerceRepository) ProductFindByProjectID(projectID string, size,
 		products = append(products, &product)
 	}
 
+	// Check for errors in cursor iteration
 	if err := cursor.Err(); err != nil {
 		return nil, err
 	}
 
+	// Return the list of products
 	return products, nil
 }
 

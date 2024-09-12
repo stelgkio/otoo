@@ -28,7 +28,7 @@ func WalletExpenses(stripePublishableKey string, projectId, extensionId string) 
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"dashboard-content\" class=\"flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2\"><main class=\"container-fluid px-6 pb-10\"><form autocomplete=\"off\" x-data=\"")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -41,7 +41,7 @@ func WalletExpenses(stripePublishableKey string, projectId, extensionId string) 
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><header class=\"py-4 border-bottom\"><div class=\"row align-items-center\"><div class=\"col\"><div class=\"d-flex align-items-center gap-4\"><div><button type=\"button\" class=\"btn-close text-xs\" aria-label=\"Close\" hx-get=\"")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -54,7 +54,7 @@ func WalletExpenses(stripePublishableKey string, projectId, extensionId string) 
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\"></button></div><div class=\"vr opacity-20 my-1\"></div><h1 class=\"h4 ls-tight\">Wallet & Expenses</h1></div></div><div class=\"col\"><div class=\"hstack gap-2 justify-content-end\"><button type=\"button\" @click=\"createSubscription\" class=\"btn btn-sm btn-neutral d-none d-sm-inline-flex\"><span class=\"pe-2\"><i class=\"bi bi-plus-circle\"></i></span><span>Subscription</span></button></div></div></div></header></form></main><script>\r\n\t\tfunction subscriptionForm(stripePublishableKey,projectId,extensionId) {\r\n\t\t\treturn {\r\n\r\n\t\t\t\tcreateSubscription() {\r\n\t\t\t\t\tconst stripe = Stripe(stripePublishableKey);\r\n\r\n\t\t\t\t\tconst value = {\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\tprojectId: projectId, // Add additional data if needed\r\n\t\t\t\t\t\textensionId: extensionId // Add additional data if needed\r\n\t\t\t\t\t};\r\n\r\n\t\t\t\t\tfetch(\"/payment\", {\r\n\t\t\t\t\t\tmethod: 'POST',\r\n\t\t\t\t\t\theaders: {\r\n\t\t\t\t\t\t\t'Content-Type': 'application/json'\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\tbody: JSON.stringify(value)\r\n\t\t\t\t\t})\r\n\t\t\t\t\t.then(async response => {\r\n\t\t\t\t\t\tconst res = await response.json();\r\n\t\t\t\t\t\tconst id = res.id;\r\n\t\t\t\t\t\tstripe.redirectToCheckout({ sessionId: id });\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t})\r\n\t\t\t\t\t.catch(error => {\r\n\t\t\t\t\t\tconsole.error('Error creating subscription:', error);\r\n\t\t\t\t\t});\r\n\t\t\t\t}\r\n\t\t\t};\r\n\t\t}\r\n\t</script></div>")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

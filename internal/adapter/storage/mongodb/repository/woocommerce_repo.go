@@ -362,8 +362,17 @@ func (repo WoocommerceRepository) ProductFindByProjectID(projectID string, size,
 		}}},
 	}
 
-	// Sort by the field specified in 'sort' and the direction given by 'direction'
-	pipeline = append(pipeline, bson.D{{Key: "$sort", Value: bson.D{{Key: sort, Value: sortOrder}}}})
+	// Conditionally add fields and sorting by total orders or other fields
+	if sort == "order_count" {
+		// Add the total_orders field dynamically and sort by it
+		pipeline = append(pipeline, bson.D{{Key: "$addFields", Value: bson.D{{Key: "total_orders",
+			// Assuming "order_quantity" field exists for the total number of times each product has been ordered
+			Value: bson.D{{Key: "$sum", Value: "$order_quantity"}}}}}})
+		pipeline = append(pipeline, bson.D{{Key: "$sort", Value: bson.D{{Key: "total_orders", Value: sortOrder}}}})
+	} else {
+		// Sorting by other fields like price, productId, etc.
+		pipeline = append(pipeline, bson.D{{Key: "$sort", Value: bson.D{{Key: sort, Value: sortOrder}}}})
+	}
 
 	// Pagination: skip and limit
 	pipeline = append(pipeline, bson.D{{Key: "$skip", Value: int64(size * (page - 1))}})

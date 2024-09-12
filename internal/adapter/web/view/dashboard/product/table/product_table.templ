@@ -41,7 +41,10 @@ templ ProductTable(projectId string) {
 							<th scope="col">Price</th>
 							<th scope="col">Category</th>
 							<th scope="col">Type</th>
-							<th scope="col">Total Orders</th>
+							<th scope="col" @click="sortTable('order_count')">
+                                Total Orders
+                                <i :class="getSortIcon('order_count')"></i>
+                                </th>
 							// <th scope="col">Timestamp</th>
 						</tr>
 					</thead>

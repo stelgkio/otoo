@@ -28,7 +28,7 @@ func ForgotPassword() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html lang=\"en\" data-theme=\"light\">")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -36,7 +36,7 @@ func ForgotPassword() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<body><div class=\"row g-0 justify-content-center gradient-bottom-right start-purple middle-indigo end-pink\"><div class=\"col-md-6 col-lg-5 col-xl-5 position-fixed start-0 top-0 vh-100 overflow-y-hidden d-none d-lg-flex flex-lg-column\"><div class=\"p-12 py-xl-20 px-xl-20 mt-10\"><a class=\"d-block\" href=\"/index\"><h1 class=\"display-9 mylogo text-white fw-bolder lh-tight px-sm-1\">Otoo </h1></a><div class=\"mt-10\"><h1 class=\"ls-tight fw-bolder display-6 text-white mb-5\">All in one Solution, Integration & Dashboard Analytics Faster than Ever.</h1></div></div><div class=\"mt-auto ps-16 ps-xl-20\"></div></div><div class=\"col-12 col-md-12 col-lg-7 offset-lg-5 min-vh-100 overflow-y-auto d-flex flex-column justify-content-center position-relative bg-body rounded-top-start-lg-4 border-start-lg shadow-soft-5\"><div class=\"w-md-50 mx-auto px-10 px-md-0 py-10\"><div class=\"mb-10\"><a class=\"d-inline-block d-lg-none mb-10 d-flex justify-content-center\" href=\"/\"><h1 class=\"ls-tight fw-bolder mylogo\">Otoo</h1></a><h1 class=\"ls-tight fw-bolder h3\">Forget something?</h1><div class=\"mt-3 text-sm text-muted\"><span>Enter your email below to recieve password reset instruction.</span></div></div><form action=\"/forgotpassword\" method=\"post\" class=\"needs-validation\"><div class=\"mb-5\"><label class=\"form-label\" for=\"email\">Email address</label> <input type=\"email\" class=\"form-control\" name=\"email\" id=\"email\" required></div><div><input type=\"submit\" class=\"btn btn-dark w-100\" value=\"Submit\"></div></form></div></div></div><script src=\"./assets/js/main.js\"></script></body></html>")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -9,6 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	f "github.com/stelgkio/otoo/internal/adapter/web/view/component/footer"
 	h "github.com/stelgkio/otoo/internal/adapter/web/view/component/header"
 	n "github.com/stelgkio/otoo/internal/adapter/web/view/component/navigation"
 	"github.com/stelgkio/otoo/internal/core/domain"
@@ -61,6 +62,14 @@ func DashboardTemplate(user *domain.User, projectName string, projectId string) 
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = f.FooterComponent().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

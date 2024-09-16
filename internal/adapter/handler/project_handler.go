@@ -24,17 +24,18 @@ import (
 
 // ProjectHandler represents the HTTP handler for user-related requests
 type ProjectHandler struct {
-	svc           port.ProjectService
-	userSvc       port.UserService
-	reportSvc     port.ReportService
-	productSvc    port.ProductService
-	customerSvc   port.CustomerService
-	orderSvc      port.OrderService
-	bestSellerSvc port.ProductBestSellers
+	svc             port.ProjectService
+	userSvc         port.UserService
+	reportSvc       port.ReportService
+	productSvc      port.ProductService
+	customerSvc     port.CustomerService
+	orderSvc        port.OrderService
+	bestSellerSvc   port.ProductBestSellers
+	notificationSvc port.NotificationService
 }
 
 // NewProjectHandler creates a new ProjectHandler instance
-func NewProjectHandler(svc port.ProjectService, userSvc port.UserService, reportSvc port.ReportService, productSvc port.ProductService, customerSvc port.CustomerService, orderSvc port.OrderService, bestSellerSvc port.ProductBestSellers) *ProjectHandler {
+func NewProjectHandler(svc port.ProjectService, userSvc port.UserService, reportSvc port.ReportService, productSvc port.ProductService, customerSvc port.CustomerService, orderSvc port.OrderService, bestSellerSvc port.ProductBestSellers, notificationSvc port.NotificationService) *ProjectHandler {
 	return &ProjectHandler{
 		svc,
 		userSvc,
@@ -43,6 +44,7 @@ func NewProjectHandler(svc port.ProjectService, userSvc port.UserService, report
 		customerSvc,
 		orderSvc,
 		bestSellerSvc,
+		notificationSvc,
 	}
 }
 
@@ -91,7 +93,15 @@ func (ph *ProjectHandler) CreateProject(ctx echo.Context) error {
 
 // ProjectCreateForm GET /project/createform
 func (ph *ProjectHandler) ProjectCreateForm(ctx echo.Context) error {
-	return r.Render(ctx, p.ProjectCreateForm(false, nil, new(domain.ProjectRequest)))
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, p.ProjectCreateForm(false, nil, new(domain.ProjectRequest)))
+	}
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := ph.userSvc.GetUserById(ctx, userID)
+	return r.Render(ctx, p.CreateProjectTemplate(user, false, nil, new(domain.ProjectRequest)))
 }
 
 // ProjectListPage  GET /project/list
@@ -101,7 +111,19 @@ func (ph *ProjectHandler) ProjectListPage(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return r.Render(ctx, l.ProjectListPage(projects))
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, l.ProjectListPage(projects))
+	}
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := ph.userSvc.GetUserById(ctx, userID)
+	if err != nil {
+		return err
+	}
+	return r.Render(ctx, d.ProjectDashboard(projects, user))
+
 }
 
 // GetProjectDashboardPage GET /dashboard

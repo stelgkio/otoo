@@ -30,3 +30,17 @@ db('otoo').collection('extensions').insertOne({
         is_active: true,
         price: 29,
     },)
+
+db('otoo').collection('notifications').insertOne({
+       title: "Data Synchronizer",
+            description: "Keep your eShop and Otoo perfectly in sync. Effortlessly transfer product details, customer information, and order data.",
+            link: "https://your-link.com",
+            is_read: false,
+            timestamp: new Date(),  // Use JavaScript's Date object
+            created_at: new Date(),
+            updated_at: new Date(),
+            is_active: true,
+            user_id: "72cb8e78-4a39-4949-910b-7bd390e8c244",
+            project_id: "e915c34b-33c5-49e8-9e2c-227c650398fa",
+            type: "info"
+    },)

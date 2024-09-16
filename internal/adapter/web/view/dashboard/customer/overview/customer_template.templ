@@ -1,0 +1,12 @@
+package views
+
+import (
+	t "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/template"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ CustomerTemplate(user *domain.User, projectName string, projectId string) {
+	@t.DashboardTemplate(user, projectName, projectId) {
+		@CustomerOverView(projectId)
+	}
+}

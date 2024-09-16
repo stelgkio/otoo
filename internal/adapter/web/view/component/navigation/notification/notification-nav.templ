@@ -1,0 +1,67 @@
+package views
+import (
+"github.com/stelgkio/otoo/internal/core/domain"
+"fmt"
+)
+
+templ NotificationIcon(notifiactions []*domain.Notification, projectId string ) {
+<div class="dropdown" id="notification-list">
+    <a href="javascript:void(0)" class="nav-link" id="dropdown-notifications" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        <i class="bi bi-bell"></i>
+        if len(notifiactions) > 0 {
+        <span class="position-absolute top-0 start-100 translate-middle bg-danger rounded-circle"
+            style="width: 8px; height: 8px; padding: 0; border-radius: 50%;">
+        </span>
+        }
+
+    </a>
+    <div class="dropdown-menu dropdown-menu-end px-2" aria-labelledby="dropdown-notifications">
+        <div class="dropdown-item d-flex align-items-center">
+            <h6 class="dropdown-header px-0">Notifications</h6>
+            <a href="javascript:void(0)" class="text-sm fw-semibold ms-auto" hx-delete={
+                fmt.Sprintf("/dashboard/notifiaction/delete/all/%s", projectId) } hx-target="#notification-list">Clear
+                all</a>
+        </div>
+        if len(notifiactions) == 0 {
+        <div class="dropdown-item py-3 d-flex">
+            <div class="flex-fill ms-3">
+                <div class="text-sm lg-snug w-rem-64 text-wrap">
+                    <a href="javascript:void(0)" class="fw-semibold text-heading text-primary-hover">
+                        Empty notifiaction </a>
+                </div>
+            </div>
+        </div>
+
+        } else {
+        for _, item:= range notifiactions {
+        <div class="dropdown-item py-3 d-flex">
+            <div class="flex-fill ms-3">
+                <div class="text-sm lg-snug w-rem-64 text-wrap">
+                    <a href="javascript:void(0)" class="fw-semibold text-heading text-primary-hover">
+                        { item.Title } </a>
+                </div>
+            </div>
+            <div>
+                <a id="delete-notification-btn" class="delete-notification" href="javascript:void(0)" hx-delete={
+                    fmt.Sprintf("/dashboard/notifiaction/delete/%s/%s", projectId, item.ID.Hex()) }
+                    hx-target="#notification-list" hx-swap="outerHTML"
+                    hx-on::after-request="alert('Done making a request!')"
+                    class="fw-semibold text-heading text-primary-hover delete-notification">
+                    <i class="bi bi-trash-fill"></i> </a>
+            </div>
+        </div>
+        }
+        }
+
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item py-2 text-center">
+            <a href="javascript:void(0)" hx-get={ fmt.Sprintf("/project/settings/notification/%s", projectId) }
+                hx-target="#dashboard-content" hx-push-url="true" hx-target="#dashboard-content"
+                class="fw-semibold text-muted text-primary-hover">View all</a>
+
+        </div>
+    </div>
+
+</div>
+}

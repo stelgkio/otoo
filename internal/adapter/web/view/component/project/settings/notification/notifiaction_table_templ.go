@@ -10,10 +10,10 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"fmt"
-	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/pagination"
+	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-func NotifiactionTable(projectId string) templ.Component {
+func NotifiactionTable(projectId string, notifiactions []*domain.Notification) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -31,28 +31,56 @@ func NotifiactionTable(projectId string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"dashboard-order-table\" x-data=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"container-fluid mw-screen-lg py-10\"><div class=\"vstack gap-3 mt-6\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var2 string
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("notificationTable('%s')", projectId))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/settings/notification/notifiaction_table.templ`, Line: 9, Col: 91}
+		for _, notifiaction := range notifiactions {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card\"><div class=\"card-header py-3\"><div class=\"d-flex align-items-center\"><h5>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var2 string
+			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(notifiaction.Title)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/settings/notification/notifiaction_table.templ`, Line: 15, Col: 31}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h5><div class=\"hstack gap-3 ms-auto\"><a href=\"javascript:void(0)\" hx-delete=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var3 string
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/dashboard/notifiaction/settings/delete/%s/%s", projectId, notifiaction.ID.Hex()))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/settings/notification/notifiaction_table.templ`, Line: 19, Col: 115}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\" class=\"fw-semibold text-heading text-primary-hover\"><i class=\"bi bi-trash-fill\"></i></a></div></div></div><div class=\"card-body py-0\"><div class=\"list-group list-group-flush mb-5\"><div class=\"list-group-item py-3\"><div class=\"row g-3 align-items-center\"><div class=\"col-sm-6 col-12 d-flex\"><div class=\"form-check form-check-linethrough d-flex align-items-center gap-1\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var4 string
+			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(notifiaction.Description)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/settings/notification/notifiaction_table.templ`, Line: 34, Col: 37}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div class=\"col-sm-auto col-12 ms-sm-auto\"><div class=\"hstack gap-5 justify-content-end\"><div><span class=\"badge bg-success-subtle text-success\">New</span></div></div></div></div></div></div></div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" x-init=\"init()\"><div class=\"row align-items-center g-6 mt-0 mb-6\"><div class=\"col-sm-6\"><div class=\"d-flex gap-2\"><div class=\"input-group input-group-sm input-group-inline w-100 w-md-50\"><span class=\"input-group-text\"><i class=\"bi bi-search me-2\"></i></span> <input type=\"search\" class=\"form-control ps-0\" placeholder=\"Search all notifications\" aria-label=\"Search\"></div></div></div></div><div class=\"border-top\"><div class=\"table-responsive\"><table class=\"table table-hover table-nowrap\"><thead><tr><th scope=\"col\">Name</th><th @click=\"sortTable(&#39;email&#39;)\">Email <i :class=\"getSortIcon(&#39;email&#39;)\"></i></th><th @click=\"sortTable(&#39;order_count&#39;)\">Total Orders <i :class=\"getSortIcon(&#39;order_count&#39;)\"></i></th><th scope=\"col\">Money Spend</th></tr></thead> <tbody><template x-if=\"!loading &amp;&amp; totalItems === 0\"><tr><td colspan=\"8\">No notification found.</td></tr></template><template x-for=\"notification in paginatednotifications\" :key=\"notification.id\"><tr><td x-text=\"notification.name\"></td><td x-text=\"notification.email\"></td><td x-text=\"notification.totalOrders\"></td><td x-text=\"notification.totalSpent\"></td></tr></template><template x-for=\"i in 10 - paginatednotifications.length\" :key=\"&#39;empty&#39; + i\"><tr><td colspan=\"5\" class=\"py-7\"></td></tr></template></tbody></table></div>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = p.PaginationControl().Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><script>\nfunction notificationTable(projectId) {\n    return {\n\t\tprojectID: projectId,\n        currentTab: 'all',\n        notifications: [],\n        selectednotifications: [],\n        selectAllCheckbox: false,\n        sortKey: 'notifiaction_count',\n        sortAsc: false,\n        currentPage: 1,\n        itemsPerPage: 10,\n        totalItems: 0,\n        totalPages: 0,\n        loading: false,\n\n        async init() {\n            await this.fetchnotifications(this.currentPage);\n        },\n\n        async fetchnotifications(page = 1) {\n            this.loading = true;\n            try {\n                const url = this.getUrlForTab(this.currentTab, page);\n                const response = await fetch(url);\n                const result = await response.json();\n                if (response.ok) {\n                    this.notifications = result.data || [];\n                    this.totalItems = result.meta.totalItems || 0;\n                    this.currentPage = result.meta.currentPage || 1;\n                    this.itemsPerPage = result.meta.itemsPerPage || 10;\n                    this.totalPages = result.meta.totalPages || 0;\n                } else {\n                    console.error('Error fetching data:', result.message);\n                }\n            } catch (error) {\n                console.error('Error fetching data:', error);\n            } finally {\n                this.loading = false;\n            }\n        },\n\n         getUrlForTab(tab, page) {\n            const baseUrl = `${window.location.origin}/notification/table/${this.projectID}`;\n            const sortDirection = this.sortAsc ? 'asc' : 'desc'; // Determine sort direction\n            switch (tab) {\n                case 'all':\n                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;\n                case 'completed':\n                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;\n                case 'processing':\n                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;\n                case 'pending':\n                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;\n                case 'cancelled':\n                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;\n                default:\n                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;\n            }\n        },\n\n        selectTab(tab) {\n            this.currentTab = tab;\n            this.currentPage = 1; // Reset to first page\n            this.fetchnotifications(this.currentPage);\n        },\n\n        selectAll() {\n            this.selectednotifications = this.selectAllCheckbox ? this.notifications.map(order => order.orderId) : [];\n        },\n\n      \tsortTable(key) {\n            if (this.sortKey === key) {\n                this.sortAsc = !this.sortAsc; // Toggle sort direction if the same column is clicked\n            } else {\n                this.sortKey = key; // Set new sort key\n                this.sortAsc = true; // Default to ascending if a new column is selected\n            }\n            this.fetchnotifications(this.currentPage); // Fetch sorted data\n        },\n\t\tgetSortIcon(key) {\n            if (this.sortKey !== key) return '';\n            return this.sortAsc ? 'bi bi-chevron-up' : 'bi bi-chevron-down';\n        },\n\n        changePage(page) {\n            if (page < 1 || page > this.totalPages) return;\n            this.fetchnotifications(page);\n        },\n\n        get paginatednotifications() {\n            return this.notifications;\n        },\n\n        get currentPageStart() {\n            return (this.currentPage - 1) * this.itemsPerPage + 1;\n        },\n\n        get currentPageEnd() {\n            return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);\n        },\n       \tget pageNumbers() {\n            const range = 2; // Number of pages to show around the current page\n            let start = Math.max(1, this.currentPage - range);\n            let end = Math.min(this.totalPages, this.currentPage + range);\n\n            // Adjust range if there are not enough pages on one side\n            if (this.totalPages - end < range) {\n                end = this.totalPages;\n                start = Math.max(1, end - 2 * range);\n            } else if (start <= range) {\n                start = 1;\n                end = Math.min(this.totalPages, start + 2 * range);\n            }\n\t\t\t\n            return Array.from({ length: end - start + 1 }, (_, i) => start + i);\n        },\n\t\t badgeClass(status) {\n\t\t\t\tconst baseClass = 'badge bg-body-secondary badge-custom'; // Add badge-custom class\n\t\t\t\tswitch (status) {\n\t\t\t\t\tcase 'pending':\n\t\t\t\t\t\treturn `${baseClass} text-warning`;\n\t\t\t\t\tcase 'completed':\n\t\t\t\t\t\treturn `${baseClass} text-success`;\n\t\t\t\t\tcase 'cancelled':\n\t\t\t\t\t\treturn `${baseClass} text-danger`;\n\t\t\t\t\tcase 'processing':\n\t\t\t\t\t\treturn `${baseClass} text-warning`;\n\t\t\t\t\tdefault:\n\t\t\t\t\t\treturn baseClass;\n\t\t\t\t}\n\t\t}\t\t\n    };\n}\n</script>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></main>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

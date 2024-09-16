@@ -230,6 +230,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 							href="javascript:void(0)"
 							hx-get={ fmt.Sprintf("/project/settings/%s", projectId) }
 							hx-target="#dashboard-content"
+							hx-push-url="true"
 						>
 							<i
 								class="bi bi-gear-fill"

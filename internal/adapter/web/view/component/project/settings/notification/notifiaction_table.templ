@@ -2,205 +2,49 @@ package views
 
 import (
 	"fmt"
-	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/pagination"
+	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-templ NotifiactionTable(projectId string) {
-	<div id="dashboard-order-table" x-data={ fmt.Sprintf("notificationTable('%s')", projectId) } x-init="init()">
-		<div class="row align-items-center g-6 mt-0 mb-6">
-			<div class="col-sm-6">
-				<div class="d-flex gap-2">
-					<div class="input-group input-group-sm input-group-inline w-100 w-md-50">
-						<span class="input-group-text">
-							<i
-								class="bi bi-search me-2"
-							></i>
-						</span>
-						<input
-							type="search"
-							class="form-control ps-0"
-							placeholder="Search all notifications"
-							aria-label="Search"
-						/>
+templ NotifiactionTable(projectId string, notifiactions []*domain.Notification) {
+	<main class="container-fluid mw-screen-lg py-10">
+		<div class="vstack gap-3 mt-6">
+			for _, notifiaction := range notifiactions {
+				<div class="card">
+					<div class="card-header py-3">
+						<div class="d-flex align-items-center">
+							<h5>{ notifiaction.Title }</h5>
+							<div class="hstack gap-3 ms-auto">
+								<a
+									href="javascript:void(0)"
+									hx-delete={ fmt.Sprintf("/dashboard/notifiaction/settings/delete/%s/%s", projectId, notifiaction.ID.Hex()) }
+									hx-target="#dashboard-content"
+									class="fw-semibold text-heading text-primary-hover"
+								>
+									<i class="bi bi-trash-fill"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+					<div class="card-body py-0">
+						<div class="list-group list-group-flush mb-5">
+							<div class="list-group-item py-3">
+								<div class="row g-3 align-items-center">
+									<div class="col-sm-6 col-12 d-flex">
+										<div class="form-check form-check-linethrough d-flex align-items-center gap-1">
+											{ notifiaction.Description }
+										</div>
+									</div>
+									<div class="col-sm-auto col-12 ms-sm-auto">
+										<div class="hstack gap-5 justify-content-end">
+											<div><span class="badge bg-success-subtle text-success">New</span></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
+			}
 		</div>
-		<div class="border-top">
-			<div class="table-responsive">
-				<table class="table table-hover table-nowrap">
-					<thead>
-						<tr>
-							<th scope="col">Name</th>
-							<th @click="sortTable('email')">
-								Email
-								<i :class="getSortIcon('email')"></i>
-							</th>
-							<th @click="sortTable('order_count')">
-								Total Orders
-								<i :class="getSortIcon('order_count')"></i>
-							</th>
-							<th scope="col">Money Spend</th>
-						</tr>
-					</thead>
-					<tbody>
-						<template x-if="!loading && totalItems === 0">
-							<tr>
-								<td colspan="8">No notification found.</td>
-							</tr>
-						</template>
-						<template x-for="notification in paginatednotifications" :key="notification.id">
-							<tr>
-								<td x-text="notification.name"></td>
-								<td x-text="notification.email"></td>
-								<td x-text="notification.totalOrders"></td>
-								<td x-text="notification.totalSpent"></td>
-							</tr>
-						</template>
-						<template x-for="i in 10 - paginatednotifications.length" :key="'empty' + i">
-							<tr>
-								<td colspan="5" class="py-7"></td>
-							</tr>
-						</template>
-					</tbody>
-				</table>
-			</div>
-			@p.PaginationControl()
-		</div>
-	</div>
-	<script>
-function notificationTable(projectId) {
-    return {
-		projectID: projectId,
-        currentTab: 'all',
-        notifications: [],
-        selectednotifications: [],
-        selectAllCheckbox: false,
-        sortKey: 'notifiaction_count',
-        sortAsc: false,
-        currentPage: 1,
-        itemsPerPage: 10,
-        totalItems: 0,
-        totalPages: 0,
-        loading: false,
-
-        async init() {
-            await this.fetchnotifications(this.currentPage);
-        },
-
-        async fetchnotifications(page = 1) {
-            this.loading = true;
-            try {
-                const url = this.getUrlForTab(this.currentTab, page);
-                const response = await fetch(url);
-                const result = await response.json();
-                if (response.ok) {
-                    this.notifications = result.data || [];
-                    this.totalItems = result.meta.totalItems || 0;
-                    this.currentPage = result.meta.currentPage || 1;
-                    this.itemsPerPage = result.meta.itemsPerPage || 10;
-                    this.totalPages = result.meta.totalPages || 0;
-                } else {
-                    console.error('Error fetching data:', result.message);
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                this.loading = false;
-            }
-        },
-
-         getUrlForTab(tab, page) {
-            const baseUrl = `${window.location.origin}/notification/table/${this.projectID}`;
-            const sortDirection = this.sortAsc ? 'asc' : 'desc'; // Determine sort direction
-            switch (tab) {
-                case 'all':
-                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-                case 'completed':
-                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-                case 'processing':
-                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-                case 'pending':
-                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-                case 'cancelled':
-                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-                default:
-                    return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-            }
-        },
-
-        selectTab(tab) {
-            this.currentTab = tab;
-            this.currentPage = 1; // Reset to first page
-            this.fetchnotifications(this.currentPage);
-        },
-
-        selectAll() {
-            this.selectednotifications = this.selectAllCheckbox ? this.notifications.map(order => order.orderId) : [];
-        },
-
-      	sortTable(key) {
-            if (this.sortKey === key) {
-                this.sortAsc = !this.sortAsc; // Toggle sort direction if the same column is clicked
-            } else {
-                this.sortKey = key; // Set new sort key
-                this.sortAsc = true; // Default to ascending if a new column is selected
-            }
-            this.fetchnotifications(this.currentPage); // Fetch sorted data
-        },
-		getSortIcon(key) {
-            if (this.sortKey !== key) return '';
-            return this.sortAsc ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
-        },
-
-        changePage(page) {
-            if (page < 1 || page > this.totalPages) return;
-            this.fetchnotifications(page);
-        },
-
-        get paginatednotifications() {
-            return this.notifications;
-        },
-
-        get currentPageStart() {
-            return (this.currentPage - 1) * this.itemsPerPage + 1;
-        },
-
-        get currentPageEnd() {
-            return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
-        },
-       	get pageNumbers() {
-            const range = 2; // Number of pages to show around the current page
-            let start = Math.max(1, this.currentPage - range);
-            let end = Math.min(this.totalPages, this.currentPage + range);
-
-            // Adjust range if there are not enough pages on one side
-            if (this.totalPages - end < range) {
-                end = this.totalPages;
-                start = Math.max(1, end - 2 * range);
-            } else if (start <= range) {
-                start = 1;
-                end = Math.min(this.totalPages, start + 2 * range);
-            }
-			
-            return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-        },
-		 badgeClass(status) {
-				const baseClass = 'badge bg-body-secondary badge-custom'; // Add badge-custom class
-				switch (status) {
-					case 'pending':
-						return `${baseClass} text-warning`;
-					case 'completed':
-						return `${baseClass} text-success`;
-					case 'cancelled':
-						return `${baseClass} text-danger`;
-					case 'processing':
-						return `${baseClass} text-warning`;
-					default:
-						return baseClass;
-				}
-		}		
-    };
-}
-</script>
+	</main>
 }

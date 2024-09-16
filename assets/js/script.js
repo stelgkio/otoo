@@ -1,3 +1,24 @@
+
+
+document.addEventListener('htmx:afterRequest', function (evt) {
+    // Check if the specific element triggered the request   
+    
+    if (evt.detail.requestConfig.elt.classList.contains('delete-notification')) {
+        console.log("Notification deleted!");
+        console.log("Notification deleted!");
+        var dropdownElement = document.getElementById('dropdown-notifications');
+        var dropdownInstance = bootstrap.Dropdown.getInstance(dropdownElement); // Get the existing Bootstrap dropdown instance
+
+        if (!dropdownInstance) {
+            dropdownInstance = new bootstrap.Dropdown(dropdownElement); // Initialize if it doesn't exist
+        }
+
+        dropdownInstance.show(); // Keep the dropdown open after HTMX updates
+    }
+   
+});
+
+
 document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('project-search');
     const projectList = document.getElementById('project-list');

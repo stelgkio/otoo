@@ -57,7 +57,8 @@ func (ph *ProjectHandler) ProjectSettingsNotification(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return r.Render(ctx, pn.SettingsNotifications(project))
+	notifications, err := ph.notificationSvc.FindNotification(projectID, 10, 1, "timestamp", "", true)
+	return r.Render(ctx, pn.SettingsNotifications(project, notifications))
 }
 
 // ProjectSettingsWebHook GET /project/settings/webhook/:projectId

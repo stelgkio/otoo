@@ -12,14 +12,16 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
+// SmtpService represents the SMTP service
 type SmtpService struct {
 }
 
-// NewUserService creates a new user service instance
+// NewSmtpService creates a new instance of SmtpService
 func NewSmtpService() *SmtpService {
 	return &SmtpService{}
 }
 
+// SendEmail sends an email to the user
 func (s *SmtpService) SendEmail(ctx echo.Context, sender, email, template, subject string, isHtml bool) error {
 	config, err := config.New()
 	if err != nil {
@@ -34,11 +36,13 @@ func (s *SmtpService) SendEmail(ctx echo.Context, sender, email, template, subje
 	m.SetBody("text/html", template)
 	d := gomail.NewDialer(config.SMTP.Host, 587, config.SMTP.User, config.SMTP.Password)
 	if err := d.DialAndSend(m); err != nil {
-		panic(err)
+		slog.Error("error DialAndSend", "error", err)
+		return err
 	}
 	return nil
 }
 
+// SendForgetPasswordEmail sends a forget password email to the user
 func (s *SmtpService) SendForgetPasswordEmail(ctx echo.Context, email, firstName, lastName, resetPasswordLink string) error {
 	type ForgotPasswordData struct {
 		FirstName         string
@@ -52,7 +56,7 @@ func (s *SmtpService) SendForgetPasswordEmail(ctx echo.Context, email, firstName
 	}
 
 	// Load and parse the HTML template
-	tmpl, err := template.ParseFiles("assets/template/forgot_password_template.html")
+	tmpl, err := template.ParseFiles("/project/otoo/build/assets/template/forgot_password_template.html")
 	if err != nil {
 		slog.Error("Error", "Error loading template: %v", err)
 	}

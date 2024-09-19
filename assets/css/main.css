@@ -13913,3 +13913,188 @@ tbody tr {
     padding: 0.25em 0.4em;
     /* Adjust padding if necessary */
 }
+
+@media (max-width: 1199.98px) {
+    .navbar-expand-xl .navbar-collapse {
+        flex-basis: 100%;
+        display: none !important;
+    }
+
+    .navbar-expand-xl .navbar-collapse.show {
+        display: flex !important;
+        flex-direction: column;
+    }
+
+    .navbar-expand-xl .navbar-toggler {
+        display: block;
+    }
+
+    .navbar-expand-xl .navbar-nav {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .navbar-expand-xl .navbar-nav .nav-link {
+        padding: .5rem 1rem;
+    }
+
+    .navbar-expand-xl .navbar-nav .nav-item {
+        width: 100%;
+    }
+
+    .navbar-expand-xl .navbar-brand {
+        margin-right: auto;
+    }
+
+    .navbar-expand-xl .navbar-nav.align-items-lg-center {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .navbar-expand-xl .navbar-nav.align-items-lg-center .nav-item {
+        width: 100%;
+    }
+
+    .navbar-expand-xl .navbar-nav.align-items-lg-center .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .navbar-expand-xl .navbar-nav.align-items-lg-center .nav-link.d-none.d-lg-block {
+        display: block !important;
+    }
+
+    /* Additional styles for the specific structure */
+    .navbar-expand-xl .navbar-collapse > ul.navbar-nav {
+        margin-bottom: 1rem;
+    }
+
+    .navbar-expand-xl .navbar-collapse > .navbar-nav.align-items-lg-center {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 1rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    .navbar-expand-xl .navbar-collapse {
+        flex-basis: auto;
+        display: flex !important;
+    }
+
+    .navbar-expand-xl .navbar-toggler {
+        display: none;
+    }
+
+    .navbar-expand-xl .navbar-nav {
+        flex-direction: row;
+    }
+
+    .navbar-expand-xl .navbar-nav.align-items-lg-center {
+        flex-direction: row;
+        width: auto;
+    }
+
+    .navbar-expand-xl .navbar-nav.align-items-lg-center .btn {
+        width: auto;
+        margin-bottom: 0;
+    }
+
+    /* Ensure the sign-in link is visible on larger screens */
+    .navbar-expand-xl .navbar-nav.align-items-lg-center .nav-link.d-none.d-lg-block {
+        display: block !important;
+    }
+}
+
+@media (max-width: 1199.98px) {
+    .navbar-expand-xl .navbar-collapse {
+        flex-basis: 100%;
+        display: none !important;
+    }
+
+    .navbar-expand-xl .navbar-collapse.show {
+        display: flex !important;
+        flex-direction: column;
+    }
+
+    .navbar-expand-xl .navbar-toggler {
+        display: block;
+    }
+
+    .navbar-expand-xl .navbar-nav {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .navbar-expand-xl .navbar-nav .nav-link {
+        padding: .5rem 1rem;
+    }
+
+    .navbar-expand-xl .navbar-nav .nav-item {
+        width: 100%;
+    }
+
+    .navbar-expand-xl .navbar-brand {
+        margin-right: auto;
+    }
+
+    .navbar-expand-xl .navbar-nav.align-items-lg-center {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .navbar-expand-xl .navbar-nav.align-items-lg-center .nav-item {
+        width: 100%;
+    }
+
+    .navbar-expand-xl .navbar-nav.align-items-lg-center .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .navbar-expand-xl .navbar-nav.align-items-lg-center .nav-link.d-none.d-lg-block {
+        display: block !important;
+    }
+
+    /* Additional styles for the specific structure */
+    .navbar-expand-xl .navbar-collapse > ul.navbar-nav {
+        margin-bottom: 1rem;
+    }
+
+    .navbar-expand-xl .navbar-collapse > .navbar-nav.align-items-lg-center {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 1rem;
+    }
+}
+
+
+/* Quick Fix of header wrap */
+
+@media (min-width: 1200px) {
+    .navbar-expand-xl .navbar-collapse {
+        flex-basis: auto;
+        display: flex !important;
+    }
+
+    .navbar-expand-xl .navbar-toggler {
+        display: none;
+    }
+
+    .navbar-expand-xl .navbar-nav {
+        flex-direction: row;
+    }
+
+    .navbar-expand-xl .navbar-nav.align-items-lg-center {
+        flex-direction: row;
+        width: auto;
+    }
+
+    .navbar-expand-xl .navbar-nav.align-items-lg-center .btn {
+        width: auto;
+        margin-bottom: 0;
+    }
+
+    /* Ensure the sign-in link is visible on larger screens */
+    .navbar-expand-xl .navbar-nav.align-items-lg-center .nav-link.d-none.d-lg-block {
+        display: block !important;
+    }
+}

@@ -19,6 +19,13 @@ type ExtensionRepository interface {
 	GetAllProjectExtensions(ctx echo.Context, projectID string) ([]*domain.ProjectExtension, error)
 	GetProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.ProjectExtension, error)
 	DeleteProjectExtension(ctx echo.Context, extensionID, projectID string) error
+
+	////////////////// ACS Extension/////////////////////////
+
+	CreateACSProjectExtension(ctx echo.Context, projectID string, ex *domain.AcsCourierExtension) error
+	GetAllACSProjectExtensions(ctx echo.Context, projectID string) ([]*domain.AcsCourierExtension, error)
+	GetACSProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.AcsCourierExtension, error)
+	DeleteACSProjectExtension(ctx echo.Context, extensionID, projectID string) error
 }
 
 // ExtensionService defines the methods for interacting with the Extension service
@@ -35,4 +42,11 @@ type ExtensionService interface {
 	GetAllProjectExtensions(ctx echo.Context, projectID string) ([]*domain.ProjectExtension, error)
 	GetProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.ProjectExtension, error)
 	DeleteProjectExtension(ctx echo.Context, extensionID, projectID string) error
+
+	////////////////// ACS Extension/////////////////////////
+
+	CreateACSProjectExtension(ctx echo.Context, projectID string, e *domain.AcsCourierExtension) error
+	GetAllACSProjectExtensions(ctx echo.Context, projectID string) ([]*domain.AcsCourierExtension, error)
+	GetACSProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.AcsCourierExtension, error)
+	DeleteACSProjectExtension(ctx echo.Context, extensionID, projectID string) error
 }

@@ -293,7 +293,7 @@
 .middle-purple,
 .middle-purple-hover:hover {
     --x-middle-color: var(--x-purple);
-    --x-gradient: var(--x-start-color), var(--x-middle-color), var(--x-end-color, rgba(137, 87, 255, 0))
+    --x-gradient: var(--x-start-color), var(--x-middle-color), #000
 }
 
 .middle-pink,
@@ -353,7 +353,7 @@
 .middle-gray,
 .middle-gray-hover:hover {
     --x-middle-color: var(--x-gray);
-    --x-gradient: var(--x-start-color), var(--x-middle-color), var(--x-end-color, rgba(75, 85, 99, 0))
+    --x-gradient: var(--x-start-color), var(--x-middle-color), #000
 }
 
 .middle-gray-dark,

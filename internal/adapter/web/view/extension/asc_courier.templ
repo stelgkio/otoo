@@ -1,103 +1,253 @@
 package views
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
 
-templ ASC_Courier(stripePublishableKey string, projectId, extensionId string) {
+templ ASC_Courier(projectId, extensionId string, errors map[string](string), values *domain.AcsCourierExtension) {
 	<div
 		id="dashboard-content"
 		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
 	>
 		<main class="container-fluid px-6 pb-10">
-			<form autocomplete="off" x-data={ fmt.Sprintf("subscriptionForm('%s','%s','%s')", stripePublishableKey, projectId, extensionId) }>
-				<header class="py-4 border-bottom">
-					<div class="row align-items-center">
-						<div class="col">
-							<div class="d-flex align-items-center gap-4">
-								<div>
-									<button
-										type="button"
-										class="btn-close text-xs"
-										aria-label="Close"
-										hx-get={ fmt.Sprintf("/extension/%s", projectId) }
-										hx-target="#dashboard-content"
-									></button>
+			<div class="row mt-2 ">
+				<div class="col-12 ">
+					<form autocomplete="off">
+						<div class="row  g-2 mt-6">
+							<div class="col-md-2">
+								<label class="form-label mb-0">User Id</label>
+							</div>
+							<div class="col-md-8 col-xl-5" hx-target="this" hx-swap="outerHTML">
+								if errors["user_id"] != "" {
+									<input
+										name="user_id"
+										type="text"
+										class="form-control is-invalid"
+										placeholder="User Id"
+										value={ values.UserID }
+									/>
+									<div class="invalid-feedback" style="display: block;">
+										{ errors["user_id"] }
+									</div>
+								} else {
+									<input
+										name="user_id"
+										type="text"
+										class="form-control"
+										placeholder="User Id"
+										value={ values.UserID }
+									/>
+								}
+							</div>
+						</div>
+						<div class="row  g-2 mt-6">
+							<div class="col-md-2">
+								<label class="form-label mb-0">User Password</label>
+							</div>
+							<div class="col-md-8 col-xl-5" hx-target="this" hx-swap="outerHTML">
+								if errors["user_password"] != "" {
+									<input
+										name="user_password"
+										type="text"
+										class="form-control is-invalid"
+										placeholder="User Password"
+										value={ values.UserPassword }
+									/>
+									<div class="invalid-feedback" style="display: block;">
+										{ errors["user_password"] }
+									</div>
+								} else {
+									<input
+										name="user_password"
+										type="text"
+										class="form-control"
+										placeholder="User Password"
+										value={ values.UserPassword }
+									/>
+								}
+							</div>
+						</div>
+						<div class="row  g-2 mt-6">
+							<div class="col-md-2">
+								<label class="form-label mb-0">Company Id</label>
+							</div>
+							<div class="col-md-8 col-xl-5" hx-target="this" hx-swap="outerHTML">
+								if errors["company_id"] != "" {
+									<input
+										name="company_id"
+										type="text"
+										class="form-control is-invalid"
+										placeholder="Company Id"
+										value={ values.CompanyID }
+									/>
+									<div class="invalid-feedback" style="display: block;">
+										{ errors["company_id"] }
+									</div>
+								} else {
+									<input
+										name="company_id"
+										type="text"
+										class="form-control"
+										placeholder="Company Id"
+										value={ values.CompanyID }
+									/>
+								}
+							</div>
+						</div>
+						<div class="row  g-2 mt-6">
+							<div class="col-md-2">
+								<label class="form-label mb-0">Company Password</label>
+							</div>
+							<div class="col-md-8 col-xl-5" hx-target="this" hx-swap="outerHTML">
+								if errors["company_password"] != "" {
+									<input
+										name="company_password"
+										type="text"
+										class="form-control is-invalid"
+										placeholder="Company Password"
+										value={ values.CompanyPassword }
+									/>
+									<div class="invalid-feedback" style="display: block;">
+										{ errors["company_password"] }
+									</div>
+								} else {
+									<input
+										name="company_password"
+										type="text"
+										class="form-control"
+										placeholder="Company Password"
+										value={ values.CompanyPassword }
+									/>
+								}
+							</div>
+						</div>
+						<hr class="my-6"/>
+						<div class="row  g-2 mt-6">
+							<div class="col-md-2">
+								<label class="form-label mb-0">Billing Code</label>
+							</div>
+							<div class="col-md-8 col-xl-5" hx-target="this" hx-swap="outerHTML">
+								if errors["billing_code"] != "" {
+									<input
+										name="billing_code"
+										type="text"
+										class="form-control is-invalid"
+										placeholder="Billing Code"
+										value={ values.BillingCode }
+									/>
+									<div class="invalid-feedback" style="display: block;">
+										{ errors["billing_code"] }
+									</div>
+								} else {
+									<input
+										name="billing_code"
+										type="text"
+										class="form-control"
+										placeholder="Billing Code"
+										value={ values.BillingCode }
+									/>
+								}
+							</div>
+						</div>
+						<div class="row  g-2 mt-6">
+							<div class="col-md-2">
+								<label class="form-label mb-0">AcsAPIKey</label>
+							</div>
+							<div class="col-md-8 col-xl-5" hx-target="this" hx-swap="outerHTML">
+								if errors["acs_api_key"] != "" {
+									<input
+										name="acs_api_key"
+										type="text"
+										class="form-control is-invalid"
+										placeholder="AcsAPIKey"
+										value={ values.AcsAPIKey }
+									/>
+									<div class="invalid-feedback" style="display: block;">
+										{ errors["acs_api_key"] }
+									</div>
+								} else {
+									<input
+										name="acs_api_key"
+										type="text"
+										class="form-control"
+										placeholder="AcsAPIKey"
+										value={ values.AcsAPIKey }
+									/>
+								}
+							</div>
+						</div>
+						<hr class="my-6"/>
+						<div class="row align-items-center g-3">
+							<div class="col-md-2"><label class="form-label mb-0">Select Printer Type</label></div>
+							<div class="col-md-8 col-xl-5">
+								<div class="d-flex gap-3 scrollable-x">
+									<div class="form-item-checkable">
+										<input
+											class="form-item-check"
+											type="radio"
+											name="printer_type"
+											id="projecttypewoo"
+											checked="checked"
+											value="lazer"
+										/>
+										<label class="form-item cursor-pointer" for="projecttypewoo">
+											<span
+												class="form-item-click d-inline-flex flex-column gap-3 align-items-center justify-content-center form-control w-rem-24 h-rem-24 text-center text-muted"
+											>
+												// <i // class="bi bi-currency-bitcoin text-xl" / /></i>
+												<span class="fw-semibold text-xs">Laser</span>
+											</span>
+										</label>
+									</div>
+									<div class="form-item-checkable">
+										<input
+											class="form-control form-item-check"
+											type="radio"
+											name="printer_type"
+											id="projecttypeshopy"
+											value="thermal"
+										/>
+										<label class="form-item cursor-pointer" for="projecttypeshopy">
+											<span
+												class="form-item-click d-inline-flex flex-column gap-3 align-items-center justify-content-center form-control w-rem-24 h-rem-24 text-center text-muted"
+											>
+												<span class="fw-semibold text-xs">Thermal</span>
+											</span>
+										</label>
+									</div>
 								</div>
-								<div class="vr opacity-20 my-1"></div>
-								<h1 class="h4 ls-tight">Acs Courier</h1>
 							</div>
 						</div>
-						<div class="col">
-							<div class="hstack gap-2 justify-content-end">
-								<button
-									type="button"
-									@click="createSubscription"
-									class="btn btn-sm btn-neutral d-none d-sm-inline-flex"
-								>
-									<span class="pe-2"><i class="bi bi-plus-circle"></i> </span><span>Subscription</span>
-								</button>
-							</div>
+						<hr class="my-6 "/>
+						<div class="d-flex justify-content-end gap-2">
+							<button
+								type="button"
+								class="btn btn-sm btn-neutral"
+								hx-get={ fmt.Sprintf("/extension/%s", projectId) }
+								hx-target="#dashboard-content"
+							>Cancel</button>
+							<button
+								type="submit"
+								hx-post={ fmt.Sprintf("/extension/asc-courier/%s", projectId) }
+								hx-indicator="#spinner"
+								class="btn btn-sm btn-primary"
+								hx-target="#dashboard-content"
+							>
+								<span
+									id="spinner"
+									class="htmx-indicator spinner-border spinner-border-sm"
+									role="status"
+									aria-hidden="true"
+								></span>
+								Submit
+							</button>
 						</div>
-					</div>
-				</header>
-			</form>
-			<article class="article mw-read">
-				<h2>What is Acs Courier Extention</h2>
-				<p>
-					Accelerate your shipping process with Otoo ASC Courier. Manage and send orders with speed and ease.
-				</p>
-				<ul class="list-unstyled mt-7">
-					<li class="py-2 d-flex align-items-center">
-						<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
-							<i class="bi bi-check"></i>
-						</div>
-						<p>Automatic order status updates</p>
-					</li>
-					<li class="py-2 d-flex align-items-center">
-						<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
-							<i class="bi bi-check"></i>
-						</div>
-						<p>Download shipping vouchers</p>
-					</li>
-					<li class="py-2 d-flex align-items-center">
-						<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
-							<i class="bi bi-check"></i>
-						</div>
-						<p>Send customer notifications via email</p>
-					</li>
-				</ul>
-			</article>
+						<hr class="my-6 "/>
+						<div class="row justify-content-md-center"></div>
+					</form>
+				</div>
+			</div>
 		</main>
-		<script>
-		function subscriptionForm(stripePublishableKey,projectId,extensionId) {
-			return {
-
-				createSubscription() {
-					const stripe = Stripe(stripePublishableKey);
-
-					const value = {
-						
-						projectId: projectId, // Add additional data if needed
-						extensionId: extensionId // Add additional data if needed
-					};
-
-					fetch("/payment", {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						body: JSON.stringify(value)
-					})
-					.then(async response => {
-						const res = await response.json();
-						const id = res.id;
-						stripe.redirectToCheckout({ sessionId: id });
-					})
-					.catch(error => {
-						console.error('Error creating subscription:', error);
-					});
-				}
-			};
-		}
-	</script>
 	</div>
 }

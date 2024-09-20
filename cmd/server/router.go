@@ -155,6 +155,8 @@ func NewRouter(
 		extensiongroup.GET("/page/asc-courier/:projectId", dashboardHandler.AcsCourierPage)
 		extensiongroup.GET("/page/wallet-expences/:projectId", dashboardHandler.WalletExpensesPage)
 		extensiongroup.GET("/page/data-synchronizer/:projectId", dashboardHandler.DataSynchronizerPage)
+
+		extensiongroup.GET("/project_extensions/:projectId", dashboardHandler.ProjectExtensionsList)
 	}
 
 	e.POST("/payment/event", dashboardHandler.PaymentEvent)

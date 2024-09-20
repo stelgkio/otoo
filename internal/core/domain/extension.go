@@ -23,17 +23,17 @@ type Extension struct {
 
 // ProjectExtension represents active project Extension
 type ProjectExtension struct {
-	ID          primitive.ObjectID `bson:"_id,omitempty"`
-	Title       string             `json:"title" bson:"title,omitempty"`
-	Description string             `json:"description" bson:"description,omitempty"`
-	Code        string             `json:"code" bson:"code,omitempty"`
-	UserID      string             `json:"user_id" bson:"user_id,omitempty"`
-	ProjectID   string             `json:"project_id" bson:"project_id,omitempty"`
-	ExtensionID string             `json:"Extension_id" bson:"extension_id,omitempty"`
-	CreatedAt   time.Time          `json:"created_at"  bson:"created_at,omitempty"`
-	UpdatedAt   time.Time          `json:"updated_at"  bson:"updated_at,omitempty"`
-	DeletedAt   time.Time          `json:"deleted_at"  bson:"deleted_at,omitempty"`
-	IsActive    bool               `json:"is_active" bson:"is_active,omitempty"`
+	ID            primitive.ObjectID `bson:"_id,omitempty"`
+	Title         string             `json:"title" bson:"title,omitempty"`
+	Description   string             `json:"description" bson:"description,omitempty"`
+	Code          string             `json:"code" bson:"code,omitempty"`
+	ProjectID     string             `json:"project_id" bson:"project_id,omitempty"`
+	ExtensionID   string             `json:"Extension_id" bson:"extension_id,omitempty"`
+	CreatedAt     time.Time          `json:"created_at"  bson:"created_at,omitempty"`
+	UpdatedAt     time.Time          `json:"updated_at"  bson:"updated_at,omitempty"`
+	DeletedAt     time.Time          `json:"deleted_at"  bson:"deleted_at,omitempty"`
+	IsActive      bool               `json:"is_active" bson:"is_active,omitempty"`
+	PaymentStatus string             `json:"payment_status" bson:"payment_status,omitempty"`
 }
 
 // AcsCourierExtension represents active acs details for acs courier

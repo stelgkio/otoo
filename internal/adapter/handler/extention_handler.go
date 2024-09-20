@@ -7,6 +7,10 @@ import (
 
 	"github.com/labstack/echo/v4"
 	e "github.com/stelgkio/otoo/internal/adapter/web/view/extension"
+	ac "github.com/stelgkio/otoo/internal/adapter/web/view/extension/acs_courier"
+	nv "github.com/stelgkio/otoo/internal/adapter/web/view/extension/side_nav_list"
+	et "github.com/stelgkio/otoo/internal/adapter/web/view/extension/template"
+	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stelgkio/otoo/internal/core/util"
 )
@@ -31,8 +35,20 @@ func (dh *DashboardHandler) StripeSuccesRedirect(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	if extension.PriceID == "" {
-		return util.Render(ctx, e.Extensions(projectID, nil))
+
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := dh.userSvc.GetUserById(ctx, userID)
+	project, err := dh.projectSvc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	if extension.Code == "asc-courier" {
+		dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension)
+
+		return util.Render(ctx, et.ExtentionAcsSubscriptionSuccessTemplate(user, project.Name, projectID, extensionID))
 	}
 	return util.Render(ctx, e.Extensions(projectID, nil))
 }
@@ -64,7 +80,7 @@ func (dh *DashboardHandler) AcsCourier(ctx echo.Context) error {
 		acs = new(domain.AcsCourierExtension)
 	}
 
-	return util.Render(ctx, e.ASC_Courier(projectID, extension.ID.Hex(), nil, acs))
+	return util.Render(ctx, ac.ASC_Courier(projectID, extension.ID.Hex(), nil, acs))
 }
 
 // AcsCourierFormPost post form with acs courier data
@@ -77,11 +93,11 @@ func (dh *DashboardHandler) AcsCourierFormPost(ctx echo.Context) error {
 	req := new(domain.AcsCourierExtension)
 	if err := ctx.Bind(req); err != nil {
 		slog.Error("Create project binding error", "error", err)
-		return util.Render(ctx, e.ASC_Courier(projectID, extension.ID.Hex(), nil, req))
+		return util.Render(ctx, ac.ASC_Courier(projectID, extension.ID.Hex(), nil, req))
 	}
 	validationErrors := req.Validate()
 	if len(validationErrors) > 0 {
-		return util.Render(ctx, e.ASC_Courier(projectID, extension.ID.Hex(), validationErrors, req))
+		return util.Render(ctx, ac.ASC_Courier(projectID, extension.ID.Hex(), validationErrors, req))
 	}
 
 	req.ProjectID = projectID
@@ -91,7 +107,7 @@ func (dh *DashboardHandler) AcsCourierFormPost(ctx echo.Context) error {
 
 	dh.extensionSvc.CreateACSProjectExtension(ctx, projectID, req)
 
-	return util.Render(ctx, e.ASC_Courier_Subscription(os.Getenv("STRIPE_PUBLICK_KEY"), projectID, extension.ID.Hex()))
+	return util.Render(ctx, ac.ASC_Courier_Subscription(os.Getenv("STRIPE_PUBLICK_KEY"), projectID, extension.ID.Hex()))
 }
 
 // WalletExpenses get extention
@@ -122,7 +138,7 @@ func (dh *DashboardHandler) AcsCourierPage(ctx echo.Context) error {
 		return err
 	}
 
-	return util.Render(ctx, e.ASC_Courier(projectID, extension.ID.Hex(), nil, new(domain.AcsCourierExtension)))
+	return util.Render(ctx, ac.ASC_Courier(projectID, extension.ID.Hex(), nil, new(domain.AcsCourierExtension)))
 }
 
 // WalletExpensesPage get extention
@@ -143,4 +159,14 @@ func (dh *DashboardHandler) DataSynchronizerPage(ctx echo.Context) error {
 		return err
 	}
 	return util.Render(ctx, e.DataSynchronizer(os.Getenv("STRIPE_PUBLICK_KEY"), projectID, extension.ID.Hex()))
+}
+
+// DataSynchronizerPage get extention
+func (dh *DashboardHandler) ProjectExtensionsList(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	return util.Render(ctx, nv.SideNavList(projectID, projectExtensions[0].ExtensionID, projectExtensions))
 }

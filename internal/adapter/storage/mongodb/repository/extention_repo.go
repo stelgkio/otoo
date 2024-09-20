@@ -154,8 +154,14 @@ func (ex *ExtensionRepository) CreateProjectExtension(ctx echo.Context, projectI
 		CreatedAt:   time.Now().UTC(),
 		IsActive:    true,
 	}
+	filter := bson.M{"extension_id": e.ID.Hex(), "is_active": true, "project_id": projectID}
+	update := bson.M{"$set": projectExtension}
 
-	_, err := collection.InsertOne(ctx.Request().Context(), projectExtension)
+	// Set upsert option to true
+	opt := options.Update().SetUpsert(true)
+
+	// Perform the upsert operation
+	_, err := collection.UpdateOne(context.TODO(), filter, update, opt)
 	if err != nil {
 		return err
 	}

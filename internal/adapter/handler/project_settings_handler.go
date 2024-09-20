@@ -35,7 +35,11 @@ func (ph *ProjectHandler) ProjectSettings(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return r.Render(ctx, wp.SettingsGeneral(user, project))
+	projectExtensions, err := ph.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	return r.Render(ctx, wp.SettingsGeneral(user, project, projectExtensions))
 }
 
 // ProjectSettingsSercrets GET /project/settings/secret/:projectId
@@ -46,7 +50,11 @@ func (ph *ProjectHandler) ProjectSettingsSercrets(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return r.Render(ctx, ps.ProjectSecrets(project))
+	projectExtensions, err := ph.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	return r.Render(ctx, ps.ProjectSecrets(project, projectExtensions))
 }
 
 // ProjectSettingsNotification GET /project/settings/notification/:projectId
@@ -58,7 +66,11 @@ func (ph *ProjectHandler) ProjectSettingsNotification(ctx echo.Context) error {
 		return err
 	}
 	notifications, err := ph.notificationSvc.FindNotification(projectID, 10, 1, "timestamp", "", true)
-	return r.Render(ctx, pn.SettingsNotifications(project, notifications))
+	projectExtensions, err := ph.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	return r.Render(ctx, pn.SettingsNotifications(project, notifications, projectExtensions))
 }
 
 // ProjectSettingsWebHook GET /project/settings/webhook/:projectId
@@ -69,7 +81,11 @@ func (ph *ProjectHandler) ProjectSettingsWebHook(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return r.Render(ctx, pw.SettingsWebhooks(project))
+	projectExtensions, err := ph.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions))
 }
 
 // ProjectUpdate POST /project/settings/update/:projectId
@@ -87,9 +103,13 @@ func (ph *ProjectHandler) ProjectUpdate(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
+	projectExtensions, err := ph.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
 	req := new(updateProjectRequest)
 	if err := ctx.Bind(req); err != nil {
-		return r.Render(ctx, wp.SettingsGeneral(user, project))
+		return r.Render(ctx, wp.SettingsGeneral(user, project, projectExtensions))
 		//return ctx.String(http.StatusBadRequest, "bad request")
 	}
 	project.WoocommerceProject.Name = req.Name
@@ -98,7 +118,7 @@ func (ph *ProjectHandler) ProjectUpdate(ctx echo.Context) error {
 	project.Description = req.Description
 
 	proj, err := ph.svc.UpdateProject(ctx, project)
-	return r.Render(ctx, wp.SettingsGeneral(user, proj))
+	return r.Render(ctx, wp.SettingsGeneral(user, proj, projectExtensions))
 }
 
 // ProjectDelete POST /project/settings/:projectId
@@ -126,10 +146,13 @@ func (ph *ProjectHandler) ProjectSecretsUpdate(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-
+	projectExtensions, err := ph.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
 	req := new(updateProjectRequest)
 	if err := ctx.Bind(req); err != nil {
-		return r.Render(ctx, ps.ProjectSecrets(project))
+		return r.Render(ctx, ps.ProjectSecrets(project, projectExtensions))
 		//return ctx.String(http.StatusBadRequest, "bad request")
 	}
 	project.WoocommerceProject.ConsumerKey = req.ConsumerKey
@@ -138,9 +161,9 @@ func (ph *ProjectHandler) ProjectSecretsUpdate(ctx echo.Context) error {
 	_, err = ph.reportSvc.GetCustomerTotalCountTestCredential(ctx, req.ConsumerKey, req.ConsumerSecret, project.WoocommerceProject.Domain)
 	if err != nil {
 		slog.Error("Project new secrets error", "error", err)
-		return r.Render(ctx, ps.ProjectSecretsError(project))
+		return r.Render(ctx, ps.ProjectSecretsError(project, projectExtensions))
 	}
 	proj, err := ph.svc.UpdateProject(ctx, project)
 
-	return r.Render(ctx, ps.ProjectSecrets(proj))
+	return r.Render(ctx, ps.ProjectSecrets(proj, projectExtensions))
 }

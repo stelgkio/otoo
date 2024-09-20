@@ -1,8 +1,11 @@
 package views
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
 
-templ SettingsHeader(headerTitle string, active int, projectId string) {
+templ SettingsHeader(headerTitle string, active int, projectId string, projectExtensions []*domain.ProjectExtension) {
 	<header class="border-bottom mb-10">
 		<div class="row align-items-center">
 			<div class="col-sm-6 col-12">
@@ -86,6 +89,69 @@ templ SettingsHeader(headerTitle string, active int, projectId string) {
 						class="nav-link"
 					>Notifications</a>
 				</li>
+			}
+			if (active==5) {
+				<li class="nav-item ">
+					<a
+						href="javascript:void(0)"
+						hx-get={ fmt.Sprintf("/project/settings/notification/%s", projectId) }
+						hx-target="#dashboard-content"
+						class="nav-link active"
+					>Payment & Subscription</a>
+				</li>
+			} else {
+				<li class="nav-item">
+					<a
+						href="javascript:void(0)"
+						hx-get={ fmt.Sprintf("/project/settings/notification/%s", projectId) }
+						hx-target="#dashboard-content"
+						class="nav-link"
+					>Payment & Subscription</a>
+				</li>
+			}
+			for _, extension := range projectExtensions {
+				if (extension.Code == "asc-courier") {
+					if (active==6) {
+						<li class="nav-item ">
+							<a
+								href="javascript:void(0)"
+								hx-get={ fmt.Sprintf("/project/settings/notification/%s", projectId) }
+								hx-target="#dashboard-content"
+								class="nav-link active"
+							>{ extension.Title }</a>
+						</li>
+					} else {
+						<li class="nav-item">
+							<a
+								href="javascript:void(0)"
+								hx-get={ fmt.Sprintf("/project/settings/notification/%s", projectId) }
+								hx-target="#dashboard-content"
+								class="nav-link"
+							>{ extension.Title }</a>
+						</li>
+					}
+				}
+				if (extension.Code == "wallet-expences") {
+					if (active==7) {
+						<li class="nav-item ">
+							<a
+								href="javascript:void(0)"
+								hx-get={ fmt.Sprintf("/project/settings/notification/%s", projectId) }
+								hx-target="#dashboard-content"
+								class="nav-link active"
+							>{ extension.Title }</a>
+						</li>
+					} else {
+						<li class="nav-item">
+							<a
+								href="javascript:void(0)"
+								hx-get={ fmt.Sprintf("/project/settings/notification/%s", projectId) }
+								hx-target="#dashboard-content"
+								class="nav-link"
+							>{ extension.Title }</a>
+						</li>
+					}
+				}
 			}
 			//<li class="nav-item"><a href="/pages/account-team.html" class="nav-link">Team</a></li>
 		</ul>

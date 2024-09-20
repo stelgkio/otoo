@@ -78,7 +78,7 @@ func (s *SmtpService) SendForgetPasswordEmail(ctx echo.Context, email, firstName
 func (s *SmtpService) SendContactEmail(ctx echo.Context, req *domain.ContactRequest) error {
 
 	// Load and parse the HTML template
-	tmpl, err := template.ParseFiles("assets/template/contact_verification.html")
+	tmpl, err := template.ParseFiles("/project/otoo/build/assets/template/contact_verification.html")
 	if err != nil {
 		slog.Error("Error", "Error loading template: %v", err)
 	}

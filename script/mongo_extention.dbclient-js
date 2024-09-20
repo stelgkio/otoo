@@ -44,3 +44,19 @@ db('otoo').collection('notifications').insertOne({
             project_id: "e915c34b-33c5-49e8-9e2c-227c650398fa",
             type: "info"
     },)
+
+
+db('otoo').collection('project_extensions').insertOne({
+      title: "ACS Courier",  // Title of the extension
+            description: "Accelerate your shipping process with Otoo ASC Courier. Manage and send orders with speed and ease.",  // Description of the extension
+            code: "asc-courier",  // A unique code for the extension          
+            project_id: "e915c34b-33c5-49e8-9e2c-227c650398fa",  // Project ID this extension belongs to
+            extension_id: "ObjectID('66b611800a06f73a804d40da')",  // Extension ID
+            created_at: new Date(),  // Timestamp for creation
+            updated_at: new Date(),  // Timestamp for update
+            deleted_at: null,  // Optional field, null if not deleted
+            is_active: true,  // Whether this extension is active
+            payment_status: "Paid"  // Payment status for this extension
+    },)
+
+   

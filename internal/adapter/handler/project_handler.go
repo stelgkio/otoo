@@ -32,10 +32,11 @@ type ProjectHandler struct {
 	orderSvc        port.OrderService
 	bestSellerSvc   port.ProductBestSellers
 	notificationSvc port.NotificationService
+	extensionSvc    port.ExtensionService
 }
 
 // NewProjectHandler creates a new ProjectHandler instance
-func NewProjectHandler(svc port.ProjectService, userSvc port.UserService, reportSvc port.ReportService, productSvc port.ProductService, customerSvc port.CustomerService, orderSvc port.OrderService, bestSellerSvc port.ProductBestSellers, notificationSvc port.NotificationService) *ProjectHandler {
+func NewProjectHandler(svc port.ProjectService, userSvc port.UserService, reportSvc port.ReportService, productSvc port.ProductService, customerSvc port.CustomerService, orderSvc port.OrderService, bestSellerSvc port.ProductBestSellers, notificationSvc port.NotificationService, extensionSvc port.ExtensionService) *ProjectHandler {
 	return &ProjectHandler{
 		svc,
 		userSvc,
@@ -45,6 +46,7 @@ func NewProjectHandler(svc port.ProjectService, userSvc port.UserService, report
 		orderSvc,
 		bestSellerSvc,
 		notificationSvc,
+		extensionSvc,
 	}
 }
 

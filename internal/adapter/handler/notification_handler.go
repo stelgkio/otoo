@@ -73,6 +73,10 @@ func (dh *DashboardHandler) DeleteNotificationSettings(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
+	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
 
-	return util.Render(ctx, pn.SettingsNotifications(project, notifications))
+	return util.Render(ctx, pn.SettingsNotifications(project, notifications, projectExtensions))
 }

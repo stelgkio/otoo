@@ -144,13 +144,19 @@ func NewRouter(
 		extensiongroup.GET("/:projectId", dashboardHandler.Extention)
 		extensiongroup.GET("/:projectId/:extensionId/success", dashboardHandler.StripeSuccesRedirect)
 		extensiongroup.GET("/:projectId/:extensionId/fail", dashboardHandler.StripeFailRedirect)
+
 		extensiongroup.GET("/asc-courier/:projectId", dashboardHandler.AcsCourier)
+		extensiongroup.POST("/asc-courier/:projectId", dashboardHandler.AcsCourierFormPost)
+
 		extensiongroup.GET("/wallet-expences/:projectId", dashboardHandler.WalletExpenses)
+
 		extensiongroup.GET("/data-synchronizer/:projectId", dashboardHandler.DataSynchronizer)
 
 		extensiongroup.GET("/page/asc-courier/:projectId", dashboardHandler.AcsCourierPage)
 		extensiongroup.GET("/page/wallet-expences/:projectId", dashboardHandler.WalletExpensesPage)
 		extensiongroup.GET("/page/data-synchronizer/:projectId", dashboardHandler.DataSynchronizerPage)
+
+		extensiongroup.GET("/project_extensions/:projectId", dashboardHandler.ProjectExtensionsList)
 	}
 
 	e.POST("/payment/event", dashboardHandler.PaymentEvent)

@@ -13,7 +13,7 @@ import (
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-func SettingsWebhooks(project *domain.Project) templ.Component {
+func SettingsWebhooks(project *domain.Project, projectExtensions []*domain.ProjectExtension) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -35,7 +35,7 @@ func SettingsWebhooks(project *domain.Project) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = h.SettingsHeader("Project Webhooks", 3, project.Id.String()).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = h.SettingsHeader("Project Webhooks", 3, project.Id.String(), projectExtensions).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

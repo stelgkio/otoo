@@ -31,7 +31,7 @@ func (s *SmtpService) SendEmail(ctx echo.Context, sender, email, template, subje
 
 	m := gomail.NewMessage()
 	m.SetHeader("From", sender)
-	m.SetHeader("To", email, "support@otoo.gr")
+	m.SetHeader("To", email, "support@konektorx.com")
 	m.SetHeader("Subject", subject)
 	m.SetBody("text/html", template)
 	d := gomail.NewDialer(config.SMTP.Host, 587, config.SMTP.User, config.SMTP.Password)
@@ -70,15 +70,15 @@ func (s *SmtpService) SendForgetPasswordEmail(ctx echo.Context, email, firstName
 	// Convert the buffer to a string
 	body := tpl.String()
 
-	subject := "Otoo Reset Your Password"
+	subject := "KonektorX Reset Your Password"
 
-	go s.SendEmail(ctx, "administrator@otoo.gr", email, body, subject, true)
+	go s.SendEmail(ctx, "administrator@konektorx.com", email, body, subject, true)
 	return nil
 }
 func (s *SmtpService) SendContactEmail(ctx echo.Context, req *domain.ContactRequest) error {
 
 	// Load and parse the HTML template
-	tmpl, err := template.ParseFiles("assets/template/contact_verification.html")
+	tmpl, err := template.ParseFiles("/project/otoo/build/assets/template/contact_verification.html")
 	if err != nil {
 		slog.Error("Error", "Error loading template: %v", err)
 	}
@@ -92,9 +92,9 @@ func (s *SmtpService) SendContactEmail(ctx echo.Context, req *domain.ContactRequ
 	// Convert the buffer to a string
 	body := tpl.String()
 
-	subject := "Otoo: Your Message Has Been Received"
+	subject := "KonektorX: Your Message Has Been Received"
 
-	go s.SendEmail(ctx, "hello@otoo.gr", req.Email, body, subject, true)
+	go s.SendEmail(ctx, "hello@konektorx.com", req.Email, body, subject, true)
 	return nil
 
 }

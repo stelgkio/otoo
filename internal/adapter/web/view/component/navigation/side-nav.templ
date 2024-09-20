@@ -30,7 +30,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 				class="navbar-brand d-inline-block py-lg-1 mb-lg-5"
 				href="/dashboard"
 			>
-				<h1 class="ls-tight mylogo">Otoo</h1>
+				<h1 class="ls-tight mylogo">KonektorX</h1>
 			</a>
 			<div class="navbar-user d-lg-none">
 				<div class="dropdown">
@@ -168,7 +168,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 							class="nav-link text-xs fw-semibold text-uppercase text-muted ls-wide"
 						>Resources</span>
 					</li>
-					<li class="nav-item my-1">
+					<li class="nav-item my-1" id="extensions-dropdown">
 						<a
 							class="nav-link d-flex align-items-center rounded-pill"
 							href="#sidebar-components"
@@ -176,6 +176,9 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 							role="button"
 							aria-expanded="false"
 							aria-controls="sidebar-components"
+							hx-trigger="load"
+							hx-get={ fmt.Sprintf("/extension/project_extensions/%s", projectId) }
+							hx-target="#extensions-dropdown"
 						>
 							<i class="bi bi-grid-1x2-fill"></i>
 							<span>Extensions</span>
@@ -186,7 +189,10 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 						<div class="collapse" id="sidebar-components">
 							<ul class="nav nav-sm flex-column mt-1">
 								<li class="nav-item">
-									<a href="#" class="nav-link">
+									<a
+										href="#"
+										class="nav-link"
+									>
 										Acs
 										Couries
 									</a>

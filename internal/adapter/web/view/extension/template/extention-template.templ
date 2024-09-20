@@ -2,10 +2,12 @@ package views
 
 import (
 	t "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/template"
+	ac "github.com/stelgkio/otoo/internal/adapter/web/view/extension/acs_courier"
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-templ ExtentionTemplate(user *domain.User, projectName, projectId string) {
+templ ExtentionAcsSubscriptionSuccessTemplate(user *domain.User, projectName, projectId, extensionId string) {
 	@t.DashboardTemplate(user, projectName, projectId) {
+		@ac.ASC_Courier_Subscription_Success(projectId, extensionId)
 	}
 }

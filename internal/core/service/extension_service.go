@@ -43,7 +43,7 @@ func (ex *ExtensionService) DeleteExtension(ctx echo.Context, extensionID string
 	return ex.repo.DeleteExtension(ctx, extensionID)
 }
 
-//////////////////PROJECT ExtensionS/////////////////////////
+//////////////////PROJECT Extension/////////////////////////
 
 // CreateProjectExtension creates a new ProjectExtension
 func (ex *ExtensionService) CreateProjectExtension(ctx echo.Context, projectID string, e *domain.Extension) error {
@@ -63,4 +63,27 @@ func (ex *ExtensionService) GetProjectExtensionByID(ctx echo.Context, extensionI
 // DeleteProjectExtension deletes a ProjectExtension by ID
 func (ex *ExtensionService) DeleteProjectExtension(ctx echo.Context, extensionID, projectID string) error {
 	return ex.repo.DeleteProjectExtension(ctx, extensionID, projectID)
+}
+
+////////////////// ACS Extension/////////////////////////
+
+// CreateACSProjectExtension creates a new ProjectExtension
+func (ex *ExtensionService) CreateACSProjectExtension(ctx echo.Context, projectID string, e *domain.AcsCourierExtension) error {
+
+	return ex.repo.CreateACSProjectExtension(ctx, projectID, e)
+}
+
+// GetAllACSProjectExtensions gets all ProjectExtensions
+func (ex *ExtensionService) GetAllACSProjectExtensions(ctx echo.Context, projectID string) ([]*domain.AcsCourierExtension, error) {
+	return ex.repo.GetAllACSProjectExtensions(ctx, projectID)
+}
+
+// GetACSProjectExtensionByID gets a ProjectExtension by ID
+func (ex *ExtensionService) GetACSProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.AcsCourierExtension, error) {
+	return ex.repo.GetACSProjectExtensionByID(ctx, extensionID, projectID)
+}
+
+// DeleteACSProjectExtension deletes a ProjectExtension by ID
+func (ex *ExtensionService) DeleteACSProjectExtension(ctx echo.Context, extensionID, projectID string) error {
+	return ex.repo.DeleteACSProjectExtension(ctx, extensionID, projectID)
 }

@@ -14,6 +14,7 @@ import (
 	"github.com/stripe/stripe-go/v72"
 	"github.com/stripe/stripe-go/v72/checkout/session"
 	"github.com/stripe/stripe-go/v72/customer"
+	"github.com/stripe/stripe-go/v72/invoice"
 	"github.com/stripe/stripe-go/v72/sub"
 )
 
@@ -194,6 +195,59 @@ func (dh *DashboardHandler) PaymentEvent(c echo.Context) error {
 
 		slog.Info("Subscription metadata - ProjectId", "projectID", projectID)
 		slog.Info("Subscription metadata - ExtensionID", "extensionID", extensionID)
+	}
+
+	if event.Type == "invoice.payment_succeeded" {
+		// This event is triggered when a subscription payment succeeds
+
+		// Access the customer ID and invoice ID from the event data
+		customerID := event.Data.Object["customer"].(string)
+		invoiceID := event.Data.Object["id"].(string)
+
+		// Retrieve the customer details from Stripe
+		cust, err := customer.Get(customerID, nil)
+
+		if err != nil {
+			slog.Error("Failed to retrieve customer", "error", err)
+			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve customer"})
+		}
+		// Access metadata from the customer object
+		email := cust.Metadata["FinalEmail"]
+		slog.Info("Customer metadata - Subscription payment by", "email", email)
+
+		// Retrieve the invoice details from Stripe
+		invoice, err := invoice.Get(invoiceID, nil)
+		if err != nil {
+			slog.Error("Failed to retrieve invoice", "error", err)
+			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve invoice"})
+		}
+
+		// Access the subscription ID related to the payment
+		subscriptionID := invoice.Subscription.ID
+
+		// Retrieve subscription details from Stripe
+		subscription, err := sub.Get(subscriptionID, nil)
+		if err != nil {
+			slog.Error("Failed to retrieve subscription", "error", err)
+			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve subscription"})
+		}
+
+		// Log the payment success for the subscription
+		slog.Info("Subscription payment succeeded", "subscriptionID", subscriptionID)
+
+		// You can also access metadata from the invoice or subscription object if needed
+		projectID := subscription.Metadata["ProjectId"]
+		extensionID := subscription.Metadata["ExtensionID"]
+		slog.Info("Subscription payment for project", "projectID", projectID)
+		slog.Info("Subscription metadata - ExtensionID", "extensionID", extensionID)
+
+		// Additional logic to update your system for successful payment
+		// (e.g., mark invoice as paid in your database)
+
+	}
+
+	if event.Type == "invoice.payment_failed" {
+		slog.Warn("Unhandled event type", "eventType", event.Type)
 	}
 
 	return c.NoContent(http.StatusOK)

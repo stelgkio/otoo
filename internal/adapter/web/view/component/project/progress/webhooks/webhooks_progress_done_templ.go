@@ -112,9 +112,9 @@ func WebhooksProgressDone(projectId string, webhooks []w.WebhookRecord, hasError
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
-		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("project/synchronize/%s", projectId))
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/project/synchronize/%s", projectId))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/progress/webhooks/webhooks_progress_done.templ`, Line: 100, Col: 84}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/progress/webhooks/webhooks_progress_done.templ`, Line: 100, Col: 85}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {

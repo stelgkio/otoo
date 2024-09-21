@@ -168,5 +168,8 @@ func (dh *DashboardHandler) ProjectExtensionsList(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
+	if len(projectExtensions) == 0 {
+		return util.Render(ctx, nv.SideNavList(projectID, "", nil))
+	}
 	return util.Render(ctx, nv.SideNavList(projectID, projectExtensions[0].ExtensionID, projectExtensions))
 }

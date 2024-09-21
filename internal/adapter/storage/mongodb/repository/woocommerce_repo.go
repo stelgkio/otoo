@@ -340,18 +340,56 @@ func (repo WoocommerceRepository) ProductDelete(productID int64) error {
 }
 
 // ProductFindByProjectID find all products by projectID
-func (repo WoocommerceRepository) ProductFindByProjectID(projectID string, size, page int, sort, direction string, productType w.ProductType) ([]*w.ProductRecord, error) {
+func (repo WoocommerceRepository) ProductFindByProjectID(
+	projectID string,
+	size, page int,
+	sort, direction string,
+	productType w.ProductType,
+) ([]*w.ProductRecord, error) {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
-	// OrderFindByProjectID find all orders by projectID
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	filter := bson.M{"projectId": projectID, "is_active": true, "product.type": bson.M{"$ne": productType.String()}}
+	// Build the filter
+	filter := bson.M{
+		"projectId": projectID,
+		"is_active": true,
+	}
 
+	// Optionally filter by productType if necessary
+	if productType != "" {
+		filter["product.type"] = bson.M{"$ne": productType.String()}
+	}
+
+	// Validate and map the sort field to prevent injection attacks
+	allowedSortFields := map[string]string{
+		"productId": "productId",
+		"timestamp": "timestamp",
+		"name":      "product.name",
+		"price":     "product.price",
+		// Add other allowed fields as needed
+	}
+
+	sortField, ok := allowedSortFields[sort]
+	if !ok {
+		sortField = "productId" // Default sort field
+	}
+
+	// Determine sort direction
+	sortDirection := 1 // Ascending
+	if direction == "desc" {
+		sortDirection = -1
+	}
+
+	// Set up find options with sorting and pagination
 	findOptions := options.Find()
 	findOptions.SetLimit(int64(size))
 	findOptions.SetSkip(int64(size * (page - 1)))
-	findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
+	findOptions.SetSort(bson.D{
+		{Key: sortField, Value: sortDirection},
+		{Key: "_id", Value: 1}, // Secondary sort to ensure consistent ordering
+	})
+
 	cursor, err := coll.Find(ctx, filter, findOptions)
 	if err != nil {
 		return nil, err
@@ -396,13 +434,21 @@ func (repo WoocommerceRepository) GetProductCount(projectID string, productType 
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
-	filter := bson.M{"projectId": projectID, "is_active": true, "product.type": bson.M{"$ne": productType.String()}}
-	res, err := coll.CountDocuments(ctx, filter)
 
+	filter := bson.M{
+		"projectId": projectID,
+		"is_active": true,
+	}
+
+	if productType != "" {
+		filter["product.type"] = bson.M{"$ne": productType.String()}
+	}
+
+	count, err := coll.CountDocuments(ctx, filter)
 	if err != nil {
 		return 0, err
 	}
-	return res, nil
+	return count, nil
 }
 
 // ProductBestSellerAggregate get best seller products

@@ -448,7 +448,7 @@ func (ph *ProjectHandler) ProjectSynchronizeDone(ctx echo.Context) error {
 		}
 	}
 
-	var orderCount, productCount, customerCount int64
+	var orderCount, productCount, customerCount int64 = 0, 0, 0
 
 	for count := range orderResults {
 		orderCount = count
@@ -465,8 +465,11 @@ func (ph *ProjectHandler) ProjectSynchronizeDone(ctx echo.Context) error {
 		ph.bestSellerSvc.RunAProductBestSellerInitializerJob(projectID)
 		return r.Render(ctx, syn.ProjectSynchronizerDone(user, projectID, customerTotal, productTotal, orderTotal, 100.0, 100.0, 100.0))
 	}
+	customerPercentage := (float64(customerCount) / float64(customerTotal)) * 100.0
+	productPercentage := (float64(productCount) / float64(productTotal)) * 100.0
+	orderPercentage := (float64(orderCount) / float64(orderTotal)) * 100.0
 
-	return r.Render(ctx, syn.ProjectSynchronizerStart(user, projectID, customerTotal, productTotal, orderTotal, float64(customerCount), float64(productCount), float64(orderCount)))
+	return r.Render(ctx, syn.ProjectSynchronizerStart(user, projectID, customerTotal, productTotal, orderTotal, customerPercentage, productPercentage, orderPercentage))
 }
 
 // ProjectSynchronizeTest Synchronize otoo with eshop

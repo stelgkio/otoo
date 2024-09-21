@@ -20,7 +20,7 @@ templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExt
 		</a>
 		<div class="collapse" id="sidebar-components">
 			<ul class="nav nav-sm flex-column mt-1">
-				if len(extensions) == 0 {
+				if len(extensions) != 0 {
 					for _, extension := range extensions {
 						<li class="nav-item">
 							<a

@@ -1,186 +1,259 @@
 package views
 
 import (
-"fmt"
-p "github.com/stelgkio/otoo/internal/adapter/web/view/component/pagination"
+	"fmt"
+	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/pagination"
 )
 
 templ OrderTable(projectId string) {
-<div id="dashboard-order">
-	<div class="mb-1 mb-xl-10">
-		<div class="col">
-			<div class="hstack gap-2 justify-content-start">
-				<button class="btn btn-sm btn-neutral " type="button" hx-get={ fmt.Sprintf("/order/chart/%s", projectId)
-					} hx-target="#dashboard-order">
-					<i class="bi bi-bar-chart-fill"></i> <span class="ms-2">Charts</span>
-				</button>
-				<button class="btn btn-sm btn-neutral " type="button" hx-get={ fmt.Sprintf("/order/chart/%s", projectId)
-					} hx-target="#dashboard-order">
-					<i class="bi bi-box-seam-fill"></i> <span class="ms-2">Courier</span>
-				</button>
+	<div id="dashboard-order">
+		<div class="mb-1 mb-xl-10">
+			<div class="col">
+				<div class="hstack gap-2 justify-content-start">
+					<button
+						class="btn btn-sm btn-neutral "
+						type="button"
+						hx-get={ fmt.Sprintf("/order/chart/%s", projectId) }
+						hx-target="#dashboard-order"
+					>
+						<i class="bi bi-bar-chart-fill"></i> <span class="ms-2">Charts</span>
+					</button>
+					<button
+						class="btn btn-sm btn-neutral "
+						type="button"
+						hx-get={ fmt.Sprintf("/order/chart/%s", projectId) }
+						hx-target="#dashboard-order"
+					>
+						<i class="bi bi-box-seam-fill"></i> <span class="ms-2">Courier</span>
+					</button>
+				</div>
 			</div>
 		</div>
-	</div>
-	<div id="dashboard-order-table" x-data={ fmt.Sprintf("orderTable('%s')", projectId) } x-init="init()">
-		<div class="px-6 px-lg-7 pt-1 border-bottom">
-			<ul class="nav nav-tabs nav-tabs-flush gap-8 overflow-x border-0 mt-4">
-				<li class="nav-item">
-					<a href="#" :class="{'nav-link': true, 'active': currentTab === 'all'}"
-						@click.prevent="selectTab('all')">All</a>
-				</li>
-				<li class="nav-item">
-					<a href="#" :class="{'nav-link': true, 'active': currentTab === 'completed'}"
-						@click.prevent="selectTab('completed')">Completed</a>
-				</li>
-				<li class="nav-item">
-					<a href="#" :class="{'nav-link': true, 'active': currentTab === 'pending'}"
-						@click.prevent="selectTab('pending')">Pending</a>
-				</li>
-				<li class="nav-item">
-					<a href="#" :class="{'nav-link': true, 'active': currentTab === 'processing'}"
-						@click.prevent="selectTab('processing')">Processing</a>
-				</li>
-				<li class="nav-item">
-					<a href="#" :class="{'nav-link': true, 'active': currentTab === 'cancelled'}"
-						@click.prevent="selectTab('cancelled')">Canceled</a>
-				</li>
-			</ul>
-		</div>
-		<div class="d-flex gap-2 py-3 px-7 border-bottom">
-			<div class="dropdown" x-data="{ showDropdown: false }" @click.outside="showDropdown = false">
-				<button class="btn btn-sm btn-neutral dropdown-toggle" type="button" id="dropdownMenuButton2"
-					@click="showDropdown = !showDropdown" :aria-expanded="showDropdown.toString()">
-					<i class="bi bi-plus-circle"></i> <span class="ms-2">Bulk Action</span>
-				</button>
-				<div class="dropdown-menu" :class="{ 'show': showDropdown }" aria-labelledby="dropdownMenuButton2">
-					<div class="dropdown-item py-1 px-2 d-flex align-items-center">
-						<div class="text-lg">
-							<input class="form-check-input" type="radio" name="statusOption" id="statusBacklog"
-								value="asc_courier" x-model="selectedStatus" />
+		<div id="dashboard-order-table" x-data={ fmt.Sprintf("orderTable('%s')", projectId) } x-init="init()">
+			<div class="px-6 px-lg-7 pt-1 border-bottom">
+				<ul class="nav nav-tabs nav-tabs-flush gap-8 overflow-x border-0 mt-4">
+					<li class="nav-item">
+						<a
+							href="#"
+							:class="{'nav-link': true, 'active': currentTab === 'all'}"
+							@click.prevent="selectTab('all')"
+						>All</a>
+					</li>
+					<li class="nav-item">
+						<a
+							href="#"
+							:class="{'nav-link': true, 'active': currentTab === 'completed'}"
+							@click.prevent="selectTab('completed')"
+						>Completed</a>
+					</li>
+					<li class="nav-item">
+						<a
+							href="#"
+							:class="{'nav-link': true, 'active': currentTab === 'pending'}"
+							@click.prevent="selectTab('pending')"
+						>Pending</a>
+					</li>
+					<li class="nav-item">
+						<a
+							href="#"
+							:class="{'nav-link': true, 'active': currentTab === 'processing'}"
+							@click.prevent="selectTab('processing')"
+						>Processing</a>
+					</li>
+					<li class="nav-item">
+						<a
+							href="#"
+							:class="{'nav-link': true, 'active': currentTab === 'cancelled'}"
+							@click.prevent="selectTab('cancelled')"
+						>Canceled</a>
+					</li>
+				</ul>
+			</div>
+			<div class="d-flex gap-2 py-3 px-7 border-bottom">
+				<div class="dropdown" x-data="{ showDropdown: false }" @click.outside="showDropdown = false">
+					<button
+						class="btn btn-sm btn-neutral dropdown-toggle"
+						type="button"
+						id="dropdownMenuButton2"
+						@click="showDropdown = !showDropdown"
+						:aria-expanded="showDropdown.toString()"
+					>
+						<i class="bi bi-plus-circle"></i> <span class="ms-2">Bulk Action</span>
+					</button>
+					<div class="dropdown-menu" :class="{ 'show': showDropdown }" aria-labelledby="dropdownMenuButton2">
+						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
+							<div class="text-lg">
+								<input
+									class="form-check-input"
+									type="radio"
+									name="statusOption"
+									id="statusBacklog"
+									value="asc_courier"
+									x-model="selectedStatus"
+								/>
+							</div>
+							<div class="ms-3 me-5">
+								<label for="statusBacklog">Send to Couries and update to completed</label>
+							</div>
 						</div>
-						<div class="ms-3 me-5">
-							<label for="statusBacklog">Send to Couries and update to completed</label>
-						</div>
-					</div>
-					<div class="dropdown-item py-1 px-2 d-flex align-items-center">
-						<div class="text-lg">
-							<input class="form-check-input" type="radio" name="statusOption" id="statusCompleted"
-								value="completed" x-model="selectedStatus" />
-						</div>
-						<div class="ms-3 me-5">
-							<label for="statusTodo">Change status to completed</label>
-						</div>
-						// <div class="ms-auto">
+						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
+							<div class="text-lg">
+								<input
+									class="form-check-input"
+									type="radio"
+									name="statusOption"
+									id="statusCompleted"
+									value="completed"
+									x-model="selectedStatus"
+								/>
+							</div>
+							<div class="ms-3 me-5">
+								<label for="statusTodo">Change status to completed</label>
+							</div>
+							// <div class="ms-auto">
 							// <span class="badge rounded-pill bg-opacity-25 bg-success text-success">23</span>
 							// </div>
-					</div>
-					<div class="dropdown-item py-1 px-2 d-flex align-items-center">
-						<div class="text-lg">
-							<input class="form-check-input" type="radio" name="statusOption" id="statuSpending"
-								value="pending" x-model="selectedStatus" />
 						</div>
-						<div class="ms-3 me-5">
-							<label for="statusInProgress">Change status to pending</label>
+						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
+							<div class="text-lg">
+								<input
+									class="form-check-input"
+									type="radio"
+									name="statusOption"
+									id="statuSpending"
+									value="pending"
+									x-model="selectedStatus"
+								/>
+							</div>
+							<div class="ms-3 me-5">
+								<label for="statusInProgress">Change status to pending</label>
+							</div>
 						</div>
-					</div>
-					<div class="dropdown-item py-1 px-2 d-flex align-items-center">
-						<div class="text-lg">
-							<input class="form-check-input" type="radio" name="statusOption" id="statusProdessing"
-								value="processing" x-model="selectedStatus" />
+						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
+							<div class="text-lg">
+								<input
+									class="form-check-input"
+									type="radio"
+									name="statusOption"
+									id="statusProdessing"
+									value="processing"
+									x-model="selectedStatus"
+								/>
+							</div>
+							<div class="ms-3 me-5">
+								<label for="statusDone">Change status to processing</label>
+							</div>
 						</div>
-						<div class="ms-3 me-5">
-							<label for="statusDone">Change status to processing</label>
+						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
+							<div class="text-lg">
+								<input
+									class="form-check-input"
+									type="radio"
+									name="statusOption"
+									id="statusCancelled"
+									value="cancelled"
+									x-model="selectedStatus"
+								/>
+							</div>
+							<div class="ms-3 me-5">
+								<label for="statusCancelled">Change status to cancelled</label>
+							</div>
 						</div>
-					</div>
-					<div class="dropdown-item py-1 px-2 d-flex align-items-center">
-						<div class="text-lg">
-							<input class="form-check-input" type="radio" name="statusOption" id="statusCancelled"
-								value="cancelled" x-model="selectedStatus" />
+						<!-- Add other status options here -->
+						<div class="mt-3">
+							<button
+								type="button"
+								class="btn btn-sm btn-primary d-sm-inline-flex position-relative"
+								@click="applyAction"
+							>
+								<span x-show="!loading">Apply </span>
+								<span
+									x-show="loading"
+									class="spinner-border spinner-border-sm"
+									role="status"
+									aria-hidden="true"
+								></span>
+								<i class="px-3 bi bi-arrow-right"></i>
+							</button>
 						</div>
-						<div class="ms-3 me-5">
-							<label for="statusCancelled">Change status to cancelled</label>
-						</div>
-					</div>
-					<!-- Add other status options here -->
-					<div class="mt-3">
-						<button type="button" class="btn btn-sm btn-primary d-sm-inline-flex position-relative"
-							@click="applyAction">
-							<span x-show="!loading">Apply </span>
-							<span x-show="loading" class="spinner-border spinner-border-sm" role="status"
-								aria-hidden="true"></span>
-							<i class="px-3 bi bi-arrow-right"></i>
-						</button>
-					</div>
-					<div class="mt-3">
-						<div x-show="errorMessage" class="alert alert-danger" role="alert">
-							<span x-text="errorMessage"></span>
+						<div class="mt-3">
+							<div x-show="errorMessage" class="alert alert-danger" role="alert">
+								<span x-text="errorMessage"></span>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="table-responsive">
-			<table class="table table-hover table-nowrap">
-				<thead>
-					<tr>
-						<th>
-							<div class="text-base">
-								<div class="form-check">
-									<input class="form-check-input" type="checkbox" @change="selectAll()"
-										x-model="selectAllCheckbox" />
+			<div class="table-responsive">
+				<table class="table table-hover table-nowrap">
+					<thead>
+						<tr>
+							<th>
+								<div class="text-base">
+									<div class="form-check">
+										<input
+											class="form-check-input"
+											type="checkbox"
+											@change="selectAll()"
+											x-model="selectAllCheckbox"
+										/>
+									</div>
 								</div>
-							</div>
-						</th>
-						<th @click="sortTable('orderId')">
-							Order ID
-							<i :class="getSortIcon('orderId')"></i>
-						</th>
-						<th @click="sortTable('timestamp')">
-							Date
-							<i :class="getSortIcon('timestamp')"></i>
-						</th>
-						<th @click="sortTable('total_amount')">
-							Total Amount
-							<i :class="getSortIcon('total_amount')"></i>
-						</th>
-						<th>Status</th>
-					</tr>
-				</thead>
-				<tbody>
-					<template x-if="!loading && totalItems === 0">
-						<tr>
-							<td colspan="5">No orders found.</td>
+							</th>
+							<th @click="sortTable('orderId')">
+								Order ID
+								<i :class="getSortIcon('orderId')"></i>
+							</th>
+							<th @click="sortTable('timestamp')">
+								Date
+								<i :class="getSortIcon('timestamp')"></i>
+							</th>
+							<th @click="sortTable('total_amount')">
+								Total Amount
+								<i :class="getSortIcon('total_amount')"></i>
+							</th>
+							<th>Status</th>
 						</tr>
-					</template>
-					<template x-for="order in paginatedOrders" :key="order.id">
-						<tr>
-							<td>
-								<div class="form-check">
-									<input class="form-check-input" type="checkbox" :value="order.orderId"
-										x-model="selectedOrders" />
-								</div>
-							</td>
-							<td x-text="order.orderId"></td>
-							<td x-text="new Date(order.timestamp).toLocaleString()"></td>
-							<td x-text="order.total_amount"></td>
-							<td>
-								<span :class="badgeClass(order.status)" x-text="order.status"></span>
-							</td>
-						</tr>
-					</template>
-					<!-- Fill remaining rows if less than 10 -->
-					<template x-for="i in 10 - paginatedOrders.length" :key="'empty' + i">
-						<tr>
-							<td colspan="5" class="py-7"></td>
-						</tr>
-					</template>
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						<template x-if="!loading && totalItems === 0">
+							<tr>
+								<td colspan="5">No orders found.</td>
+							</tr>
+						</template>
+						<template x-for="order in paginatedOrders" :key="order.id">
+							<tr>
+								<td>
+									<div class="form-check">
+										<input
+											class="form-check-input"
+											type="checkbox"
+											:value="order.orderId"
+											x-model="selectedOrders"
+										/>
+									</div>
+								</td>
+								<td x-text="order.orderId"></td>
+								<td x-text="new Date(order.timestamp).toLocaleString()"></td>
+								<td x-text="order.total_amount"></td>
+								<td>
+									<span :class="badgeClass(order.status)" x-text="order.status"></span>
+								</td>
+							</tr>
+						</template>
+						<!-- Fill remaining rows if less than 10 -->
+						<template x-for="i in 10 - paginatedOrders.length" :key="'empty' + i">
+							<tr>
+								<td colspan="5" class="py-7"></td>
+							</tr>
+						</template>
+					</tbody>
+				</table>
+			</div>
+			@p.PaginationControl()
 		</div>
-		@p.PaginationControl()
 	</div>
-</div>
-<script>
+	<script>
 	function orderTable(projectId) {
 		return {
 			projectID: projectId,
@@ -188,7 +261,7 @@ templ OrderTable(projectId string) {
 			orders: [],
 			selectedOrders: [],
 			selectAllCheckbox: false,
-			sortKey: 'timestamp',
+			sortKey: 'orderId',
 			sortAsc: false,
 			currentPage: 1,
 			itemsPerPage: 10,

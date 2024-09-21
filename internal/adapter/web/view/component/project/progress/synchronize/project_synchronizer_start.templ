@@ -45,7 +45,7 @@ templ ProjectSynchronizerStart(user *domain.User, projectId string, customerTota
 										<span
 											class="d-block text-muted text-xs"
 										>
-											{ fmt.Sprintf("%.f%%",productTotalRate) }
+											{ fmt.Sprintf("%.f%%",customerTotalRate) }
 										</span>
 									</div>
 									<div
@@ -82,7 +82,7 @@ templ ProjectSynchronizerStart(user *domain.User, projectId string, customerTota
 										<span
 											class="d-block text-muted text-xs"
 										>
-											{ fmt.Sprintf("%.f%%",orderTotalRate) }
+											{ fmt.Sprintf("%.f%%",productTotalRate) }
 										</span>
 									</div>
 									<div
@@ -93,10 +93,10 @@ templ ProjectSynchronizerStart(user *domain.User, projectId string, customerTota
 								</div>
 								<div class="progress bg-body-tertiary">
 									<div
-										class={ "progress-bar bg-primary", loading(int64(orderTotalRate)) }
+										class={ "progress-bar bg-primary", loading(int64(productTotalRate)) }
 										role="progressbar"
 										aria-label="Basic example"
-										aria-valuenow={ fmt.Sprintf("%d", int64(orderTotalRate)) }
+										aria-valuenow={ fmt.Sprintf("%d", int64(productTotalRate)) }
 										aria-valuemin="0"
 										aria-valuemax="100"
 									></div>

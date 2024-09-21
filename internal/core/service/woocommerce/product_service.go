@@ -92,6 +92,7 @@ func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectID 
 				Page:    page,
 				PerPage: batchSize,
 			},
+			Status: "publish",
 		}
 		resp, err := client.Product.List(options)
 		if err != nil {

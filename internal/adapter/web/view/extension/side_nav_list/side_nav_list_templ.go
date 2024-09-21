@@ -32,7 +32,7 @@ func SideNavList(projectId, extensionId string, extensions []*domain.ProjectExte
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if len(extensions) == 0 {
+		if len(extensions) != 0 {
 			for _, extension := range extensions {
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"nav-item\"><a href=\"#\" class=\"nav-link\">")
 				if templ_7745c5c3_Err != nil {

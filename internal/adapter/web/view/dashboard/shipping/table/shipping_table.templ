@@ -1,0 +1,262 @@
+package views
+
+import (
+"fmt"
+p "github.com/stelgkio/otoo/internal/adapter/web/view/component/pagination"
+)
+
+templ ShippingTable(projectId string) {
+<div id="dashboard-shipping-table" x-data="shippingTable('shipping-uuid')" x-init="init()">
+    <!-- Tabs for Shipping Status -->
+    <div class="px-6 px-lg-7 pt-1 border-bottom">
+        <ul class="nav nav-tabs nav-tabs-flush gap-8 overflow-x border-0 mt-4">
+            <li class="nav-item">
+                <a href="#" :class="{'nav-link': true, 'active': currentTab === 'all'}" @click.prevent="selectTab('all')" class="nav-link active">All</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" :class="{'nav-link': true, 'active': currentTab === 'pending'}" @click.prevent="selectTab('pending')" class="nav-link">Pending</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" :class="{'nav-link': true, 'active': currentTab === 'send'}" @click.prevent="selectTab('send')" class="nav-link">Send</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" :class="{'nav-link': true, 'active': currentTab === 'payment_received'}" @click.prevent="selectTab('payment_received')" class="nav-link">Payment Received</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" :class="{'nav-link': true, 'active': currentTab === 'on_the_way'}" @click.prevent="selectTab('on_the_way')" class="nav-link">On the Way</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" :class="{'nav-link': true, 'active': currentTab === 'cancelled'}" @click.prevent="selectTab('cancelled')" class="nav-link">Cancelled</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Bulk Action Dropdown -->
+    <div class="d-flex gap-2 py-3 px-7 border-bottom">
+        <div class="dropdown" x-data="{ showDropdown: false }" @click.outside="showDropdown = false">
+            <button class="btn btn-sm btn-neutral dropdown-toggle" type="button" @click="showDropdown = !showDropdown" :aria-expanded="showDropdown.toString()" aria-expanded="false">
+                <i class="bi bi-plus-circle"></i>
+                <span class="ms-2">Bulk Action</span>
+            </button>
+            <div class="dropdown-menu" :class="{ 'show': showDropdown }">
+                <!-- Bulk Action Options -->
+                <div class="dropdown-item py-1 px-2 d-flex align-items-center">
+                    <div class="text-lg">
+                        <input class="form-check-input" type="radio" name="statusOption" id="statusSend" value="send" x-model="selectedStatus">
+                    </div>
+                    <div class="ms-3 me-5">
+                        <label for="statusSend">Send to Shipping</label>
+                    </div>
+                </div>
+                <div class="dropdown-item py-1 px-2 d-flex align-items-center">
+                    <div class="text-lg">
+                        <input class="form-check-input" type="radio" name="statusOption" id="statusPaymentReceived" value="payment_received" x-model="selectedStatus">
+                    </div>
+                    <div class="ms-3 me-5">
+                        <label for="statusPaymentReceived">Update to Payment Received</label>
+                    </div>
+                </div>
+                <div class="dropdown-item py-1 px-2 d-flex align-items-center">
+                    <div class="text-lg">
+                        <input class="form-check-input" type="radio" name="statusOption" id="statusOnTheWay" value="on_the_way" x-model="selectedStatus">
+                    </div>
+                    <div class="ms-3 me-5">
+                        <label for="statusOnTheWay">Mark as On the Way</label>
+                    </div>
+                </div>
+                <div class="dropdown-item py-1 px-2 d-flex align-items-center">
+                    <div class="text-lg">
+                        <input class="form-check-input" type="radio" name="statusOption" id="statusCancelled" value="cancelled" x-model="selectedStatus">
+                    </div>
+                    <div class="ms-3 me-5">
+                        <label for="statusCancelled">Cancel Order</label>
+                    </div>
+                </div>
+                <!-- Apply Button -->
+                <div class="mt-3">
+                    <button type="button" class="btn btn-sm btn-primary d-sm-inline-flex position-relative" @click="applyAction">
+                        <span x-show="!loading">Apply</span>
+                        <span x-show="loading" class="spinner-border spinner-border-sm" role="status"></span>
+                        <i class="px-3 bi bi-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="mt-3">
+                    <div x-show="errorMessage" class="alert alert-danger" role="alert">
+                        <span x-text="errorMessage"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shipping Table -->
+    <div class="table-responsive">
+        <table class="table table-hover table-nowrap">
+            <thead>
+                <tr>
+                    <th>
+                        <div class="text-base">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" @change="selectAll()" x-model="selectAllCheckbox">
+                            </div>
+                        </div>
+                    </th>
+                    <th @click="sortTable('orderId')">Order ID <i :class="getSortIcon('orderId')" class="bi bi-chevron-down"></i></th>
+                    <th @click="sortTable('timestamp')">Date <i :class="getSortIcon('timestamp')"></i></th>
+                    <th @click="sortTable('total_amount')">Total Amount <i :class="getSortIcon('total_amount')"></i></th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- No Orders Found -->
+                <template x-if="!loading && totalItems === 0">
+                    <tr>
+                        <td colspan="5">No orders found.</td>
+                    </tr>
+                </template>
+                
+                <!-- Orders Data -->
+                <template x-for="order in paginatedOrders" :key="order.id">
+                    <tr>
+                        <td>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" :value="order.orderId" x-model="selectedOrders">
+                            </div>
+                        </td>
+                        <td x-text="order.orderId"></td>
+                        <td x-text="new Date(order.timestamp).toLocaleString()"></td>
+                        <td x-text="order.total_amount"></td>
+                        <td>
+                            <span :class="badgeClass(order.status)" x-text="order.status"></span>
+                        </td>
+                    </tr>
+                </template>
+
+                <!-- Fill remaining rows if less than 10 -->
+                <template x-for="i in 10 - paginatedOrders.length" :key="'empty' + i">
+                    <tr>
+                        <td colspan="5" class="py-7"></td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="py-4 px-6">
+        <div class="row align-items-center justify-content-between">
+            <div class="col-md-6 d-none d-md-block">
+                <span class="text-muted text-sm">Showing <span x-text="currentPageEnd">1</span> of <span x-text="totalItems">1</span> results</span>
+            </div>
+            <div class="col-md-auto">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination pagination-spaced gap-1">
+                        <li class="page-item" :class="{'disabled': currentPage === 1}">
+                            <a class="page-link" href="#" @click.prevent="changePage(1)">
+                                <i class="bi bi-chevron-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" :class="{'disabled': currentPage === 1}">
+                            <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        <template x-for="page in pageNumbers" :key="page">
+                            <li class="page-item" :class="{'active': currentPage === page}">
+                                <a class="page-link" href="#" @click.prevent="changePage(page)" x-text="page"></a>
+                            </li>
+                        </template>
+                        <li class="page-item" :class="{'disabled': currentPage === totalPages}">
+                            <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" :class="{'disabled': currentPage === totalPages}">
+                            <a class="page-link" href="#" @click.prevent="changePage(totalPages)">
+                                <i class="bi bi-chevron-double-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function shippingTable(uuid) {
+        return {
+            currentTab: 'all',
+            selectedOrders: [],
+            selectedStatus: '',
+            loading: false,
+            errorMessage: '',
+            paginatedOrders: [], // Array to hold orders to display
+            totalItems: 0,
+            currentPage: 1,
+            totalPages: 1,
+            currentPageEnd: 10,
+            selectTab(tab) {
+                this.currentTab = tab;
+                this.fetchOrders(); // Fetch the orders for the selected tab
+            },
+            selectAll() {
+                // Logic for selecting all orders
+            },
+            sortTable(column) {
+                // Sorting logic for table
+            },
+            getSortIcon(column) {
+                // Return icon class based on sorting order
+            },
+            badgeClass(status) {
+                const baseClass = 'badge bg-body-secondary badge-custom';
+                switch (status) {
+                    case 'pending':
+                        return `${baseClass} text-warning`;
+                    case 'send':
+                        return `${baseClass} text-info`;
+                    case 'payment_received':
+                        return `${baseClass} text-success`;
+                    case 'on_the_way':
+                        return `${baseClass} text-primary`;
+                    case 'cancelled':
+                        return `${baseClass} text-danger`;
+                    default:
+                        return baseClass;
+                }
+            },
+            applyAction() {
+                this.loading = true;
+                this.errorMessage = '';
+
+                // Logic to apply the bulk action based on selected status
+                // Simulating API call
+                setTimeout(() => {
+                    this.loading = false;
+                    // Error handling or success notification
+                }, 1000);
+            },
+            fetchOrders() {
+                // Fetch orders based on currentTab from server (mocked for now)
+                this.paginatedOrders = [
+                    // Mocked order data
+                    { orderId: '12345', timestamp: Date.now(), total_amount: '100.00', status: 'pending' },
+                    { orderId: '12346', timestamp: Date.now(), total_amount: '200.00', status: 'send' }
+                ];
+                this.totalItems = this.paginatedOrders.length;
+                this.totalPages = Math.ceil(this.totalItems / 10);
+            },
+            init() {
+                this.fetchOrders(); // Fetch initial orders
+            },
+            changePage(page) {
+                if (page > 0 && page <= this.totalPages) {
+                    this.currentPage = page;
+                    this.fetchOrders(); // Fetch orders for the new page
+                }
+            }
+        };
+    }
+</script>
+}

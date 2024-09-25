@@ -117,6 +117,20 @@ func NewRouter(
 			ordergroup.GET("/table/:projectId/:status", dashboardHandler.OrderTable)
 		}
 
+		// Shipping Router DEMO
+
+		shippinggroup := e.Group("/shipping")
+		{
+			shippinggroup.Use(configureJWT())
+			shippinggroup.Use(auth.TokenRefresherMiddleware)
+
+			// Route to render the shipping table (e.g., similar to the OrderTable)
+			shippinggroup.GET("/table/:projectId/:status", dashboardHandler.ShippingTable)
+
+			// Add other shipping-related routes as needed
+			shippinggroup.POST("/bulk-action/:projectId", dashboardHandler.ShippingBulkAction)
+		}
+
 		productgroup := dashboardgroup.Group("/product")
 		{
 			productgroup.Use(configureJWT())
@@ -134,6 +148,7 @@ func NewRouter(
 		}
 
 	}
+
 	//Extension group
 	extensiongroup := e.Group("/extension")
 	{

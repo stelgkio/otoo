@@ -14,6 +14,7 @@ import (
 	auth "github.com/stelgkio/otoo/internal/core/auth"
 	cr "github.com/stelgkio/otoo/internal/core/cron_job"
 	"github.com/stelgkio/otoo/internal/core/domain"
+	"github.com/stelgkio/otoo/internal/core/port"
 	r "github.com/stelgkio/otoo/internal/core/util"
 )
 
@@ -34,6 +35,8 @@ func NewRouter(
 	profileHandler *h.ProfileHandler,
 	orderAnalyticsCron *cr.OrderAnalyticsCron,
 	productBestSellerCron *cr.ProductBestSellerCron,
+	//Andreas//
+	orderSvc port.OrderService,
 
 ) (*Router, error) {
 
@@ -124,11 +127,11 @@ func NewRouter(
 			shippinggroup.Use(configureJWT())
 			shippinggroup.Use(auth.TokenRefresherMiddleware)
 
-			// Route to render the shipping table (e.g., similar to the OrderTable)
-			shippinggroup.GET("/table/:projectId/:status", dashboardHandler.ShippingTable)
+			// // Route to render the shipping table (e.g., similar to the OrderTable)
+			// shippinggroup.GET("/table/:projectId/:status", dashboardHandler.ShippingTable)
+			// // Add other shipping-related routes as needed
+			// shippinggroup.POST("/bulk-action/:projectId", dashboardHandler.ShippingBulkAction)
 
-			// Add other shipping-related routes as needed
-			shippinggroup.POST("/bulk-action/:projectId", dashboardHandler.ShippingBulkAction)
 		}
 
 		productgroup := dashboardgroup.Group("/product")

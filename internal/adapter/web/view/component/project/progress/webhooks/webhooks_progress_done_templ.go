@@ -107,14 +107,14 @@ func WebhooksProgressDone(projectId string, webhooks []w.WebhookRecord, hasError
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></div></div><form autocomplete=\"off\"><hr class=\"my-6\"><button type=\"button\" class=\"btn btn-sm btn-neutral\" hx-get=\"/project/list\" hx-target=\"#dashboard-content\">Cancel</button><div class=\"d-flex justify-content-end gap-2\"><button type=\"submit\" hx-get=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></div></div><form autocomplete=\"off\"><hr class=\"my-6\"><div class=\"d-flex justify-content-start gap-2\"><button type=\"button\" class=\"btn btn-sm btn-neutral\" hx-get=\"/project/list\" hx-target=\"#dashboard-content\">Cancel</button></div><div class=\"d-flex justify-content-end gap-2\"><button type=\"submit\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/project/synchronize/%s", projectId))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/progress/webhooks/webhooks_progress_done.templ`, Line: 100, Col: 85}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/project/progress/webhooks/webhooks_progress_done.templ`, Line: 102, Col: 85}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {

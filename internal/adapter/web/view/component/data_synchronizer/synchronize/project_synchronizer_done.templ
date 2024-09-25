@@ -5,11 +5,7 @@ import (
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-css loading(percent int64) {
-	width: { fmt.Sprintf("%d%%", percent) };
-}
-
-templ ProjectSynchronizerStart(user *domain.User, projectId string, customerTotal, productTotal, orderTotal int64, customerTotalRate, productTotalRate, orderTotalRate float64) {
+templ ProjectSynchronizerDonePage(user *domain.User, projectId string, customerTotal, productTotal, orderTotal int64, customerTotalRate, productTotalRate, orderTotalRate float64) {
 	<div
 		id="dashboard-content"
 		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
@@ -17,13 +13,7 @@ templ ProjectSynchronizerStart(user *domain.User, projectId string, customerTota
 		<main
 			class="container-fluid px-3 py-5 p-lg-6 p-xxl-8"
 		>
-			<div
-				class="card-body p-0 p-xxl-6"
-				class="container-fluid px-3 py-5 p-lg-6 p-xxl-8"
-				hx-trigger="every 2s"
-				hx-get={ fmt.Sprintf("/project/synchronize/done/%s/%d/%d/%d", projectId, customerTotal, productTotal, orderTotal) }
-				hx-target="#dashboard-content"
-			>
+			<div class="card-body p-0 p-xxl-6">
 				<header class="border-bottom mb-10">
 					<div class="row align-items-center">
 						<div class="col-sm-6 col-12">
@@ -31,7 +21,7 @@ templ ProjectSynchronizerStart(user *domain.User, projectId string, customerTota
 						</div>
 					</div>
 				</header>
-				if  customerTotal != 0 {
+				if customerTotal != 0 {
 					<div class="vstack gap-1 pt-10">
 						<div class="d-flex bg-body-secondary gap-3 rounded-3 p-4">
 							<div class="vstack gap-2">
@@ -45,7 +35,7 @@ templ ProjectSynchronizerStart(user *domain.User, projectId string, customerTota
 										<span
 											class="d-block text-muted text-xs"
 										>
-											{ fmt.Sprintf("%.f%%",customerTotalRate) }
+											{ fmt.Sprintf("%.f%%",productTotalRate) }
 										</span>
 									</div>
 									<div
@@ -68,7 +58,7 @@ templ ProjectSynchronizerStart(user *domain.User, projectId string, customerTota
 						</div>
 					</div>
 				}
-				if  productTotal != 0 {
+				if productTotal != 0 {
 					<div class="vstack gap-1 pt-10">
 						<div class="d-flex bg-body-secondary gap-3 rounded-3 p-4">
 							<div class="vstack gap-2">
@@ -82,7 +72,7 @@ templ ProjectSynchronizerStart(user *domain.User, projectId string, customerTota
 										<span
 											class="d-block text-muted text-xs"
 										>
-											{ fmt.Sprintf("%.f%%",productTotalRate) }
+											{ fmt.Sprintf("%.f%%",orderTotalRate) }
 										</span>
 									</div>
 									<div
@@ -93,10 +83,10 @@ templ ProjectSynchronizerStart(user *domain.User, projectId string, customerTota
 								</div>
 								<div class="progress bg-body-tertiary">
 									<div
-										class={ "progress-bar bg-primary", loading(int64(productTotalRate)) }
+										class={ "progress-bar bg-primary", loading(int64(orderTotalRate)) }
 										role="progressbar"
 										aria-label="Basic example"
-										aria-valuenow={ fmt.Sprintf("%d", int64(productTotalRate)) }
+										aria-valuenow={ fmt.Sprintf("%d", int64(orderTotalRate)) }
 										aria-valuemin="0"
 										aria-valuemax="100"
 									></div>
@@ -105,7 +95,7 @@ templ ProjectSynchronizerStart(user *domain.User, projectId string, customerTota
 						</div>
 					</div>
 				}
-				if  orderTotal != 0 {
+				if orderTotal != 0 {
 					<div class="vstack gap-1 pt-10">
 						<div class="d-flex bg-body-secondary gap-3 rounded-3 p-4">
 							<div class="vstack gap-2">
@@ -143,7 +133,7 @@ templ ProjectSynchronizerStart(user *domain.User, projectId string, customerTota
 					</div>
 				}
 				<div class="d-flex justify-content-end gap-2 mt-10">
-					<a type="button" class="btn btn-sm btn-neutral" href={ templ.URL("/dashboard/project/" + projectId) }>Skip for Now </a>
+					<a class="btn btn-sm btn-primary" href={ templ.URL("/dashboard/project/" + projectId) }>Complete Synchronization</a>
 				</div>
 			</div>
 		</main>

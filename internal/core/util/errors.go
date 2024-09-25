@@ -39,4 +39,6 @@ var (
 	ErrUnauthorized = errors.New("user is unauthorized to access the resource")
 	// ErrForbidden is an error for when the user is forbidden to access the resource
 	ErrForbidden = errors.New("user is forbidden to access the resource")
+	// ErrSynchronizerInProgress is an error for when the request is invalid
+	ErrSynchronizerInProgress = errors.New("synchronizer is already in progress")
 )

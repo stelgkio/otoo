@@ -19,15 +19,17 @@ import (
 
 // CustomerService represents the service for managing customers
 type CustomerService struct {
-	p port.WoocommerceRepository
-	s port.ProjectRepository
+	p            port.WoocommerceRepository
+	s            port.ProjectRepository
+	extensionSrv port.ExtensionService
 }
 
 // NewCustomerService creates a new CustomerService instance
-func NewCustomerService(woorepo port.WoocommerceRepository, projrepo port.ProjectRepository) *CustomerService {
+func NewCustomerService(woorepo port.WoocommerceRepository, projrepo port.ProjectRepository, extensionSrv port.ExtensionService) *CustomerService {
 	return &CustomerService{
-		p: woorepo,
-		s: projrepo,
+		p:            woorepo,
+		s:            projrepo,
+		extensionSrv: extensionSrv,
 	}
 }
 
@@ -209,6 +211,7 @@ func (c *CustomerService) createAndSaveAllCustomers(client *commerce.Client, pro
 		if len(resp) == 0 {
 			break // Exit the loop if no more products are returned
 		}
+		c.extensionSrv.UpdateSynchronizerCustomerRecievedExtension(nil, projectID, len(resp))
 		for _, item := range resp {
 			customerCh <- &w.CustomerRecord{
 				ProjectID:  projectID,

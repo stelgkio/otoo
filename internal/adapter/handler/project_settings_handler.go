@@ -128,12 +128,21 @@ func (ph *ProjectHandler) ProjectDelete(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
+	projectID := ctx.Param("projectId")
+
+	project, err := ph.svc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	ph.webhookSvc.DeleteAllWebhooksByProjectID(projectID, project.WoocommerceProject.ConsumerKey, project.WoocommerceProject.ConsumerSecret, project.WoocommerceProject.Domain)
 
 	err = ph.svc.SoftDeleteProjects(ctx, userID)
 	if err != nil {
 		return err
 	}
+
 	ctx.Response().Header().Set("HX-Redirect", "/dashboard")
+
 	return ctx.NoContent(http.StatusOK)
 
 }

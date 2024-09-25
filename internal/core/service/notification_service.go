@@ -22,6 +22,10 @@ func NewNotificationService(repo port.NotificationRepository, smtp port.SmtpServ
 
 // CreateNotification inserts a new notification
 func (ns *NotificationService) CreateNotification(ctx echo.Context, data *domain.Notification) error {
+	err := ns.repo.CreateNotification(ctx, data)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

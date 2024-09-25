@@ -1,6 +1,9 @@
 package views
 
-import "github.com/stelgkio/otoo/internal/core/domain"
+import (
+	"fmt"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
 
 templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExtension) {
 	<li class="nav-item my-1" id="extensions-dropdown">
@@ -24,8 +27,10 @@ templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExt
 					for _, extension := range extensions {
 						<li class="nav-item">
 							<a
-								href="#"
+								href="javascript:void(0)"
+								hx-get={ fmt.Sprintf("/extension/page/%s/%s", extension.Code, projectId) }
 								class="nav-link"
+								hx-target="#dashboard-content"
 							>
 								{ 	extension.Title }
 							</a>

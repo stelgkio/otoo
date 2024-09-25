@@ -9,7 +9,7 @@ css loading(percent int64) {
 	width: { fmt.Sprintf("%d%%", percent) };
 }
 
-templ ProjectSynchronizerStart(user *domain.User, projectId string, customerTotal, productTotal, orderTotal int64, customerTotalRate, productTotalRate, orderTotalRate float64) {
+templ ProjectSynchronizerStartPage(user *domain.User, projectId string, customerTotal, productTotal, orderTotal int64, customerTotalRate, productTotalRate, orderTotalRate float64) {
 	<div
 		id="dashboard-content"
 		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
@@ -21,7 +21,7 @@ templ ProjectSynchronizerStart(user *domain.User, projectId string, customerTota
 				class="card-body p-0 p-xxl-6"
 				class="container-fluid px-3 py-5 p-lg-6 p-xxl-8"
 				hx-trigger="every 2s"
-				hx-get={ fmt.Sprintf("/project/synchronize/done/%s/%d/%d/%d", projectId, customerTotal, productTotal, orderTotal) }
+				hx-get={ fmt.Sprintf("/project/page/synchronize/done/%s/%d/%d/%d", projectId, customerTotal, productTotal, orderTotal) }
 				hx-target="#dashboard-content"
 			>
 				<header class="border-bottom mb-10">

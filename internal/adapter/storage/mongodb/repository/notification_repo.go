@@ -26,7 +26,7 @@ func NewNotificationRepository(mongo *mongo.Client) *NotificationRepository {
 
 // CreateNotification  add new notification for user and project
 func (nr NotificationRepository) CreateNotification(ctx echo.Context, data *domain.Notification) error {
-	coll := nr.mongo.Database("otoo").Collection("notitications")
+	coll := nr.mongo.Database("otoo").Collection("notifications")
 	coll.InsertOne(context.TODO(), data)
 	return nil
 }

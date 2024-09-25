@@ -56,7 +56,7 @@ func TestWoocommerceService_WoocommerceCreateAllWebHook(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := tt.s.WoocommerceCreateAllWebHook(tt.args.customerKey, tt.args.customerSecret, tt.args.domainUrl, tt.args.projectId)
+			err := tt.s.WoocommerceCreateAllWebHook(tt.args.customerKey, tt.args.customerSecret, tt.args.domainUrl, tt.args.projectId.String())
 			if (err != nil) != tt.wantErr {
 				t.Errorf("WoocommerceService.WoocommerceCreateAllWebHook() error = %v, wantErr %v", err, tt.wantErr)
 			}

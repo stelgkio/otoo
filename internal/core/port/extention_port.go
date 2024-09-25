@@ -26,6 +26,16 @@ type ExtensionRepository interface {
 	GetAllACSProjectExtensions(ctx echo.Context, projectID string) ([]*domain.AcsCourierExtension, error)
 	GetACSProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.AcsCourierExtension, error)
 	DeleteACSProjectExtension(ctx echo.Context, extensionID, projectID string) error
+
+	////////////////// Data Synchronizer Extension/////////////////////////
+
+	CreateSynchronizerProjectExtension(ctx echo.Context, projectID string, e *domain.DataSynchronizerExtension) error
+	UpdateSynchronizerCustomerRecievedExtension(ctx echo.Context, projectID string, CustomerRecieved int) error
+	UpdateSynchronizerOrderReceivedExtension(ctx echo.Context, projectID string, OrderReceived int) error
+	UpdateSynchronizerProductReceivedExtension(ctx echo.Context, projectID string, ProductReceived int) error
+	GetAllSynchronizerProjectExtensions(ctx echo.Context, projectID string) ([]*domain.DataSynchronizerExtension, error)
+	GetSynchronizerProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.DataSynchronizerExtension, error)
+	DeleteSynchronizerProjectExtension(ctx echo.Context, extensionID, projectID string) error
 }
 
 // ExtensionService defines the methods for interacting with the Extension service
@@ -49,4 +59,14 @@ type ExtensionService interface {
 	GetAllACSProjectExtensions(ctx echo.Context, projectID string) ([]*domain.AcsCourierExtension, error)
 	GetACSProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.AcsCourierExtension, error)
 	DeleteACSProjectExtension(ctx echo.Context, extensionID, projectID string) error
+
+	////////////////// Data Synchronizer Extension/////////////////////////
+
+	CreateSynchronizerProjectExtension(ctx echo.Context, projectID string, e *domain.DataSynchronizerExtension) error
+	UpdateSynchronizerCustomerRecievedExtension(ctx echo.Context, projectID string, CustomerRecieved int) error
+	UpdateSynchronizerOrderReceivedExtension(ctx echo.Context, projectID string, OrderReceived int) error
+	UpdateSynchronizerProductReceivedExtension(ctx echo.Context, projectID string, ProductReceived int) error
+	GetAllSynchronizerProjectExtensions(ctx echo.Context, projectID string) ([]*domain.DataSynchronizerExtension, error)
+	GetSynchronizerProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.DataSynchronizerExtension, error)
+	DeleteSynchronizerProjectExtension(ctx echo.Context, extensionID, projectID string) error
 }

@@ -3,14 +3,12 @@ package port
 import (
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	d "github.com/stelgkio/otoo/internal/core/domain"
 	domain "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // WoocommerceRepository defines the methods for interacting with the Woocommerce repository
@@ -46,14 +44,20 @@ type WoocommerceRepository interface {
 
 	WebhookCreate(data w.WebhookRecord) error
 	WebhookUpdate(data w.WebhookRecord) (*w.WebhookRecord, error)
-	WebhookDelete(id primitive.ObjectID) error
+	WebhookBatchDelete(projectID string) error
+	WebhookDelete(projectID string, webhookID int64) error
 	WebhookFindByProjectID(projectID string) ([]w.WebhookRecord, error)
+	WebhookCount(projectID string) (int64, error)
 }
 
 // WoocommerceWebhookService defines the methods for interacting with the Woocommerce service
 type WoocommerceWebhookService interface {
 	// WoocommerceCreateOrderWebHook create new order web hook for woocommerce
-	WoocommerceCreateAllWebHook(customerKey string, customerSecret string, domainURL string, projectID uuid.UUID) error
+	WoocommerceCreateAllWebHook(customerKey string, customerSecret string, domainURL string, projectID string) error
+	WoocommerceCreateAllWebHookAsync(customerKey string, customerSecret string, domainURL string, projectID string) error
+	FindWebhookByProjectIDAsync(ctx echo.Context, projectID string, results chan<- []domain.WebhookRecord, errors chan<- error)
+	GetWebhookCountAsync(ctx echo.Context, projectID string, results chan<- int64, errors chan<- error)
+	DeleteAllWebhooksByProjectID(projectID string, customerKey string, customerSecret string, domainURL string) error
 }
 
 // CustomerService defines the methods for interacting with the Woocommerce service

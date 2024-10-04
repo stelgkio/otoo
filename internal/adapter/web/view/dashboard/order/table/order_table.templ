@@ -26,6 +26,14 @@ templ OrderTable(projectId string) {
 					>
 						<i class="bi bi-box-seam-fill"></i> <span class="ms-2">Courier</span>
 					</button>
+					<button
+						class="btn btn-sm btn-neutral "
+						type="button"
+						hx-get={ fmt.Sprintf("/courier/table/%s", projectId) }
+						hx-target="#dashboard-order"
+					>
+						<i class="bi bi-box-seam-fill"></i> <span class="ms-2">Voucher</span>
+					</button>
 				</div>
 			</div>
 		</div>

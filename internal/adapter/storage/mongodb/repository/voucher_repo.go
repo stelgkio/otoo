@@ -142,30 +142,42 @@ func (r *VoucherRepository) FindVoucherByProjectID(projectID string, size, page 
 	return vouchers, nil // Return the list of vouchers
 }
 
-// UpdateVoucher updates a Voucher by voucherID.
-func (r *VoucherRepository) UpdateVoucher(ctx echo.Context, voucher *domain.Voucher, voucherID string) error {
+// UpdateVoucher updates a Voucher by voucherID and returns the updated Voucher.
+func (r *VoucherRepository) UpdateVoucher(ctx echo.Context, voucher *domain.Voucher, projectID string, voucherID string) (*domain.Voucher, error) {
 	collection := r.mongo.Database("otoo").Collection("vouchers")
 
 	// Prepare the filter for finding the voucher
-	filter := bson.M{"voucher_id": voucherID, "projectId": voucher.ProjectID}
+	filter := bson.M{"voucher_id": voucherID, "projectId": projectID}
 
 	// Prepare the update data
 	update := bson.M{"$set": voucher}
 
-	// Set upsert option to true if you want to create a new document if it doesn't exist
-	opt := options.Update().SetUpsert(false) // Set to false if you don't want to create a new document on failure
+	// Set upsert option to false if you don't want to create a new document if it doesn't exist
+	opt := options.Update().SetUpsert(false)
 
 	// Perform the update operation
-	_, err := collection.UpdateOne(ctx.Request().Context(), filter, update, opt)
+	result, err := collection.UpdateOne(ctx.Request().Context(), filter, update, opt)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	// Check if any documents were modified
+	if result.MatchedCount == 0 {
+		return nil, errors.New("voucher not found")
+	}
+
+	// Retrieve the updated voucher
+	var updatedVoucher domain.Voucher
+	err = collection.FindOne(ctx.Request().Context(), filter).Decode(&updatedVoucher)
+	if err != nil {
+		return nil, err
+	}
+
+	return &updatedVoucher, nil
 }
 
-// DeleteVoucher marks a Voucher as inactive by setting is_active to false and adding a deleted_at timestamp.
-func (r *VoucherRepository) DeleteVoucher(ctx echo.Context, voucherID string) error {
+// DeleteVouchersByID marks a Voucher as inactive by setting is_active to false and adding a deleted_at timestamp.
+func (r *VoucherRepository) DeleteVouchersByID(ctx echo.Context, voucherID string) error {
 	collection := r.mongo.Database("otoo").Collection("vouchers")
 
 	// Prepare the filter to find the voucher by voucherID

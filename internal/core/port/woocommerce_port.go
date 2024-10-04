@@ -16,7 +16,7 @@ type WoocommerceRepository interface {
 	// InsertWoocommerceOrder inserts a new order into the database
 	OrderCreate(data *w.OrderRecord) error
 	OrderUpdate(data *w.OrderRecord, orderID int64) error
-	OrderDelete(data any) error
+	OrderDelete(orderID int64, projectID string) error
 	GetOrderByID(projectID string, orderID int64) (*w.OrderRecord, error)
 	OrderFindByProjectID(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string) ([]*w.OrderRecord, error)
 	GetOrderCount(projectID string, orderStatus w.OrderStatus, timeRange string) (int64, error)
@@ -24,13 +24,13 @@ type WoocommerceRepository interface {
 
 	CustomerCreate(data *w.CustomerRecord, email string) error
 	CustomerUpdate(data *w.CustomerRecord, email string) error
-	CustomerDelete(productID string) error
+	CustomerDelete(customerID int64, projectID string) error
 	CustomerFindByProjectID(projectID string, size, page int, sort, direction string) ([]*w.CustomerRecord, error)
 	CustomerFindByEmail(projectID string, email string) (*w.CustomerRecord, error)
 	GetCustomerCount(projectID string) (int64, error)
 
 	ProductCreate(data *w.ProductRecord) error
-	ProductDelete(productID int64) error
+	ProductDelete(productID int64, projectID string) error
 	ProductUpdate(data *w.ProductRecord, productID int64, projectID string) error
 	ProductFindByProjectID(projectID string, size, page int, sort, direction string, productType w.ProductType) ([]*w.ProductRecord, error)
 	GetProductCount(projectID string, productType w.ProductType) (int64, error)

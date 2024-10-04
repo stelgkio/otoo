@@ -16,7 +16,7 @@ type VoucherRepository interface {
 	// 	GetAllVouchers() ([]*domain.Voucher, error)
 	GetAllVouchers(ctx echo.Context, projectID string) ([]*domain.Voucher, error)
 	// // UpdateVoucher updates a Voucher
-	UpdateVoucher(ctx echo.Context, user *domain.Voucher, projectID string, voucherID string) (*domain.Voucher, error)
+	UpdateVoucher(ctx echo.Context, voucher *domain.Voucher, projectID string, voucherID string) (*domain.Voucher, error)
 	// DeleteUser(ctx context.Context, id uint64) error
 	DeleteVouchersByID(ctx echo.Context, voucherID string) error
 	// GetVoucherCount retrieves the count of Vouchers for a given project ID
@@ -30,14 +30,14 @@ type VoucherService interface {
 	// // GetVoucherByID selects a Voucher by id
 	GetVoucherByVoucherID(ctx echo.Context, voucherID string) (*domain.Voucher, error)
 	// FindVoucherByProjectIDAsync finds a Voucher by projectID
-	FindVoucherByProjectIDAsync(projectID string, size, page int, sort, direction string, voucherStatus domain.VoucherStatus) ([]*domain.Voucher, error)
+	FindVoucherByProjectIDAsync(projectID string, size, page int, sort, direction string, voucherStatus domain.VoucherStatus, results chan<- []*domain.Voucher, errors chan<- error)
 	// 	GetAllVouchers() ([]*domain.Voucher, error)
 	GetAllVouchers(ctx echo.Context, projectID string) ([]*domain.Voucher, error)
 	// // UpdateVoucher updates a Voucher
-	UpdateVoucher(ctx echo.Context, user *domain.Voucher, projectID string, voucherID string) (*domain.Voucher, error)
+	UpdateVoucher(ctx echo.Context, voucher *domain.Voucher, projectID string, voucherID string) (*domain.Voucher, error)
 	// // DeleteUser deletes a user
 	// DeleteUser(ctx context.Context, id uint64) error
 	DeleteVouchersByID(ctx echo.Context, voucherID string) error
 	/// GetVoucherCount retrieves the count of Vouchers for a given project ID
-	GetVoucherCountAsync(projectID string, voucherStatus domain.VoucherStatus) (int64, error)
+	GetVoucherCountAsync(projectID string, voucherStatus domain.VoucherStatus, results chan<- int64, errors chan<- error)
 }

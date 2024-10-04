@@ -18,6 +18,7 @@ import (
 
 	cronjob "github.com/stelgkio/otoo/internal/core/cron_job"
 	"github.com/stelgkio/otoo/internal/core/service"
+	courier "github.com/stelgkio/otoo/internal/core/service/courier"
 	"github.com/stelgkio/otoo/internal/core/service/woocommerce"
 )
 
@@ -35,6 +36,7 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	analyticsRepo := mongorepo.NewAnalyticsRepository(mongodb)
 	projectRepo := repository.NewProjectRepository(db)
 	extensionRepo := mongorepo.NewExtensionRepository(mongodb)
+	voucherRepo := mongorepo.NewVoucherRepository(mongodb)
 
 	// NewExtensionService
 	extensionService := service.NewExtensionService(extensionRepo)
@@ -45,6 +47,8 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	//WooCommerceOrderServer
 	woocommerceOrderService := woocommerce.NewOrderService(woocommerceRepo, projectRepo, extensionService)
 
+	//Voucher
+	voucherService := courier.NewVoucherService(voucherRepo)
 	//Smtp
 	smtpService := service.NewSmtpService()
 
@@ -62,7 +66,7 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 
 	//WooCommerce
 	woocommerceWebhookService := woocommerce.NewWoocommerceWebhookService(woocommerceRepo)
-	WooCommerceHandler := handler.NewWooCommerceHandler(woocommerceRepo, projectRepo, woocommerceCustomerService, woocommerceProductService, woocommerceWebhookService, extensionService)
+	WooCommerceHandler := handler.NewWooCommerceHandler(woocommerceRepo, projectRepo, woocommerceCustomerService, woocommerceProductService, woocommerceWebhookService, extensionService, voucherService)
 
 	//Project
 	projectService := service.NewProjectService(projectRepo, woocommerceWebhookService, woocommerceProductService, extensionService)

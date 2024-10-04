@@ -31,11 +31,12 @@ type WooCommerceHandler struct {
 	pr           port.ProductService
 	ws           port.WoocommerceWebhookService
 	extensionSvc port.ExtensionService
+	voucherSvc   port.VoucherService
 }
 
 // NewWooCommerceHandler creates a new instance of WooCommerceHandler
 // Injects repository, project repo, customer service, and product service
-func NewWooCommerceHandler(repo port.WoocommerceRepository, projrepo port.ProjectRepository, ctm port.CustomerService, proj port.ProductService, ws port.WoocommerceWebhookService, extensionSvc port.ExtensionService) *WooCommerceHandler {
+func NewWooCommerceHandler(repo port.WoocommerceRepository, projrepo port.ProjectRepository, ctm port.CustomerService, proj port.ProductService, ws port.WoocommerceWebhookService, extensionSvc port.ExtensionService, voucherSvc port.VoucherService) *WooCommerceHandler {
 	return &WooCommerceHandler{
 		repo,
 		projrepo,
@@ -43,6 +44,7 @@ func NewWooCommerceHandler(repo port.WoocommerceRepository, projrepo port.Projec
 		proj,
 		ws,
 		extensionSvc,
+		voucherSvc,
 	}
 }
 
@@ -168,17 +170,35 @@ func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
 // OrderDeletedWebHook handles the webhook when an order is deleted
 // POST /webhook/order/delete
 func (w WooCommerceHandler) OrderDeletedWebHook(ctx echo.Context) error {
-	var order bson.M
-	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
+	// Read and reset the request body
+	body, err := readAndResetBody(ctx)
+	if err != nil {
+		slog.Error("Error reading body of order_deleted request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	// Bind the request to the Order struct
+	var order woocommerce.Order
+	if err := ctx.Bind(&order); err != nil {
+		slog.Error("Error binding order_deleted request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	// Validate the webhook
+	project, err := w.validateWebhook(ctx, body, "order_deleted")
+	if err != nil {
+		slog.Error("Error validating order_deleted webhook", "error", err)
 		return err
 	}
 
-	// Delete the order
-	err := w.p.OrderDelete(order)
-	if err != nil {
-		return err
+	// Delete the order from the database
+	if err := w.p.OrderDelete(order.ID, project.Id.String()); err != nil {
+		slog.Error("Error deleting order from the database", "orderID", order.ID, "error", err)
+		return ctx.String(http.StatusInternalServerError, "Failed to delete order")
 	}
-	return nil
+
+	// Respond with a success message
+	return ctx.String(http.StatusOK, "deleted")
 }
 
 // FindWebHooks retrieves webhooks for a specific project
@@ -336,23 +356,35 @@ func (w WooCommerceHandler) CustomerUpdatedWebHook(ctx echo.Context) error {
 // CustomerDeletedWebHook handles customer deletion webhook
 // POST /webhook/customer/delete
 func (w WooCommerceHandler) CustomerDeletedWebHook(ctx echo.Context) error {
+	// Read and reset the request body
 	body, err := readAndResetBody(ctx)
-	var customer bson.M
-	if err := json.NewDecoder(ctx.Request().Body).Decode(&customer); err != nil {
+	if err != nil {
+		slog.Error("Error reading body of customer_deleted request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	// Bind the request to the Customer struct
+	req := new(woocommerce.Customer)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("Error binding customer_deleted request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	// Validate the webhook
+	project, err := w.validateWebhook(ctx, body, "customer_deleted")
+	if err != nil {
+		slog.Error("Error validating customer_deleted webhook", "error", err)
 		return err
 	}
 
-	project, err := w.validateWebhook(ctx, body, "customer_updated")
-	if err != nil {
-		slog.Error("Error validating customer_updated webhook", "error", err)
-		return err
-	}
 	// Delete customer data from the database
-	err = w.p.CustomerDelete(project.Id.String())
-	if err != nil {
-		return err
+	if err := w.p.CustomerDelete(req.ID, project.Id.String()); err != nil {
+		slog.Error("Error deleting customer from the database", "customerID", req.ID, "error", err)
+		return ctx.String(http.StatusInternalServerError, "Failed to delete customer")
 	}
-	return nil
+
+	// Respond with a success message
+	return ctx.String(http.StatusOK, "deleted")
 }
 
 // ProductCreatedWebHook handles product creation webhook
@@ -472,9 +504,14 @@ func (w WooCommerceHandler) ProductDeletedWebHook(ctx echo.Context) error {
 		slog.Error("Error validating product_deleted webhook", "error", err)
 		return err
 	}
+	project, err := w.validateWebhook(ctx, body, "order_updated")
+	if err != nil {
+		slog.Error("Error validating order_updated webhook", "error", err)
+		return err
+	}
 
 	// Delete product from the database
-	err = w.p.ProductDelete(req.ID)
+	err = w.p.ProductDelete(req.ID, project.Id.String())
 	if err != nil {
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}

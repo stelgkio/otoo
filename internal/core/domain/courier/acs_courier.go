@@ -33,12 +33,12 @@ type CreateVoucherResponse struct {
 
 // ACSRequest defines the structure of the ACS request
 type ACSRequest struct {
-	ACSAlias           string          `json:"ACSAlias"`
-	ACSInputParameters *VoucherRequest `json:"ACSInputParameters"`
+	ACSAlias           string             `json:"ACSAlias"`
+	ACSInputParameters *AcsVoucherRequest `json:"ACSInputParameters"`
 }
 
-// VoucherRequest defines the structure of the Create Voucher request
-type VoucherRequest struct {
+// AcsVoucherRequest defines the structure of the Create Voucher request
+type AcsVoucherRequest struct {
 	CompanyID              string   `json:"Company_ID" validate:"required"`
 	CompanyPassword        string   `json:"Company_Password" validate:"required"`
 	UserID                 string   `json:"User_ID" validate:"required"`
@@ -80,7 +80,7 @@ type VoucherRequest struct {
 }
 
 // Validate ensures the VoucherRequest fields are valid
-func (v *VoucherRequest) Validate() error {
+func (v *AcsVoucherRequest) Validate() error {
 	// Check if both RecipientPhone and RecipientCellPhone are empty
 	if v.RecipientPhone == 0 && v.RecipientCellPhone == 0 {
 		return errors.New("either RecipientPhone or RecipientCellPhone must be provided")

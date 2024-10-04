@@ -21,15 +21,17 @@ import (
 
 // ProductService represents the service for managing products
 type ProductService struct {
-	p port.WoocommerceRepository
-	s port.ProjectRepository
+	p            port.WoocommerceRepository
+	s            port.ProjectRepository
+	extensionSrv port.ExtensionService
 }
 
 // NewProductService creates a new ProductService instance
-func NewProductService(woorepo port.WoocommerceRepository, projrepo port.ProjectRepository) *ProductService {
+func NewProductService(woorepo port.WoocommerceRepository, projrepo port.ProjectRepository, extensionSrv port.ExtensionService) *ProductService {
 	return &ProductService{
-		p: woorepo,
-		s: projrepo,
+		p:            woorepo,
+		s:            projrepo,
+		extensionSrv: extensionSrv,
 	}
 }
 
@@ -110,6 +112,7 @@ func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectID 
 		if len(resp) == 0 {
 			break // Exit the loop if no more products are returned
 		}
+		s.extensionSrv.UpdateSynchronizerProductReceivedExtension(nil, projectID, len(resp))
 		for _, item := range resp {
 			productCh <- &w.ProductRecord{
 				ProjectID: projectID,

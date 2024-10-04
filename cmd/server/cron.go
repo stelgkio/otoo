@@ -41,13 +41,12 @@ func RunAnalyticsJob() {
 	}
 	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
+	_, err = io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Error reading the response body:", err)
 		return
 	}
 
-	fmt.Println(string(body))
 }
 
 // RunAProductBestSellerJob is the function to be executed by the cron job
@@ -60,13 +59,12 @@ func RunAProductBestSellerJob() {
 	}
 	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
+	_, err = io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Error reading the response body:", err)
 		return
 	}
 
-	fmt.Println(string(body))
 }
 
 // RunAProductBestSellerInitializerJob is the function to be executed by the cron job
@@ -79,13 +77,12 @@ func RunAProductBestSellerInitializerJob() {
 	}
 	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
+	_, err = io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Error reading the response body:", err)
 		return
 	}
 
-	fmt.Println(string(body))
 }
 
 // RunCustomerBestBuyerJob is the function to be executed by the cron job
@@ -98,11 +95,11 @@ func RunCustomerBestBuyerJob() {
 	}
 	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
+	_, err = io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Error reading the response body:", err)
 		return
 	}
 
-	fmt.Println(string(body))
+	//fmt.Println(string(body))
 }

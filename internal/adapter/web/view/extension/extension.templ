@@ -5,7 +5,7 @@ import (
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-templ Extensions(projectId string, extensions []*domain.Extension) {
+templ Extensions(projectId string, extensions []*domain.Extension, projectExtensions []*domain.ProjectExtension) {
 	<div
 		id="dashboard-content"
 		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
@@ -21,160 +21,244 @@ templ Extensions(projectId string, extensions []*domain.Extension) {
 			<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-6 justify-content-center">
 				for _, extension := range extensions {
 					if extension.Code == "asc-courier" {
-						<!-- ASC Courier Card -->
-						<div class="col">
-							<div class="card card-pricing text-bg-primary border-0 shadow-4 shadow-6-hover">
-								<div class="p-6">
-									<h3 class="text-reset ls-tight mb-1">ASC Courier</h3>
-									<div class="d-flex align-items-center my-5">
-										<span class="d-block display-5 text-reset">10€/mo</span>
+						for _, projectExtension := range projectExtensions {
+							<!-- ASC Courier Card -->
+							<div class="col">
+								if  extension.ID.Hex() == projectExtension.ExtensionID {
+									<div class="card card-pricing text-bg-primary border-0 shadow-4 shadow-6-hover card-disabled">
+										<div class="p-6">
+											<h3 class="text-reset ls-tight mb-1">ASC Courier</h3>
+											<div class="d-flex align-items-center my-5">
+												<span class="d-block display-5 text-reset">10€/mo</span>
+											</div>
+											<p class="text-reset text-opacity-75 mb-4">
+												{ extension.Description }
+											</p>
+											<div class="mt-7 mb-2 d-flex justify-content-between align-items-center">
+												<span class="text-sm fw-semibold">Start Shipping with Otoo!</span>
+												<a
+													href="javascript:void(0)"
+													hx-get={ fmt.Sprintf("/extension/asc-courier/%s", projectId) }
+													hx-push-url="true"
+													class="btn btn-sm btn-square btn-dark stretched-link"
+													hx-target="#dashboard-content"
+												>
+													<i class="bi bi-download"></i>
+												</a>
+											</div>
+										</div>
 									</div>
-									<p class="text-reset text-opacity-75 mb-4">
-										{ extension.Description }
-									</p>
-									<div class="mt-7 mb-2 d-flex justify-content-between align-items-center">
-										<span class="text-sm fw-semibold">Start Shipping with Otoo!</span>
-										<a
-											href="javascript:void(0)"
-											hx-get={ fmt.Sprintf("/extension/asc-courier/%s", projectId) }
-											hx-push-url="true"
-											class="btn btn-sm btn-square btn-dark stretched-link"
-											hx-target="#dashboard-content"
-										>
-											<i class="bi bi-arrow-right"></i>
-										</a>
+								} else {
+									<div class="card card-pricing text-bg-primary border-0 shadow-4 shadow-6-hover ">
+										<div class="p-6">
+											<h3 class="text-reset ls-tight mb-1">ASC Courier</h3>
+											<div class="d-flex align-items-center my-5">
+												<span class="d-block display-5 text-reset">10€/mo</span>
+											</div>
+											<p class="text-reset text-opacity-75 mb-4">
+												{ extension.Description }
+											</p>
+											<div class="mt-7 mb-2 d-flex justify-content-between align-items-center">
+												<span class="text-sm fw-semibold">Start Shipping with Otoo!</span>
+												<a
+													href="javascript:void(0)"
+													hx-get={ fmt.Sprintf("/extension/asc-courier/%s", projectId) }
+													hx-push-url="true"
+													class="btn btn-sm btn-square btn-dark stretched-link"
+													hx-target="#dashboard-content"
+												>
+													<i class="bi bi-arrow-right"></i>
+												</a>
+											</div>
+										</div>
 									</div>
-								</div>
+								}
+								<ul class="list-unstyled mt-7">
+									<li class="py-2 d-flex align-items-center">
+										<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
+											<i class="bi bi-check"></i>
+										</div>
+										<p>Automatic order status updates</p>
+									</li>
+									<li class="py-2 d-flex align-items-center">
+										<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
+											<i class="bi bi-check"></i>
+										</div>
+										<p>Download shipping vouchers</p>
+									</li>
+									<li class="py-2 d-flex align-items-center">
+										<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
+											<i class="bi bi-check"></i>
+										</div>
+										<p>Send customer notifications via email</p>
+									</li>
+								</ul>
 							</div>
-							<ul class="list-unstyled mt-7">
-								<li class="py-2 d-flex align-items-center">
-									<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
-										<i class="bi bi-check"></i>
-									</div>
-									<p>Automatic order status updates</p>
-								</li>
-								<li class="py-2 d-flex align-items-center">
-									<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
-										<i class="bi bi-check"></i>
-									</div>
-									<p>Download shipping vouchers</p>
-								</li>
-								<li class="py-2 d-flex align-items-center">
-									<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
-										<i class="bi bi-check"></i>
-									</div>
-									<p>Send customer notifications via email</p>
-								</li>
-							</ul>
-						</div>
+						}
 					}
 					if extension.Code == "wallet-expences" {
-						<!-- Wallet & Expenses Overview Card -->
-						<div class="col">
-							<div class="card card-pricing text-bg-secondary border-0 shadow-4 shadow-6-hover">
-								<div class="p-6">
-									<h3 class="text-reset ls-tight mb-1">Wallet & Expenses</h3>
-									<div class="d-flex align-items-center my-5">
-										<span class="d-block display-5 text-reset">13€/mo</span>
+						for _, projectExtension := range projectExtensions {
+							<!-- Wallet & Expenses Overview Card -->
+							<div class="col">
+								if  extension.ID.Hex() == projectExtension.ExtensionID {
+									<div class="card card-pricing text-bg-secondary border-0 shadow-4 shadow-6-hover card-disabled">
+										<div class="p-6">
+											<h3 class="text-reset ls-tight mb-1">Wallet & Expenses</h3>
+											<div class="d-flex align-items-center my-5">
+												<span class="d-block display-5 text-reset">13€/mo</span>
+											</div>
+											<p class="text-reset text-opacity-75 mb-4">
+												{ extension.Description }
+											</p>
+											<div class="mt-7 mb-2 d-flex justify-content-between align-items-center">
+												<span class="text-sm fw-semibold">Optimize Your Finances with Otoo!</span>
+												<a
+													href="javascript:void(0)"
+													hx-get={ fmt.Sprintf("/extension/wallet-expences/%s", projectId) }
+													hx-push-url="true"
+													class="btn btn-sm btn-square btn-dark stretched-link"
+													hx-target="#dashboard-content"
+												>
+													<i class="bi bi-download"></i>
+												</a>
+											</div>
+										</div>
 									</div>
-									<p class="text-reset text-opacity-75 mb-4">
-										{ extension.Description }
-									</p>
-									<div class="mt-7 mb-2 d-flex justify-content-between align-items-center">
-										<span class="text-sm fw-semibold">Optimize Your Finances with Otoo!</span>
-										<a
-											href="javascript:void(0)"
-											hx-get={ fmt.Sprintf("/extension/wallet-expences/%s", projectId) }
-											hx-push-url="true"
-											class="btn btn-sm btn-square btn-dark stretched-link"
-											hx-target="#dashboard-content"
-										>
-											<i class="bi bi-arrow-right"></i>
-										</a>
+								} else {
+									<div class="card card-pricing text-bg-secondary border-0 shadow-4 shadow-6-hover ">
+										<div class="p-6">
+											<h3 class="text-reset ls-tight mb-1">Wallet & Expenses</h3>
+											<div class="d-flex align-items-center my-5">
+												<span class="d-block display-5 text-reset">13€/mo</span>
+											</div>
+											<p class="text-reset text-opacity-75 mb-4">
+												{ extension.Description }
+											</p>
+											<div class="mt-7 mb-2 d-flex justify-content-between align-items-center">
+												<span class="text-sm fw-semibold">Optimize Your Finances with Otoo!</span>
+												<a
+													href="javascript:void(0)"
+													hx-get={ fmt.Sprintf("/extension/wallet-expences/%s", projectId) }
+													hx-push-url="true"
+													class="btn btn-sm btn-square btn-dark stretched-link"
+													hx-target="#dashboard-content"
+												>
+													<i class="bi bi-arrow-right"></i>
+												</a>
+											</div>
+										</div> card-disabled
 									</div>
-								</div>
+								}
+								<ul class="list-unstyled mt-7">
+									<li class="py-2 d-flex align-items-center">
+										<div class="icon icon-xs text-base icon-shape rounded-circle bg-secondary-subtle text-secondary me-3">
+											<i class="bi bi-check"></i>
+										</div>
+										<p>Integrate with Facebook campaigns</p>
+									</li>
+									<li class="py-2 d-flex align-items-center">
+										<div class="icon icon-xs text-base icon-shape rounded-circle bg-secondary-subtle text-secondary me-3">
+											<i class="bi bi-check"></i>
+										</div>
+										<p>Monitor courier charges</p>
+									</li>
+									<li class="py-2 d-flex align-items-center">
+										<div class="icon icon-xs text-base icon-shape rounded-circle bg-secondary-subtle text-secondary me-3">
+											<i class="bi bi-check"></i>
+										</div>
+										<p>Automatic tax calculations</p>
+									</li>
+									<li class="py-2 d-flex align-items-center">
+										<div class="icon icon-xs text-base icon-shape rounded-circle bg-secondary-subtle text-secondary me-3">
+											<i class="bi bi-check"></i>
+										</div>
+										<p>Priority support for Otoo users</p>
+									</li>
+								</ul>
 							</div>
-							<ul class="list-unstyled mt-7">
-								<li class="py-2 d-flex align-items-center">
-									<div class="icon icon-xs text-base icon-shape rounded-circle bg-secondary-subtle text-secondary me-3">
-										<i class="bi bi-check"></i>
-									</div>
-									<p>Integrate with Facebook campaigns</p>
-								</li>
-								<li class="py-2 d-flex align-items-center">
-									<div class="icon icon-xs text-base icon-shape rounded-circle bg-secondary-subtle text-secondary me-3">
-										<i class="bi bi-check"></i>
-									</div>
-									<p>Monitor courier charges</p>
-								</li>
-								<li class="py-2 d-flex align-items-center">
-									<div class="icon icon-xs text-base icon-shape rounded-circle bg-secondary-subtle text-secondary me-3">
-										<i class="bi bi-check"></i>
-									</div>
-									<p>Automatic tax calculations</p>
-								</li>
-								<li class="py-2 d-flex align-items-center">
-									<div class="icon icon-xs text-base icon-shape rounded-circle bg-secondary-subtle text-secondary me-3">
-										<i class="bi bi-check"></i>
-									</div>
-									<p>Priority support for Otoo users</p>
-								</li>
-							</ul>
-						</div>
+						}
 					}
 					if extension.Code == "data-synchronizer" {
-						<!-- Data Synchronizer Card -->
-						<div class="col">
-							<div class="card card-pricing text-bg-dark shadow-4 shadow-6-hover">
-								<div class="p-6">
-									<h3 class="text-reset ls-tight mb-1">Data Synchronizer</h3>
-									<div class="d-flex align-items-center my-5">
-										<span class="d-block display-5 text-reset">29€/yr</span>
+						for _, projectExtension := range projectExtensions {
+							<!-- Data Synchronizer Card -->
+							<div class="col">
+								if  extension.ID.Hex() == projectExtension.ExtensionID {
+									<div class="card card-pricing text-bg-dark shadow-4 shadow-6-hover card-disabled">
+										<div class="p-6">
+											<h3 class="text-reset ls-tight mb-1">Data Synchronizer</h3>
+											<div class="d-flex align-items-center my-5">
+												<span class="d-block display-5 text-reset">29€/yr</span>
+											</div>
+											<p class="text-reset text-opacity-75 mb-4">
+												{ extension.Description }
+											</p>
+											<div class="mt-7 mb-2 d-flex justify-content-between align-items-center">
+												<span class="text-sm fw-semibold">Synchronize with Otoo!</span>
+												<a
+													href="javascript:void(0)"
+													hx-get={ fmt.Sprintf("/extension/data-synchronizer/%s", projectId) }
+													hx-push-url={ fmt.Sprintf("/extension/data-synchronizer/%s", projectId) }
+													class="btn btn-sm btn-square btn-white stretched-link"
+													hx-target="#dashboard-content"
+												>
+													<i class="bi bi-download"></i>
+												</a>
+											</div>
+										</div>
 									</div>
-									<p class="text-reset text-opacity-75 mb-4">
-										{ extension.Description }
-									</p>
-									<div class="mt-7 mb-2 d-flex justify-content-between align-items-center">
-										<span class="text-sm fw-semibold">Synchronize with Otoo!</span>
-										<a
-											href="javascript:void(0)"
-											hx-get={ fmt.Sprintf("/extension/data-synchronizer/%s", projectId) }
-											hx-push-url={ fmt.Sprintf("/extension/data-synchronizer/%s", projectId) }
-											class="btn btn-sm btn-square btn-white stretched-link"
-											hx-target="#dashboard-content"
-										>
-											<i class="bi bi-arrow-right"></i>
-										</a>
+								} else {
+									<div class="card card-pricing text-bg-dark shadow-4 shadow-6-hover ">
+										<div class="p-6">
+											<h3 class="text-reset ls-tight mb-1">Data Synchronizer</h3>
+											<div class="d-flex align-items-center my-5">
+												<span class="d-block display-5 text-reset">29€/yr</span>
+											</div>
+											<p class="text-reset text-opacity-75 mb-4">
+												{ extension.Description }
+											</p>
+											<div class="mt-7 mb-2 d-flex justify-content-between align-items-center">
+												<span class="text-sm fw-semibold">Synchronize with Otoo!</span>
+												<a
+													href="javascript:void(0)"
+													hx-get={ fmt.Sprintf("/extension/data-synchronizer/%s", projectId) }
+													hx-push-url={ fmt.Sprintf("/extension/data-synchronizer/%s", projectId) }
+													class="btn btn-sm btn-square btn-white stretched-link"
+													hx-target="#dashboard-content"
+												>
+													<i class="bi bi-arrow-right"></i>
+												</a>
+											</div>
+										</div>
 									</div>
-								</div>
+								}
+								<ul class="list-unstyled mt-7">
+									<li class="py-2 d-flex align-items-center">
+										<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
+											<i class="bi bi-check"></i>
+										</div>
+										<p>Retrieve customer data seamlessly</p>
+									</li>
+									<li class="py-2 d-flex align-items-center">
+										<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
+											<i class="bi bi-check"></i>
+										</div>
+										<p>Sync product information and variations</p>
+									</li>
+									<li class="py-2 d-flex align-items-center">
+										<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
+											<i class="bi bi-check"></i>
+										</div>
+										<p>Access full order history</p>
+									</li>
+									<li class="py-2 d-flex align-items-center">
+										<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
+											<i class="bi bi-check"></i>
+										</div>
+										<p>Build custom analytics and reports</p>
+									</li>
+								</ul>
 							</div>
-							<ul class="list-unstyled mt-7">
-								<li class="py-2 d-flex align-items-center">
-									<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
-										<i class="bi bi-check"></i>
-									</div>
-									<p>Retrieve customer data seamlessly</p>
-								</li>
-								<li class="py-2 d-flex align-items-center">
-									<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
-										<i class="bi bi-check"></i>
-									</div>
-									<p>Sync product information and variations</p>
-								</li>
-								<li class="py-2 d-flex align-items-center">
-									<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
-										<i class="bi bi-check"></i>
-									</div>
-									<p>Access full order history</p>
-								</li>
-								<li class="py-2 d-flex align-items-center">
-									<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
-										<i class="bi bi-check"></i>
-									</div>
-									<p>Build custom analytics and reports</p>
-								</li>
-							</ul>
-						</div>
+						}
 					}
 				}
 			</div>

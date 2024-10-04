@@ -87,3 +87,44 @@ func (ex *ExtensionService) GetACSProjectExtensionByID(ctx echo.Context, extensi
 func (ex *ExtensionService) DeleteACSProjectExtension(ctx echo.Context, extensionID, projectID string) error {
 	return ex.repo.DeleteACSProjectExtension(ctx, extensionID, projectID)
 }
+
+////////////////// Data Synchronizer Extension/////////////////////////
+
+// CreateSynchronizerProjectExtension creates a new ProjectExtension
+func (ex *ExtensionService) CreateSynchronizerProjectExtension(ctx echo.Context, projectID string, e *domain.DataSynchronizerExtension) error {
+
+	return ex.repo.CreateSynchronizerProjectExtension(ctx, projectID, e)
+}
+
+// UpdateSynchronizerCustomerRecievedExtension creates a new ProjectExtension
+func (ex *ExtensionService) UpdateSynchronizerCustomerRecievedExtension(ctx echo.Context, projectID string, CustomerRecieved int) error {
+
+	return ex.repo.UpdateSynchronizerCustomerRecievedExtension(ctx, projectID, CustomerRecieved)
+}
+
+// UpdateSynchronizerOrderReceivedExtension creates a new ProjectExtension
+func (ex *ExtensionService) UpdateSynchronizerOrderReceivedExtension(ctx echo.Context, projectID string, OrderReceived int) error {
+
+	return ex.repo.UpdateSynchronizerOrderReceivedExtension(ctx, projectID, OrderReceived)
+}
+
+// UpdateSynchronizerProductReceivedExtension creates a new ProjectExtension
+func (ex *ExtensionService) UpdateSynchronizerProductReceivedExtension(ctx echo.Context, projectID string, ProductReceived int) error {
+
+	return ex.repo.UpdateSynchronizerProductReceivedExtension(ctx, projectID, ProductReceived)
+}
+
+// GetAllSynchronizerProjectExtensions gets all ProjectExtensions
+func (ex *ExtensionService) GetAllSynchronizerProjectExtensions(ctx echo.Context, projectID string) ([]*domain.DataSynchronizerExtension, error) {
+	return ex.repo.GetAllSynchronizerProjectExtensions(ctx, projectID)
+}
+
+// GetSynchronizerProjectExtensionByID gets a ProjectExtension by ID
+func (ex *ExtensionService) GetSynchronizerProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.DataSynchronizerExtension, error) {
+	return ex.repo.GetSynchronizerProjectExtensionByID(ctx, extensionID, projectID)
+}
+
+// DeleteSynchronizerProjectExtension deletes a ProjectExtension by ID
+func (ex *ExtensionService) DeleteSynchronizerProjectExtension(ctx echo.Context, extensionID, projectID string) error {
+	return ex.repo.DeleteSynchronizerProjectExtension(ctx, extensionID, projectID)
+}

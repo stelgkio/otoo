@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -27,16 +28,51 @@ func NewVoucherRepository(mongo *mongo.Client) *VoucherRepository {
 // CreateVoucher inserts a new Voucher into the database.
 func (r *VoucherRepository) CreateVoucher(ctx echo.Context, voucher *domain.Voucher, projectID string) (*domain.Voucher, error) {
 	collection := r.mongo.Database("otoo").Collection("vouchers")
-	voucher.ProjectID = projectID  // Set the project ID
-	voucher.CreatedAt = time.Now() // Set creation time
-	voucher.UpdatedAt = time.Now() // Set updated time
 
 	// Insert the voucher into the collection
-	_, err := collection.InsertOne(ctx.Request().Context(), voucher)
+	_, err := collection.InsertOne(context.Background(), voucher)
 	if err != nil {
+		slog.Error("Failed to create voucher", "error", err)
 		return nil, err
 	}
 	return voucher, nil
+}
+
+// UpdateVoucher updates a Voucher by voucherID and returns the updated Voucher.
+func (r *VoucherRepository) UpdateVoucher(ctx echo.Context, voucher *domain.Voucher, projectID string, voucherID string, orderID int64) (*domain.Voucher, error) {
+	collection := r.mongo.Database("otoo").Collection("vouchers")
+
+	// Prepare the filter for finding the voucher
+	filter := bson.M{"voucher_id": voucherID, "projectId": projectID, "is_active": true, "orderId": orderID}
+	if voucherID == "" {
+		filter = bson.M{"projectId": projectID, "is_active": true, "orderId": orderID}
+	}
+
+	// Prepare the update data
+	update := bson.M{"$set": voucher}
+
+	// Set upsert option to false if you don't want to create a new document if it doesn't exist
+	opt := options.Update().SetUpsert(true)
+
+	// Perform the update operation
+	result, err := collection.UpdateOne(context.Background(), filter, update, opt)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check if any documents were modified
+	if result.MatchedCount == 0 {
+		return nil, errors.New("voucher not found")
+	}
+
+	// Retrieve the updated voucher
+	var updatedVoucher domain.Voucher
+	err = collection.FindOne(context.Background(), filter).Decode(&updatedVoucher)
+	if err != nil {
+		return nil, err
+	}
+
+	return &updatedVoucher, nil
 }
 
 // GetVoucherByVoucherID selects a Voucher by voucher ID.
@@ -59,17 +95,18 @@ func (r *VoucherRepository) GetVoucherByVoucherID(ctx echo.Context, voucherID st
 // GetAllVouchers retrieves all vouchers for a specific project.
 func (r *VoucherRepository) GetAllVouchers(ctx echo.Context, projectID string) ([]*domain.Voucher, error) {
 	collection := r.mongo.Database("otoo").Collection("vouchers")
+
 	var vouchers []*domain.Voucher
 
 	// Find all vouchers for the given project ID
-	cursor, err := collection.Find(ctx.Request().Context(), bson.M{"projectId": projectID})
+	cursor, err := collection.Find(context.Background(), bson.M{"projectId": projectID})
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(ctx.Request().Context())
+	defer cursor.Close(context.Background())
 
 	// Iterate through the cursor and decode the vouchers
-	for cursor.Next(ctx.Request().Context()) {
+	for cursor.Next(context.Background()) {
 		var voucher domain.Voucher
 		if err := cursor.Decode(&voucher); err != nil {
 			return nil, err
@@ -142,30 +179,8 @@ func (r *VoucherRepository) FindVoucherByProjectID(projectID string, size, page 
 	return vouchers, nil // Return the list of vouchers
 }
 
-// UpdateVoucher updates a Voucher by voucherID.
-func (r *VoucherRepository) UpdateVoucher(ctx echo.Context, voucher *domain.Voucher, voucherID string) error {
-	collection := r.mongo.Database("otoo").Collection("vouchers")
-
-	// Prepare the filter for finding the voucher
-	filter := bson.M{"voucher_id": voucherID, "projectId": voucher.ProjectID}
-
-	// Prepare the update data
-	update := bson.M{"$set": voucher}
-
-	// Set upsert option to true if you want to create a new document if it doesn't exist
-	opt := options.Update().SetUpsert(false) // Set to false if you don't want to create a new document on failure
-
-	// Perform the update operation
-	_, err := collection.UpdateOne(ctx.Request().Context(), filter, update, opt)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// DeleteVoucher marks a Voucher as inactive by setting is_active to false and adding a deleted_at timestamp.
-func (r *VoucherRepository) DeleteVoucher(ctx echo.Context, voucherID string) error {
+// DeleteVouchersByID marks a Voucher as inactive by setting is_active to false and adding a deleted_at timestamp.
+func (r *VoucherRepository) DeleteVouchersByID(ctx echo.Context, voucherID string) error {
 	collection := r.mongo.Database("otoo").Collection("vouchers")
 
 	// Prepare the filter to find the voucher by voucherID
@@ -180,7 +195,7 @@ func (r *VoucherRepository) DeleteVoucher(ctx echo.Context, voucherID string) er
 	}
 
 	// Perform the update operation
-	_, err := collection.UpdateOne(ctx.Request().Context(), filter, update)
+	_, err := collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		return err
 	}
@@ -211,4 +226,45 @@ func (r *VoucherRepository) GetVoucherCount(projectID string, voucherStatus doma
 		return 0, err // Return any other error
 	}
 	return count, nil // Return the count of vouchers
+}
+
+// GetVoucherByOrderIDAndProjectID retrieves a voucher by orderID and projectID.
+func (r *VoucherRepository) GetVoucherByOrderIDAndProjectID(ctx echo.Context, orderID int64, projectID string) (*domain.Voucher, error) {
+	collection := r.mongo.Database("otoo").Collection("vouchers")
+
+	// Use the echo context to get the request context and set a timeout
+	reqCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	// Prepare filter to find vouchers for the given projectID and active status
+	filter := bson.M{"orderId": orderID, "projectId": projectID, "is_active": true}
+
+	// Query the database
+	cursor, err := collection.Find(reqCtx, filter)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil // No documents found
+		}
+		return nil, err // Return any other error
+	}
+	defer cursor.Close(reqCtx) // Ensure the cursor is closed when done
+
+	// Initialize a variable to store the result
+	var voucher domain.Voucher
+
+	// Loop through the cursor and decode the first matching document
+	for cursor.Next(reqCtx) {
+		if err := cursor.Decode(&voucher); err != nil {
+			return nil, err // Return decoding error
+		}
+		// Return the first matching voucher
+		return &voucher, nil
+	}
+
+	// If no matching voucher was found, return nil
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return nil, nil // Return nil if no voucher was found
 }

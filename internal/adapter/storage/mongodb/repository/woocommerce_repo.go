@@ -52,10 +52,12 @@ func (repo WoocommerceRepository) OrderUpdate(order *w.OrderRecord, orderID int6
 }
 
 // OrderDelete delete order
-func (repo WoocommerceRepository) OrderDelete(data any) error {
+func (repo WoocommerceRepository) OrderDelete(orderID int64, projectID string) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
-	coll.DeleteOne(context.TODO(), data)
-	return nil
+	filter := bson.M{"orderId": orderID, "projectId": projectID}
+	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now().UTC()}}
+	_, err := coll.UpdateOne(context.TODO(), filter, update)
+	return err
 }
 
 // OrderFindByProjectID find all orders by projectID
@@ -215,9 +217,9 @@ func (repo WoocommerceRepository) CustomerUpdate(data *w.CustomerRecord, email s
 }
 
 // CustomerDelete  error
-func (repo WoocommerceRepository) CustomerDelete(productID string) error {
+func (repo WoocommerceRepository) CustomerDelete(customerID int64, projectID string) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_customers")
-	filter := bson.M{"productId": productID}
+	filter := bson.M{"customerId": customerID, "projectId": projectID}
 	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now().UTC()}}
 	_, err := coll.UpdateOne(context.TODO(), filter, update)
 	return err
@@ -332,9 +334,9 @@ func (repo WoocommerceRepository) ProductUpdate(data *w.ProductRecord, productID
 }
 
 // ProductDelete delete product
-func (repo WoocommerceRepository) ProductDelete(productID int64) error {
+func (repo WoocommerceRepository) ProductDelete(productID int64, projectID string) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
-	filter := bson.M{"productId": productID}
+	filter := bson.M{"productId": productID, "projectId": projectID}
 	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now().UTC()}}
 	_, err := coll.UpdateOne(context.TODO(), filter, update)
 	return err

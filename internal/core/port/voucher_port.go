@@ -43,4 +43,5 @@ type VoucherService interface {
 	DeleteVouchersByID(ctx echo.Context, voucherID string) error
 	/// GetVoucherCount retrieves the count of Vouchers for a given project ID
 	GetVoucherCountAsync(projectID string, voucherStatus domain.VoucherStatus, results chan<- int64, errors chan<- error)
+	DeleteVouchersByOrderIdandProjectID(ctx echo.Context, projectID string, orderID int64) error
 }

@@ -78,3 +78,11 @@ func (v *Voucher) UpdateVoucher(cod, note string, shipping *woocommerce.Shipping
 	v.UpdatedAt = time.Now()
 	return v
 }
+
+// DeleteVoucher updates the Voucher with the provided Cod, Note, and Shipping.
+func (v *Voucher) DeleteVoucher() *Voucher {
+	v.IsActive = false
+	v.UpdatedAt = time.Now()
+	v.DeletedAt = time.Now()
+	return v
+}

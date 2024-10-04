@@ -198,7 +198,7 @@ func (w WooCommerceHandler) OrderDeletedWebHook(ctx echo.Context) error {
 		slog.Error("Error deleting order from the database", "orderID", order.ID, "error", err)
 		return ctx.String(http.StatusInternalServerError, "Failed to delete order")
 	}
-
+	go w.voucherSvc.DeleteVouchersByOrderIdandProjectID(ctx, project.Id.String(), order.ID)
 	// Respond with a success message
 	return ctx.String(http.StatusOK, "deleted")
 }

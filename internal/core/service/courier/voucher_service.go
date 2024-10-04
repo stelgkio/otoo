@@ -80,6 +80,25 @@ func (vs *VoucherService) UpdateVoucher(ctx echo.Context, order *o.OrderRecord, 
 	return vs.repo.UpdateVoucher(ctx, voucher, projectID, voucher.VoucherID, order.OrderID)
 }
 
+// DeleteVouchersByOrderIdandProjectID deletes a voucher by its ID
+func (vs *VoucherService) DeleteVouchersByOrderIdandProjectID(ctx echo.Context, projectID string, orderID int64) error {
+	voucher, err := vs.repo.GetVoucherByOrderIDAndProjectID(ctx, orderID, projectID)
+	if err != nil {
+		return err
+	}
+	if voucher == nil {
+		slog.Error("Voucher not found")
+		return errors.New("voucher not found")
+	}
+	if !voucher.IsPrinted {
+		voucher.DeleteVoucher()
+
+		_, err = vs.repo.UpdateVoucher(ctx, voucher, projectID, voucher.VoucherID, orderID)
+		return err
+	}
+	return nil
+}
+
 // DeleteVouchersByID deletes a voucher by its ID
 func (vs *VoucherService) DeleteVouchersByID(ctx echo.Context, voucherID string) error {
 	return vs.repo.DeleteVouchersByID(ctx, voucherID)

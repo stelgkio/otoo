@@ -22,7 +22,7 @@ type Voucher struct {
 	HermesVoucerRequest *HermesVoucerRequest  `json:"hermes_courier"  bson:"hermes_courier"`
 	CreatedAt           time.Time             `json:"created_at"  bson:"created_at,omitempty"`
 	UpdatedAt           time.Time             `json:"updated_at"  bson:"updated_at,omitempty"`
-	DeletedAt           time.Time             `json:"deleted_at"  bson:"deleted_at,omitempty"`
+	DeletedAt           *time.Time            `json:"deleted_at"  bson:"deleted_at,omitempty"`
 	IsActive            bool                  `json:"is_active" bson:"is_active,omitempty"`
 	IsPrinted           bool                  `json:"is_printed" bson:"is_printed"`
 }
@@ -76,6 +76,7 @@ func (v *Voucher) UpdateVoucher(cod, note string, shipping *woocommerce.Shipping
 	v.Note = note
 	v.Shipping = shipping
 	v.UpdatedAt = time.Now()
+	v.DeletedAt = nil
 	return v
 }
 
@@ -83,6 +84,7 @@ func (v *Voucher) UpdateVoucher(cod, note string, shipping *woocommerce.Shipping
 func (v *Voucher) DeleteVoucher() *Voucher {
 	v.IsActive = false
 	v.UpdatedAt = time.Now()
-	v.DeletedAt = time.Now()
+	now := time.Now()
+	v.DeletedAt = &now
 	return v
 }

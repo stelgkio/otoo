@@ -1,8 +1,12 @@
 package service
 
 import (
+	"errors"
+	"log/slog"
+
 	"github.com/labstack/echo/v4"
 	domain "github.com/stelgkio/otoo/internal/core/domain/courier"
+	o "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/port"
 )
 
@@ -19,7 +23,9 @@ func NewVoucherService(repo port.VoucherRepository) *VoucherService {
 }
 
 // CreateVoucher inserts a new Voucher into the database
-func (vs *VoucherService) CreateVoucher(ctx echo.Context, voucher *domain.Voucher, projectID string) (*domain.Voucher, error) {
+func (vs *VoucherService) CreateVoucher(ctx echo.Context, OrderRecord *o.OrderRecord, projectID string) (*domain.Voucher, error) {
+	voucher := domain.NewVoucher(projectID, OrderRecord.Order.ShippingTotal, OrderRecord.Order.CustomerNote, OrderRecord.Order.Shipping, OrderRecord.Order.ID)
+
 	return vs.repo.CreateVoucher(ctx, voucher, projectID)
 }
 
@@ -39,8 +45,39 @@ func (vs *VoucherService) GetAllVouchers(ctx echo.Context, projectID string) ([]
 }
 
 // UpdateVoucher updates a Voucher
-func (vs *VoucherService) UpdateVoucher(ctx echo.Context, voucher *domain.Voucher, projectID string, voucherID string) (*domain.Voucher, error) {
-	return vs.repo.UpdateVoucher(ctx, voucher, projectID, voucherID)
+func (vs *VoucherService) UpdateVoucher(ctx echo.Context, order *o.OrderRecord, projectID string) (*domain.Voucher, error) {
+	voucher, err := vs.repo.GetVoucherByOrderIDAndProjectID(ctx, order.Order.ID, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	if voucher == nil {
+		slog.Error("Voucher not found")
+		return nil, errors.New("voucher not found")
+	}
+	// Update the voucher status based on the order status
+	switch order.Order.Status {
+	case "completed":
+		if !voucher.IsPrinted {
+			voucher.UpdateVoucherStatus(domain.VoucherStatusCompleted)
+		}
+	case "processing":
+		voucher.UpdateVoucherStatus(domain.VoucherStatusNew)
+	case "cancelled":
+		// If the voucher has not been printed, cancel it; otherwise, revert to processing
+		if !voucher.IsPrinted {
+			voucher.UpdateVoucherStatus(domain.VoucherStatusCancelled)
+		}
+	case "on-hold":
+		if !voucher.IsPrinted {
+			voucher.UpdateVoucherStatus(domain.VoucherStatusOnHold)
+		}
+	default:
+	}
+
+	voucher.UpdateVoucher(order.Order.ShippingTotal, order.Order.CustomerNote, order.Order.Shipping)
+
+	return vs.repo.UpdateVoucher(ctx, voucher, projectID, voucher.VoucherID, order.OrderID)
 }
 
 // DeleteVouchersByID deletes a voucher by its ID

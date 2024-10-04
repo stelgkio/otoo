@@ -110,6 +110,7 @@ func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
 	// Extract customer and product data asynchronously
 	go w.c.ExtractCustomerFromOrderAndUpsert(ctx, orderRecord)
 	go w.pr.ExtractProductFromOrderAndUpsert(ctx, orderRecord, project)
+	go w.voucherSvc.CreateVoucher(ctx, orderRecord, project.Id.String())
 
 	// Return success response
 	return ctx.String(http.StatusCreated, "created")
@@ -163,6 +164,7 @@ func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
 	// Extract and upsert customer and product data asynchronously
 	go w.c.ExtractCustomerFromOrderAndUpsert(ctx, updateOrderRecord)
 	go w.pr.ExtractProductFromOrderAndUpsert(ctx, updateOrderRecord, project)
+	go w.voucherSvc.UpdateVoucher(ctx, updateOrderRecord, project.Id.String())
 
 	return nil
 }

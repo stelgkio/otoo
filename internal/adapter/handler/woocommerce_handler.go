@@ -336,13 +336,19 @@ func (w WooCommerceHandler) CustomerUpdatedWebHook(ctx echo.Context) error {
 // CustomerDeletedWebHook handles customer deletion webhook
 // POST /webhook/customer/delete
 func (w WooCommerceHandler) CustomerDeletedWebHook(ctx echo.Context) error {
+	body, err := readAndResetBody(ctx)
 	var customer bson.M
 	if err := json.NewDecoder(ctx.Request().Body).Decode(&customer); err != nil {
 		return err
 	}
 
+	project, err := w.validateWebhook(ctx, body, "customer_updated")
+	if err != nil {
+		slog.Error("Error validating customer_updated webhook", "error", err)
+		return err
+	}
 	// Delete customer data from the database
-	err := w.p.CustomerDelete(customer)
+	err = w.p.CustomerDelete(project.Id.String())
 	if err != nil {
 		return err
 	}

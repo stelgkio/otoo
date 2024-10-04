@@ -215,10 +215,12 @@ func (repo WoocommerceRepository) CustomerUpdate(data *w.CustomerRecord, email s
 }
 
 // CustomerDelete  error
-func (repo WoocommerceRepository) CustomerDelete(data any) error {
+func (repo WoocommerceRepository) CustomerDelete(productID string) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_customers")
-	coll.DeleteOne(context.TODO(), data)
-	return nil
+	filter := bson.M{"productId": productID}
+	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now().UTC()}}
+	_, err := coll.UpdateOne(context.TODO(), filter, update)
+	return err
 }
 
 // CustomerFindByProjectID find all customers by projectID

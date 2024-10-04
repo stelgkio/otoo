@@ -24,7 +24,7 @@ type WoocommerceRepository interface {
 
 	CustomerCreate(data *w.CustomerRecord, email string) error
 	CustomerUpdate(data *w.CustomerRecord, email string) error
-	CustomerDelete(data any) error
+	CustomerDelete(productID string) error
 	CustomerFindByProjectID(projectID string, size, page int, sort, direction string) ([]*w.CustomerRecord, error)
 	CustomerFindByEmail(projectID string, email string) (*w.CustomerRecord, error)
 	GetCustomerCount(projectID string) (int64, error)

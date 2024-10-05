@@ -61,7 +61,7 @@ func ProjectTemplate(user *domain.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><script src=\"https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js\"></script><script src=\"/assets/js/main.js\"></script><script src=\"/assets/js/switcher.js\"></script><script src=\"/assets/js/script.js\"></script></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><script src=\"https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js\"></script><script src=\"/assets/js/main.js\"></script><script src=\"/assets/js/switcher.js\"></script><script src=\"/assets/js/script.js\"></script><script src=\"/assets/js/translation.js\"></script></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

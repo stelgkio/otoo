@@ -2,7 +2,7 @@
 
 document.addEventListener('htmx:afterRequest', function (evt) {
     // Check if the specific element triggered the request   
-    
+
     if (evt.detail.requestConfig.elt.classList.contains('delete-notification')) {
         console.log("Notification deleted!");
         console.log("Notification deleted!");
@@ -15,7 +15,7 @@ document.addEventListener('htmx:afterRequest', function (evt) {
 
         dropdownInstance.show(); // Keep the dropdown open after HTMX updates
     }
-   
+
 });
 
 
@@ -41,8 +41,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
- // Bootstrap validation script
- (function () {
+// Bootstrap validation script
+(function () {
     'use strict';
 
     window.addEventListener('load', function () {

@@ -31,6 +31,7 @@ type DashboardHandler struct {
 	bestSeller      port.BestSellers
 	extensionSvc    port.ExtensionService
 	notificationSvc port.NotificationService
+	voucherSvc      port.VoucherService
 }
 
 // NewDashboardHandler returns a new DashboardHandler
@@ -42,7 +43,8 @@ func NewDashboardHandler(
 	orderSvc port.OrderService,
 	bestSeller port.BestSellers,
 	extension port.ExtensionService,
-	notification port.NotificationService) *DashboardHandler {
+	notification port.NotificationService,
+	voucherSvc port.VoucherService) *DashboardHandler {
 	return &DashboardHandler{
 		projectSvc:      projectSvc,
 		userSvc:         userSvc,
@@ -52,6 +54,7 @@ func NewDashboardHandler(
 		bestSeller:      bestSeller,
 		extensionSvc:    extension,
 		notificationSvc: notification,
+		voucherSvc:      voucherSvc,
 	}
 }
 

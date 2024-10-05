@@ -66,7 +66,13 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 
 	//WooCommerce
 	woocommerceWebhookService := woocommerce.NewWoocommerceWebhookService(woocommerceRepo)
-	WooCommerceHandler := handler.NewWooCommerceHandler(woocommerceRepo, projectRepo, woocommerceCustomerService, woocommerceProductService, woocommerceWebhookService, extensionService, voucherService)
+	WooCommerceHandler := handler.NewWooCommerceHandler(woocommerceRepo,
+		projectRepo,
+		woocommerceCustomerService,
+		woocommerceProductService,
+		woocommerceWebhookService,
+		extensionService,
+		voucherService)
 
 	//Project
 	projectService := service.NewProjectService(projectRepo, woocommerceWebhookService, woocommerceProductService, extensionService)
@@ -75,13 +81,30 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	woocommerceReportService := woocommerce.NewWoocommerceReportService(projectService)
 	//ProjectHandler
 	bestSellerCron := cronjob.NewProductBestSellerCron(projectService, analyticsRepo, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
-	projectHandler := handler.NewProjectHandler(projectService, userService, woocommerceReportService, woocommerceProductService, woocommerceCustomerService, woocommerceOrderService, bestSellerCron, notificationService, extensionService, woocommerceWebhookService)
+	projectHandler := handler.NewProjectHandler(projectService,
+		userService,
+		woocommerceReportService,
+		woocommerceProductService,
+		woocommerceCustomerService,
+		woocommerceOrderService,
+		bestSellerCron,
+		notificationService,
+		extensionService,
+		woocommerceWebhookService)
 
 	//Home
 	homeHandler := handler.NewHomeHandler(projectService, contactService)
 
 	//Dashboard
-	dashboardHandler := handler.NewDashboardHandler(projectService, userService, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService, analyticsRepo, extensionService, notificationService)
+	dashboardHandler := handler.NewDashboardHandler(projectService,
+		userService,
+		woocommerceCustomerService,
+		woocommerceProductService,
+		woocommerceOrderService,
+		analyticsRepo,
+		extensionService,
+		notificationService,
+		voucherService)
 
 	//Profile
 	profileHandler := handler.NewProfileHandler(userService, projectService, authService)

@@ -280,6 +280,16 @@ func NewRouter(
 		profilegroup.POST("/user/delete", profileHandler.ProfileDelete)
 	}
 
+	//Courier
+	couriergroup := e.Group("/voucher")
+	{
+		couriergroup.Use(configureJWT())
+		couriergroup.Use(auth.TokenRefresherMiddleware)
+		couriergroup.GET("/table/view/:projectId", dashboardHandler.CourierTable)
+		couriergroup.GET("/table/:projectId/:status/:page", dashboardHandler.VoucherTable)
+
+	}
+
 	return &Router{e}, nil
 }
 

@@ -8,6 +8,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	t "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/table"
+	v "github.com/stelgkio/otoo/internal/core/domain/courier"
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/util"
 )
@@ -19,11 +20,11 @@ func (dh *DashboardHandler) CourierTable(ctx echo.Context) error {
 	return util.Render(ctx, t.VoucherTable(projectID))
 }
 
-// OrderTable returns the order dashboard
-func (dh *DashboardHandler) OrderTable2(ctx echo.Context) error {
+// VoucherTable returns the order dashboard
+func (dh *DashboardHandler) VoucherTable(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 	page := ctx.Param("page")
-	status, err := w.StringToOrderStatus(ctx.Param("status"))
+	status, err := v.StringToVoucherStatus(ctx.Param("status"))
 	pageNum, err := strconv.Atoi(page)
 	sort := ctx.QueryParam("sort")
 	direction := ctx.QueryParam("direction")
@@ -44,19 +45,19 @@ func (dh *DashboardHandler) OrderTable2(ctx echo.Context) error {
 	wg.Add(2)
 
 	orderCountChan := make(chan int64, 1)
-	orderListChan := make(chan []*w.OrderRecord, 1)
+	orderListChan := make(chan []*v.Voucher, 1)
 	errChan := make(chan error, 1)
 	errListChan := make(chan error, 1)
 
 	go func() {
 		defer wg.Done()
-		dh.orderSvc.GetOrderCountAsync(ctx, projectID, status, "", orderCountChan, errChan)
+		dh.voucherSvc.GetVoucherCountAsync(projectID, status, orderCountChan, errChan)
 	}()
 
 	// Fetch  10 orders
 	go func() {
 		defer wg.Done()
-		dh.orderSvc.FindOrderByProjectIDAsync(projectID, itemsPerPage, pageNum, status, sort, direction, orderListChan, errListChan)
+		dh.voucherSvc.FindVoucherByProjectIDAsync(projectID, itemsPerPage, pageNum, sort, direction, status, orderListChan, errListChan)
 	}()
 	// Wait for all goroutines to finish
 	go func() {
@@ -68,7 +69,7 @@ func (dh *DashboardHandler) OrderTable2(ctx echo.Context) error {
 	}()
 
 	var totalItems int64
-	var orderRecords []*w.OrderRecord
+	var voucherRecords []*v.Voucher
 
 	for err := range errChan {
 		if err != nil {
@@ -85,22 +86,22 @@ func (dh *DashboardHandler) OrderTable2(ctx echo.Context) error {
 		totalItems = item
 	}
 	for item := range orderListChan {
-		orderRecords = item
+		voucherRecords = item
 	}
 
 	// Convert orderRecords to OrderTableList for the response
-	var orders []w.OrderTableList
-	if orderRecords != nil {
-		for _, record := range orderRecords {
-			orders = append(orders, w.OrderTableList{
-				ID:          record.ID,
-				ProjectID:   record.ProjectID,
-				Timestamp:   record.Timestamp,
-				OrderID:     record.OrderID,
-				TotalAmount: record.Order.Total,
-				Status:      record.Status,
-				Billing:     *record.Order.Billing,
-				Shipping:    *record.Order.Shipping,
+	var vouchers []v.VoucherTableList
+	if voucherRecords != nil {
+		for _, record := range voucherRecords {
+			vouchers = append(vouchers, v.VoucherTableList{
+				ID:        record.ID,
+				ProjectID: record.ProjectID,
+				OrderID:   record.OrderID,
+				VoucherID: record.VoucherID,
+				Status:    record.Status,
+				Shipping:  *record.Shipping,
+				CreateAt:  record.CreatedAt,
+				Cod:       record.Cod,
 			})
 		}
 	}
@@ -112,8 +113,8 @@ func (dh *DashboardHandler) OrderTable2(ctx echo.Context) error {
 	}
 
 	// Create response object
-	response := w.OrderTableResponde{
-		Data: orders,
+	response := v.VoucherTableResponde{
+		Data: vouchers,
 		Meta: w.Meta{
 			TotalItems:   int(totalItems),
 			CurrentPage:  pageNum,

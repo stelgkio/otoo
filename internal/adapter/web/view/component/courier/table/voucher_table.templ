@@ -1,334 +1,477 @@
 package views
 
+import (
+	"fmt"
+	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/pagination"
+)
+
 templ VoucherTable(projectId string) {
-	<div id="dashboard-order">
-		<!-- Navigation Tabs -->
-		<ul class="nav nav-tabs nav-tabs-flush gap-8 overflow-x border-0 mt-4" role="tablist">
-			<li class="nav-item"><a href="#tab-orders-unshipped" class="nav-link active" data-bs-toggle="tab">Προς αποστολή</a></li>
-			<li class="nav-item"><a href="#tab-orders-shipped" class="nav-link" data-bs-toggle="tab">Απεστάλησαν</a></li>
-			<li class="nav-item"><a href="#tab-orders-delivered" class="nav-link" data-bs-toggle="tab">Παραδόθηκαν</a></li>
-			<li class="nav-item"><a href="#tab-orders-returning" class="nav-link" data-bs-toggle="tab">Προς επιστροφή</a></li>
-			<li class="nav-item"><a href="#tab-orders-cancelled" class="nav-link" data-bs-toggle="tab">Ακύρωση</a></li>
-			<li class="nav-item"><a href="#tab-orders-all" class="nav-link" data-bs-toggle="tab">Όλες</a></li>
-		</ul>
-	</div>
-	<!-- Tab Content -->
-	<div class="tab-content">
-		<!-- Προς αποστολή Tab -->
-		<div class="tab-pane fade show active" id="tab-orders-unshipped" role="tabpanel">
+	<div id="dashboard-voucher">
+		// <div class="mb-1 mb-xl-10">
+		// 	<div class="col">
+		// 		<div class="hstack gap-2 justify-content-start">
+		// 			<button
+		// 				class="btn btn-sm btn-neutral"
+		// 				type="button"
+		// 				hx-get={ fmt.Sprintf("/voucher/chart/%s", projectId) }
+		// 				hx-target="#dashboard-voucher"
+		// 			>
+		// 				<i class="bi bi-bar-chart-fill"></i> <span class="ms-2">Charts</span>
+		// 			</button>
+		// 			<button
+		// 				class="btn btn-sm btn-neutral"
+		// 				type="button"
+		// 				hx-get={ fmt.Sprintf("/voucher/courier/%s", projectId) }
+		// 				hx-target="#dashboard-voucher"
+		// 			>
+		// 				<i class="bi bi-box-seam-fill"></i> <span class="ms-2">Courier</span>
+		// 			</button>
+		// 			<button
+		// 				class="btn btn-sm btn-neutral"
+		// 				type="button"
+		// 				hx-get={ fmt.Sprintf("/voucher/table/%s", projectId) }
+		// 				hx-target="#dashboard-voucher"
+		// 			>
+		// 				<i class="bi bi-box-seam-fill"></i> <span class="ms-2">Voucher</span>
+		// 			</button>
+		// 		</div>
+		// 	</div>
+		// </div>
+		<div id="dashboard-voucher-table" x-data={ fmt.Sprintf("voucherTable('%s')", projectId) } x-init="init()">
+			<div class="px-6 px-lg-7 pt-1 border-bottom">
+				<ul class="nav nav-tabs nav-tabs-flush gap-8 overflow-x border-0 mt-4">
+					<li class="nav-item">
+						<a
+							href="#"
+							:class="{'nav-link': true, 'active': currentTab === 'new'}"
+							@click.prevent="selectTab('new')"
+						>New</a>
+					</li>
+					<li class="nav-item">
+						<a
+							href="#"
+							:class="{'nav-link': true, 'active': currentTab === 'completed'}"
+							@click.prevent="selectTab('completed')"
+						>Completed</a>
+					</li>
+					<li class="nav-item">
+						<a
+							href="#"
+							:class="{'nav-link': true, 'active': currentTab === 'processing'}"
+							@click.prevent="selectTab('processing')"
+						>Processing</a>
+					</li>
+					<li class="nav-item">
+						<a
+							href="#"
+							:class="{'nav-link': true, 'active': currentTab === 'cancelled'}"
+							@click.prevent="selectTab('cancelled')"
+						>Canceled</a>
+					</li>
+					<li class="nav-item">
+						<a
+							href="#"
+							:class="{'nav-link': true, 'active': currentTab === 'all'}"
+							@click.prevent="selectTab('all')"
+						>All</a>
+					</li>
+				</ul>
+			</div>
+			// <div class="d-flex gap-2 py-3 px-7 border-bottom">
+			// 	<div class="dropdown" x-data="{ showDropdown: false }" @click.outside="showDropdown = false">
+			// 		<button
+			// 			class="btn btn-sm btn-neutral dropdown-toggle"
+			// 			type="button"
+			// 			id="dropdownMenuButton2"
+			// 			@click="showDropdown = !showDropdown"
+			// 			:aria-expanded="showDropdown.toString()"
+			// 		>
+			// 			<i class="bi bi-plus-circle"></i> <span class="ms-2">Bulk Action</span>
+			// 		</button>
+			// 		<div class="dropdown-menu" :class="{ 'show': showDropdown }" aria-labelledby="dropdownMenuButton2">
+			// 			<div class="dropdown-item py-1 px-2 d-flex align-items-center">
+			// 				<div class="text-lg">
+			// 					<input
+			// 						class="form-check-input"
+			// 						type="radio"
+			// 						name="statusOption"
+			// 						id="statusBacklog"
+			// 						value="asc_courier"
+			// 						x-model="selectedStatus"
+			// 					/>
+			// 				</div>
+			// 				<div class="ms-3 me-5">
+			// 					<label for="statusBacklog">Send to Courier and update to completed</label>
+			// 				</div>
+			// 			</div>
+			// 			<div class="dropdown-item py-1 px-2 d-flex align-items-center">
+			// 				<div class="text-lg">
+			// 					<input
+			// 						class="form-check-input"
+			// 						type="radio"
+			// 						name="statusOption"
+			// 						id="statusCompleted"
+			// 						value="completed"
+			// 						x-model="selectedStatus"
+			// 					/>
+			// 				</div>
+			// 				<div class="ms-3 me-5">
+			// 					<label for="statusTodo">Change status to completed</label>
+			// 				</div>
+			// 			</div>
+			// 			<div class="dropdown-item py-1 px-2 d-flex align-items-center">
+			// 				<div class="text-lg">
+			// 					<input
+			// 						class="form-check-input"
+			// 						type="radio"
+			// 						name="statusOption"
+			// 						id="statuSpending"
+			// 						value="pending"
+			// 						x-model="selectedStatus"
+			// 					/>
+			// 				</div>
+			// 				<div class="ms-3 me-5">
+			// 					<label for="statusInProgress">Change status to pending</label>
+			// 				</div>
+			// 			</div>
+			// 			<div class="dropdown-item py-1 px-2 d-flex align-items-center">
+			// 				<div class="text-lg">
+			// 					<input
+			// 						class="form-check-input"
+			// 						type="radio"
+			// 						name="statusOption"
+			// 						id="statusProdessing"
+			// 						value="processing"
+			// 						x-model="selectedStatus"
+			// 					/>
+			// 				</div>
+			// 				<div class="ms-3 me-5">
+			// 					<label for="statusDone">Change status to processing</label>
+			// 				</div>
+			// 			</div>
+			// 			<div class="dropdown-item py-1 px-2 d-flex align-items-center">
+			// 				<div class="text-lg">
+			// 					<input
+			// 						class="form-check-input"
+			// 						type="radio"
+			// 						name="statusOption"
+			// 						id="statusCancelled"
+			// 						value="cancelled"
+			// 						x-model="selectedStatus"
+			// 					/>
+			// 				</div>
+			// 				<div class="ms-3 me-5">
+			// 					<label for="statusCancelled">Change status to cancelled</label>
+			// 				</div>
+			// 			</div>
+			// 			<div class="mt-3">
+			// 				<button
+			// 					type="button"
+			// 					class="btn btn-sm btn-primary d-sm-inline-flex position-relative"
+			// 					@click="applyAction"
+			// 				>
+			// 					<span x-show="!loading">Apply </span>
+			// 					<span
+			// 						x-show="loading"
+			// 						class="spinner-border spinner-border-sm"
+			// 						role="status"
+			// 						aria-hidden="true"
+			// 					></span>
+			// 					<i class="px-3 bi bi-arrow-right"></i>
+			// 				</button>
+			// 			</div>
+			// 			<div class="mt-3">
+			// 				<div x-show="errorMessage" class="alert alert-danger" role="alert">
+			// 					<span x-text="errorMessage"></span>
+			// 				</div>
+			// 			</div>
+			// 		</div>
+			// 	</div>
+			// </div>
 			<div class="table-responsive">
-				<table class="table table-hover table-striped table-sm">
+				<table class="table table-hover table-nowrap">
 					<thead>
 						<tr>
-							<th>Κωδικός</th>
-							<th>Πελάτης</th>
-							<th>Προϊόντα</th>
-							<th>Συνολικό Ποσό</th>
-							<th>Κατάσταση</th>
-							<th>Ημερομηνία</th>
-							<th>Ενέργειες</th>
+							<th>
+								<div class="text-base">
+									<div class="form-check">
+										<input
+											class="form-check-input"
+											type="checkbox"
+											@change="selectAll()"
+											x-model="selectAllCheckbox"
+										/>
+									</div>
+								</div>
+							</th>
+							<template x-if="!isNewTab">
+								<th @click="sortTable('Id')">
+									Voucher ID
+									<i :class="getSortIcon('Id')"></i>
+								</th>
+							</template>
+							<th @click="sortTable('orderId')">
+								Order ID
+								<i :class="getSortIcon('orderId')"></i>
+							</th>
+							<th @click="sortTable('created_at')">
+								Date
+								<i :class="getSortIcon('created_at')"></i>
+							</th>
+							<th @click="sortTable('cod')">
+								COD
+								<i :class="getSortIcon('cod')"></i>
+							</th>
+							<th>Status</th>
+							<template x-if="isPrinted">
+								<th @click="sortTable('is_printed')">
+									Printed
+									<i :class="getSortIcon('is_printed')"></i>
+								</th>
+							</template>
 						</tr>
 					</thead>
 					<tbody>
-						<!-- Table rows will be dynamically populated here -->
+						<template x-if="!loading && totalItems === 0">
+							<tr>
+								<td colspan="7">No vouchers found.</td>
+							</tr>
+						</template>
+						<template x-for="voucher in paginatedVouchers" :key="voucher.Id">
+							<tr>
+								<td>
+									<div class="form-check">
+										<input
+											class="form-check-input"
+											type="checkbox"
+											:value="voucher.Id"
+											x-model="selectedVouchers"
+										/>
+									</div>
+								</td>
+								<template x-if="!isNewTab">
+									<td x-text="voucher.Id"></td>
+								</template>
+								<td x-text="voucher.orderId"></td>
+								<td x-text="new Date(voucher.created_at).toLocaleString()"></td>
+								<td x-text="voucher.cod"></td>
+								<td>
+									<span :class="badgeClass(voucher.status)" x-text="voucher.status"></span>
+								</td>
+								<template x-if="isPrinted">
+									<td>
+										<template x-if="voucher.is_printed">
+											<span x-text="'Yes'"></span>
+										</template>
+										<template x-if="!voucher.is_printed">
+											<span class="d-flex align-items-center">
+												<i
+													class="fas fa-download ml-1"
+													@click="downloadVoucher(voucher.Id)"
+													style="cursor: pointer;"
+													title="Download Voucher"
+												></i>
+											</span>
+										</template>
+									</td>
+								</template>
+							</tr>
+						</template>
+						<template x-for="i in 10 - paginatedVouchers.length" :key="'empty' + i">
+							<tr>
+								<td colspan="7" class="py-7"></td>
+							</tr>
+						</template>
 					</tbody>
 				</table>
 			</div>
-		</div>
-		<!-- Απεστάλησαν Tab -->
-		<div class="tab-pane fade" id="tab-orders-shipped" role="tabpanel">
-			<table class="table table-hover table-striped table-sm">
-				<thead>
-					<tr>
-						<th>Κωδικός</th>
-						<th>Πελάτης</th>
-						<th>Προϊόντα</th>
-						<th>Συνολικό Ποσό</th>
-						<th>Κατάσταση</th>
-						<th>Ημερομηνία</th>
-						<th>Ενέργειες</th>
-					</tr>
-				</thead>
-				<tbody>
-					<!-- Table rows will be dynamically populated here -->
-				</tbody>
-			</table>
-		</div>
-		<!-- Παραδόθηκαν Tab -->
-		<div class="tab-pane fade" id="tab-orders-delivered" role="tabpanel">
-			<table class="table table-hover table-striped table-sm">
-				<thead>
-					<tr>
-						<th>Κωδικός</th>
-						<th>Πελάτης</th>
-						<th>Προϊόντα</th>
-						<th>Συνολικό Ποσό</th>
-						<th>Κατάσταση</th>
-						<th>Ημερομηνία</th>
-						<th>Ενέργειες</th>
-					</tr>
-				</thead>
-				<tbody>
-					<!-- Table rows will be dynamically populated here -->
-				</tbody>
-			</table>
-		</div>
-		<!-- Προς επιστροφή Tab -->
-		<div class="tab-pane fade" id="tab-orders-returning" role="tabpanel">
-			<table class="table table-hover table-striped table-sm">
-				<thead>
-					<tr>
-						<th>Κωδικός</th>
-						<th>Πελάτης <i class="bi bi-arrow-down-up"></i></th>
-						<th>Προϊόντα</th>
-						<th>Συνολικό Ποσό</th>
-						<th>Κατάσταση</th>
-						<th>Ημερομηνία</th>
-						<th>Ενέργειες</th>
-					</tr>
-				</thead>
-				<tbody>
-					<!-- Table rows will be dynamically populated here -->
-				</tbody>
-			</table>
-		</div>
-		<!-- Ακύρωση Tab -->
-		<div class="tab-pane fade" id="tab-orders-cancelled" role="tabpanel">
-			<!-- Similar table structure as above, but for cancelled orders -->
-			<table class="table table-hover table-striped table-sm">
-				<thead>
-					<tr>
-						<th>Κωδικός <i class="bi bi-arrow-down-up"></i></th>
-						<th>Πελάτης <i class="bi bi-arrow-down-up"></i></th>
-						<th>Προϊόντα</th>
-						<th>Συνολικό Ποσό</th>
-						<th>Κατάσταση</th>
-						<th>Ημερομηνία</th>
-						<th>Ενέργειες</th>
-					</tr>
-				</thead>
-				<tbody>
-					<!-- Table rows will be dynamically populated here -->
-				</tbody>
-			</table>
-		</div>
-		<!-- Όλες Tab -->
-		<div class="tab-pane fade" id="tab-orders-all" role="tabpanel">
-			<!-- Similar table structure as above, but for all orders -->
-			<table class="table table-hover table-striped table-sm">
-				<thead>
-					<tr>
-						<th>Κωδικός</th>
-						<th>Πελάτης </th>
-						<th>Προϊόντα</th>
-						<th>Συνολικό Ποσό </th>
-						<th>Κατάσταση</th>
-						<th>Ημερομηνία></th>
-						<th>Ενέργειες</th>
-					</tr>
-				</thead>
-				<tbody>
-					<!-- Table rows will be dynamically populated here -->
-				</tbody>
-			</table>
+			@p.PaginationControl()
 		</div>
 	</div>
+	<script>
+function voucherTable(projectId) {
+    return {
+        projectID: projectId,
+        currentTab: 'new',
+        vouchers: [],
+        selectedVouchers: [],
+        selectAllCheckbox: false,
+        sortKey: 'created_at',
+        sortAsc: false,
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 0,
+        totalPages: 0,
+        loading: false,
+        selectedStatus: '',
+        errorMessage: '',
+		isNewTab: true, 
+		isPrinted: false,
+
+        async init() {
+            await this.fetchVouchers(this.currentPage);
+        },
+
+        async fetchVouchers(page = 1) {
+            this.loading = true;
+            try {
+                const url = this.getUrlForTab(this.currentTab, page);
+                const response = await fetch(url);
+                const result = await response.json();
+                if (response.ok) {
+                    this.vouchers = result.data || [];
+                    this.totalItems = result.meta.totalItems || 0;
+                    this.currentPage = result.meta.currentPage || 1;
+                    this.itemsPerPage = result.meta.itemsPerPage || 10;
+                    this.totalPages = result.meta.totalPages || 0;
+                } else {
+                    console.error('Error fetching data:', result.message);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        getUrlForTab(tab, page) {
+            const baseUrl = `${window.location.origin}/voucher/table/${this.projectID}`;
+            const sortDirection = this.sortAsc ? 'asc' : 'desc';
+            switch (tab) {
+                case 'all':
+                    return `${baseUrl}/all/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'pending':
+                    return `${baseUrl}/pending/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'completed':
+                    return `${baseUrl}/completed/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'processing':
+                    return `${baseUrl}/processing/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'cancelled':
+                    return `${baseUrl}/cancelled/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                default:
+                    return `${baseUrl}/all/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+            }
+        },
+
+        selectTab(tab) {
+			if (tab != 'new') {
+				this.isNewTab = false;
+				this.isPrinted = true;
+			}else {
+				this.isNewTab = true;
+				this.isPrinted = false;
+			}
+            this.currentTab = tab;
+            this.currentPage = 1; 
+            this.fetchVouchers(this.currentPage);
+        },
+
+        selectAll() {
+            this.selectedVouchers = this.selectAllCheckbox ? this.vouchers.map(voucher => voucher.Id) : [];
+        },
+
+        sortTable(key) {
+            if (this.sortKey === key) {
+                this.sortAsc = !this.sortAsc;
+            } else {
+                this.sortKey = key;
+                this.sortAsc = true;
+            }
+            this.fetchVouchers(this.currentPage);
+        },
+        getSortIcon(key) {
+            if (this.sortKey !== key) return '';
+            return this.sortAsc ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
+        },
+
+        changePage(page) {
+            if (page < 1 || page > this.totalPages) return;
+            this.fetchVouchers(page);
+        },
+		 downloadVoucher(voucherId) {
+        
+       	 console.log(`Downloading voucher with ID: ${voucherId}`);
+        
+    	},
+
+        get paginatedVouchers() {
+            return this.vouchers;
+        },
+		get currentPageStart() {
+			return (this.currentPage - 1) * this.itemsPerPage + 1;
+		},
+
+		get currentPageEnd() {
+			return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
+		},
+		get pageNumbers() {
+			const range = 2; // Number of pages to show around the current page
+			let start = Math.max(1, this.currentPage - range);
+			let end = Math.min(this.totalPages, this.currentPage + range);
+
+			// Adjust range if there are not enough pages on one side
+			if (this.totalPages - end < range) {
+				end = this.totalPages;
+				start = Math.max(1, end - 2 * range);
+			} else if (start <= range) {
+				start = 1;
+				end = Math.min(this.totalPages, start + 2 * range);
+			}
+
+			return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+		},
+
+        badgeClass(status) {
+            const baseClass = 'badge bg-body-secondary badge-custom';
+            switch (status) {
+                case 'pending':
+                    return `${baseClass} text-info`;
+                case 'completed':
+                    return `${baseClass} text-success`;
+                case 'cancelled':
+                    return `${baseClass} text-danger`;
+                case 'processing':
+                    return `${baseClass} text-warning`;
+                default:
+                    return baseClass;
+            }
+        },
+
+        async applyAction() {
+            if (!this.selectedStatus || !this.selectedVouchers.length) {
+                this.errorMessage = 'Please select a status and at least one voucher.';
+                return;
+            }
+            this.loading = true;
+            try {
+                const response = await fetch('/voucher/bulk-action', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        voucherIds: this.selectedVouchers,
+                        status: this.selectedStatus,
+                    }),
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    this.selectedVouchers = [];
+                    this.selectedStatus = '';
+                    this.selectAllCheckbox = false;
+                    this.fetchVouchers(this.currentPage);
+                } else {
+                    this.errorMessage = result.message;
+                }
+            } catch (error) {
+                this.errorMessage = 'An error occurred while processing the request.';
+            } finally {
+                this.loading = false;
+            }
+        },
+    };
+}
+
+</script>
 	<!-- End Tab Content -->
-	<!-- Modal for Order and Customer Details -->
-	<div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg custom-modal-width">
-			<div class="modal-content">
-				<div class="modal-header bg-primary">
-					<h5 class="modal-title text-white " id="orderDetailsModalLabel">Λεπτομέρειες Παραγγελίας #<span id="modal-order-id"></span></h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<!-- Order Details with Tabs -->
-					<ul class="nav nav-tabs" id="orderDetailsTabs" role="tablist">
-						<li class="nav-item" role="presentation">
-							<button class="nav-link active" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button" role="tab" aria-controls="order" aria-selected="true">Παραγγελία</button>
-						</li>
-						<li class="nav-item" role="presentation">
-							<button class="nav-link" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer" type="button" role="tab" aria-controls="customer" aria-selected="false">Πελάτης</button>
-						</li>
-						<li class="nav-item" role="presentation">
-							<button class="nav-link" id="notes-tab" data-bs-toggle="tab" data-bs-target="#notes" type="button" role="tab" aria-controls="notes" aria-selected="false">Σημειώσεις</button>
-						</li>
-					</ul>
-					<!-- Tab Content -->
-					<div class="tab-content mt-3" id="orderDetailsTabContent">
-						<!-- Order Tab Content -->
-						<div class="tab-pane fade show active" id="order" role="tabpanel" aria-labelledby="order-tab">
-							<h6 class="mb-3">Στοιχεία Παραγγελίας</h6>
-							<div class="order-details-content">
-								<div class="row mb-3">
-									<div class="col-md-6">
-										<label class="form-label">Όνομα Πελάτη</label>
-										<p id="order-customer-name" class="order-text">Γιάννης Παπαδόπουλος</p>
-									</div>
-									<div class="col-md-6">
-										<label class="form-label">Ημερομηνία Παραγγελίας</label>
-										<p id="order-date" class="order-text">2024-03-15</p>
-									</div>
-								</div>
-								<div class="row mb-3">
-									<div class="col-md-6">
-										<label class="form-label">Είδος Τιμολογίου</label>
-										<p id="invoice-type" class="order-text">Ιδιώτης</p>
-									</div>
-									<div class="col-md-6">
-										<label class="form-label">Συνολικό Ποσό</label>
-										<p id="order-total" class="order-text">€72.50</p>
-									</div>
-								</div>
-								<div class="mb-3">
-									<label class="form-label">Προϊόντα</label>
-									<ul class="order-product-list">
-										<li>Προϊόν A (2x)</li>
-										<li>Προϊόν B (1x)</li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<!-- Customer Tab Content -->
-						<div class="tab-pane fade" id="customer" role="tabpanel" aria-labelledby="customer-tab">
-							<h6 class="mb-3">Πληροφορίες Πελάτη</h6>
-							<div class="customer-details-content">
-								<div class="row mb-3">
-									<div class="col-md-6">
-										<label class="form-label">Όνομα Πελάτη</label>
-										<p id="customer-name" class="order-text">Γιάννης Παπαδόπουλος</p>
-									</div>
-									<div class="col-md-6">
-										<label class="form-label">Email</label>
-										<p id="customer-email" class="order-text">giannis@example.com</p>
-									</div>
-								</div>
-								<div class="row mb-3">
-									<div class="col-md-6">
-										<label class="form-label">Τηλέφωνο</label>
-										<p id="customer-phone" class="order-text">210 1234567</p>
-									</div>
-									<div class="col-md-6">
-										<label class="form-label">Διεύθυνση Αποστολής</label>
-										<p id="customer-address" class="order-text">Οδός Αθήνας 123, Αθήνα, 12345</p>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- Notes Tab Content -->
-						<div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="notes-tab">
-							<h6 class="mb-3">Σημειώσεις Πελάτη</h6>
-							<div class="customer-notes-content">
-								<textarea class="form-control" id="customer-notes" rows="3" readonly>Παρακαλώ να με ενημερώσετε για την ακριβή ώρα παράδοσης.</textarea>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Κλείσιμο</button>
-					<button type="button" class="btn btn-primary" onclick="openOffcanvas()">Επεξεργασία Παραγγελίας</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Offcanvas for Courier Information -->
-	<div class="offcanvas offcanvas-end" tabindex="-1" id="orderProcessingOffcanvas" aria-labelledby="orderProcessingOffcanvasLabel">
-		<div class="offcanvas-header">
-			<h5 class="offcanvas-title" id="orderProcessingOffcanvasLabel">Επεξεργασία Παραγγελίας #<span id="offcanvas-order-id"></span></h5>
-			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-		</div>
-		<div class="offcanvas-body">
-			<div class="accordion" id="orderProcessingAccordion">
-				<!-- Shipping Company Section -->
-				<div class="accordion-item">
-					<h2 class="accordion-header">
-						<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#shippingCompanyCollapse">
-							Εταιρεία Αποστολής
-						</button>
-					</h2>
-					<div id="shippingCompanyCollapse" class="accordion-collapse collapse show" data-bs-parent="#orderProcessingAccordion">
-						<div class="accordion-body">
-							<select class="form-select mb-3" id="shippingCompany">
-								<option value="">Επιλέξτε εταιρεία...</option>
-								<option value="acs">ACS Courier</option>
-								<option value="dhl">DHL</option>
-								<option value="fedex">FedEx</option>
-							</select>
-							<select class="form-select" id="shippingMethod">
-								<option value="">Επιλέξτε μέθοδο...</option>
-								<option value="standard">Standard</option>
-								<option value="express">Επείγουσα Παράδοση</option>
-								<option value="express">Παράδοση - Παραλαβή</option>
-								<option value="express">Αυθημερόν</option>
-								<option value="express">Παραλαβή από το κατάστημα</option>
-							</select>
-						</div>
-					</div>
-				</div>
-				<!-- Order Info Section -->
-				<div class="accordion-item">
-					<h2 class="accordion-header">
-						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#orderInfoCollapse">
-							Πληροφορίες Παραγγελίας
-						</button>
-					</h2>
-					<div id="orderInfoCollapse" class="accordion-collapse collapse" data-bs-parent="#orderProcessingAccordion">
-						<div class="accordion-body">
-							<div class="mb-3">
-								<label class="form-label">Ποσό Αντικαταβολής</label>
-								<div class="input-group">
-									<span class="input-group-text">€</span>
-									<input type="number" class="form-control" id="codAmount" value="72.50"/>
-								</div>
-							</div>
-							<div class="mb-3">
-								<label class="form-label">Βάρος Δέματος (kg)</label>
-								<input type="number" class="form-control" id="packageWeight" step="0.1" value="0.5"/>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- Special Instructions Section -->
-				<div class="accordion-item">
-					<h2 class="accordion-header">
-						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#specialInstructionsCollapse">
-							Ειδικές Οδηγίες
-						</button>
-					</h2>
-					<div id="specialInstructionsCollapse" class="accordion-collapse collapse" data-bs-parent="#orderProcessingAccordion">
-						<div class="accordion-body">
-							<textarea class="form-control" id="specialInstructions" rows="3" placeholder="Προσθέστε ειδικές οδηγίες προς την εταιρεία αποστολής..."></textarea>
-						</div>
-					</div>
-				</div>
-				<!-- Special Instructions Section -->
-				<div class="accordion-item">
-					<h2 class="accordion-header">
-						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#recieptInstructionsCollapse">
-							Εντολή Παράδοσης
-						</button>
-					</h2>
-					<div id="recieptInstructionsCollapse" class="accordion-collapse collapse" data-bs-parent="#orderProcessingAccordion">
-						<div class="accordion-body">
-							<select class="form-select" id="recieptMethod">
-								<option value="">Επιλογή Οχήματος</option>
-								<option value="standard">Μηχανή</option>
-								<option value="express">Αυτοκίνητο</option>
-							</select>
-						</div>
-						<div class="accordion-body">
-							<textarea class="form-control" id="recieptInstructions" rows="2" placeholder="Γράψτε οδηγίες για τον διανομέα πχ όροφος ή το τι θα παραλάβουμε.."></textarea>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="offcanvas-footer p-3">
-			<button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Ακύρωση</button>
-			<button type="button" class="btn btn-primary" onclick="sendToShipping()">Αποστολή στην Εταιρεία</button>
-		</div>
-		<!-- Toast Container -->
-		<div class="toast-container"></div>
-	</div>
 }

@@ -1,15 +1,17 @@
 package domain
 
 import (
+	"errors"
 	"time"
 
+	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/woocommerce"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Voucher represents a voucher
 type Voucher struct {
-	ID                  primitive.ObjectID    `bson:"_id,omitempty"`
+	ID                  primitive.ObjectID    `json:"Id" bson:"_id,omitempty"`
 	ProjectID           string                `json:"projectId"  bson:"projectId,omitempty"`
 	OrderID             int64                 `json:"orderId"  bson:"orderId,omitempty"`
 	VoucherID           string                `json:"voucher_id"  bson:"voucher_id"`
@@ -58,6 +60,28 @@ const (
 	VoucherStatusFailed     VoucherStatus = "failed"
 )
 
+// StringToVoucherStatus converts a string to a VoucherStatus
+func StringToVoucherStatus(status string) (VoucherStatus, error) {
+	switch status {
+	case string(VoucherStatusAll):
+		return VoucherStatusAll, nil
+	case string(VoucherStatusNew):
+		return VoucherStatusNew, nil
+	case string(VoucherStatusProcessing):
+		return VoucherStatusProcessing, nil
+	case string(VoucherStatusOnHold):
+		return VoucherStatusOnHold, nil
+	case string(VoucherStatusCompleted):
+		return VoucherStatusCompleted, nil
+	case string(VoucherStatusCancelled):
+		return VoucherStatusCancelled, nil
+	case string(VoucherStatusFailed):
+		return VoucherStatusFailed, nil
+	default:
+		return "", errors.New("invalid voucher status")
+	}
+}
+
 // String returns the string representation of the ProductType
 func (pt VoucherStatus) String() string {
 	return string(pt)
@@ -87,4 +111,24 @@ func (v *Voucher) DeleteVoucher() *Voucher {
 	now := time.Now()
 	v.DeletedAt = &now
 	return v
+}
+
+// OrderTableList represents an order table list
+type VoucherTableList struct {
+	ID        primitive.ObjectID   `bson:"_id,omitempty" json:"Id,omitempty"`
+	ProjectID string               `bson:"projectId" json:"projectId"`
+	OrderID   int64                `bson:"orderId,omitempty" json:"orderId,omitempty"`
+	VoucherID string               `bson:"voucher_id,omitempty" json:"voucher_id,omitempty"`
+	Status    VoucherStatus        `bson:"status,omitempty" json:"status,omitempty"`
+	Billing   woocommerce.Billing  `bson:"billing,omitempty" json:"billing,omitempty"`
+	Shipping  woocommerce.Shipping `bson:"shipping,omitempty" json:"shipping,omitempty"`
+	Cod       string               `bson:"cod,omitempty" json:"cod,omitempty"`
+	CreateAt  time.Time            `bson:"created_at,omitempty" json:"created_at,omitempty"`
+	IsPrinted bool                 `bson:"is_printed,omitempty" json:"is_printed,omitempty"`
+}
+
+// OrderTableResponde represents an order table response
+type VoucherTableResponde struct {
+	Data []VoucherTableList `json:"data"`
+	Meta w.Meta             `json:"meta"`
 }

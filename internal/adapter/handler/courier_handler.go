@@ -7,7 +7,7 @@ import (
 	"sync"
 
 	"github.com/labstack/echo/v4"
-	t "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/table"
+	t "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/overview"
 	v "github.com/stelgkio/otoo/internal/core/domain/courier"
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/util"
@@ -17,7 +17,7 @@ import (
 func (dh *DashboardHandler) CourierTable(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 
-	return util.Render(ctx, t.VoucherTable(projectID))
+	return util.Render(ctx, t.VoucherOverview(projectID))
 }
 
 // VoucherTable returns the order dashboard

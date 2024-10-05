@@ -102,7 +102,7 @@ func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
 	}
 
 	// Save the order to the database
-	err = w.p.OrderCreate(orderRecord)
+	err = w.p.OrderUpdate(orderRecord, req.ID)
 	if err != nil {
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}

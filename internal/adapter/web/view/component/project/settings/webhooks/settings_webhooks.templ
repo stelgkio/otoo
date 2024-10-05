@@ -307,6 +307,7 @@ templ SettingsWebhooks(project *domain.Project, projectExtensions []*domain.Proj
 				totalPages: 0,
 				loading: false,
 				showUI: false,
+				errorMessage: '',
 
 				async init() {
 					await this.fetchwebhooks(this.currentPage);

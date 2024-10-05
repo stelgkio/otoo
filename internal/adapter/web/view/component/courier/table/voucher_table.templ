@@ -348,6 +348,8 @@ function voucherTable(projectId) {
                     return `${baseUrl}/processing/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
                 case 'cancelled':
                     return `${baseUrl}/cancelled/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+				case 'new':
+                    return `${baseUrl}/new/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
                 default:
                     return `${baseUrl}/all/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
             }
@@ -426,6 +428,8 @@ function voucherTable(projectId) {
             switch (status) {
                 case 'pending':
                     return `${baseClass} text-info`;
+				 case 'new':
+                    return `${baseClass} text-info`;	
                 case 'completed':
                     return `${baseClass} text-success`;
                 case 'cancelled':

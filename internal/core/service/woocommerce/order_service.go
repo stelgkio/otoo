@@ -20,14 +20,16 @@ type OrderService struct {
 	p            port.WoocommerceRepository
 	s            port.ProjectRepository
 	extensionSrv port.ExtensionService
+	voucherSvc   port.VoucherService
 }
 
 // NewOrderService creates a new instance of OrderService
-func NewOrderService(woorepo port.WoocommerceRepository, projrepo port.ProjectRepository, extensionSrv port.ExtensionService) *OrderService {
+func NewOrderService(woorepo port.WoocommerceRepository, projrepo port.ProjectRepository, extensionSrv port.ExtensionService, voucherSvc port.VoucherService) *OrderService {
 	return &OrderService{
 		p:            woorepo,
 		s:            projrepo,
 		extensionSrv: extensionSrv,
+		voucherSvc:   voucherSvc,
 	}
 }
 
@@ -264,7 +266,9 @@ func (os *OrderService) createAndSaveAllCustomers(client *commerce.Client, proje
 
 // saveWebhookResult saves webhook creation result to MongoDB
 func (os *OrderService) saveOrderResult(data *w.OrderRecord, orderID int64) error {
-
+	if data.Status == "processing" {
+		go os.voucherSvc.CreateVoucher(nil, data, data.ProjectID)
+	}
 	err := os.p.OrderUpdate(data, orderID)
 	if err != nil {
 		return errors.Wrap(err, "failed to insert order result into MongoDB")

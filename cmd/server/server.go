@@ -38,6 +38,8 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	extensionRepo := mongorepo.NewExtensionRepository(mongodb)
 	voucherRepo := mongorepo.NewVoucherRepository(mongodb)
 
+	//Voucher
+	voucherService := courier.NewVoucherService(voucherRepo)
 	// NewExtensionService
 	extensionService := service.NewExtensionService(extensionRepo)
 	//WooCommerceCustomerServer
@@ -45,10 +47,8 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	//WooCommerceProductServer
 	woocommerceProductService := woocommerce.NewProductService(woocommerceRepo, projectRepo, extensionService)
 	//WooCommerceOrderServer
-	woocommerceOrderService := woocommerce.NewOrderService(woocommerceRepo, projectRepo, extensionService)
+	woocommerceOrderService := woocommerce.NewOrderService(woocommerceRepo, projectRepo, extensionService, voucherService)
 
-	//Voucher
-	voucherService := courier.NewVoucherService(voucherRepo)
 	//Smtp
 	smtpService := service.NewSmtpService()
 

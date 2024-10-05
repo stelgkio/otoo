@@ -285,6 +285,14 @@ templ VoucherTable(projectId string) {
 										data-bs-target="#modals-here"
 										class="btn btn-link"
 									>Details</button>
+									<button
+										class="btn btn-link"
+										x-bind:hx-get="'/voucher/openOffcanvas/' + voucher.Id"
+										hx-target="#offcanvasDetails .offcanvas-replace"
+										hx-trigger="click"
+										data-bs-toggle="offcanvas"
+										data-bs-target="#offcanvasDetails"
+									>Details</button>
 								</td>
 							</tr>
 						</template>
@@ -308,6 +316,18 @@ templ VoucherTable(projectId string) {
 	>
 		<div class="modal-dialog modal-xl modal-dialog-centered" role="document">
 			<div class="modal-content"></div>
+		</div>
+	</div>
+	<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasDetails">
+		<div class="offcanvas-replace">
+			<div class="offcanvas-header">
+				<h5 class="offcanvas-title" id="offcanvasDetailsLabel">Voucher Details</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+			</div>
+			<div class="offcanvas-body">
+				<!-- Dynamic content will be injected here by HTMX -->
+				<p>Loading voucher details...</p>
+			</div>
 		</div>
 	</div>
 	<script>

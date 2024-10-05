@@ -144,3 +144,21 @@ func (dh *DashboardHandler) VoucherDetailModal(ctx echo.Context) error {
 	return util.Render(ctx, m.VoucherDetails(voucher.ProjectID, voucher, order))
 
 }
+
+// CreateVoucher returns the order dashboard
+func (dh *DashboardHandler) CreateVoucher(ctx echo.Context) error {
+	ID := ctx.Param("Id")
+	voucher, err := dh.voucherSvc.GetVoucherByVoucherID(ctx, ID)
+
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
+	order, err := dh.orderSvc.GetOrderByID(voucher.ProjectID, voucher.OrderID)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
+	return util.Render(ctx, m.CreateVoucher(voucher.ProjectID, voucher, order))
+
+}

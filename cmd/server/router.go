@@ -288,6 +288,7 @@ func NewRouter(
 		couriergroup.GET("/table/view/:projectId", dashboardHandler.CourierTable)
 		couriergroup.GET("/table/:projectId/:status/:page", dashboardHandler.VoucherTable)
 		couriergroup.GET("/modal/:Id", dashboardHandler.VoucherDetailModal)
+		couriergroup.GET("/openOffcanvas/:Id", dashboardHandler.CreateVoucher)
 
 	}
 

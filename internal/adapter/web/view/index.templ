@@ -62,6 +62,26 @@ templ IndexTemplate() {
 										<li class="nav-item"><a class="nav-link rounded-pill" href="#contact">Contact</a></li>
 									</ul>
 									<div class="navbar-nav align-items-lg-center justify-content-end gap-2 ms-lg-4 w-lg-64">
+										<div class="dropdown">
+											<a
+												href="#"
+												class="nav-link"
+												data-bs-toggle="dropdown"
+												aria-expanded="false"
+											><i class="bi bi-translate"></i></a>
+											<div class="dropdown-menu">
+												<button
+													type="button"
+													class="dropdown-item d-flex align-items-center"
+													onclick="changeLanguage('en')"
+												>English</button>
+												<button
+													type="button"
+													class="dropdown-item d-flex align-items-center"
+													onclick="changeLanguage('el')"
+												>Ελληνικά</button>
+											</div>
+										</div>
 										<a
 											class="nav-item nav-link rounded-pill d-none d-lg-block"
 											href="/login"

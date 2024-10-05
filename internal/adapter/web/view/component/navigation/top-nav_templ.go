@@ -44,14 +44,14 @@ func TopBar(user *domain.User, projectName, projectId string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button><div class=\"dropdown\"><a href=\"#\" class=\"nav-link\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><i class=\"bi bi-sun-fill\"></i></a><div class=\"dropdown-menu\"><button type=\"button\" class=\"dropdown-item d-flex align-items-center\" data-bs-theme-value=\"light\">Light</button> <button type=\"button\" class=\"dropdown-item d-flex align-items-center\" data-bs-theme-value=\"dark\">Dark</button></div></div><div class=\"dropdown\" id=\"notification-list\"><a href=\"javascript:void(0)\" class=\"nav-link\" id=\"dropdown-notifications\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\" hx-trigger=\"load\" hx-get=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button><div class=\"dropdown\"><a href=\"#\" class=\"nav-link\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><i class=\"bi bi-sun-fill\"></i></a><div class=\"dropdown-menu\"><button type=\"button\" class=\"dropdown-item d-flex align-items-center\" data-bs-theme-value=\"light\">Light</button> <button type=\"button\" class=\"dropdown-item d-flex align-items-center\" data-bs-theme-value=\"dark\">Dark</button></div></div><div class=\"dropdown\"><a href=\"#\" class=\"nav-link\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><i class=\"bi bi-translate\"></i></a><div class=\"dropdown-menu\"><button type=\"button\" class=\"dropdown-item d-flex align-items-center\" onclick=\"changeLanguage(&#39;en&#39;)\">English</button> <button type=\"button\" class=\"dropdown-item d-flex align-items-center\" onclick=\"changeLanguage(&#39;el&#39;)\">Ελληνικά</button></div></div><div class=\"dropdown\" id=\"notification-list\"><a href=\"javascript:void(0)\" class=\"nav-link\" id=\"dropdown-notifications\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\" hx-trigger=\"load\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/dashboard/notifiaction/%s", projectId))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/top-nav.templ`, Line: 61, Col: 66}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/top-nav.templ`, Line: 81, Col: 66}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -64,7 +64,7 @@ func TopBar(user *domain.User, projectName, projectId string) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(user.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/top-nav.templ`, Line: 104, Col: 64}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/top-nav.templ`, Line: 124, Col: 64}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -73,7 +73,7 @@ func TopBar(user *domain.User, projectName, projectId string) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(user.LastName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/top-nav.templ`, Line: 104, Col: 81}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/top-nav.templ`, Line: 124, Col: 81}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {

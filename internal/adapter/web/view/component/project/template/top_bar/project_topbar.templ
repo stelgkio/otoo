@@ -42,6 +42,26 @@ templ ProjectTopBar(user *domain.User) {
 					// >System</button>
 				</div>
 			</div>
+			<div class="dropdown">
+				<a
+					href="#"
+					class="nav-link"
+					data-bs-toggle="dropdown"
+					aria-expanded="false"
+				><i class="bi bi-translate"></i></a>
+				<div class="dropdown-menu">
+					<button
+						type="button"
+						class="dropdown-item d-flex align-items-center"
+						onclick="changeLanguage('en')"
+					>English</button>
+					<button
+						type="button"
+						class="dropdown-item d-flex align-items-center"
+						onclick="changeLanguage('el')"
+					>Ελληνικά</button>
+				</div>
+			</div>
 			// <div class="dropdown">
 			// 	<a
 			// 		href="#"

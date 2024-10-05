@@ -135,6 +135,12 @@ func (dh *DashboardHandler) VoucherDetailModal(ctx echo.Context) error {
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
-	return util.Render(ctx, m.VoucherDetails(voucher.ProjectID, voucher))
+
+	order, err := dh.orderSvc.GetOrderByID(voucher.ProjectID, voucher.OrderID)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
+	return util.Render(ctx, m.VoucherDetails(voucher.ProjectID, voucher, order))
 
 }

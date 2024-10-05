@@ -82,8 +82,6 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/robfig/cron/v3 v3.0.1 h1:WdRxkvbJztn8LMz/QEvLN5sBU+xKpSqwwUO1Pjr4qDs=
 github.com/robfig/cron/v3 v3.0.1/go.mod h1:eQICP3HwyT7UooqI/z+Ov+PtYAWygg1TEWWzGIFLtro=
-github.com/stelgkio/woocommerce v1.0.8 h1:iGptCwNUkBKrZyPYS038plncH7A7JiWTLAeB94Li51I=
-github.com/stelgkio/woocommerce v1.0.8/go.mod h1:+SCApZrCsbfHgp0ixbNo4UlrxTCRbwruJl1k2BWKSWA=
 github.com/stelgkio/woocommerce v1.0.9 h1:uiOqlpD+fwlEm4m0wkZGCXvqy2HVITuqHXShoTKodx4=
 github.com/stelgkio/woocommerce v1.0.9/go.mod h1:+SCApZrCsbfHgp0ixbNo4UlrxTCRbwruJl1k2BWKSWA=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=

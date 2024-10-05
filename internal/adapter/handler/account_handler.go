@@ -35,6 +35,7 @@ type authResponse struct {
 	AccessToken string `json:"token"`
 }
 
+// AuthResponse creates an authentication response
 func AuthResponse(token string) authResponse {
 	return authResponse{
 		AccessToken: token,

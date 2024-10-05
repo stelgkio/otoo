@@ -20,6 +20,7 @@ type Voucher struct {
 	ShippingStatus      string                `json:"shipping_status"  bson:"shipping_status,omitempty"`
 	Note                string                `json:"note"  bson:"note,omitempty"`
 	Shipping            *woocommerce.Shipping `json:"shipping"  bson:"shipping,omitempty"`
+	Billing             *woocommerce.Billing  `json:"billing"  bson:"billing,omitempty"`
 	AcsVoucherRequest   *AcsVoucherRequest    `json:"acs_courier"  bson:"acs_courier"`
 	HermesVoucerRequest *HermesVoucerRequest  `json:"hermes_courier"  bson:"hermes_courier"`
 	CreatedAt           time.Time             `json:"created_at"  bson:"created_at,omitempty"`
@@ -30,12 +31,13 @@ type Voucher struct {
 }
 
 // NewVoucher creates a new Voucher instance with the provided ProjectID, Cod, Note, and Shipping.
-func NewVoucher(projectID, cod, note string, shipping *woocommerce.Shipping, orderID int64) *Voucher {
+func NewVoucher(projectID, cod, note string, shipping *woocommerce.Shipping, billing *woocommerce.Billing, orderID int64) *Voucher {
 	return &Voucher{
 		ProjectID:           projectID,
 		Cod:                 cod,
 		Note:                note,
 		Shipping:            shipping,
+		Billing:             billing,
 		OrderID:             orderID,
 		Status:              VoucherStatusNew, // Set a default status if needed
 		CreatedAt:           time.Now(),
@@ -95,10 +97,11 @@ func (v *Voucher) UpdateVoucherStatus(status VoucherStatus) *Voucher {
 }
 
 // UpdateVoucher updates the Voucher with the provided Cod, Note, and Shipping.
-func (v *Voucher) UpdateVoucher(cod, note string, shipping *woocommerce.Shipping) *Voucher {
+func (v *Voucher) UpdateVoucher(cod, note string, shipping *woocommerce.Shipping, billing *woocommerce.Billing) *Voucher {
 	v.Cod = cod
 	v.Note = note
 	v.Shipping = shipping
+	v.Billing = billing
 	v.UpdatedAt = time.Now()
 	v.DeletedAt = nil
 	return v

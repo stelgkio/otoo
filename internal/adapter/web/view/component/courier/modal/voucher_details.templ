@@ -1,8 +1,11 @@
 package views
 
-import v "github.com/stelgkio/otoo/internal/core/domain/courier"
+import (
+	v "github.com/stelgkio/otoo/internal/core/domain/courier"
+	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
+)
 
-templ VoucherDetails(projectId string, voucher *v.Voucher) {
+templ VoucherDetails(projectId string, voucher *v.Voucher, order *w.OrderRecord) {
 	<!-- Modal for Order and Customer Details -->
 	<div class="modal-dialog modal-xl modal-dialog-centered">
 		<div class="modal-content">

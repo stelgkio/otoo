@@ -103,24 +103,17 @@ func NewRouter(
 
 		customergroup := dashboardgroup.Group("/customer")
 		{
-			customergroup.Use(configureJWT())
-			customergroup.Use(auth.TokenRefresherMiddleware)
 			customergroup.GET("/:projectId", dashboardHandler.CustomerDashboard)
 		}
 
 		ordergroup := dashboardgroup.Group("/order")
 		{
-			ordergroup.Use(configureJWT())
-			ordergroup.Use(auth.TokenRefresherMiddleware)
-
 			ordergroup.GET("/:projectId", dashboardHandler.OrderDashboard)
 			ordergroup.GET("/table/:projectId/:status", dashboardHandler.OrderTable)
 		}
 
 		productgroup := dashboardgroup.Group("/product")
 		{
-			productgroup.Use(configureJWT())
-			productgroup.Use(auth.TokenRefresherMiddleware)
 			productgroup.GET("/:projectId", dashboardHandler.ProductDashboard)
 		}
 
@@ -154,7 +147,7 @@ func NewRouter(
 
 		extensiongroup.GET("/page/asc-courier/:projectId", dashboardHandler.AcsCourierPage)
 		extensiongroup.GET("/page/wallet-expences/:projectId", dashboardHandler.WalletExpensesPage)
-		extensiongroup.GET("/page/data-synchronizer/:projectId", dashboardHandler.DataSynchronizerPage)
+		extensiongroup.GET("/page/data-synchronizer/:projectId", projectHandler.ProjectSynchronizePage)
 
 		extensiongroup.GET("/project_extensions/:projectId", dashboardHandler.ProjectExtensionsList)
 	}
@@ -182,7 +175,9 @@ func NewRouter(
 		projectgroup.GET("/test/synchronize/:projectId", projectHandler.ProjectSynchronizeTest)
 		projectgroup.GET("/synchronize/:projectId", projectHandler.ProjectSynchronize)
 		projectgroup.POST("/synchronize/start/:projectId/:customerTotal/:productTotal/:orderTotal", projectHandler.ProjectSynchronizeStart)
+		projectgroup.POST("/page/synchronize/start/:projectId/:customerTotal/:productTotal/:orderTotal", projectHandler.ProjectSynchronizeStartPage)
 		projectgroup.GET("/synchronize/done/:projectId/:customerTotal/:productTotal/:orderTotal", projectHandler.ProjectSynchronizeDone)
+		projectgroup.GET("/page/synchronize/done/:projectId/:customerTotal/:productTotal/:orderTotal", projectHandler.ProjectSynchronizeDonePage)
 		projectgroup.GET("/createform", projectHandler.ProjectCreateForm)
 		projectgroup.POST("/create", projectHandler.CreateProject)
 		projectgroup.POST("/validation/name", projectHandler.ProjectNameValidation)
@@ -201,6 +196,8 @@ func NewRouter(
 			settingsroup.POST("/update/:projectId", projectHandler.ProjectUpdate)
 			settingsroup.POST("/delete/:projectId", projectHandler.ProjectDelete)
 			settingsroup.POST("/secrets/update/:projectId", projectHandler.ProjectSecretsUpdate)
+			settingsroup.DELETE("/webhook/delete/:projectId", WooCommerceHandler.DeleteAllWebhooks)
+			settingsroup.GET("/webhook/createall/:projectId", WooCommerceHandler.WebhookCreateAll)
 		}
 	}
 	//woocommerce group
@@ -235,36 +232,39 @@ func NewRouter(
 		webhookgroup.POST("/update/:projectId/:webhookId", nil)
 		webhookgroup.POST("/delete/:projectId/:webhookId", nil)
 		webhookgroup.POST("/create/:projectId/:webhookId", nil)
+		webhookgroup.GET("/table/:projectId/:page", WooCommerceHandler.WebHookTable)
 		webhookgroup.GET("/:projectId/:eventname", func(c echo.Context) error {
 			time.Sleep(2 * time.Second)
 			return c.NoContent(286)
 		})
+		webhookgroup.DELETE("/:projectId", WooCommerceHandler.DeleteAllWebhooks)
+		webhookgroup.POST("/bulk-action/:projectId", WooCommerceHandler.WebhookBulkAction)
 	}
 
-	customergroup := e.Group("/customer")
+	customergroupB := e.Group("/customer")
 	{
-		customergroup.Use(configureJWT())
-		customergroup.Use(auth.TokenRefresherMiddleware)
-		customergroup.GET("/table/:projectId/:page", dashboardHandler.CustomerTable)
+		customergroupB.Use(configureJWT())
+		customergroupB.Use(auth.TokenRefresherMiddleware)
+		customergroupB.GET("/table/:projectId/:page", dashboardHandler.CustomerTable)
 
 	}
 
-	ordergroup := e.Group("/order")
+	ordergroupB := e.Group("/order")
 	{
-		ordergroup.Use(configureJWT())
-		ordergroup.Use(auth.TokenRefresherMiddleware)
-		ordergroup.GET("/table/:projectId/:status/:page", dashboardHandler.OrderTable)
-		ordergroup.GET("/chart/:projectId", dashboardHandler.OrderCharts)
-		ordergroup.GET("/tablehtml/:projectId", dashboardHandler.OrderTableHTML)
+		ordergroupB.Use(configureJWT())
+		ordergroupB.Use(auth.TokenRefresherMiddleware)
+		ordergroupB.GET("/table/:projectId/:status/:page", dashboardHandler.OrderTable)
+		ordergroupB.GET("/chart/:projectId", dashboardHandler.OrderCharts)
+		ordergroupB.GET("/tablehtml/:projectId", dashboardHandler.OrderTableHTML)
 
-		ordergroup.POST("/bulk-action/:projectId", dashboardHandler.OrderBulkAction)
+		ordergroupB.POST("/bulk-action/:projectId", dashboardHandler.OrderBulkAction)
 
 	}
-	productgroup := e.Group("/product")
+	productgroupB := e.Group("/product")
 	{
-		productgroup.Use(configureJWT())
-		productgroup.Use(auth.TokenRefresherMiddleware)
-		productgroup.GET("/table/:projectId/:page", dashboardHandler.ProductTable)
+		productgroupB.Use(configureJWT())
+		productgroupB.Use(auth.TokenRefresherMiddleware)
+		productgroupB.GET("/table/:projectId/:page", dashboardHandler.ProductTable)
 		// ordergroup.GET("/tablehtml/:projectId", dashboardHandler.ProductTableHTML)
 
 	}

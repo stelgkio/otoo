@@ -7,34 +7,44 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"strconv"
+	"sync"
 	"time"
 
 	"github.com/labstack/echo/v4"
 	wp "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/progress/webhooks"
+	pw "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/webhooks"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/port"
 	"github.com/stelgkio/otoo/internal/core/util"
+	r "github.com/stelgkio/otoo/internal/core/util"
 	"github.com/stelgkio/woocommerce"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
 // WooCommerceHandler represents the WooCommerce handler
 type WooCommerceHandler struct {
-	p  port.WoocommerceRepository
-	s  port.ProjectRepository
-	c  port.CustomerService
-	pr port.ProductService
+	p            port.WoocommerceRepository
+	s            port.ProjectRepository
+	c            port.CustomerService
+	pr           port.ProductService
+	ws           port.WoocommerceWebhookService
+	extensionSvc port.ExtensionService
+	voucherSvc   port.VoucherService
 }
 
 // NewWooCommerceHandler creates a new instance of WooCommerceHandler
 // Injects repository, project repo, customer service, and product service
-func NewWooCommerceHandler(repo port.WoocommerceRepository, projrepo port.ProjectRepository, ctm port.CustomerService, proj port.ProductService) *WooCommerceHandler {
+func NewWooCommerceHandler(repo port.WoocommerceRepository, projrepo port.ProjectRepository, ctm port.CustomerService, proj port.ProductService, ws port.WoocommerceWebhookService, extensionSvc port.ExtensionService, voucherSvc port.VoucherService) *WooCommerceHandler {
 	return &WooCommerceHandler{
 		repo,
 		projrepo,
 		ctm,
 		proj,
+		ws,
+		extensionSvc,
+		voucherSvc,
 	}
 }
 
@@ -100,6 +110,7 @@ func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
 	// Extract customer and product data asynchronously
 	go w.c.ExtractCustomerFromOrderAndUpsert(ctx, orderRecord)
 	go w.pr.ExtractProductFromOrderAndUpsert(ctx, orderRecord, project)
+	go w.voucherSvc.CreateVoucher(ctx, orderRecord, project.Id.String())
 
 	// Return success response
 	return ctx.String(http.StatusCreated, "created")
@@ -153,6 +164,7 @@ func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
 	// Extract and upsert customer and product data asynchronously
 	go w.c.ExtractCustomerFromOrderAndUpsert(ctx, updateOrderRecord)
 	go w.pr.ExtractProductFromOrderAndUpsert(ctx, updateOrderRecord, project)
+	go w.voucherSvc.UpdateVoucher(ctx, updateOrderRecord, project.Id.String())
 
 	return nil
 }
@@ -160,17 +172,35 @@ func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
 // OrderDeletedWebHook handles the webhook when an order is deleted
 // POST /webhook/order/delete
 func (w WooCommerceHandler) OrderDeletedWebHook(ctx echo.Context) error {
-	var order bson.M
-	if err := json.NewDecoder(ctx.Request().Body).Decode(&order); err != nil {
+	// Read and reset the request body
+	body, err := readAndResetBody(ctx)
+	if err != nil {
+		slog.Error("Error reading body of order_deleted request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	// Bind the request to the Order struct
+	var order woocommerce.Order
+	if err := ctx.Bind(&order); err != nil {
+		slog.Error("Error binding order_deleted request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	// Validate the webhook
+	project, err := w.validateWebhook(ctx, body, "order_deleted")
+	if err != nil {
+		slog.Error("Error validating order_deleted webhook", "error", err)
 		return err
 	}
 
-	// Delete the order
-	err := w.p.OrderDelete(order)
-	if err != nil {
-		return err
+	// Delete the order from the database
+	if err := w.p.OrderDelete(order.ID, project.Id.String()); err != nil {
+		slog.Error("Error deleting order from the database", "orderID", order.ID, "error", err)
+		return ctx.String(http.StatusInternalServerError, "Failed to delete order")
 	}
-	return nil
+	go w.voucherSvc.DeleteVouchersByOrderIdandProjectID(ctx, project.Id.String(), order.ID)
+	// Respond with a success message
+	return ctx.String(http.StatusOK, "deleted")
 }
 
 // FindWebHooks retrieves webhooks for a specific project
@@ -328,17 +358,35 @@ func (w WooCommerceHandler) CustomerUpdatedWebHook(ctx echo.Context) error {
 // CustomerDeletedWebHook handles customer deletion webhook
 // POST /webhook/customer/delete
 func (w WooCommerceHandler) CustomerDeletedWebHook(ctx echo.Context) error {
-	var customer bson.M
-	if err := json.NewDecoder(ctx.Request().Body).Decode(&customer); err != nil {
+	// Read and reset the request body
+	body, err := readAndResetBody(ctx)
+	if err != nil {
+		slog.Error("Error reading body of customer_deleted request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	// Bind the request to the Customer struct
+	req := new(woocommerce.Customer)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("Error binding customer_deleted request", "error", err)
+		return ctx.String(http.StatusBadRequest, "bad request")
+	}
+
+	// Validate the webhook
+	project, err := w.validateWebhook(ctx, body, "customer_deleted")
+	if err != nil {
+		slog.Error("Error validating customer_deleted webhook", "error", err)
 		return err
 	}
 
 	// Delete customer data from the database
-	err := w.p.CustomerDelete(customer)
-	if err != nil {
-		return err
+	if err := w.p.CustomerDelete(req.ID, project.Id.String()); err != nil {
+		slog.Error("Error deleting customer from the database", "customerID", req.ID, "error", err)
+		return ctx.String(http.StatusInternalServerError, "Failed to delete customer")
 	}
-	return nil
+
+	// Respond with a success message
+	return ctx.String(http.StatusOK, "deleted")
 }
 
 // ProductCreatedWebHook handles product creation webhook
@@ -458,9 +506,14 @@ func (w WooCommerceHandler) ProductDeletedWebHook(ctx echo.Context) error {
 		slog.Error("Error validating product_deleted webhook", "error", err)
 		return err
 	}
+	project, err := w.validateWebhook(ctx, body, "order_updated")
+	if err != nil {
+		slog.Error("Error validating order_updated webhook", "error", err)
+		return err
+	}
 
 	// Delete product from the database
-	err = w.p.ProductDelete(req.ID)
+	err = w.p.ProductDelete(req.ID, project.Id.String())
 	if err != nil {
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
@@ -527,4 +580,147 @@ func (w WooCommerceHandler) validateWebhook(ctx echo.Context, body []byte, event
 	}
 
 	return project, nil
+}
+
+// WebHookTable renders the webhook table
+func (w WooCommerceHandler) WebHookTable(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	page := ctx.Param("page")
+	pageNum, err := strconv.Atoi(page)
+	sort := ctx.QueryParam("sort")
+	direction := ctx.QueryParam("direction")
+	itemsPerPage := 12
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, fmt.Errorf("invalid page number: %v", err))
+	}
+
+	if sort == "" {
+		sort = "event"
+	}
+	if direction == "" {
+		direction = "asc"
+	}
+	var wg sync.WaitGroup
+	// Fetch	var wg sync.WaitGroup
+	wg.Add(2)
+
+	webhookCountChan := make(chan int64, 1)
+	webhookListChan := make(chan []woo.WebhookRecord, 1)
+	errChan := make(chan error, 1)
+	errListChan := make(chan error, 1)
+
+	go func() {
+		defer wg.Done()
+		w.ws.GetWebhookCountAsync(ctx, projectID, webhookCountChan, errChan)
+	}()
+
+	// Fetch  10 orders
+	go func() {
+		defer wg.Done()
+		w.ws.FindWebhookByProjectIDAsync(ctx, projectID, webhookListChan, errListChan)
+	}()
+	// Wait for all goroutines to finish
+	go func() {
+		wg.Wait()
+		close(webhookCountChan)
+		close(webhookListChan)
+		close(errChan)
+		close(errListChan)
+	}()
+
+	var totalItems int64
+	var webhookRecords []woo.WebhookRecord
+
+	for err := range errChan {
+		if err != nil {
+			return ctx.JSON(http.StatusInternalServerError, map[string]string{"failed to fetch order count": err.Error()})
+		}
+	}
+	for errList := range errListChan {
+		if errList != nil {
+			return ctx.JSON(http.StatusInternalServerError, map[string]string{"error to fetch order": errList.Error()})
+		}
+	}
+
+	for item := range webhookCountChan {
+		totalItems = item
+	}
+	for item := range webhookListChan {
+		webhookRecords = item
+	}
+
+	// Convert orderRecords to OrderTableList for the response
+	var webhooks []woo.WebhookTableList
+	if webhookRecords != nil {
+		for _, record := range webhookRecords {
+			webhooks = append(webhooks, woo.WebhookTableList{
+				ID:        record.ID,
+				ProjectID: record.ProjectID,
+				WebhookID: record.WebhookID,
+				Event:     record.Event,
+				Status:    woo.WebhookStatus(record.Webhook.Status),
+			})
+		}
+	}
+
+	// Prepare metadata
+
+	totalPages := int(totalItems) / itemsPerPage
+	if int(totalItems)%itemsPerPage > 0 {
+		totalPages++
+	}
+
+	// Create response object
+	response := woo.WebhookTableResponde{
+		Data: webhooks,
+		Meta: woo.Meta{
+			TotalItems:   int(totalItems),
+			CurrentPage:  pageNum,
+			ItemsPerPage: itemsPerPage,
+			TotalPages:   totalPages,
+		},
+	}
+
+	return ctx.JSON(http.StatusOK, response)
+
+}
+
+// DeleteAllWebhooks handles the deletion of a webhook
+func (w WooCommerceHandler) DeleteAllWebhooks(ctx echo.Context) error {
+
+	projectID := ctx.Param("projectId")
+
+	project, err := w.s.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+
+	w.ws.DeleteAllWebhooksByProjectID(projectID, project.WoocommerceProject.ConsumerKey, project.WoocommerceProject.ConsumerSecret, project.WoocommerceProject.Domain)
+	projectExtensions, err := w.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions))
+}
+
+// WebhookBulkAction handles bulk actions for webhooks
+func (w WooCommerceHandler) WebhookBulkAction(ctx echo.Context) error {
+	return nil
+}
+
+// WebhookCreateAll handles the creation of all webhooks
+func (w WooCommerceHandler) WebhookCreateAll(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	project, err := w.s.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	err = w.ws.WoocommerceCreateAllWebHook(project.WoocommerceProject.ConsumerKey, project.WoocommerceProject.ConsumerSecret, project.WoocommerceProject.Domain, projectID)
+	projectExtensions, err := w.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+
+	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions))
+
 }

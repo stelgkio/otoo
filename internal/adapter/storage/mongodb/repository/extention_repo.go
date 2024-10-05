@@ -3,10 +3,12 @@ package repository
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stelgkio/otoo/internal/core/domain"
+	"github.com/stelgkio/otoo/internal/core/util"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -262,7 +264,7 @@ func (ex *ExtensionRepository) DeleteProjectExtension(ctx echo.Context, extensio
 
 //////////////////  ACS Extension  /////////////////////////
 
-// CreateProjectExtension creates a new ProjectExtension
+// CreateACSProjectExtension creates a new ProjectExtension
 func (ex *ExtensionRepository) CreateACSProjectExtension(ctx echo.Context, projectID string, e *domain.AcsCourierExtension) error {
 	collection := ex.mongo.Database("otoo").Collection("acs_project_extensions")
 
@@ -280,7 +282,7 @@ func (ex *ExtensionRepository) CreateACSProjectExtension(ctx echo.Context, proje
 	return nil
 }
 
-// GetAllProjectExtensions gets all ProjectExtensions
+// GetAllACSProjectExtensions gets all ProjectExtensions
 func (ex *ExtensionRepository) GetAllACSProjectExtensions(ctx echo.Context, projectID string) ([]*domain.AcsCourierExtension, error) {
 	collection := ex.mongo.Database("otoo").Collection("acs_project_extensions")
 
@@ -313,7 +315,7 @@ func (ex *ExtensionRepository) GetAllACSProjectExtensions(ctx echo.Context, proj
 	return projectExtensions, nil
 }
 
-// GetProjectExtensionsByID gets a ProjectExtension by ID
+// GetACSProjectExtensionByID gets a ProjectExtension by ID
 func (ex *ExtensionRepository) GetACSProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.AcsCourierExtension, error) {
 	collection := ex.mongo.Database("otoo").Collection("acs_project_extensions")
 
@@ -335,7 +337,7 @@ func (ex *ExtensionRepository) GetACSProjectExtensionByID(ctx echo.Context, exte
 	return &projectExtension, nil
 }
 
-// DeleteProjectExtension deletes a ProjectExtension by ID
+// DeleteACSProjectExtension deletes a ProjectExtension by ID
 func (ex *ExtensionRepository) DeleteACSProjectExtension(ctx echo.Context, extensionID, projectID string) error {
 	collection := ex.mongo.Database("otoo").Collection("acs_project_extensions")
 
@@ -348,6 +350,305 @@ func (ex *ExtensionRepository) DeleteACSProjectExtension(ctx echo.Context, exten
 		"_id":          extID,
 		"project_id":   projectID,
 		"extension_id": extensionID,
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"deleted_at": time.Now(),
+			"is_active":  false,
+		},
+	}
+
+	result, err := collection.UpdateOne(ctx.Request().Context(), filter, update)
+	if err != nil {
+		return err
+	}
+	if result.MatchedCount == 0 {
+		return errors.New("ProjectExtension not found")
+	}
+
+	return nil
+}
+
+////////////////// Data Synchronizer Extension/////////////////////////
+
+// CreateSynchronizerProjectExtension creates a new ProjectExtension
+// CreateSynchronizerProjectExtension creates a new ProjectExtension
+func (ex *ExtensionRepository) CreateSynchronizerProjectExtension(ctx echo.Context, projectID string, e *domain.DataSynchronizerExtension) error {
+	collection := ex.mongo.Database("otoo").Collection("synchronizer_project_extensions")
+
+	// Check for existing processing extensions
+	processingFilter := bson.M{
+		"is_active":  true,
+		"project_id": projectID,
+		"status":     "processing", // Look for status "processing"
+	}
+
+	// Count the number of processing extensions
+	processingCount, err := collection.CountDocuments(context.TODO(), processingFilter)
+	if err != nil {
+		return err
+	}
+
+	// If any processing extensions exist, do not create a new one
+	if processingCount > 0 {
+		return util.ErrSynchronizerInProgress
+	}
+
+	// If there are no processing extensions, create a new one with status "processing"
+	e.Status = "processing" // Set the status to "processing"
+
+	// Insert the new extension
+	_, err = collection.InsertOne(context.TODO(), e)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UpdateSynchronizerCustomerRecievedExtension updates the "customer_received" field and checks if the status should be set to "completed"
+func (ex *ExtensionRepository) UpdateSynchronizerCustomerRecievedExtension(ctx echo.Context, projectID string, customerReceived int) error {
+	collection := ex.mongo.Database("otoo").Collection("synchronizer_project_extensions")
+
+	// Define the filter to find the active project with the given project ID
+	filter := bson.M{
+		"is_active":  true,
+		"project_id": projectID,
+		"status":     "processing", // Ensure the status is not "processing"
+	}
+
+	// First, retrieve the current document to get the totals and the current state of the "received" fields
+	var currentDoc domain.DataSynchronizerExtension
+	err := collection.FindOne(context.TODO(), filter).Decode(&currentDoc)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return fmt.Errorf("no active synchronizer project found for projectID: %s", projectID)
+		}
+		return err
+	}
+
+	// Increment the "customer_received" field
+	update := bson.M{
+		"$inc": bson.M{
+			"customer_received": customerReceived, // Increment customer_received by the provided value
+		},
+		"$set": bson.M{
+			"updated_at": time.Now(), // Update the timestamp for updated_at
+		},
+	}
+
+	// Perform the update operation
+	_, err = collection.UpdateOne(context.TODO(), filter, update, options.Update().SetUpsert(true))
+	if err != nil {
+		return err
+	}
+
+	// Check if customer_received, order_received, and product_received match the totals
+	if currentDoc.CustomerRecieved+customerReceived >= currentDoc.TotalCustomer &&
+		currentDoc.OrderReceived >= currentDoc.TotalOrder &&
+		currentDoc.ProductReceived >= currentDoc.TotalProduct {
+
+		// If all received values match the totals, update the status to "completed"
+		statusUpdate := bson.M{
+			"$set": bson.M{
+				"status":     "completed",
+				"updated_at": time.Now(),
+			},
+		}
+
+		_, err = collection.UpdateOne(context.TODO(), filter, statusUpdate)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// UpdateSynchronizerOrderReceivedExtension updates the "order_received" field in the "synchronizer_project_extensions" collection
+func (ex *ExtensionRepository) UpdateSynchronizerOrderReceivedExtension(ctx echo.Context, projectID string, orderReceived int) error {
+	collection := ex.mongo.Database("otoo").Collection("synchronizer_project_extensions")
+
+	filter := bson.M{
+		"is_active":  true,
+		"project_id": projectID,
+		"status":     "processing", // Ensure the status is not "processing"
+	}
+
+	var currentDoc domain.DataSynchronizerExtension
+	err := collection.FindOne(context.TODO(), filter).Decode(&currentDoc)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return fmt.Errorf("no active synchronizer project found for projectID: %s", projectID)
+		}
+		return err
+	}
+
+	update := bson.M{
+		"$inc": bson.M{
+			"order_received": orderReceived, // Increment order_received by the provided value
+		},
+		"$set": bson.M{
+			"updated_at": time.Now(),
+		},
+	}
+
+	_, err = collection.UpdateOne(context.TODO(), filter, update, options.Update().SetUpsert(true))
+	if err != nil {
+		return err
+	}
+
+	// Check if all received fields meet their total
+	if currentDoc.CustomerRecieved >= currentDoc.TotalCustomer &&
+		currentDoc.OrderReceived+orderReceived >= currentDoc.TotalOrder &&
+		currentDoc.ProductReceived >= currentDoc.TotalProduct {
+
+		statusUpdate := bson.M{
+			"$set": bson.M{
+				"status":     "completed",
+				"updated_at": time.Now(),
+			},
+		}
+
+		_, err = collection.UpdateOne(context.TODO(), filter, statusUpdate)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// UpdateSynchronizerProductReceivedExtension updates the "product_received" field in the "synchronizer_project_extensions" collection
+func (ex *ExtensionRepository) UpdateSynchronizerProductReceivedExtension(ctx echo.Context, projectID string, productReceived int) error {
+	// Get the collection from the MongoDB database
+	collection := ex.mongo.Database("otoo").Collection("synchronizer_project_extensions")
+
+	// Define the filter to find the active project with the given project ID
+	filter := bson.M{
+		"is_active":  true,
+		"project_id": projectID,
+		"status":     "processing", // Ensure the status is not "processing"
+	}
+
+	// First, retrieve the current document to get the totals and the current state of the "received" fields
+	var currentDoc domain.DataSynchronizerExtension
+	err := collection.FindOne(context.TODO(), filter).Decode(&currentDoc)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return fmt.Errorf("no active synchronizer project found for projectID: %s", projectID)
+		}
+		return err
+	}
+
+	// Increment the "product_received" field
+	update := bson.M{
+		"$inc": bson.M{
+			"product_received": productReceived, // Increment product_received by the provided value
+		},
+		"$set": bson.M{
+			"updated_at": time.Now(), // Update the timestamp for updated_at
+		},
+	}
+
+	// Perform the update operation
+	_, err = collection.UpdateOne(context.TODO(), filter, update, options.Update().SetUpsert(true))
+	if err != nil {
+		return err
+	}
+
+	// Check if customer_received, order_received, and product_received match the totals
+	if currentDoc.CustomerRecieved >= currentDoc.TotalCustomer &&
+		currentDoc.OrderReceived >= currentDoc.TotalOrder &&
+		currentDoc.ProductReceived+productReceived >= currentDoc.TotalProduct {
+
+		// If all received values match the totals, update the status to "completed"
+		statusUpdate := bson.M{
+			"$set": bson.M{
+				"status":     "completed",
+				"updated_at": time.Now(),
+			},
+		}
+
+		_, err = collection.UpdateOne(context.TODO(), filter, statusUpdate)
+		if err != nil {
+			return err
+		}
+	}
+
+	// Return nil if everything succeeded
+	return nil
+}
+
+// GetAllSynchronizerProjectExtensions gets all ProjectExtensions
+func (ex *ExtensionRepository) GetAllSynchronizerProjectExtensions(ctx echo.Context, projectID string) ([]*domain.DataSynchronizerExtension, error) {
+	collection := ex.mongo.Database("otoo").Collection("synchronizer_project_extensions")
+
+	filter := bson.M{
+		"project_id": projectID,
+		"is_active":  true,
+	}
+
+	cursor, err := collection.Find(ctx.Request().Context(), filter)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+	defer cursor.Close(ctx.Request().Context())
+
+	var projectExtensions []*domain.DataSynchronizerExtension
+	for cursor.Next(ctx.Request().Context()) {
+		var projectExtension domain.DataSynchronizerExtension
+		if err := cursor.Decode(&projectExtension); err != nil {
+			return nil, err
+		}
+		projectExtensions = append(projectExtensions, &projectExtension)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return projectExtensions, nil
+}
+
+// GetSynchronizerProjectExtensionByID gets a ProjectExtension by ID
+func (ex *ExtensionRepository) GetSynchronizerProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.DataSynchronizerExtension, error) {
+	collection := ex.mongo.Database("otoo").Collection("synchronizer_project_extensions")
+
+	filter := bson.M{
+		"project_id": projectID,
+		"is_active":  true,
+		"status":     "processing",
+	}
+
+	var projectExtension domain.DataSynchronizerExtension
+	err := collection.FindOne(ctx.Request().Context(), filter).Decode(&projectExtension)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &projectExtension, nil
+}
+
+// DeleteSynchronizerProjectExtension deletes a ProjectExtension by ID
+func (ex *ExtensionRepository) DeleteSynchronizerProjectExtension(ctx echo.Context, extensionID, projectID string) error {
+	collection := ex.mongo.Database("otoo").Collection("synchronizer_project_extensions")
+
+	extID, err := primitive.ObjectIDFromHex(extensionID)
+	if err != nil {
+		return errors.New("Invalid extension ID format")
+	}
+
+	filter := bson.M{
+		"_id":        extID,
+		"project_id": projectID,
+		"is_active":  true,
 	}
 
 	update := bson.M{

@@ -127,9 +127,17 @@ templ SettingsGeneral(user *domain.User, project *domain.Project, projectExtensi
 						<div class="px-6 py-5 bg-body-secondary d-flex justify-content-center">
 							<button
 								type="submit"
+								id="spinner"
 								hx-post={ fmt.Sprintf("/project/settings/delete/%s", project.Id) }
 								class="btn btn-sm btn-danger"
-							>Delete </button>
+							>
+								<span
+									id="spinner"
+									class="htmx-indicator spinner-border spinner-border-sm"
+									role="status"
+									aria-hidden="true"
+								></span> Delete 
+							</button>
 						</div>
 					</div>
 				</div>

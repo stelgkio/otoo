@@ -18,6 +18,7 @@ import (
 
 	cronjob "github.com/stelgkio/otoo/internal/core/cron_job"
 	"github.com/stelgkio/otoo/internal/core/service"
+	courier "github.com/stelgkio/otoo/internal/core/service/courier"
 	"github.com/stelgkio/otoo/internal/core/service/woocommerce"
 )
 
@@ -35,16 +36,19 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	analyticsRepo := mongorepo.NewAnalyticsRepository(mongodb)
 	projectRepo := repository.NewProjectRepository(db)
 	extensionRepo := mongorepo.NewExtensionRepository(mongodb)
+	voucherRepo := mongorepo.NewVoucherRepository(mongodb)
 
-	//WooCommerceCustomerServer
-	woocommerceCustomerService := woocommerce.NewCustomerService(woocommerceRepo, projectRepo)
-	//WooCommerceProductServer
-	woocommerceProductService := woocommerce.NewProductService(woocommerceRepo, projectRepo)
-	//WooCommerceOrderServer
-	woocommerceOrderService := woocommerce.NewOrderService(woocommerceRepo, projectRepo)
-
+	// NewExtensionService
 	extensionService := service.NewExtensionService(extensionRepo)
+	//WooCommerceCustomerServer
+	woocommerceCustomerService := woocommerce.NewCustomerService(woocommerceRepo, projectRepo, extensionService)
+	//WooCommerceProductServer
+	woocommerceProductService := woocommerce.NewProductService(woocommerceRepo, projectRepo, extensionService)
+	//WooCommerceOrderServer
+	woocommerceOrderService := woocommerce.NewOrderService(woocommerceRepo, projectRepo, extensionService)
 
+	//Voucher
+	voucherService := courier.NewVoucherService(voucherRepo)
 	//Smtp
 	smtpService := service.NewSmtpService()
 
@@ -62,16 +66,16 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 
 	//WooCommerce
 	woocommerceWebhookService := woocommerce.NewWoocommerceWebhookService(woocommerceRepo)
-	WooCommerceHandler := handler.NewWooCommerceHandler(woocommerceRepo, projectRepo, woocommerceCustomerService, woocommerceProductService)
+	WooCommerceHandler := handler.NewWooCommerceHandler(woocommerceRepo, projectRepo, woocommerceCustomerService, woocommerceProductService, woocommerceWebhookService, extensionService, voucherService)
 
 	//Project
-	projectService := service.NewProjectService(projectRepo, woocommerceWebhookService, woocommerceProductService)
+	projectService := service.NewProjectService(projectRepo, woocommerceWebhookService, woocommerceProductService, extensionService)
 
 	//WooCommerceRepostServer
 	woocommerceReportService := woocommerce.NewWoocommerceReportService(projectService)
 	//ProjectHandler
 	bestSellerCron := cronjob.NewProductBestSellerCron(projectService, analyticsRepo, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
-	projectHandler := handler.NewProjectHandler(projectService, userService, woocommerceReportService, woocommerceProductService, woocommerceCustomerService, woocommerceOrderService, bestSellerCron, notificationService, extensionService)
+	projectHandler := handler.NewProjectHandler(projectService, userService, woocommerceReportService, woocommerceProductService, woocommerceCustomerService, woocommerceOrderService, bestSellerCron, notificationService, extensionService, woocommerceWebhookService)
 
 	//Home
 	homeHandler := handler.NewHomeHandler(projectService, contactService)

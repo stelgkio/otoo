@@ -12,17 +12,19 @@ import (
 )
 
 type ProjectService struct {
-	repo port.ProjectRepository
-	wp   port.WoocommerceWebhookService
-	wc   port.ProductService
+	repo         port.ProjectRepository
+	wp           port.WoocommerceWebhookService
+	wc           port.ProductService
+	extensionSrv port.ExtensionService
 }
 
 // NewProjectService creates a new user service instance
-func NewProjectService(repo port.ProjectRepository, wp port.WoocommerceWebhookService, wc port.ProductService) *ProjectService {
+func NewProjectService(repo port.ProjectRepository, wp port.WoocommerceWebhookService, wc port.ProductService, extensionSrv port.ExtensionService) *ProjectService {
 	return &ProjectService{
 		repo,
 		wp,
 		wc,
+		extensionSrv,
 	}
 }
 
@@ -65,7 +67,13 @@ func (ps *ProjectService) CreateProject(ctx echo.Context, req *domain.ProjectReq
 		return nil, errors.New("project is not created")
 	}
 
-	go ps.wp.WoocommerceCreateAllWebHook(req.ConsumerKey, req.ConsumerSecret, req.Domain, pr.Id)
+	extension, err := ps.extensionSrv.GetExtensionByCode(ctx, domain.DataSynchronizerCode)
+	if err != nil {
+		return nil, err
+	}
+	ps.extensionSrv.CreateProjectExtension(ctx, project.Id.String(), extension)
+
+	go ps.wp.WoocommerceCreateAllWebHookAsync(req.ConsumerKey, req.ConsumerSecret, req.Domain, pr.Id.String())
 	return pr, nil
 }
 

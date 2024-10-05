@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"time"
 
-	domain "github.com/stelgkio/otoo/internal/core/domain"
+	domain "github.com/stelgkio/otoo/internal/core/domain/courier"
 )
 
 // Define the ACS API URL for Multipart Vouchers and Printing
@@ -31,7 +31,7 @@ func NewACSService(apiKey string) *ACSService {
 }
 
 // CreateVoucher sends the VoucherRequest to the ACS API and returns the voucher number
-func (service *ACSService) CreateVoucher(request *domain.VoucherRequest) (string, error) {
+func (service *ACSService) CreateVoucher(request *domain.AcsVoucherRequest) (string, error) {
 	// Validate the request
 	if err := request.Validate(); err != nil {
 		return "", err
@@ -100,7 +100,7 @@ func (service *ACSService) CreateVoucher(request *domain.VoucherRequest) (string
 }
 
 // CreateMultipleVouchers handles creating and printing multiple vouchers
-func (service *ACSService) CreateMultipleVouchers(request *domain.VoucherRequest) ([]string, error) {
+func (service *ACSService) CreateMultipleVouchers(request *domain.AcsVoucherRequest) ([]string, error) {
 	// Create the main voucher
 	mainVoucherNo, err := service.CreateVoucher(request)
 	if err != nil {

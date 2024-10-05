@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -128,6 +129,7 @@ func setUserCookie(user *user.User, expiration time.Time, c echo.Context) {
 	cookie.Value = user.Email
 	cookie.Expires = expiration
 	cookie.Path = "/"
+
 	c.SetCookie(cookie)
 }
 func removeUserCookie(c echo.Context) {
@@ -136,11 +138,14 @@ func removeUserCookie(c echo.Context) {
 	cookie.Value = ""
 	cookie.MaxAge = -1
 	cookie.Path = "/"
+
 	c.SetCookie(cookie)
 }
 
 // JWTErrorChecker will be executed when user try to access a protected path.
 func JWTErrorChecker(c echo.Context, err error) error {
+	slog.Error("JWTErrorChecker", "error", err)
+
 	return c.Redirect(http.StatusMovedPermanently, c.Echo().Reverse("SignInForm"))
 }
 

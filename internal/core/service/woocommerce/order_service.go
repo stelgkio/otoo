@@ -17,15 +17,17 @@ import (
 
 // OrderService represents the service for managing orders
 type OrderService struct {
-	p port.WoocommerceRepository
-	s port.ProjectRepository
+	p            port.WoocommerceRepository
+	s            port.ProjectRepository
+	extensionSrv port.ExtensionService
 }
 
 // NewOrderService creates a new instance of OrderService
-func NewOrderService(woorepo port.WoocommerceRepository, projrepo port.ProjectRepository) *OrderService {
+func NewOrderService(woorepo port.WoocommerceRepository, projrepo port.ProjectRepository, extensionSrv port.ExtensionService) *OrderService {
 	return &OrderService{
-		p: woorepo,
-		s: projrepo,
+		p:            woorepo,
+		s:            projrepo,
+		extensionSrv: extensionSrv,
 	}
 }
 
@@ -233,6 +235,7 @@ func (os *OrderService) createAndSaveAllCustomers(client *commerce.Client, proje
 		if len(resp) == 0 {
 			break // Exit the loop if no more products are returned
 		}
+		os.extensionSrv.UpdateSynchronizerOrderReceivedExtension(nil, projectID, len(resp))
 		for _, item := range resp {
 			Status, _ := domain.StringToOrderStatus(item.Status)
 			orderCh <- &w.OrderRecord{

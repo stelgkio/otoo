@@ -23,7 +23,9 @@ func (dh *DashboardHandler) Extention(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return util.Render(ctx, e.Extensions(projectID, extensions))
+
+	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	return util.Render(ctx, e.Extensions(projectID, extensions, projectExtensions))
 }
 
 // StripeSuccesRedirect  the redirect handler for Stripe success
@@ -50,7 +52,8 @@ func (dh *DashboardHandler) StripeSuccesRedirect(ctx echo.Context) error {
 
 		return util.Render(ctx, et.ExtentionAcsSubscriptionSuccessTemplate(user, project.Name, projectID, extensionID))
 	}
-	return util.Render(ctx, e.Extensions(projectID, nil))
+	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	return util.Render(ctx, e.Extensions(projectID, nil, projectExtensions))
 }
 
 // StripeFailRedirect the redirect handler for Stripe fail
@@ -61,7 +64,8 @@ func (dh *DashboardHandler) StripeFailRedirect(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return util.Render(ctx, e.Extensions(projectID, extensions))
+	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	return util.Render(ctx, e.Extensions(projectID, extensions, projectExtensions))
 }
 
 // AcsCourier get extention courier page

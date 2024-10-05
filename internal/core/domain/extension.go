@@ -6,6 +6,14 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+const (
+	AcsCode = "asc-courier"
+
+	DataSynchronizerCode = "data-synchronizer"
+
+	WalletExpences = "wallet-expences"
+)
+
 // Extension here we store all the available extensions we can add to the project
 type Extension struct {
 	ID                 primitive.ObjectID `bson:"_id,omitempty"`
@@ -82,4 +90,44 @@ func (p *AcsCourierExtension) Validate() map[string](string) {
 	}
 
 	return errors
+}
+
+// DataSynchronizerExtension represents active data synchronizer details for data synchronizer
+type DataSynchronizerExtension struct {
+	ID primitive.ObjectID `bson:"_id,omitempty"`
+
+	ProjectID   string    `json:"project_id" bson:"project_id,omitempty"`
+	ExtensionID string    `json:"extension_id" bson:"extension_id,omitempty"`
+	CreatedAt   time.Time `json:"created_at"  bson:"created_at,omitempty"`
+	UpdatedAt   time.Time `json:"updated_at"  bson:"updated_at,omitempty"`
+	DeletedAt   time.Time `json:"deleted_at"  bson:"deleted_at,omitempty"`
+	IsActive    bool      `json:"is_active" bson:"is_active,omitempty"`
+
+	Status        string `json:"status" bson:"status,omitempty"`
+	TotalCustomer int    `json:"total_customer" bson:"total_customer,omitempty"`
+	TotalOrder    int    `json:"total_order" bson:"total_order,omitempty"`
+	TotalProduct  int    `json:"total_product" bson:"total_product,omitempty"`
+
+	CustomerRecieved int `json:"customer_received" bson:"customer_received,omitempty"`
+	OrderReceived    int `json:"order_received" bson:"order_received,omitempty"`
+	ProductReceived  int `json:"product_received" bson:"product_received,omitempty"`
+}
+
+// NewDataSynchronizerExtension creates a new DataSynchronizerExtension
+func NewDataSynchronizerExtension(projectID, extensionID string, totalCustomer, totalOrder, totalProduct int) *DataSynchronizerExtension {
+	return &DataSynchronizerExtension{
+		ProjectID:        projectID,
+		ExtensionID:      extensionID,
+		IsActive:         true,
+		CreatedAt:        time.Now(),
+		UpdatedAt:        time.Now(),
+		DeletedAt:        time.Time{},
+		Status:           "proccesing",
+		TotalCustomer:    totalCustomer,
+		TotalOrder:       totalOrder,
+		TotalProduct:     totalProduct,
+		CustomerRecieved: 0,
+		OrderReceived:    0,
+		ProductReceived:  0,
+	}
 }

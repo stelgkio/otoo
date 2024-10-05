@@ -5,7 +5,7 @@ import (
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-templ ProjectSynchronizer(user *domain.User, projectId string, customerTotal, productTotal, orderTotal int) {
+templ ProjectSynchronizerPage(user *domain.User, projectId string, customerTotal, productTotal, orderTotal int) {
 	<div
 		id="dashboard-content"
 		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
@@ -25,10 +25,9 @@ templ ProjectSynchronizer(user *domain.User, projectId string, customerTotal, pr
 						<p class="text-sm text-muted">Customize your experience by choosing the data you want to synchronize with our platform.</p>
 					</div>
 					<div class="d-none d-md-flex gap-2">
-						<a type="button" class="btn btn-sm btn-neutral" href={ templ.URL("/dashboard/project/" + projectId) }>Skip for Now </a>
 						<button
 							type="submit"
-							hx-post={ fmt.Sprintf("/project/synchronize/start/%s/%d/%d/%d", projectId, customerTotal, productTotal, orderTotal) }
+							hx-post={ fmt.Sprintf("/project/page/synchronize/start/%s/%d/%d/%d", projectId, customerTotal, productTotal, orderTotal) }
 							hx-indicator="#spinner"
 							class="btn btn-sm btn-primary"
 							hx-target="#dashboard-content"
@@ -145,7 +144,7 @@ templ ProjectSynchronizer(user *domain.User, projectId string, customerTotal, pr
 					<button
 						type="submit"
 						hx-indicator="#spinner"
-						hx-post={ fmt.Sprintf("/project/synchronize/start/%s/%d/%d/%d", projectId, customerTotal, productTotal, orderTotal) }
+						hx-post={ fmt.Sprintf("/project/page/synchronize/start/%s/%d/%d/%d", projectId, customerTotal, productTotal, orderTotal) }
 						class="btn btn-sm btn-primary"
 						hx-target="#dashboard-content"
 						id="submit-button-mobile"

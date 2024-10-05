@@ -8,7 +8,6 @@ import (
 
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -53,10 +52,12 @@ func (repo WoocommerceRepository) OrderUpdate(order *w.OrderRecord, orderID int6
 }
 
 // OrderDelete delete order
-func (repo WoocommerceRepository) OrderDelete(data any) error {
+func (repo WoocommerceRepository) OrderDelete(orderID int64, projectID string) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
-	coll.DeleteOne(context.TODO(), data)
-	return nil
+	filter := bson.M{"orderId": orderID, "projectId": projectID}
+	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now().UTC()}}
+	_, err := coll.UpdateOne(context.TODO(), filter, update)
+	return err
 }
 
 // OrderFindByProjectID find all orders by projectID
@@ -216,10 +217,12 @@ func (repo WoocommerceRepository) CustomerUpdate(data *w.CustomerRecord, email s
 }
 
 // CustomerDelete  error
-func (repo WoocommerceRepository) CustomerDelete(data any) error {
+func (repo WoocommerceRepository) CustomerDelete(customerID int64, projectID string) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_customers")
-	coll.DeleteOne(context.TODO(), data)
-	return nil
+	filter := bson.M{"customerId": customerID, "projectId": projectID}
+	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now().UTC()}}
+	_, err := coll.UpdateOne(context.TODO(), filter, update)
+	return err
 }
 
 // CustomerFindByProjectID find all customers by projectID
@@ -331,9 +334,9 @@ func (repo WoocommerceRepository) ProductUpdate(data *w.ProductRecord, productID
 }
 
 // ProductDelete delete product
-func (repo WoocommerceRepository) ProductDelete(productID int64) error {
+func (repo WoocommerceRepository) ProductDelete(productID int64, projectID string) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_products")
-	filter := bson.M{"productId": productID}
+	filter := bson.M{"productId": productID, "projectId": projectID}
 	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now().UTC()}}
 	_, err := coll.UpdateOne(context.TODO(), filter, update)
 	return err
@@ -519,12 +522,57 @@ func (repo *WoocommerceRepository) WebhookUpdate(data w.WebhookRecord) (*w.Webho
 	return &updatedRecord, nil
 }
 
-// WebhookDelete delete webhook
-func (repo *WoocommerceRepository) WebhookDelete(id primitive.ObjectID) error {
+// WebhookBatchDelete deactivates all webhooks for a given projectId
+func (repo *WoocommerceRepository) WebhookBatchDelete(projectID string) error {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_webhooks")
-	filter := bson.M{"_id": id}
-	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now().UTC()}}
+
+	// Create a filter to match all webhooks with the specified projectId
+	filter := bson.M{"projectId": projectID}
+
+	// Prepare the update to set is_active to false and add a deleted_at timestamp
+	update := bson.M{
+		"$set": bson.M{
+			"is_active":  false,
+			"deleted_at": time.Now().UTC(),
+		},
+	}
+
+	// Update many documents that match the filter
+	_, err := coll.UpdateMany(context.TODO(), filter, update)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil
+		}
+		return err
+	}
+	return err
+}
+
+// WebhookDelete delete webhook
+func (repo *WoocommerceRepository) WebhookDelete(projectID string, webhookID int64) error {
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_webhooks")
+
+	// Create a filter to match all webhooks with the specified projectId
+	filter := bson.M{"projectId": projectID, "webhookId": webhookID}
+
+	// Prepare the update to set is_active to false and add a deleted_at timestamp
+	update := bson.M{
+		"$set": bson.M{
+			"is_active":  false,
+			"deleted_at": time.Now().UTC(),
+		},
+	}
+
+	// Update many documents that match the filter
 	_, err := coll.UpdateOne(context.TODO(), filter, update)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil
+		}
+		return err
+	}
+
 	return err
 }
 
@@ -550,4 +598,18 @@ func (repo *WoocommerceRepository) WebhookFindByProjectID(projectID string) ([]w
 		return nil, err
 	}
 	return results, nil
+}
+
+// WebhookCount get number of Webhook
+func (repo WoocommerceRepository) WebhookCount(projectID string) (int64, error) {
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_webhooks")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	filter := bson.M{"projectId": projectID, "is_active": true}
+	res, err := coll.CountDocuments(ctx, filter)
+
+	if err != nil {
+		return 0, err
+	}
+	return res, nil
 }

@@ -3,14 +3,12 @@ package port
 import (
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	d "github.com/stelgkio/otoo/internal/core/domain"
 	domain "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // WoocommerceRepository defines the methods for interacting with the Woocommerce repository
@@ -18,7 +16,7 @@ type WoocommerceRepository interface {
 	// InsertWoocommerceOrder inserts a new order into the database
 	OrderCreate(data *w.OrderRecord) error
 	OrderUpdate(data *w.OrderRecord, orderID int64) error
-	OrderDelete(data any) error
+	OrderDelete(orderID int64, projectID string) error
 	GetOrderByID(projectID string, orderID int64) (*w.OrderRecord, error)
 	OrderFindByProjectID(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string) ([]*w.OrderRecord, error)
 	GetOrderCount(projectID string, orderStatus w.OrderStatus, timeRange string) (int64, error)
@@ -26,13 +24,13 @@ type WoocommerceRepository interface {
 
 	CustomerCreate(data *w.CustomerRecord, email string) error
 	CustomerUpdate(data *w.CustomerRecord, email string) error
-	CustomerDelete(data any) error
+	CustomerDelete(customerID int64, projectID string) error
 	CustomerFindByProjectID(projectID string, size, page int, sort, direction string) ([]*w.CustomerRecord, error)
 	CustomerFindByEmail(projectID string, email string) (*w.CustomerRecord, error)
 	GetCustomerCount(projectID string) (int64, error)
 
 	ProductCreate(data *w.ProductRecord) error
-	ProductDelete(productID int64) error
+	ProductDelete(productID int64, projectID string) error
 	ProductUpdate(data *w.ProductRecord, productID int64, projectID string) error
 	ProductFindByProjectID(projectID string, size, page int, sort, direction string, productType w.ProductType) ([]*w.ProductRecord, error)
 	GetProductCount(projectID string, productType w.ProductType) (int64, error)
@@ -46,14 +44,20 @@ type WoocommerceRepository interface {
 
 	WebhookCreate(data w.WebhookRecord) error
 	WebhookUpdate(data w.WebhookRecord) (*w.WebhookRecord, error)
-	WebhookDelete(id primitive.ObjectID) error
+	WebhookBatchDelete(projectID string) error
+	WebhookDelete(projectID string, webhookID int64) error
 	WebhookFindByProjectID(projectID string) ([]w.WebhookRecord, error)
+	WebhookCount(projectID string) (int64, error)
 }
 
 // WoocommerceWebhookService defines the methods for interacting with the Woocommerce service
 type WoocommerceWebhookService interface {
 	// WoocommerceCreateOrderWebHook create new order web hook for woocommerce
-	WoocommerceCreateAllWebHook(customerKey string, customerSecret string, domainURL string, projectID uuid.UUID) error
+	WoocommerceCreateAllWebHook(customerKey string, customerSecret string, domainURL string, projectID string) error
+	WoocommerceCreateAllWebHookAsync(customerKey string, customerSecret string, domainURL string, projectID string) error
+	FindWebhookByProjectIDAsync(ctx echo.Context, projectID string, results chan<- []domain.WebhookRecord, errors chan<- error)
+	GetWebhookCountAsync(ctx echo.Context, projectID string, results chan<- int64, errors chan<- error)
+	DeleteAllWebhooksByProjectID(projectID string, customerKey string, customerSecret string, domainURL string) error
 }
 
 // CustomerService defines the methods for interacting with the Woocommerce service

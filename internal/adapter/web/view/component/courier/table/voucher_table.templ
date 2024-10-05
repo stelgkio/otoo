@@ -229,12 +229,13 @@ templ VoucherTable(projectId string) {
 									<i :class="getSortIcon('is_printed')"></i>
 								</th>
 							</template>
+							<th>Action</th>
 						</tr>
 					</thead>
 					<tbody>
 						<template x-if="!loading && totalItems === 0">
 							<tr>
-								<td colspan="7">No vouchers found.</td>
+								<td colspan="8">No vouchers found.</td>
 							</tr>
 						</template>
 						<template x-for="voucher in paginatedVouchers" :key="voucher.Id">
@@ -275,17 +276,38 @@ templ VoucherTable(projectId string) {
 										</template>
 									</td>
 								</template>
+								<td>
+									<button
+										x-bind:hx-get="'/voucher/modal/' + voucher.Id"
+										hx-target="#modals-here"
+										hx-trigger="click"
+										data-bs-toggle="modal"
+										data-bs-target="#modals-here"
+										class="btn btn-link"
+									>Details</button>
+								</td>
 							</tr>
 						</template>
 						<template x-for="i in 10 - paginatedVouchers.length" :key="'empty' + i">
 							<tr>
-								<td colspan="7" class="py-7"></td>
+								<td colspan="8" class="py-7"></td>
 							</tr>
 						</template>
 					</tbody>
 				</table>
 			</div>
 			@p.PaginationControl()
+		</div>
+	</div>
+	<div
+		id="modals-here"
+		class="modal modal-blur fade"
+		style="display: none"
+		aria-hidden="false"
+		tabindex="-1"
+	>
+		<div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+			<div class="modal-content"></div>
 		</div>
 	</div>
 	<script>

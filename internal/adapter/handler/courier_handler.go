@@ -7,13 +7,14 @@ import (
 	"sync"
 
 	"github.com/labstack/echo/v4"
+	m "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/modal"
 	t "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/overview"
 	v "github.com/stelgkio/otoo/internal/core/domain/courier"
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/util"
 )
 
-// FindNotification find all notification by projectID
+// CourierTable returns the order dashboard
 func (dh *DashboardHandler) CourierTable(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 
@@ -124,4 +125,16 @@ func (dh *DashboardHandler) VoucherTable(ctx echo.Context) error {
 	}
 
 	return ctx.JSON(http.StatusOK, response)
+}
+
+// VoucherDetailModal returns the order dashboard
+func (dh *DashboardHandler) VoucherDetailModal(ctx echo.Context) error {
+	ID := ctx.Param("Id")
+	voucher, err := dh.voucherSvc.GetVoucherByVoucherID(ctx, ID)
+
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	return util.Render(ctx, m.VoucherDetails(voucher.ProjectID, voucher))
+
 }

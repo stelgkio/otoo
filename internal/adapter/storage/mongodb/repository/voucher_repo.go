@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 	domain "github.com/stelgkio/otoo/internal/core/domain/courier"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -79,9 +80,13 @@ func (r *VoucherRepository) UpdateVoucher(ctx echo.Context, voucher *domain.Vouc
 func (r *VoucherRepository) GetVoucherByVoucherID(ctx echo.Context, voucherID string) (*domain.Voucher, error) {
 	collection := r.mongo.Database("otoo").Collection("vouchers")
 	var voucher domain.Voucher
+	id, err := primitive.ObjectIDFromHex(voucherID)
+	if err != nil {
+		return nil, err
+	}
 
 	// Find the voucher in the collection by voucherID
-	err := collection.FindOne(ctx.Request().Context(), bson.M{"voucher_id": voucherID}).Decode(&voucher)
+	err = collection.FindOne(ctx.Request().Context(), bson.M{"_id": id}).Decode(&voucher)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, errors.New("voucher not found")

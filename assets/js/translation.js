@@ -1,9 +1,9 @@
 // Initialize i18next
 i18next
     // .use(i18nextHttpBackend) // Optional: Load translations from external files
-    // .use(i18nextBrowserLanguageDetector) // Detect user's language
+    .use(i18nextBrowserLanguageDetector) // Detect user's language
     .init({
-        fallbackLng: 'el', // Default language if detection fails
+        fallbackLng: 'en', // Default language if detection fails
         debug: true, // Enable debug logs in the console
 
         resources: {

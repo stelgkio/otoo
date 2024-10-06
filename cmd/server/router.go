@@ -53,14 +53,6 @@ func NewRouter(
 
 		return c.JSON(http.StatusAccepted, "OK")
 	})
-	e.GET("/RunOrderWeeklyBalanceInitializeJob", func(c echo.Context) error {
-		err := orderAnalyticsCron.RunOrderWeeklyBalanceInitializeJob("e7525855-27af-4307-95d5-2202adaa54ca")
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-
-		return c.JSON(http.StatusAccepted, "OK")
-	})
 
 	e.GET("/RunAProductBestSellerDailyJob", func(c echo.Context) error {
 		err := productBestSellerCron.RunAProductBestSellerDailyJob()
@@ -70,14 +62,7 @@ func NewRouter(
 
 		return c.JSON(http.StatusAccepted, "OK")
 	})
-	e.GET("/RunAProductBestSellerInitializerJob", func(c echo.Context) error {
-		err := productBestSellerCron.RunAProductBestSellerInitializerJob("e915c34b-33c5-49e8-9e2c-227c650398fa")
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
 
-		return c.JSON(http.StatusAccepted, "OK")
-	})
 	e.GET("/RunCustomerBestBuyerJob", func(c echo.Context) error {
 		return c.JSON(http.StatusAccepted, "OK")
 	})

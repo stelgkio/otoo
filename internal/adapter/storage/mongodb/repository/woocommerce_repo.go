@@ -120,6 +120,66 @@ func (repo WoocommerceRepository) OrderFindByProjectID(projectID string, size, p
 	return orders, nil
 }
 
+// OrderFindByProjectIDWithTimePedio find all orders by projectID
+func (repo WoocommerceRepository) OrderFindByProjectIDWithTimePedio(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string, timeperiod time.Time) ([]*w.OrderRecord, error) {
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	filter := bson.M{"projectId": projectID, "is_active": true, "status": orderStatus, "timestamp": bson.M{"$gte": timeperiod}}
+	if orderStatus == w.OrderStatusAll {
+		filter = bson.M{"projectId": projectID, "is_active": true, "timestamp": bson.M{"$gte": timeperiod}}
+	}
+
+	sortOrder := 1
+	if direction == "desc" {
+		sortOrder = -1
+	} else if direction == "" {
+		sortOrder = -1
+	}
+
+	// Set sort field
+	sortField := sort
+	if sort == "total_amount" {
+		sortField = "order_total_amount_float"
+	} else if sort == "" {
+		sortField = "timestamp"
+	}
+
+	// Create an aggregation pipeline
+	pipeline := mongo.Pipeline{
+		{{Key: "$match", Value: filter}},
+		{{Key: "$addFields", Value: bson.M{"order_total_amount_float": bson.M{"$toDouble": "$order.total"}}}},
+		{{Key: "$sort", Value: bson.D{{Key: sortField, Value: sortOrder}}}},
+		{{Key: "$skip", Value: int64(size * (page - 1))}},
+		{{Key: "$limit", Value: int64(size)}},
+	}
+
+	cursor, err := coll.Aggregate(ctx, pipeline)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var orders []*w.OrderRecord
+	for cursor.Next(context.TODO()) {
+		var order w.OrderRecord
+		if err := cursor.Decode(&order); err != nil {
+			return nil, err
+		}
+		orders = append(orders, &order)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return orders, nil
+}
+
 // GetOrderCount get number of orders
 func (repo WoocommerceRepository) GetOrderCount(projectID string, orderStatus w.OrderStatus, timeRange string) (int64, error) {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")

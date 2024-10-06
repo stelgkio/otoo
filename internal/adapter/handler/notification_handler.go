@@ -57,7 +57,7 @@ func (dh *DashboardHandler) DeleteAllNotification(ctx echo.Context) error {
 	return util.Render(ctx, t.NotificationIcon(notifications2, projectID))
 }
 
-// DeleteNotification  delete a  notification by Id
+// DeleteNotificationSettings  delete a  notification by Id
 func (dh *DashboardHandler) DeleteNotificationSettings(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 	notificationID := ctx.Param("notifiactionId")

@@ -47,7 +47,7 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	//WooCommerceProductServer
 	woocommerceProductService := woocommerce.NewProductService(woocommerceRepo, projectRepo, extensionService)
 	//WooCommerceOrderServer
-	woocommerceOrderService := woocommerce.NewOrderService(woocommerceRepo, projectRepo, extensionService, voucherService)
+	woocommerceOrderService := woocommerce.NewOrderService(woocommerceRepo, projectRepo, extensionService, voucherService, analyticsRepo)
 
 	//Smtp
 	smtpService := service.NewSmtpService()
@@ -81,6 +81,7 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	woocommerceReportService := woocommerce.NewWoocommerceReportService(projectService)
 	//ProjectHandler
 	bestSellerCron := cronjob.NewProductBestSellerCron(projectService, analyticsRepo, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
+	analyticsCron := cronjob.NewOrderAnalyticsCron(projectService, userService, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService, analyticsRepo)
 	projectHandler := handler.NewProjectHandler(projectService,
 		userService,
 		woocommerceReportService,
@@ -90,7 +91,8 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 		bestSellerCron,
 		notificationService,
 		extensionService,
-		woocommerceWebhookService)
+		woocommerceWebhookService,
+		analyticsCron)
 
 	//Home
 	homeHandler := handler.NewHomeHandler(projectService, contactService)
@@ -108,7 +110,6 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 
 	//Profile
 	profileHandler := handler.NewProfileHandler(userService, projectService, authService)
-	analyticsCron := cronjob.NewOrderAnalyticsCron(projectService, userService, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
 
 	//Router
 	_, err := NewRouter(s, userHandler, authHandler, homeHandler, projectHandler, WooCommerceHandler, dashboardHandler, profileHandler, analyticsCron, bestSellerCron)

@@ -20,14 +20,14 @@ type updateProfileRequest struct {
 	LastName string `form:"last_name" validate:"required"`
 }
 
-// UserHandler represents the HTTP handler for user-related requests
+// ProfileHandler represents the HTTP handler for user-related requests
 type ProfileHandler struct {
 	svc  port.UserService
 	psrv port.ProjectService
 	asrc port.AuthService
 }
 
-// NewUserHandler creates a new UserHandler instance
+// NewProfileHandler creates a new UserHandler instance
 func NewProfileHandler(svc port.UserService, psvc port.ProjectService, asrc port.AuthService) *ProfileHandler {
 	return &ProfileHandler{
 		svc,

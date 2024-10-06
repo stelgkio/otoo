@@ -45,15 +45,29 @@ func NewRouter(
 		return r.Render(c, con.ContantComponent())
 	})
 
-	e.GET("/RunAnalyticsJob", func(c echo.Context) error {
-		err := orderAnalyticsCron.RunAnalyticsJob()
+	e.GET("/RunOrderWeeklyBalanceJob", func(c echo.Context) error {
+		err := orderAnalyticsCron.RunOrderWeeklyBalanceJob()
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, err)
 		}
 
 		return c.JSON(http.StatusAccepted, "OK")
 	})
+	e.GET("/RunOrderWeeklyBalanceInitializeJob", func(c echo.Context) error {
+		err := orderAnalyticsCron.RunOrderWeeklyBalanceInitializeJob("e7525855-27af-4307-95d5-2202adaa54ca")
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+
+		return c.JSON(http.StatusAccepted, "OK")
+	})
+
 	e.GET("/RunAProductBestSellerDailyJob", func(c echo.Context) error {
+		err := productBestSellerCron.RunAProductBestSellerDailyJob()
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+
 		return c.JSON(http.StatusAccepted, "OK")
 	})
 	e.GET("/RunAProductBestSellerInitializerJob", func(c echo.Context) error {

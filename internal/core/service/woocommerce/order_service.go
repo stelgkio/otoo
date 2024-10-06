@@ -17,19 +17,21 @@ import (
 
 // OrderService represents the service for managing orders
 type OrderService struct {
-	p            port.WoocommerceRepository
-	s            port.ProjectRepository
-	extensionSrv port.ExtensionService
-	voucherSvc   port.VoucherService
+	p             port.WoocommerceRepository
+	s             port.ProjectRepository
+	extensionSrv  port.ExtensionService
+	voucherSvc    port.VoucherService
+	analyticsRepo port.AnalyticsRepository
 }
 
 // NewOrderService creates a new instance of OrderService
-func NewOrderService(woorepo port.WoocommerceRepository, projrepo port.ProjectRepository, extensionSrv port.ExtensionService, voucherSvc port.VoucherService) *OrderService {
+func NewOrderService(woorepo port.WoocommerceRepository, projrepo port.ProjectRepository, extensionSrv port.ExtensionService, voucherSvc port.VoucherService, analyticsRepo port.AnalyticsRepository) *OrderService {
 	return &OrderService{
-		p:            woorepo,
-		s:            projrepo,
-		extensionSrv: extensionSrv,
-		voucherSvc:   voucherSvc,
+		p:             woorepo,
+		s:             projrepo,
+		extensionSrv:  extensionSrv,
+		voucherSvc:    voucherSvc,
+		analyticsRepo: analyticsRepo,
 	}
 }
 
@@ -64,7 +66,7 @@ func (os *OrderService) Get10LatestOrders(ctx echo.Context, projectID string, or
 
 // GetOrdersCountBetweenOrEquals retrieves the count of orders between or equal to a given date for a given project ID
 func (os *OrderService) GetOrdersCountBetweenOrEquals(projectID string, timePeriod time.Time, orderStatus w.OrderStatus) (int64, error) {
-	orderCount, err := os.p.GetOrdersCountBetweenOrEquals(projectID, timePeriod, w.OrderStatusCompleted)
+	orderCount, err := os.p.GetOrdersCountBetweenOrEquals(projectID, timePeriod, orderStatus)
 	if err != nil {
 		return 0, err
 	}
@@ -75,6 +77,16 @@ func (os *OrderService) GetOrdersCountBetweenOrEquals(projectID string, timePeri
 // FindOrderByProjectIDAsync retrieves orders for a given project ID
 func (os *OrderService) FindOrderByProjectIDAsync(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string, results chan<- []*domain.OrderRecord, errors chan<- error) {
 	orderCount, err := os.p.OrderFindByProjectID(projectID, size, page, orderStatus, sort, direction)
+	if err != nil {
+		errors <- err
+	} else {
+		results <- orderCount
+	}
+}
+
+// FindOrderByProjectIDWithTimePeriodAsync retrieves orders for a given project ID
+func (os *OrderService) FindOrderByProjectIDWithTimePeriodAsync(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string, timePeriod time.Time, results chan<- []*domain.OrderRecord, errors chan<- error) {
+	orderCount, err := os.p.OrderFindByProjectIDWithTimePedio(projectID, size, page, orderStatus, sort, direction, timePeriod)
 	if err != nil {
 		errors <- err
 	} else {
@@ -274,4 +286,15 @@ func (os *OrderService) saveOrderResult(data *w.OrderRecord, orderID int64) erro
 		return errors.Wrap(err, "failed to insert order result into MongoDB")
 	}
 	return nil
+}
+
+// GetLatestOrderWeeklyBalance retrieves the latest order weekly balance for a given project ID
+func (os *OrderService) GetLatestOrderWeeklyBalance(ctx echo.Context, projectID string, results chan<- *domain.WeeklyAnalytics, errors chan<- error) {
+	orderCount, err := os.analyticsRepo.FindLatestWeeklyBalance(projectID)
+	if err != nil {
+		errors <- err
+	} else {
+		results <- orderCount
+	}
+
 }

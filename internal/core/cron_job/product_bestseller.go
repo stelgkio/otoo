@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math"
 	"sync"
-	"time"
 
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/port"
@@ -13,17 +12,17 @@ import (
 // ProductBestSellerCron  represents the cron job for order analytics
 type ProductBestSellerCron struct {
 	projectSvc    port.ProjectService
-	bestSellerSvc port.BestSellers
+	AnalyticsRepo port.AnalyticsRepository
 	customerSvc   port.CustomerService
 	productSvc    port.ProductService
 	orderSvc      port.OrderService
 }
 
 // NewProductBestSellerCron creates a new OrderAnalyticsCron instance
-func NewProductBestSellerCron(projectSvc port.ProjectService, bestSellerSvc port.BestSellers, customerSvc port.CustomerService, productSvc port.ProductService, orderSvc port.OrderService) *ProductBestSellerCron {
+func NewProductBestSellerCron(projectSvc port.ProjectService, AnalyticsRepo port.AnalyticsRepository, customerSvc port.CustomerService, productSvc port.ProductService, orderSvc port.OrderService) *ProductBestSellerCron {
 	return &ProductBestSellerCron{
 		projectSvc:    projectSvc,
-		bestSellerSvc: bestSellerSvc,
+		AnalyticsRepo: AnalyticsRepo,
 		customerSvc:   customerSvc,
 		productSvc:    productSvc,
 		orderSvc:      orderSvc,
@@ -32,54 +31,48 @@ func NewProductBestSellerCron(projectSvc port.ProjectService, bestSellerSvc port
 
 // RunAProductBestSellerDailyJob runs the analytics job
 func (as *ProductBestSellerCron) RunAProductBestSellerDailyJob() error {
-	// Get the current time
-	now := time.Now().UTC()
-
-	// Define time ranges
-	last24Hours := now.Add(-24 * time.Hour)
-	lastWeek := now.Add(-7 * 24 * time.Hour)
-	lastMonth := now.Add(-30 * 24 * time.Hour)
-
+	// Get all projects
 	allProjects, err := as.projectSvc.GetAllProjects()
 	if err != nil {
 		return err
 	}
 
+	// WaitGroup to wait for all goroutines to finish
+	var wg sync.WaitGroup
+	// Channel to collect errors from the goroutines
+	errChan := make(chan error, len(allProjects))
+
+	// Iterate over projects and run the job concurrently
 	for _, project := range allProjects {
+		wg.Add(1) // Increment the WaitGroup counter
+
+		// Capture projectID to avoid issues with goroutine closures
 		projectID := project.Id.String()
 
-		totalCount, err := as.orderSvc.GetOrderCount(projectID, w.OrderStatusCompleted, "")
-		if err != nil {
-			return err
-		}
-
-		last24HoursCount, err := as.orderSvc.GetOrdersCountBetweenOrEquals(projectID, last24Hours, w.OrderStatusCompleted)
-		if err != nil {
-			return err
-		}
-		lastWeekCount, err := as.orderSvc.GetOrdersCountBetweenOrEquals(projectID, lastWeek, w.OrderStatusCompleted)
-		if err != nil {
-			return err
-		}
-		lastMonthCount, err := as.orderSvc.GetOrdersCountBetweenOrEquals(projectID, lastMonth, w.OrderStatusCompleted)
-		if err != nil {
-			return err
-		}
-
-		// Calculate percentages
-		last24HoursPercentage := (float64(last24HoursCount) / float64(totalCount)) * 100
-		lastWeekPercentage := (float64(lastWeekCount) / float64(totalCount)) * 100
-		lastMonthPercentage := (float64(lastMonthCount) / float64(totalCount)) * 100
-
-		// Print the results
-		fmt.Printf("Orders in the last 24 hours: %d (%.2f%%)\n", last24HoursCount, last24HoursPercentage)
-		fmt.Printf("Orders in the last week: %d (%.2f%%)\n", lastWeekCount, lastWeekPercentage)
-		fmt.Printf("Orders in the last month: %d (%.2f%%)\n", lastMonthCount, lastMonthPercentage)
-
-		return nil
+		go func(projID string) {
+			defer wg.Done() // Decrement the WaitGroup counter when the goroutine completes
+			// Run the initializer job for each project
+			if err := as.RunAProductBestSellerInitializerJob(projID); err != nil {
+				// Send error to the channel if any occurs
+				errChan <- err
+			}
+		}(projectID)
 	}
 
-	return nil
+	// Close the error channel once all goroutines are done
+	go func() {
+		wg.Wait()
+		close(errChan)
+	}()
+
+	// Check for errors from the error channel
+	for e := range errChan {
+		if e != nil {
+			return e // Return the first error encountered
+		}
+	}
+
+	return nil // Return nil if no errors
 }
 
 // RunAProductBestSellerInitializerJob runs the analytics job
@@ -138,10 +131,10 @@ func (as *ProductBestSellerCron) RunAProductBestSellerInitializerJob(projectID s
 	close(productBestSellers)
 	close(productBestSellersErrors)
 
-	as.bestSellerSvc.DeleteBestSellers(projectID)
+	as.AnalyticsRepo.DeleteBestSellers(projectID)
 	//TODO: find best seller rates
 	for items := range productBestSellers {
-		as.bestSellerSvc.CreateBestSellers(projectID, items)
+		as.AnalyticsRepo.CreateBestSellers(projectID, items)
 	}
 	for err := range productBestSellersErrors {
 		fmt.Println("Error finding orders:", err)

@@ -15,7 +15,7 @@ import (
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 )
 
-func DeafultDashboard(projectId string, counts map[string]string, orders []*woo.OrderRecord, bestSeller []*woo.ProductBestSellerRecord) templ.Component {
+func DeafultDashboard(projectId string, counts map[string]string, orders []*woo.OrderRecord, bestSeller []*woo.ProductBestSellerRecord, weeklyBalance *woo.WeeklyAnalytics) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -119,7 +119,33 @@ func DeafultDashboard(projectId string, counts map[string]string, orders []*woo.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div class=\"col-xxl-4\"><div class=\"offcanvas-xxl m-xxl-0 rounded-sm-4 rounded-xxl-0 offcanvas-end overflow-hidden m-sm-4\" tabindex=\"-1\" id=\"responsiveOffcanvas\" aria-labelledby=\"responsiveOffcanvasLabel\"><div class=\"offcanvas-header rounded-top-4\"><h5 class=\"offcanvas-title\" id=\"responsiveOffcanvasLabel\">Quick Stats</h5><button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"offcanvas\" data-bs-target=\"#responsiveOffcanvas\" aria-label=\"Close\"></button></div><div class=\"offcanvas-body d-flex flex-column p-3 p-sm-6 p-xxl-0 gap-3 gap-xxl-6\"><div class=\"vstack gap-6 gap-xxl-6\"><div class=\"card border-0 border-xxl\"><div class=\"card-body d-flex flex-column p-0 p-xxl-6\"><div class=\"d-flex justify-content-between align-items-center mb-3\"><div><h5>Weekly Balance</h5></div><div><span class=\"text-heading fw-bold\"><i class=\"bi bi-arrow-up me-2\"></i>7.8%</span></div></div><div class=\"text-2xl fw-bolder text-heading ls-tight\">€23.863,21</div><div class=\"d-flex align-items-center justify-content-between mt-8\"><!-- <div class=\"\">\n                                                        <div class=\"d-flex gap-3 align-items-center\">\n                                                            <div\n                                                                class=\"icon icon-sm icon-shape text-sm rounded-circle bg-dark text-success\">\n                                                                <i class=\"bi bi-arrow-down\"></i>\n                                                            </div><span class=\"h6 fw-semibold text-muted\">Income</span>\n                                                        </div>\n                                                        <div class=\"fw-bold text-heading mt-3\">$23.863,21 USD</div>\n                                                    </div><span class=\"vr bg-dark bg-opacity-10\"></span>\n                                                    <div class=\"\">\n                                                        <div class=\"d-flex gap-3 align-items-center\">\n                                                            <div\n                                                                class=\"icon icon-sm icon-shape text-sm rounded-circle bg-dark text-danger\">\n                                                                <i class=\"bi bi-arrow-up\"></i>\n                                                            </div><span\n                                                                class=\"h6 fw-semibold text-muted\">Expenses</span>\n                                                        </div>\n                                                        <div class=\"fw-bold text-heading mt-3\">$5.678,45 USD</div>\n                                                    </div> --></div></div></div><hr class=\"my-0 d-xxl-none\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div class=\"col-xxl-4\"><div class=\"offcanvas-xxl m-xxl-0 rounded-sm-4 rounded-xxl-0 offcanvas-end overflow-hidden m-sm-4\" tabindex=\"-1\" id=\"responsiveOffcanvas\" aria-labelledby=\"responsiveOffcanvasLabel\"><div class=\"offcanvas-header rounded-top-4\"><h5 class=\"offcanvas-title\" id=\"responsiveOffcanvasLabel\">Quick Stats</h5><button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"offcanvas\" data-bs-target=\"#responsiveOffcanvas\" aria-label=\"Close\"></button></div><div class=\"offcanvas-body d-flex flex-column p-3 p-sm-6 p-xxl-0 gap-3 gap-xxl-6\"><div class=\"vstack gap-6 gap-xxl-6\"><div class=\"card border-0 border-xxl\"><div class=\"card-body d-flex flex-column p-0 p-xxl-6\"><div class=\"d-flex justify-content-between align-items-center mb-3\"><div><h5>Weekly Balance</h5></div><div><span class=\"text-heading fw-bold\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var8 string
+		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%2.f", weeklyBalance.AnalyticsBase.ActiveOrderRate))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 173, Col: 79}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" %</span></div></div><div class=\"text-2xl fw-bolder text-heading ls-tight\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var9 string
+		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("€%.2f", weeklyBalance.AnalyticsBase.TotalRevenue))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 178, Col: 77}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"d-flex align-items-center justify-content-between mt-8\"><!-- <div class=\"\">\n                                                        <div class=\"d-flex gap-3 align-items-center\">\n                                                            <div\n                                                                class=\"icon icon-sm icon-shape text-sm rounded-circle bg-dark text-success\">\n                                                                <i class=\"bi bi-arrow-down\"></i>\n                                                            </div><span class=\"h6 fw-semibold text-muted\">Income</span>\n                                                        </div>\n                                                        <div class=\"fw-bold text-heading mt-3\">$23.863,21 USD</div>\n                                                    </div><span class=\"vr bg-dark bg-opacity-10\"></span>\n                                                    <div class=\"\">\n                                                        <div class=\"d-flex gap-3 align-items-center\">\n                                                            <div\n                                                                class=\"icon icon-sm icon-shape text-sm rounded-circle bg-dark text-danger\">\n                                                                <i class=\"bi bi-arrow-up\"></i>\n                                                            </div><span\n                                                                class=\"h6 fw-semibold text-muted\">Expenses</span>\n                                                        </div>\n                                                        <div class=\"fw-bold text-heading mt-3\">$5.678,45 USD</div>\n                                                    </div> --></div></div></div><hr class=\"my-0 d-xxl-none\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

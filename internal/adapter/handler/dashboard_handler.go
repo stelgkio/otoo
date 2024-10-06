@@ -28,7 +28,7 @@ type DashboardHandler struct {
 	customerSvc     port.CustomerService
 	productSvc      port.ProductService
 	orderSvc        port.OrderService
-	bestSeller      port.BestSellers
+	analyticsRepo   port.AnalyticsRepository
 	extensionSvc    port.ExtensionService
 	notificationSvc port.NotificationService
 	voucherSvc      port.VoucherService
@@ -41,7 +41,7 @@ func NewDashboardHandler(
 	customerSvc port.CustomerService,
 	productSvc port.ProductService,
 	orderSvc port.OrderService,
-	bestSeller port.BestSellers,
+	analyticsRepo port.AnalyticsRepository,
 	extension port.ExtensionService,
 	notification port.NotificationService,
 	voucherSvc port.VoucherService) *DashboardHandler {
@@ -51,7 +51,7 @@ func NewDashboardHandler(
 		customerSvc:     customerSvc,
 		productSvc:      productSvc,
 		orderSvc:        orderSvc,
-		bestSeller:      bestSeller,
+		analyticsRepo:   analyticsRepo,
 		extensionSvc:    extension,
 		notificationSvc: notification,
 		voucherSvc:      voucherSvc,
@@ -65,7 +65,7 @@ func (dh *DashboardHandler) DefaultDashboard(ctx echo.Context) error {
 		return err
 	}
 	var wg sync.WaitGroup
-	wg.Add(4)
+	wg.Add(5)
 
 	orderResults := make(chan int64, 1)
 	orderErrors := make(chan error, 1)
@@ -77,12 +77,19 @@ func (dh *DashboardHandler) DefaultDashboard(ctx echo.Context) error {
 	orderListResults := make(chan []*w.OrderRecord, 1)
 	orderListErrors := make(chan error, 1)
 
+	orderWeeklyBalance := make(chan *w.WeeklyAnalytics, 1)
+	orderWeeklyBalanceErrors := make(chan error, 1)
+
 	// Fetch order count
 	go func() {
 		defer wg.Done()
 		dh.orderSvc.GetOrderCountAsync(ctx, projectID, w.OrderStatusCompleted, "", orderResults, orderErrors)
 	}()
-
+	// Fetch order count
+	go func() {
+		defer wg.Done()
+		dh.orderSvc.GetLatestOrderWeeklyBalance(nil, projectID, orderWeeklyBalance, orderWeeklyBalanceErrors)
+	}()
 	// Fetch product count
 	go func() {
 		defer wg.Done()
@@ -111,6 +118,8 @@ func (dh *DashboardHandler) DefaultDashboard(ctx echo.Context) error {
 		close(customerErrors)
 		close(orderListResults)
 		close(orderListErrors)
+		close(orderWeeklyBalance)
+		close(orderWeeklyBalanceErrors)
 	}()
 
 	// Check if there were any errors
@@ -130,8 +139,15 @@ func (dh *DashboardHandler) DefaultDashboard(ctx echo.Context) error {
 			return fmt.Errorf("customer count error: %v", err)
 		}
 	}
+	for err := range orderWeeklyBalanceErrors {
+		if err != nil {
+			return fmt.Errorf("weekBalance find error: %v", err)
+		}
+	}
 
 	var orderCount, productCount, customerCount int64
+
+	var weeklyBalance *w.WeeklyAnalytics
 
 	var orderList []*w.OrderRecord
 
@@ -148,18 +164,21 @@ func (dh *DashboardHandler) DefaultDashboard(ctx echo.Context) error {
 	for item := range orderListResults {
 		orderList = item
 	}
+	for item := range orderWeeklyBalance {
+		weeklyBalance = item
+	}
 
 	response := map[string]string{
 		"order_count":    fmt.Sprintf("%d", orderCount),
 		"product_count":  fmt.Sprintf("%d", productCount),
 		"customer_count": fmt.Sprintf("%d", customerCount),
 	}
-	bestSeller, err := dh.bestSeller.FindBestSellers(projectID, 5, 1)
+	bestSeller, err := dh.analyticsRepo.FindBestSellers(projectID, 5, 1)
 	if err != nil {
 		return fmt.Errorf("bestSeller error: %v", err)
 	}
 
-	return util.Render(ctx, t.DeafultTemplate(user, project.Name, projectID, response, orderList, bestSeller))
+	return util.Render(ctx, t.DeafultTemplate(user, project.Name, projectID, response, orderList, bestSeller, weeklyBalance))
 }
 
 // DefaultDashboardOverView returns the default dashboard
@@ -169,7 +188,7 @@ func (dh *DashboardHandler) DefaultDashboardOverView(ctx echo.Context) error {
 		return err
 	}
 	var wg sync.WaitGroup
-	wg.Add(4)
+	wg.Add(5)
 
 	orderResults := make(chan int64, 1)
 	orderErrors := make(chan error, 1)
@@ -180,13 +199,19 @@ func (dh *DashboardHandler) DefaultDashboardOverView(ctx echo.Context) error {
 
 	orderListResults := make(chan []*w.OrderRecord, 1)
 	orderListErrors := make(chan error, 1)
+	orderWeeklyBalance := make(chan *w.WeeklyAnalytics, 1)
+	orderWeeklyBalanceErrors := make(chan error, 1)
 
 	// Fetch order count
 	go func() {
 		defer wg.Done()
 		dh.orderSvc.GetOrderCountAsync(ctx, projectID, w.OrderStatusCompleted, "", orderResults, orderErrors)
 	}()
-
+	// Fetch order count
+	go func() {
+		defer wg.Done()
+		dh.orderSvc.GetLatestOrderWeeklyBalance(nil, projectID, orderWeeklyBalance, orderWeeklyBalanceErrors)
+	}()
 	// Fetch product count
 	go func() {
 		defer wg.Done()
@@ -215,6 +240,8 @@ func (dh *DashboardHandler) DefaultDashboardOverView(ctx echo.Context) error {
 		close(customerErrors)
 		close(orderListResults)
 		close(orderListErrors)
+		close(orderWeeklyBalance)
+		close(orderWeeklyBalanceErrors)
 	}()
 
 	// Check if there were any errors
@@ -234,11 +261,16 @@ func (dh *DashboardHandler) DefaultDashboardOverView(ctx echo.Context) error {
 			return fmt.Errorf("customer count error: %v", err)
 		}
 	}
+	for err := range orderWeeklyBalanceErrors {
+		if err != nil {
+			return fmt.Errorf("weekBalance find error: %v", err)
+		}
+	}
 
 	var orderCount, productCount, customerCount int64
 
 	var orderList []*w.OrderRecord
-
+	var weeklyBalance *w.WeeklyAnalytics
 	for count := range orderResults {
 		orderCount = count
 	}
@@ -252,22 +284,25 @@ func (dh *DashboardHandler) DefaultDashboardOverView(ctx echo.Context) error {
 	for item := range orderListResults {
 		orderList = item
 	}
+	for item := range orderWeeklyBalance {
+		weeklyBalance = item
+	}
 
 	response := map[string]string{
 		"order_count":    fmt.Sprintf("%d", orderCount),
 		"product_count":  fmt.Sprintf("%d", productCount),
 		"customer_count": fmt.Sprintf("%d", customerCount),
 	}
-	bestSeller, err := dh.bestSeller.FindBestSellers(projectID, 5, 1)
+	bestSeller, err := dh.analyticsRepo.FindBestSellers(projectID, 5, 1)
 	if err != nil {
 		return fmt.Errorf("bestSeller error: %v", err)
 	}
 
 	if ctx.Request().Header.Get("HX-Request") == "true" {
-		return util.Render(ctx, t.DeafultDashboard(projectID, response, orderList, bestSeller))
+		return util.Render(ctx, t.DeafultDashboard(projectID, response, orderList, bestSeller, weeklyBalance))
 	}
 	project, user, projectID, err := GetProjectAndUser(ctx, dh)
-	return util.Render(ctx, t.DeafultTemplate(user, project.Name, projectID, response, orderList, bestSeller))
+	return util.Render(ctx, t.DeafultTemplate(user, project.Name, projectID, response, orderList, bestSeller, weeklyBalance))
 }
 
 // CustomerDashboard returns the customer dashboard

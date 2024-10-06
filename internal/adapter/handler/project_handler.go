@@ -19,20 +19,32 @@ import (
 
 // ProjectHandler represents the HTTP handler for user-related requests
 type ProjectHandler struct {
-	svc             port.ProjectService
-	userSvc         port.UserService
-	reportSvc       port.ReportService
-	productSvc      port.ProductService
-	customerSvc     port.CustomerService
-	orderSvc        port.OrderService
-	bestSellerSvc   port.ProductBestSellers
-	notificationSvc port.NotificationService
-	extensionSvc    port.ExtensionService
-	webhookSvc      port.WoocommerceWebhookService
+	svc               port.ProjectService
+	userSvc           port.UserService
+	reportSvc         port.ReportService
+	productSvc        port.ProductService
+	customerSvc       port.CustomerService
+	orderSvc          port.OrderService
+	bestSellerSvc     port.ProductBestSellers
+	notificationSvc   port.NotificationService
+	extensionSvc      port.ExtensionService
+	webhookSvc        port.WoocommerceWebhookService
+	orderAnalyticsSvc port.OrderAnalyticsCron
 }
 
 // NewProjectHandler creates a new ProjectHandler instance
-func NewProjectHandler(svc port.ProjectService, userSvc port.UserService, reportSvc port.ReportService, productSvc port.ProductService, customerSvc port.CustomerService, orderSvc port.OrderService, bestSellerSvc port.ProductBestSellers, notificationSvc port.NotificationService, extensionSvc port.ExtensionService, webhookSvc port.WoocommerceWebhookService) *ProjectHandler {
+func NewProjectHandler(
+	svc port.ProjectService,
+	userSvc port.UserService,
+	reportSvc port.ReportService,
+	productSvc port.ProductService,
+	customerSvc port.CustomerService,
+	orderSvc port.OrderService,
+	bestSellerSvc port.ProductBestSellers,
+	notificationSvc port.NotificationService,
+	extensionSvc port.ExtensionService,
+	webhookSvc port.WoocommerceWebhookService,
+	orderAnalyticsSvc port.OrderAnalyticsCron) *ProjectHandler {
 	return &ProjectHandler{
 		svc,
 		userSvc,
@@ -44,6 +56,7 @@ func NewProjectHandler(svc port.ProjectService, userSvc port.UserService, report
 		notificationSvc,
 		extensionSvc,
 		webhookSvc,
+		orderAnalyticsSvc,
 	}
 }
 

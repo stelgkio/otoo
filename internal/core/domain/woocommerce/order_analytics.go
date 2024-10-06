@@ -8,37 +8,46 @@ import (
 
 type AnalyticsBase struct {
 	ID              primitive.ObjectID `bson:"_id,omitempty"`
-	ProjectID       string             `bson:"projectId"`
-	Timestamp       time.Time          `bson:"timestamp,omitempty"`
-	TotalOrders     int64              `json:"total_orders"`
-	TotalRevenue    float64            `json:"total_revenue"`
-	ActiveOrders    int64              `json:"active_orders"`
-	ActiveOrderRate float64            `json:"active_order_rate"`
+	TotalOrders     int64              `json:"total_orders" bson:"total_orders"`
+	TotalRevenue    float64            `json:"total_revenue" bson:"total_revenue"`
+	ActiveOrders    int64              `json:"active_orders" bson:"active_orders"`
+	ActiveOrderRate float64            `json:"order_rate" bson:"order_rate"`
 }
 
 // WeeklyAnalytics represents the analytics data for the last week.
 type WeeklyAnalytics struct {
 	AnalyticsBase
-	StartDate time.Time `json:"start_date"`
-	EndDate   time.Time `json:"end_date"`
+	ComparisonResult
+	ProjectID string    `bson:"projectId" json:"project_id"`
+	Timestamp time.Time `bson:"timestamp,omitempty" json:"timestamp"`
+	StartDate time.Time `json:"start_date" bson:"start_date"`
+	EndDate   time.Time `json:"end_date" bson:"end_date"`
 }
 
-func NewWeeklyAnalytics(projectID string, totalOrders, activeOrders int64, totalRevenue float64, startDate, endDate time.Time) WeeklyAnalytics {
-	return WeeklyAnalytics{
+func NewWeeklyAnalytics(projectID string, totalOrders, activeOrders int64, totalRevenue float64, startDate, endDate time.Time) *WeeklyAnalytics {
+	return &WeeklyAnalytics{
 		AnalyticsBase: AnalyticsBase{
-			ProjectID:    projectID,
+
 			TotalOrders:  totalOrders,
 			TotalRevenue: totalRevenue,
 			ActiveOrders: activeOrders,
 		},
+		ProjectID: projectID,
+		Timestamp: time.Now().UTC(),
 		StartDate: startDate,
 		EndDate:   endDate,
 	}
+}
+func (w *WeeklyAnalytics) AddComparisonResult(result ComparisonResult) {
+	w.ComparisonResult = result
 }
 
 // MonthlyAnalytics represents the analytics data for the last month.
 type MonthlyAnalytics struct {
 	AnalyticsBase
+
+	ProjectID string    `bson:"projectId" json:"project_id"`
+	Timestamp time.Time `bson:"timestamp,omitempty" json:"timestamp"`
 	StartDate time.Time `json:"start_date"`
 	EndDate   time.Time `json:"end_date"`
 }
@@ -46,11 +55,12 @@ type MonthlyAnalytics struct {
 func NewMonthlyAnalytics(projectID string, totalOrders, activeOrders int64, totalRevenue float64, startDate, endDate time.Time) MonthlyAnalytics {
 	return MonthlyAnalytics{
 		AnalyticsBase: AnalyticsBase{
-			ProjectID:    projectID,
+
 			TotalOrders:  totalOrders,
 			TotalRevenue: totalRevenue,
 			ActiveOrders: activeOrders,
 		},
+		ProjectID: projectID,
 		StartDate: startDate,
 		EndDate:   endDate,
 	}
@@ -59,6 +69,8 @@ func NewMonthlyAnalytics(projectID string, totalOrders, activeOrders int64, tota
 // YearlyAnalytics represents the analytics data for the last year.
 type YearlyAnalytics struct {
 	AnalyticsBase
+	ProjectID string    `bson:"projectId" json:"project_id"`
+	Timestamp time.Time `bson:"timestamp,omitempty" json:"timestamp"`
 	StartDate time.Time `json:"start_date"`
 	EndDate   time.Time `json:"end_date"`
 }
@@ -66,11 +78,12 @@ type YearlyAnalytics struct {
 func NewYearlyAnalytics(projectID string, totalOrders, activeOrders int64, totalRevenue float64, startDate, endDate time.Time) YearlyAnalytics {
 	return YearlyAnalytics{
 		AnalyticsBase: AnalyticsBase{
-			ProjectID:    projectID,
+
 			TotalOrders:  totalOrders,
 			TotalRevenue: totalRevenue,
 			ActiveOrders: activeOrders,
 		},
+		ProjectID: projectID,
 		StartDate: startDate,
 		EndDate:   endDate,
 	}

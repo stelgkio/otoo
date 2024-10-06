@@ -165,7 +165,7 @@ func (dh *DashboardHandler) DataSynchronizerPage(ctx echo.Context) error {
 	return util.Render(ctx, e.DataSynchronizer(os.Getenv("STRIPE_PUBLICK_KEY"), projectID, extension.ID.Hex()))
 }
 
-// DataSynchronizerPage get extention
+// ProjectExtensionsList get extention
 func (dh *DashboardHandler) ProjectExtensionsList(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)

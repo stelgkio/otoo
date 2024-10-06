@@ -7,7 +7,7 @@ import (
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 )
 
-templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo.OrderRecord, bestSeller []*woo.ProductBestSellerRecord) {
+templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo.OrderRecord, bestSeller []*woo.ProductBestSellerRecord, weeklyBalance *woo.WeeklyAnalytics) {
 	<div
 		id="dashboard-content"
 		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
@@ -170,14 +170,12 @@ templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo
 											</div>
 											<div>
 												<span class="text-heading fw-bold">
-													<i
-														class="bi bi-arrow-up me-2"
-													></i>7.8%
+													{ fmt.Sprintf("%2.f", weeklyBalance.AnalyticsBase.ActiveOrderRate) } %
 												</span>
 											</div>
 										</div>
 										<div class="text-2xl fw-bolder text-heading ls-tight">
-											€23.863,21
+											{ fmt.Sprintf("€%.2f", weeklyBalance.AnalyticsBase.TotalRevenue) }
 										</div>
 										<div class="d-flex align-items-center justify-content-between mt-8">
 											<!-- <div class="">

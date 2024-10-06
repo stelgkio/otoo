@@ -59,7 +59,7 @@ type resetPosswordRequest struct {
 	ConfirmationPassword string `form:"confirmationpassword" validate:"required,min=8"`
 }
 
-// @Router			/login [post]
+// Login @Router			/login [post]
 func (ah *AuthHandler) Login(ctx echo.Context) (err error) {
 
 	req := new(loginRequest)
@@ -79,13 +79,14 @@ func (ah *AuthHandler) Login(ctx echo.Context) (err error) {
 	return ctx.Redirect(http.StatusFound, "/dashboard")
 }
 
-// @Router			/login [get]
+// LoginForm GET /login
 func (ah *AuthHandler) LoginForm(c echo.Context) error {
 	c.Response().Header().Set("HX-Redirect", "/login")
 	return r.Render(c, l.Login(nil))
 
 }
 
+// Logout GET /logout
 func (ah *AuthHandler) Logout(ctx echo.Context) (err error) {
 	err = ah.svc.Logout(ctx)
 	if err != nil {
@@ -105,12 +106,12 @@ type registerRequest struct {
 	LastName             string `form:"last_name" validate:"required"`
 }
 
-// @Router			/register [get]
+// RegisterForm @Router			/register [get]
 func (ah *AuthHandler) RegisterForm(ctx echo.Context) error {
 	return r.Render(ctx, reg.Register(0, nil, nil))
 }
 
-// @Router			/register [post]
+// Register @Router			/register [post]
 func (ah *AuthHandler) Register(ctx echo.Context) error {
 
 	req := new(registerRequest)
@@ -154,13 +155,13 @@ func (ah *AuthHandler) Register(ctx echo.Context) error {
 
 }
 
-// @Router			/ForgotPassword [get]
+// ForgotPasswordForm @Router			/ForgotPassword [get]
 func (ah *AuthHandler) ForgotPasswordForm(c echo.Context) error {
 	return r.Render(c, f.ForgotPassword())
 
 }
 
-// @Router			/ForgotPassword [post]
+// ForgotPassword @Router			/ForgotPassword [post]
 func (ah *AuthHandler) ForgotPassword(ctx echo.Context) error {
 	req := new(forgotPosswordRequest)
 
@@ -173,7 +174,7 @@ func (ah *AuthHandler) ForgotPassword(ctx echo.Context) error {
 	return r.Render(ctx, f.ForgotPasswordSuccess())
 }
 
-// @Router			/ForgotPassword [get]
+// ResetPasswordForm @Router			/ForgotPassword [get]
 func (ah *AuthHandler) ResetPasswordForm(ctx echo.Context) error {
 	token := ctx.Param("token")
 	email, _ := r.Decrypt(token)
@@ -187,7 +188,7 @@ func (ah *AuthHandler) ResetPasswordForm(ctx echo.Context) error {
 
 }
 
-// @Router			/ForgotPassword [post]
+// ResetPassword @Router			/ForgotPassword [post]
 func (ah *AuthHandler) ResetPassword(ctx echo.Context) error {
 	req := new(resetPosswordRequest)
 	email := ctx.Param("email")

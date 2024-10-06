@@ -2,6 +2,9 @@ package cronjob
 
 import (
 	"fmt"
+	"math"
+	"strconv"
+	"sync"
 	"time"
 
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
@@ -10,72 +13,155 @@ import (
 
 // OrderAnalyticsCron represents the cron job for order analytics
 type OrderAnalyticsCron struct {
-	projectSvc  port.ProjectService
-	userSvc     port.UserService
-	customerSvc port.CustomerService
-	productSvc  port.ProductService
-	orderSvc    port.OrderService
+	projectSvc    port.ProjectService
+	userSvc       port.UserService
+	customerSvc   port.CustomerService
+	productSvc    port.ProductService
+	orderSvc      port.OrderService
+	analyticsRepo port.AnalyticsRepository
 }
 
 // NewOrderAnalyticsCron creates a new OrderAnalyticsCron instance
-func NewOrderAnalyticsCron(projectSvc port.ProjectService, userSvc port.UserService, customerSvc port.CustomerService, productSvc port.ProductService, orderSvc port.OrderService) *OrderAnalyticsCron {
+func NewOrderAnalyticsCron(projectSvc port.ProjectService, userSvc port.UserService, customerSvc port.CustomerService, productSvc port.ProductService, orderSvc port.OrderService, analyticsRepo port.AnalyticsRepository) *OrderAnalyticsCron {
 	return &OrderAnalyticsCron{
-		projectSvc:  projectSvc,
-		userSvc:     userSvc,
-		customerSvc: customerSvc,
-		productSvc:  productSvc,
-		orderSvc:    orderSvc,
+		projectSvc:    projectSvc,
+		userSvc:       userSvc,
+		customerSvc:   customerSvc,
+		productSvc:    productSvc,
+		orderSvc:      orderSvc,
+		analyticsRepo: analyticsRepo,
 	}
 }
 
-// RunAnalyticsJob runs the analytics job
-func (as *OrderAnalyticsCron) RunAnalyticsJob() error {
-	// Get the current time
-	now := time.Now().UTC()
-
-	// Define time ranges
-	last24Hours := now.Add(-24 * time.Hour)
-	lastWeek := now.Add(-7 * 24 * time.Hour)
-	lastMonth := now.Add(-30 * 24 * time.Hour)
-
+// RunOrderWeeklyBalanceJob runs the analytics job
+func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceJob() error {
+	// Get all projects
 	allProjects, err := as.projectSvc.GetAllProjects()
 	if err != nil {
 		return err
 	}
 
+	// WaitGroup to wait for all goroutines to finish
+	var wg sync.WaitGroup
+	// Channel to collect errors from the goroutines
+	errChan := make(chan error, len(allProjects))
+
+	// Iterate over projects and run the job concurrently
 	for _, project := range allProjects {
+		wg.Add(1) // Increment the WaitGroup counter
+
+		// Capture projectID to avoid issues with goroutine closures
 		projectID := project.Id.String()
 
-		totalCount, err := as.orderSvc.GetOrderCount(projectID, w.OrderStatusCompleted, "")
-		if err != nil {
-			return err
-		}
+		go func(projID string) {
+			defer wg.Done() // Decrement the WaitGroup counter when the goroutine completes
+			// Run the initializer job for each project
+			if err := as.RunOrderWeeklyBalanceInitializeJob(projID); err != nil {
+				// Send error to the channel if any occurs
+				errChan <- err
+			}
+		}(projectID)
+	}
 
-		last24HoursCount, err := as.orderSvc.GetOrdersCountBetweenOrEquals(projectID, last24Hours, w.OrderStatusCompleted)
-		if err != nil {
-			return err
-		}
-		lastWeekCount, err := as.orderSvc.GetOrdersCountBetweenOrEquals(projectID, lastWeek, w.OrderStatusCompleted)
-		if err != nil {
-			return err
-		}
-		lastMonthCount, err := as.orderSvc.GetOrdersCountBetweenOrEquals(projectID, lastMonth, w.OrderStatusCompleted)
-		if err != nil {
-			return err
-		}
+	// Close the error channel once all goroutines are done
+	go func() {
+		wg.Wait()
+		close(errChan)
+	}()
 
-		// Calculate percentages
-		last24HoursPercentage := (float64(last24HoursCount) / float64(totalCount)) * 100
-		lastWeekPercentage := (float64(lastWeekCount) / float64(totalCount)) * 100
-		lastMonthPercentage := (float64(lastMonthCount) / float64(totalCount)) * 100
+	// Check for errors from the error channel
+	for e := range errChan {
+		if e != nil {
+			return e // Return the first error encountered
+		}
+	}
 
-		// Print the results
-		fmt.Printf("Orders in the last 24 hours: %d (%.2f%%)\n", last24HoursCount, last24HoursPercentage)
-		fmt.Printf("Orders in the last week: %d (%.2f%%)\n", lastWeekCount, lastWeekPercentage)
-		fmt.Printf("Orders in the last month: %d (%.2f%%)\n", lastMonthCount, lastMonthPercentage)
+	return nil // Return nil if no errors
+}
 
-		return nil
+// RunOrderWeeklyBalanceInitializeJob runs the analytics job
+func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceInitializeJob(projectID string) error {
+	var wg sync.WaitGroup
+
+	now := time.Now().UTC()
+	lastWeek := now.Add(-7 * 24 * time.Hour)
+
+	//project, err := as.projectSvc.GetProjectByID(nil, projectID)
+	lastWeekCount, err := as.orderSvc.GetOrdersCountBetweenOrEquals(projectID, lastWeek, w.OrderStatusCompleted)
+	orderCount, err := as.orderSvc.GetOrderCount(projectID, w.OrderStatusCompleted, "")
+	if err != nil {
+		return err
+	}
+
+	worker := int(math.Ceil(float64(lastWeekCount) / 10))
+
+	wg.Add(worker)
+	orderListResults := make(chan []*w.OrderRecord, worker)
+	orderListErrors := make(chan error, 1)
+	for i := 0; i < worker; i++ {
+		go func(i int) {
+			defer wg.Done()
+
+			as.orderSvc.FindOrderByProjectIDWithTimePeriodAsync(projectID, 10, i+1, w.OrderStatusCompleted, "orderId", "asc", lastWeek, orderListResults, orderListErrors)
+		}(i)
+	}
+
+	go func() {
+		wg.Wait()
+		close(orderListResults)
+		close(orderListErrors)
+	}()
+
+	var ordertWeeklyBalance float64 = 0.0
+	for items := range orderListResults {
+		for _, order := range items {
+			total, err := strconv.ParseFloat(order.Order.Total, 64)
+			if err != nil {
+				fmt.Println("Error parsing order total:", err)
+				continue
+			}
+			ordertWeeklyBalance += total
+		}
+	}
+
+	for err := range orderListErrors {
+		fmt.Println("Error finding orders:", err)
+		return err
+	}
+
+	orderWeeklyBalance := make(chan *w.WeeklyAnalytics, 1)
+	orderWeeklyBalanceErrors := make(chan error, 1)
+
+	var bestSellerWg sync.WaitGroup
+	bestSellerWg.Add(1)
+	go func() {
+		defer bestSellerWg.Done()
+		as.orderSvc.GetLatestOrderWeeklyBalance(nil, projectID, orderWeeklyBalance, orderWeeklyBalanceErrors)
+	}()
+
+	bestSellerWg.Wait()
+	close(orderWeeklyBalance)
+	close(orderWeeklyBalanceErrors)
+
+	//TODO: change this to save the weeklybalance
+	//as.bestSellerSvc.DeleteBestSellers(projectID)
+
+	for items := range orderWeeklyBalance {
+
+		weekBalance := w.NewWeeklyAnalytics(projectID, orderCount, lastWeekCount, ordertWeeklyBalance, lastWeek, now)
+		weekBalance.CalculatePercentages()
+		if items != nil {
+			result := w.CompareAnalytics(weekBalance.AnalyticsBase, items.AnalyticsBase)
+			weekBalance.AddComparisonResult(result)
+			fmt.Println("The result of the 2 weeks is", result)
+		}
+		as.analyticsRepo.CreateWeeklyBalance(projectID, weekBalance)
+	}
+	for err := range orderWeeklyBalanceErrors {
+		fmt.Println("Error finding orders:", err)
+		return err
 	}
 
 	return nil
+
 }

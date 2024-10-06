@@ -13,11 +13,13 @@ import (
 	r "github.com/stelgkio/otoo/internal/core/util"
 )
 
+// HomeHandler represents the HTTP handler for user-related requests
 type HomeHandler struct {
 	svc  port.ProjectService
 	cont port.ContactService
 }
 
+// NewHomeHandler creates a new HomeHandler instance
 func NewHomeHandler(svc port.ProjectService, cont port.ContactService) *HomeHandler {
 	return &HomeHandler{
 		svc,
@@ -25,7 +27,7 @@ func NewHomeHandler(svc port.ProjectService, cont port.ContactService) *HomeHand
 	}
 }
 
-// Post /contact
+// ContactForm Post /contact
 func (h HomeHandler) ContactForm(ctx echo.Context) error {
 	req := new(domain.ContactRequest)
 	if err := ctx.Bind(req); err != nil {
@@ -47,7 +49,7 @@ func (h HomeHandler) ContactForm(ctx echo.Context) error {
 	return r.Render(ctx, v.IndexTemplate()) // add notification message
 }
 
-// Post /dashboard/contact
+// DashboardContactForm Post /dashboard/contact
 func (h HomeHandler) DashboardContactForm(ctx echo.Context) error {
 	req := new(domain.ContactRequest)
 	if err := ctx.Bind(req); err != nil {

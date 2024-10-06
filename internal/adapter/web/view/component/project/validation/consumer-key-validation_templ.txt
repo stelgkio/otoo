@@ -1,0 +1,13 @@
+<div class=\"row align-items-center g-3 mt-6\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">Consumer key</label></div><div class=\"col-md-8 col-xl-5\">
+<input name=\"consumer_key\" type=\"password\" class=\"form-control is-invalid\" placeholder=\"Consumer key\" autocomplete=\"off\" value=\"
+\" hx-post=\"/project/validation/key\" hx-target=\"#key-validation\"><div class=\"invalid-feedback\" style=\"display: block;\">
+</div>
+<input name=\"consumer_key\" type=\"password\" class=\"form-control\" placeholder=\"Consumer key\" autocomplete=\"off\" value=\"
+\" hx-post=\"/project/validation/key\" hx-target=\"#key-validation\">
+</div><div class=\"col-md-2\"><a href=\"https://woocommerce.com/document/woocommerce-rest-api/\" target=\"_blank\" class=\"tooltip-container\"><i class=\"bi bi-info-circle\"></i> <span class=\"tooltip-text\"></span></a></div></div><hr class=\"my-6\"><div class=\"row align-items-center g-3 mt-6\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">Consumer secret</label></div><div class=\"col-md-8 col-xl-5\">
+<input name=\"consumer_secret\" type=\"password\" class=\"form-control is-invalid\" placeholder=\"Consumer secret\" autocomplete=\"off\" value=\"
+\" hx-post=\"/project/validation/key\" hx-target=\"#key-validation\"><div class=\"invalid-feedback\" style=\"display: block;\">
+</div>
+<input name=\"consumer_secret\" type=\"password\" class=\"form-control\" placeholder=\"Consumer secret\" autocomplete=\"off\" value=\"
+\" hx-post=\"/project/validation/key\" hx-target=\"#key-validation\">
+</div><div class=\"col-md-2\"><a href=\"https://woocommerce.com/document/woocommerce-rest-api/\" target=\"_blank\" class=\"tooltip-container\"><i class=\"bi bi-info-circle\"></i> <span class=\"tooltip-text\"></span></a></div></div>

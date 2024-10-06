@@ -33,7 +33,7 @@ func OrderOverView(projectId, totalCount, count24h, count7d, count1m string) tem
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"dashboard-content\" class=\"flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2\"><main class=\"container-fluid px-3 py-5 p-lg-6 p-xxl-8\"><div class=\"mb-6 mb-xl-10\"><div class=\"row g-3 align-items-center\"><div class=\"col\"><h1 class=\"ls-tight\">Orders</h1></div><div class=\"col\"><div class=\"hstack gap-2 justify-content-end\"><button hx-get=\"")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -46,7 +46,7 @@ func OrderOverView(projectId, totalCount, count24h, count7d, count1m string) tem
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\" type=\"button\" class=\"btn btn-sm btn-neutral d-sm-inline-flex\"><span class=\"pe-2\"></span><span>Products</span></button> <button hx-get=\"")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -59,7 +59,7 @@ func OrderOverView(projectId, totalCount, count24h, count7d, count1m string) tem
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\" type=\"button\" class=\"btn btn-sm btn-neutral  d-sm-inline-flex\"><span class=\"pe-2\"></span><span>Customers</span></button></div></div></div></div><div class=\"vstack gap-3 gap-xl-6 mt-8\"><div class=\"row row-cols-sm-2 row-cols-md-4 g-3\"><div class=\"col\"><div class=\"card border-primary-hover\"><div class=\"card-body d-flex gap-3\"><div class=\"\"><span class=\"d-block text-muted mb-1\">Total Orders</span> <span class=\"d-block text-lg fw-bold text-heading\">")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -72,7 +72,7 @@ func OrderOverView(projectId, totalCount, count24h, count7d, count1m string) tem
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></div></div></div></div><div class=\"col\"><div class=\"card\"><div class=\"card-body\"><div class=\"d-flex gap-3 mb-1\"><span class=\"text-muted\">Orders</span> <span class=\"badge text-bg-light rounded\">24H</span> <span class=\"text-muted text-opacity-60 text-opacity-100-hover\" tabindex=\"0\" data-bs-toggle=\"popover\" data-bs-trigger=\"hover focus\" data-bs-placement=\"right\" data-bs-html=\"true\" data-bs-content=\"The total completed order the last 24 hours.\" role=\"button\"><i class=\"bi bi-info-circle\"></i></span></div><div class=\"d-flex align-items-center\"><span class=\"text-lg text-heading fw-bold\">")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -85,7 +85,7 @@ func OrderOverView(projectId, totalCount, count24h, count7d, count1m string) tem
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></div></div></div></div><div class=\"col\"><div class=\"card\"><div class=\"card-body\"><div class=\"d-flex gap-3 mb-1\"><span class=\"text-muted\">Orders</span> <span class=\"badge text-bg-light rounded\">7D</span> <span class=\"text-muted text-opacity-60 text-opacity-100-hover\" tabindex=\"0\" data-bs-toggle=\"popover\" data-bs-trigger=\"hover focus\" data-bs-placement=\"right\" data-bs-html=\"true\" data-bs-content=\"The total completed order the last 7 days.\" role=\"button\"><i class=\"bi bi-info-circle\"></i></span></div><div class=\"d-flex align-items-center\"><span class=\"text-lg text-heading fw-bold\">")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -98,7 +98,7 @@ func OrderOverView(projectId, totalCount, count24h, count7d, count1m string) tem
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></div></div></div></div><div class=\"col\"><div class=\"card\"><div class=\"card-body\"><div class=\"d-flex gap-3 mb-1\"><span class=\"text-muted\">Orders</span> <span class=\"badge text-bg-light rounded\">30D</span> <span class=\"text-muted text-opacity-60 text-opacity-100-hover\" tabindex=\"0\" data-bs-toggle=\"popover\" data-bs-trigger=\"hover focus\" data-bs-placement=\"right\" data-bs-html=\"true\" data-bs-content=\"The total completed order the last month.\" role=\"button\"><i class=\"bi bi-info-circle\"></i></span></div><div class=\"d-flex align-items-center\"><span class=\"text-lg text-heading fw-bold\">")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 6)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -111,7 +111,7 @@ func OrderOverView(projectId, totalCount, count24h, count7d, count1m string) tem
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></div></div></div></div></div><div id=\"dashboard-order\">")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 7)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -119,7 +119,7 @@ func OrderOverView(projectId, totalCount, count24h, count7d, count1m string) tem
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></main></div>")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 8)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -135,7 +135,7 @@ func OrderOverView(projectId, totalCount, count24h, count7d, count1m string) tem
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n\tvar popoverTriggerList = document.querySelectorAll('[data-bs-toggle=\"popover\"]')\n\tvar popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))\n\t</script>")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 9)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

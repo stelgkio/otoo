@@ -739,6 +739,7 @@ func (dh *DashboardHandler) OrderTable(ctx echo.Context) error {
 				Status:      record.Status,
 				Billing:     *record.Order.Billing,
 				Shipping:    *record.Order.Shipping,
+				Products:    record.Order.LineItems,
 			})
 		}
 	}

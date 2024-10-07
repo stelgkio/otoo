@@ -92,7 +92,7 @@ func ProjectSecrets(project *domain.Project, projectExtensions []*domain.Project
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Update</button></div></form></main><script>\r\n    function togglePassword(inputId, icon) {\r\n        const input = document.getElementById(inputId);\r\n        if (input.type === \"password\") {\r\n            input.type = \"text\";\r\n            icon.classList.remove(\"fa-eye\");\r\n            icon.classList.add(\"fa-eye-slash\");\r\n        } else {\r\n            input.type = \"password\";\r\n            icon.classList.remove(\"fa-eye-slash\");\r\n            icon.classList.add(\"fa-eye\");\r\n        }\r\n    }\r\n</script></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Update</button></div></form></main><script>\n    function togglePassword(inputId, icon) {\n        const input = document.getElementById(inputId);\n        if (input.type === \"password\") {\n            input.type = \"text\";\n            icon.classList.remove(\"fa-eye\");\n            icon.classList.add(\"fa-eye-slash\");\n        } else {\n            input.type = \"password\";\n            icon.classList.remove(\"fa-eye-slash\");\n            icon.classList.add(\"fa-eye\");\n        }\n    }\n</script></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

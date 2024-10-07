@@ -184,6 +184,73 @@ templ OrderTable(projectId string) {
 					</div>
 				</div>
 			</div>
+			// <div class="table-responsive">
+			// 	<table class="table table-hover table-nowrap">
+			// 		<thead>
+			// 			<tr>
+			// 				<th>
+			// 					<div class="text-base">
+			// 						<div class="form-check">
+			// 							<input
+			// 								class="form-check-input"
+			// 								type="checkbox"
+			// 								@change="selectAll()"
+			// 								x-model="selectAllCheckbox"
+			// 							/>
+			// 						</div>
+			// 					</div>
+			// 				</th>
+			// 				<th @click="sortTable('orderId')">
+			// 					Order ID
+			// 					<i :class="getSortIcon('orderId')"></i>
+			// 				</th>
+			// 				<th @click="sortTable('timestamp')">
+			// 					Date
+			// 					<i :class="getSortIcon('timestamp')"></i>
+			// 				</th>
+			// 				<th @click="sortTable('total_amount')">
+			// 					Total Amount
+			// 					<i :class="getSortIcon('total_amount')"></i>
+			// 				</th>
+			// 				<th>Status</th>
+			// 				<th>Action</th>
+			// 			</tr>
+			// 		</thead>
+			// 		<tbody>
+			// 			<template x-if="!loading && totalItems === 0">
+			// 				<tr>
+			// 					<td colspan="5">No orders found.</td>
+			// 				</tr>
+			// 			</template>
+			// 			<template x-for="order in paginatedOrders" :key="order.id">
+			// 				<tr @click="loadModalData(order)" style="cursor: pointer;">
+			// 					<td>
+			// 						<div class="form-check">
+			// 							<input
+			// 								class="form-check-input"
+			// 								type="checkbox"
+			// 								:value="order.orderId"
+			// 								x-model="selectedOrders"
+			// 							/>
+			// 						</div>
+			// 					</td>
+			// 					<td x-text="order.orderId"></td>
+			// 					<td x-text="new Date(order.timestamp).toLocaleString()"></td>
+			// 					<td x-text="order.total_amount"></td>
+			// 					<td>
+			// 						<span :class="badgeClass(order.status)" x-text="order.status"></span>
+			// 					</td>
+			// 				</tr>
+			// 			</template>
+			// 			<!-- Fill remaining rows if less than 10 -->
+			// 			<template x-for="i in 10 - paginatedOrders.length" :key="'empty' + i">
+			// 				<tr>
+			// 					<td colspan="5" class="py-7"></td>
+			// 				</tr>
+			// 			</template>
+			// 		</tbody>
+			// 	</table>
+			// </div>
 			<div class="table-responsive">
 				<table class="table table-hover table-nowrap">
 					<thead>
@@ -213,16 +280,19 @@ templ OrderTable(projectId string) {
 								<i :class="getSortIcon('total_amount')"></i>
 							</th>
 							<th>Status</th>
+							<th>Action</th>
 						</tr>
 					</thead>
 					<tbody>
+						<!-- Display this row if no orders are found -->
 						<template x-if="!loading && totalItems === 0">
 							<tr>
-								<td colspan="5">No orders found.</td>
+								<td colspan="6">No orders found.</td>
 							</tr>
 						</template>
+						<!-- Loop through paginated orders -->
 						<template x-for="order in paginatedOrders" :key="order.id">
-							<tr @click="loadModalData(order)" style="cursor: pointer;">
+							<tr>
 								<td>
 									<div class="form-check">
 										<input
@@ -239,12 +309,18 @@ templ OrderTable(projectId string) {
 								<td>
 									<span :class="badgeClass(order.status)" x-text="order.status"></span>
 								</td>
+								<!-- Action column with the eye icon for modal -->
+								<td>
+									<button type="button" class="btn btn-sm btn-neutral" @click="loadModalData(order)">
+										<i class="bi bi-eye"></i>
+									</button>
+								</td>
 							</tr>
 						</template>
-						<!-- Fill remaining rows if less than 10 -->
+						<!-- Fill remaining rows if there are less than 10 orders to ensure table looks consistent -->
 						<template x-for="i in 10 - paginatedOrders.length" :key="'empty' + i">
 							<tr>
-								<td colspan="5" class="py-7"></td>
+								<td colspan="6" class="py-7"></td>
 							</tr>
 						</template>
 					</tbody>

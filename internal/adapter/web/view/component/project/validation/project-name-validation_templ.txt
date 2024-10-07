@@ -1,4 +1,0 @@
-<div class=\"col-md-8 col-xl-5\" hx-target=\"this\" hx-swap=\"outerHTML\"><input name=\"name\" type=\"text\" hx-post=\"/project/validation/name\" value=\"
-\" class=\"form-control is-invalid\" placeholder=\"Project name\"><div class=\"invalid-feedback\" style=\"display: block;\">Project name already exists!</div></div>
-<div class=\"col-md-8 col-xl-5\" hx-target=\"this\" hx-swap=\"outerHTML\"><input name=\"name\" type=\"text\" hx-post=\"/project/validation/name\" value=\"
-\" class=\"form-control\" placeholder=\"Project name\"></div>

@@ -38,7 +38,7 @@ func ProductProgress(retrivedProducts, totalProducts int64) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"dashboard-content\" class=\"flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2\"><main class=\"container-fluid px-3 py-5 p-lg-6 p-xxl-8\"><header class=\"py-4 border-bottom\"><div class=\"row align-items-center\"><div class=\"col\"><div class=\"d-flex align-items-center gap-4\"><h1 class=\"h4 ls-tight\">Get Products</h1></div></div></div></header><div class=\"card\"><div class=\"card-body py-4\"><div class=\"d-flex flex-wrap align-items-center justify-content-between mb-5\"><div class=\"flex-1\"><h6 class=\"h5 text-limit fw-semibold mb-1\">Standard Plan</h6><p class=\"text-sm text-muted d-none d-sm-block\">The perfect way to get started.</p></div></div><div class=\"d-flex align-items-center justify-content-between mb-1\"><span class=\"text-sm text-muted fw-semibold text-heading d-block\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -51,7 +51,7 @@ func ProductProgress(retrivedProducts, totalProducts int64) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"text-sm text-muted fw-semibold d-block\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -64,7 +64,7 @@ func ProductProgress(retrivedProducts, totalProducts int64) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></div><div class=\"progress progress-sm shadow-none mb-6\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -73,7 +73,7 @@ func ProductProgress(retrivedProducts, totalProducts int64) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"progress-bar bg-primary\" role=\"progressbar\" class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -86,7 +86,7 @@ func ProductProgress(retrivedProducts, totalProducts int64) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" aria-valuemin=\"0\" aria-valuemax=\"100\"></div></div></div></div><form autocomplete=\"off\"><hr class=\"my-6\"><button type=\"button\" class=\"btn btn-sm btn-neutral\" hx-get=\"/project/list\" hx-target=\"#dashboard-content\">Cancel</button><div class=\"d-flex justify-content-end gap-2\"><button type=\"submit\" hx-post=\"/project/create\" hx-indicator=\"#spinner\" class=\"btn btn-sm btn-primary\" hx-target=\"#dashboard-content\"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Next</button></div></form></main></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

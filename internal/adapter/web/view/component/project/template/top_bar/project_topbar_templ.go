@@ -28,7 +28,7 @@ func ProjectTopBar(user *domain.User) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"d-none d-lg-flex py-3\"><div class=\"flex-none\"><div class=\"input-group input-group-sm input-group-inline w-rem-64 rounded-pill\"><span class=\"input-group-text rounded-start-pill\"><i class=\"bi bi-search me-2\"></i></span><input type=\"search\" class=\"form-control ps-0 rounded-end-pill\" placeholder=\"Search\" aria-label=\"Search\"></div></div><div class=\"hstack flex-fill justify-content-end flex-nowrap gap-6 ms-auto px-6 px-xxl-8\"><div class=\"dropdown\"><a href=\"#\" class=\"nav-link\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><i class=\"bi bi-sun-fill\"></i></a><div class=\"dropdown-menu\"><button type=\"button\" class=\"dropdown-item d-flex align-items-center\" data-bs-theme-value=\"light\">Light</button> <button type=\"button\" class=\"dropdown-item d-flex align-items-center\" data-bs-theme-value=\"dark\">Dark</button></div></div><div class=\"dropdown\"><a href=\"#\" class=\"nav-link\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><i class=\"bi bi-translate\"></i></a><div class=\"dropdown-menu\"><button type=\"button\" class=\"dropdown-item d-flex align-items-center\" onclick=\"changeLanguage(&#39;en&#39;)\">English</button> <button type=\"button\" class=\"dropdown-item d-flex align-items-center\" onclick=\"changeLanguage(&#39;el&#39;)\">Ελληνικά</button></div></div><div class=\"dropdown\"><a class=\"avatar avatar-sm rounded-circle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"><i class=\"bi bi-person-circle h5\"></i></a><div class=\"dropdown-menu dropdown-menu-end\"><div class=\"dropdown-header\"><span class=\"d-block text-heading fw-semibold\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -50,7 +50,7 @@ func ProjectTopBar(user *domain.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></div><div class=\"dropdown-divider\"></div><a class=\"dropdown-item\" hx-get=\"/project/list\" hx-target=\"#dashboard-content\"><i class=\"bi bi-house me-3\"></i>Projects </a> <a class=\"dropdown-item\" hx-get=\"/profile\" hx-target=\"#dashboard-content\"><i class=\"bi bi-pencil me-3\"></i>Edit profile</a><div class=\"dropdown-divider\"></div><div class=\"dropdown-divider\"></div><a class=\"dropdown-item\" hx-get=\"/dashboard/logout\"><i class=\"bi bi-person me-3\"></i>Logout</a></div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

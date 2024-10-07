@@ -731,15 +731,17 @@ func (dh *DashboardHandler) OrderTable(ctx echo.Context) error {
 	if orderRecords != nil {
 		for _, record := range orderRecords {
 			orders = append(orders, w.OrderTableList{
-				ID:          record.ID,
-				ProjectID:   record.ProjectID,
-				Timestamp:   record.Timestamp,
-				OrderID:     record.OrderID,
-				TotalAmount: record.Order.Total,
-				Status:      record.Status,
-				Billing:     *record.Order.Billing,
-				Shipping:    *record.Order.Shipping,
-				Products:    record.Order.LineItems,
+				ID:             record.ID,
+				ProjectID:      record.ProjectID,
+				Timestamp:      record.Timestamp,
+				OrderID:        record.OrderID,
+				TotalAmount:    record.Order.Total,
+				Status:         record.Status,
+				Billing:        *record.Order.Billing,
+				Shipping:       *record.Order.Shipping,
+				Products:       record.Order.LineItems,
+				CurrencySymbol: record.Order.CurrencySymbol,
+				PaymentMethod:  record.Order.PaymentMethodTitle,
 			})
 		}
 	}

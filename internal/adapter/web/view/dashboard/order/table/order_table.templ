@@ -305,7 +305,7 @@ templ OrderTable(projectId string) {
 								</td>
 								<td x-text="order.orderId"></td>
 								<td x-text="new Date(order.timestamp).toLocaleString()"></td>
-								<td x-text="order.total_amount"></td>
+								<td x-text="order.total_amount + ' ' + order.currency_symbol"></td>
 								<td>
 									<span :class="badgeClass(order.status)" x-text="order.status"></span>
 								</td>

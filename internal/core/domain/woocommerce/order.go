@@ -93,15 +93,17 @@ func StringToOrderStatus(status string) (OrderStatus, error) {
 
 // OrderTableList represents an order table list
 type OrderTableList struct {
-	ID          primitive.ObjectID     `bson:"_id,omitempty" json:"id,omitempty"`
-	ProjectID   string                 `bson:"projectId" json:"projectId"`
-	Timestamp   time.Time              `bson:"timestamp,omitempty" json:"timestamp,omitempty"`
-	OrderID     int64                  `bson:"orderId,omitempty" json:"orderId,omitempty"`
-	TotalAmount string                 `bson:"total_amount,omitempty" json:"total_amount,omitempty"`
-	Status      OrderStatus            `bson:"status,omitempty" json:"status,omitempty"`
-	Billing     woocommerce.Billing    `bson:"billing,omitempty" json:"billing,omitempty"`
-	Shipping    woocommerce.Shipping   `bson:"shipping,omitempty" json:"shipping,omitempty"`
-	Products    []woocommerce.LineItem `bson:"products,omitempty" json:"products,omitempty"`
+	ID             primitive.ObjectID     `bson:"_id,omitempty" json:"id,omitempty"`
+	ProjectID      string                 `bson:"projectId" json:"projectId"`
+	Timestamp      time.Time              `bson:"timestamp,omitempty" json:"timestamp,omitempty"`
+	OrderID        int64                  `bson:"orderId,omitempty" json:"orderId,omitempty"`
+	TotalAmount    string                 `bson:"total_amount,omitempty" json:"total_amount,omitempty"`
+	Status         OrderStatus            `bson:"status,omitempty" json:"status,omitempty"`
+	Billing        woocommerce.Billing    `bson:"billing,omitempty" json:"billing,omitempty"`
+	Shipping       woocommerce.Shipping   `bson:"shipping,omitempty" json:"shipping,omitempty"`
+	Products       []woocommerce.LineItem `bson:"products,omitempty" json:"products,omitempty"`
+	CurrencySymbol string                 `bson:"currency_symbol,omitempty" json:"currency_symbol,omitempty"`
+	PaymentMethod  string                 `bson:"payment_method,omitempty" json:"payment_method,omitempty"`
 }
 
 // OrderTableResponde represents an order table response

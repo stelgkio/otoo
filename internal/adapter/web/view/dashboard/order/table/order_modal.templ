@@ -67,7 +67,7 @@ templ OrderModal() {
 							<strong>Order ID:</strong> <span class="ms-auto" x-text="modalOrder.orderId"></span>
 						</div>
 						<div class="d-flex mb-2">
-							<strong>Total Amount:</strong> <span class="ms-auto" x-text="modalOrder.total_amount"></span>
+							<strong>Total Amount:</strong> <span class="ms-auto" x-text="modalOrder.total_amount + ' ' + modalOrder.currency_symbol"></span>
 						</div>
 						<div class="d-flex mb-2">
 							<strong>Status:</strong> <span class="ms-auto" x-text="modalOrder.status"></span>
@@ -87,7 +87,7 @@ templ OrderModal() {
 										<strong>Qty:</strong> <span x-text="product.quantity"></span>
 									</div>
 									<div>
-										<strong>Price:</strong> <span x-text="product.price"></span>
+										<strong>Price:</strong> <span x-text="product.price + ' ' + modalOrder.currency_symbol"></span>
 									</div>
 								</div>
 								<hr class="my-2"/>

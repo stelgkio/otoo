@@ -331,197 +331,222 @@ templ OrderTable(projectId string) {
 		</div>
 	</div>
 	<script>
-	function orderTable(projectId) {
-		return {
-			projectID: projectId,
-			currentTab: 'all',
-			orders: [],
-			selectedOrders: [],
-			selectAllCheckbox: false,
-			sortKey: 'orderId',
-			sortAsc: false,
-			currentPage: 1,
-			itemsPerPage: 10,
-			totalItems: 0,
-			totalPages: 0,
-			loading: false,
-			selectedStatus: '',
-			errorMessage: '',
-			showModal: false, // Modal visibility state
-            modalOrder: {}, // Order data for modal
+function orderTable(projectId) {
+    return {
+        projectID: projectId,
+        currentTab: 'all',
+        orders: [],
+        selectedOrders: [],
+        selectAllCheckbox: false,
+        sortKey: 'orderId',
+        sortAsc: false,
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 0,
+        totalPages: 0,
+        loading: false,
+        selectedStatus: '',
+        errorMessage: '',
+        showDropdown: false, // Initialize showDropdown
+        modalOrder: {
+            billing: {
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                city: '',
+                postcode: '',
+                email: '',
+                phone: '',
+            },
+            shipping: {
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                city: '',
+                postcode: '',
+            },
+            products: [],
+            payment_method: ''
+        },
+        showModal: false,
 
-			async init() {
-				await this.fetchOrders(this.currentPage);
-			},
+        async init() {
+            await this.fetchOrders(this.currentPage);
+        },
 
-			async fetchOrders(page = 1) {
-				this.loading = true;
-				try {
-					const url = this.getUrlForTab(this.currentTab, page);
-					const response = await fetch(url);
-					const result = await response.json();
-					if (response.ok) {
-						this.orders = result.data || [];
-						this.totalItems = result.meta.totalItems || 0;
-						this.currentPage = result.meta.currentPage || 1;
-						this.itemsPerPage = result.meta.itemsPerPage || 10;
-						this.totalPages = result.meta.totalPages || 0;
-					} else {
-						console.error('Error fetching data:', result.message);
-					}
-				} catch (error) {
-					console.error('Error fetching data:', error);
-				} finally {
-					this.loading = false;
-				}
-			},
+        async fetchOrders(page = 1) {
+            this.loading = true;
+            try {
+                const url = this.getUrlForTab(this.currentTab, page);
+                const response = await fetch(url);
+                const result = await response.json();
+                if (response.ok) {
+                    this.orders = result.data || [];
+                    this.totalItems = result.meta.totalItems || 0;
+                    this.currentPage = result.meta.currentPage || 1;
+                    this.itemsPerPage = result.meta.itemsPerPage || 10;
+                    this.totalPages = result.meta.totalPages || 0;
+                } else {
+                    console.error('Error fetching data:', result.message);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                this.loading = false;
+            }
+        },
 
-			getUrlForTab(tab, page) {
-				const baseUrl = `${window.location.origin}/order/table/${this.projectID}`;
-				const sortDirection = this.sortAsc ? 'asc' : 'desc'; // Determine sort direction
-				switch (tab) {
-					case 'all':
-						return `${baseUrl}/all/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-					case 'completed':
-						return `${baseUrl}/completed/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-					case 'processing':
-						return `${baseUrl}/processing/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-					case 'pending':
-						return `${baseUrl}/pending/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-					case 'cancelled':
-						return `${baseUrl}/cancelled/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-					default:
-						return `${baseUrl}/completed/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-				}
-			},
+        getUrlForTab(tab, page) {
+            const baseUrl = `${window.location.origin}/order/table/${this.projectID}`;
+            const sortDirection = this.sortAsc ? 'asc' : 'desc'; 
+            switch (tab) {
+                case 'all':
+                    return `${baseUrl}/all/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'completed':
+                    return `${baseUrl}/completed/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'processing':
+                    return `${baseUrl}/processing/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'pending':
+                    return `${baseUrl}/pending/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'cancelled':
+                    return `${baseUrl}/cancelled/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                default:
+                    return `${baseUrl}/completed/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+            }
+        },
 
-			selectTab(tab) {
-				this.currentTab = tab;
-				this.currentPage = 1; // Reset to first page
-				this.fetchOrders(this.currentPage);
-			},
+        selectTab(tab) {
+            this.currentTab = tab;
+            this.currentPage = 1;
+            this.fetchOrders(this.currentPage);
+        },
 
-			selectAll() {
-				this.selectedOrders = this.selectAllCheckbox ? this.orders.map(order => order.orderId) : [];
-			},
+        selectAll() {
+            this.selectedOrders = this.selectAllCheckbox ? this.orders.map(order => order.orderId) : [];
+        },
 
-			sortTable(key) {
-				if (this.sortKey === key) {
-					this.sortAsc = !this.sortAsc; // Toggle sort direction if the same column is clicked
-				} else {
-					this.sortKey = key; // Set new sort key
-					this.sortAsc = true; // Default to ascending if a new column is selected
-				}
-				this.fetchOrders(this.currentPage); // Fetch sorted data
-			},
-			getSortIcon(key) {
-				if (this.sortKey !== key) return '';
-				return this.sortAsc ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
-			},
+        sortTable(key) {
+            if (this.sortKey === key) {
+                this.sortAsc = !this.sortAsc;
+            } else {
+                this.sortKey = key;
+                this.sortAsc = true;
+            }
+            this.fetchOrders(this.currentPage);
+        },
 
-			changePage(page) {
-				if (page < 1 || page > this.totalPages) return;
-				this.fetchOrders(page);
-			},
+        getSortIcon(key) {
+            if (this.sortKey !== key) return '';
+            return this.sortAsc ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
+        },
 
-			get paginatedOrders() {
-				return this.orders;
-			},
+        changePage(page) {
+            if (page < 1 || page > this.totalPages) return;
+            this.fetchOrders(page);
+        },
 
-			get currentPageStart() {
-				return (this.currentPage - 1) * this.itemsPerPage + 1;
-			},
+        get paginatedOrders() {
+            return this.orders;
+        },
 
-			get currentPageEnd() {
-				return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
-			},
-			get pageNumbers() {
-				const range = 2; // Number of pages to show around the current page
-				let start = Math.max(1, this.currentPage - range);
-				let end = Math.min(this.totalPages, this.currentPage + range);
+        get currentPageStart() {
+            return (this.currentPage - 1) * this.itemsPerPage + 1;
+        },
 
-				// Adjust range if there are not enough pages on one side
-				if (this.totalPages - end < range) {
-					end = this.totalPages;
-					start = Math.max(1, end - 2 * range);
-				} else if (start <= range) {
-					start = 1;
-					end = Math.min(this.totalPages, start + 2 * range);
-				}
+        get currentPageEnd() {
+            return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
+        },
 
-				return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-			},
-			badgeClass(status) {
-				const baseClass = 'badge bg-body-secondary badge-custom'; // Add badge-custom class
-				switch (status) {
-					case 'pending':
-						return `${baseClass} text-warning`;
-					case 'completed':
-						return `${baseClass} text-success`;
-					case 'cancelled':
-						return `${baseClass} text-danger`;
-					case 'processing':
-						return `${baseClass} text-warning`;
-					default:
-						return baseClass;
-				}
-			},
-			async applyAction() {
-				this.loading = true;
-				this.errorMessage = ""; // Clear previous error message
-				this.showDropdown = true; // Close dropdown on action
+        get pageNumbers() {
+            const range = 2;
+            let start = Math.max(1, this.currentPage - range);
+            let end = Math.min(this.totalPages, this.currentPage + range);
 
-				const selectedOrderIds = this.selectedOrders.join(',');
-				if (!selectedOrderIds || !this.selectedStatus) {
-					this.errorMessage = 'Please select at least one order and a status.';
-					this.loading = false;
-					this.showDropdown = true;
-					return;
-				}
+            if (this.totalPages - end < range) {
+                end = this.totalPages;
+                start = Math.max(1, end - 2 * range);
+            } else if (start <= range) {
+                start = 1;
+                end = Math.min(this.totalPages, start + 2 * range);
+            }
 
-				try {
-					const response = await fetch(`/order/bulk-action/${this.projectID}`, {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({
-							status: this.selectedStatus,
-							orders: selectedOrderIds.split(','),
-						}),
-					});
-					const result = await response.json();
+            return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+        },
 
-					if (response.ok) {
-						// Handle success (e.g., show a success message or refresh the table)
-						this.fetchOrders(this.currentPage);
-						console.log('Bulk action successful:', result);
-						this.showDropdown = false;
-					} else {
-						this.errorMessage = result.message || 'An error occurred while processing the request.';
-					}
-				} catch (error) {
-					console.error('Error during bulk action:', error);
-					this.errorMessage = 'An error occurred while processing the request.';
-					this.showDropdown = true;
-				} finally {
-					this.loading = false;
+        badgeClass(status) {
+            const baseClass = 'badge bg-body-secondary badge-custom';
+            switch (status) {
+                case 'pending':
+                    return `${baseClass} text-warning`;
+                case 'completed':
+                    return `${baseClass} text-success`;
+                case 'cancelled':
+                    return `${baseClass} text-danger`;
+                case 'processing':
+                    return `${baseClass} text-warning`;
+                default:
+                    return baseClass;
+            }
+        },
 
-				}
-			},
-			 // New modal-related methods
-			loadModalData(order) {
-				this.modalOrder = order; // Load selected order data into modal
-				this.showModal = true;   // Show the modal
-			},
-			
-			// Reset modal state when closing
-			closeModal() {
-				this.showModal = false;
-				this.modalOrder = {};
-			},
+        async applyAction() {
+            this.loading = true;
+            this.errorMessage = ""; 
+            this.showDropdown = false; 
 
-			
+            const selectedOrderIds = this.selectedOrders.join(',');
+            if (!selectedOrderIds || !this.selectedStatus) {
+                this.errorMessage = 'Please select at least one order and a status.';
+                this.loading = false;
+                this.showDropdown = true;
+                return;
+            }
 
-		};
-	}
+            try {
+                const response = await fetch(`/order/bulk-action/${this.projectID}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        status: this.selectedStatus,
+                        orders: selectedOrderIds.split(','),
+                    }),
+                });
+                const result = await response.json();
+
+                if (response.ok) {
+                    this.fetchOrders(this.currentPage);
+                    console.log('Bulk action successful:', result);
+                } else {
+                    this.errorMessage = result.message || 'An error occurred while processing the request.';
+                }
+            } catch (error) {
+                console.error('Error during bulk action:', error);
+                this.errorMessage = 'An error occurred while processing the request.';
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        loadModalData(order) {
+            this.modalOrder = {
+                ...this.modalOrder,
+                ...order,
+                billing: { ...this.modalOrder.billing, ...order.billing },
+                shipping: { ...this.modalOrder.shipping, ...order.shipping }
+            };
+            this.showModal = true;
+        },
+
+        closeModal() {
+            this.showModal = false;
+            this.modalOrder = {
+                billing: { ...this.modalOrder.billing },
+                shipping: { ...this.modalOrder.shipping },
+                products: [],
+                payment_method: ''
+            };
+        }
+    };
+}
 </script>
 }

@@ -164,6 +164,18 @@ templ VoucherTable(projectId string) {
 					<p>Address: <span x-text="modalOrder.shipping.address_1"></span></p>
 					<p>City: <span x-text="modalOrder.shipping.city"></span></p>
 					<p>Postcode: <span x-text="modalOrder.shipping.postcode"></span></p>
+					<!-- Display billing information -->
+					<br/>
+					<p><strong>Billing Information:</strong></p>
+					<p>Name: <span x-text="modalOrder.billing.first_name + ' ' + modalOrder.billing.last_name"></span></p>
+					<p>Address: <span x-text="modalOrder.billing.address_1"></span></p>
+					<p>City: <span x-text="modalOrder.billing.city"></span></p>
+					<p>State: <span x-text="modalOrder.billing.state"></span></p>
+					<p>Postcode: <span x-text="modalOrder.billing.postcode"></span></p>
+					<p>Country: <span x-text="modalOrder.billing.country"></span></p>
+					<p>Email: <span x-text="modalOrder.billing.email"></span></p>
+					<p>Phone: <span x-text="modalOrder.billing.phone"></span></p>
+					<br/>
 					<p><strong>Products:</strong></p>
 					<ul>
 						<template x-for="product in modalOrder.products" :key="product.id">

@@ -53,4 +53,15 @@ templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExt
 			</ul>
 		</div>
 	</li>
+	<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let courierItems = document.querySelectorAll('.extension-item[data-extension-code="asc-courier"], .extension-item[data-extension-code="courier4u"], .extension-item[data-extension-code="redcourier"]');
+        if (courierItems.length > 0) {
+            courierItems[0].querySelector('a').textContent = 'Courier';
+            for (let i = 1; i < courierItems.length; i++) {
+                courierItems[i].remove();
+            }
+        }
+    });
+</script>
 }

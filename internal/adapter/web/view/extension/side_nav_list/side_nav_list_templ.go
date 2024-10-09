@@ -102,7 +102,7 @@ func SideNavList(projectId, extensionId string, extensions []*domain.ProjectExte
 				}
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</ul></div></li>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</ul></div></li><script>\n    document.addEventListener('DOMContentLoaded', function() {\n        let courierItems = document.querySelectorAll('.extension-item[data-extension-code=\"asc-courier\"], .extension-item[data-extension-code=\"courier4u\"], .extension-item[data-extension-code=\"redcourier\"]');\n        if (courierItems.length > 0) {\n            courierItems[0].querySelector('a').textContent = 'Courier';\n            for (let i = 1; i < courierItems.length; i++) {\n                courierItems[i].remove();\n            }\n        }\n    });\n</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

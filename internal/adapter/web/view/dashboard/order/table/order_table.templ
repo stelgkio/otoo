@@ -253,7 +253,7 @@ templ OrderTable(projectId string) {
 						<!-- Fill remaining rows if there are less than 10 orders to ensure table looks consistent -->
 						<template x-for="i in 10 - paginatedOrders.length" :key="'empty' + i">
 							<tr>
-								<td colspan="6" class="py-7"></td>
+								<td colspan="6" class="py-8"></td>
 							</tr>
 						</template>
 					</tbody>

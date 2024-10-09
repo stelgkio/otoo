@@ -32,8 +32,14 @@ templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExt
 									hx-get={ fmt.Sprintf("/extension/page/%s/%s", extension.Code, projectId) }
 									class="nav-link"
 									hx-target="#dashboard-content"
+									hx-indicator="#spinnerCourier"
 								>
-									Courier
+									<span
+										id="spinnerCourier"
+										class="htmx-indicator spinner-border spinner-border-sm"
+										role="status"
+										aria-hidden="true"
+									></span> Courier
 								</a>
 							</li>
 						} else {
@@ -42,9 +48,15 @@ templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExt
 									href="javascript:void(0)"
 									hx-get={ fmt.Sprintf("/extension/page/%s/%s", extension.Code, projectId) }
 									class="nav-link"
+									hx-indicator="#spinnerD"
 									hx-target="#dashboard-content"
 								>
-									{ 	extension.Title }
+									<span
+										id="spinnerD"
+										class="htmx-indicator spinner-border spinner-border-sm"
+										role="status"
+										aria-hidden="true"
+									></span> { extension.Title }
 								</a>
 							</li>
 						}

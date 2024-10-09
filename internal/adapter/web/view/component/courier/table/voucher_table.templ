@@ -7,36 +7,6 @@ import (
 
 templ VoucherTable(projectId string) {
 	<div id="dashboard-voucher">
-		// <div class="mb-1 mb-xl-10">
-		// 	<div class="col">
-		// 		<div class="hstack gap-2 justify-content-start">
-		// 			<button
-		// 				class="btn btn-sm btn-neutral"
-		// 				type="button"
-		// 				hx-get={ fmt.Sprintf("/voucher/chart/%s", projectId) }
-		// 				hx-target="#dashboard-voucher"
-		// 			>
-		// 				<i class="bi bi-bar-chart-fill"></i> <span class="ms-2">Charts</span>
-		// 			</button>
-		// 			<button
-		// 				class="btn btn-sm btn-neutral"
-		// 				type="button"
-		// 				hx-get={ fmt.Sprintf("/voucher/courier/%s", projectId) }
-		// 				hx-target="#dashboard-voucher"
-		// 			>
-		// 				<i class="bi bi-box-seam-fill"></i> <span class="ms-2">Courier</span>
-		// 			</button>
-		// 			<button
-		// 				class="btn btn-sm btn-neutral"
-		// 				type="button"
-		// 				hx-get={ fmt.Sprintf("/voucher/table/%s", projectId) }
-		// 				hx-target="#dashboard-voucher"
-		// 			>
-		// 				<i class="bi bi-box-seam-fill"></i> <span class="ms-2">Voucher</span>
-		// 			</button>
-		// 		</div>
-		// 	</div>
-		// </div>
 		<div id="dashboard-voucher-table" x-data={ fmt.Sprintf("voucherTable('%s')", projectId) } x-init="init()">
 			<div class="px-6 px-lg-7 pt-1 border-bottom">
 				<ul class="nav nav-tabs nav-tabs-flush gap-8 overflow-x border-0 mt-4">
@@ -77,117 +47,6 @@ templ VoucherTable(projectId string) {
 					</li>
 				</ul>
 			</div>
-			// <div class="d-flex gap-2 py-3 px-7 border-bottom">
-			// 	<div class="dropdown" x-data="{ showDropdown: false }" @click.outside="showDropdown = false">
-			// 		<button
-			// 			class="btn btn-sm btn-neutral dropdown-toggle"
-			// 			type="button"
-			// 			id="dropdownMenuButton2"
-			// 			@click="showDropdown = !showDropdown"
-			// 			:aria-expanded="showDropdown.toString()"
-			// 		>
-			// 			<i class="bi bi-plus-circle"></i> <span class="ms-2">Bulk Action</span>
-			// 		</button>
-			// 		<div class="dropdown-menu" :class="{ 'show': showDropdown }" aria-labelledby="dropdownMenuButton2">
-			// 			<div class="dropdown-item py-1 px-2 d-flex align-items-center">
-			// 				<div class="text-lg">
-			// 					<input
-			// 						class="form-check-input"
-			// 						type="radio"
-			// 						name="statusOption"
-			// 						id="statusBacklog"
-			// 						value="asc_courier"
-			// 						x-model="selectedStatus"
-			// 					/>
-			// 				</div>
-			// 				<div class="ms-3 me-5">
-			// 					<label for="statusBacklog">Send to Courier and update to completed</label>
-			// 				</div>
-			// 			</div>
-			// 			<div class="dropdown-item py-1 px-2 d-flex align-items-center">
-			// 				<div class="text-lg">
-			// 					<input
-			// 						class="form-check-input"
-			// 						type="radio"
-			// 						name="statusOption"
-			// 						id="statusCompleted"
-			// 						value="completed"
-			// 						x-model="selectedStatus"
-			// 					/>
-			// 				</div>
-			// 				<div class="ms-3 me-5">
-			// 					<label for="statusTodo">Change status to completed</label>
-			// 				</div>
-			// 			</div>
-			// 			<div class="dropdown-item py-1 px-2 d-flex align-items-center">
-			// 				<div class="text-lg">
-			// 					<input
-			// 						class="form-check-input"
-			// 						type="radio"
-			// 						name="statusOption"
-			// 						id="statuSpending"
-			// 						value="pending"
-			// 						x-model="selectedStatus"
-			// 					/>
-			// 				</div>
-			// 				<div class="ms-3 me-5">
-			// 					<label for="statusInProgress">Change status to pending</label>
-			// 				</div>
-			// 			</div>
-			// 			<div class="dropdown-item py-1 px-2 d-flex align-items-center">
-			// 				<div class="text-lg">
-			// 					<input
-			// 						class="form-check-input"
-			// 						type="radio"
-			// 						name="statusOption"
-			// 						id="statusProdessing"
-			// 						value="processing"
-			// 						x-model="selectedStatus"
-			// 					/>
-			// 				</div>
-			// 				<div class="ms-3 me-5">
-			// 					<label for="statusDone">Change status to processing</label>
-			// 				</div>
-			// 			</div>
-			// 			<div class="dropdown-item py-1 px-2 d-flex align-items-center">
-			// 				<div class="text-lg">
-			// 					<input
-			// 						class="form-check-input"
-			// 						type="radio"
-			// 						name="statusOption"
-			// 						id="statusCancelled"
-			// 						value="cancelled"
-			// 						x-model="selectedStatus"
-			// 					/>
-			// 				</div>
-			// 				<div class="ms-3 me-5">
-			// 					<label for="statusCancelled">Change status to cancelled</label>
-			// 				</div>
-			// 			</div>
-			// 			<div class="mt-3">
-			// 				<button
-			// 					type="button"
-			// 					class="btn btn-sm btn-primary d-sm-inline-flex position-relative"
-			// 					@click="applyAction"
-			// 				>
-			// 					<span x-show="!loading">Apply </span>
-			// 					<span
-			// 						x-show="loading"
-			// 						class="spinner-border spinner-border-sm"
-			// 						role="status"
-			// 						aria-hidden="true"
-			// 					></span>
-			// 					<i class="px-3 bi bi-arrow-right"></i>
-			// 				</button>
-			// 			</div>
-			// 			<div class="mt-3">
-			// 				<div x-show="errorMessage" class="alert alert-danger" role="alert">
-			// 					<span x-text="errorMessage"></span>
-			// 				</div>
-			// 			</div>
-			// 		</div>
-			// 	</div>
-			// </div>
 			<div class="table-responsive">
 				<table class="table table-hover table-nowrap">
 					<thead>
@@ -239,7 +98,7 @@ templ VoucherTable(projectId string) {
 							</tr>
 						</template>
 						<template x-for="voucher in paginatedVouchers" :key="voucher.Id">
-							<tr>
+							<tr @click="openOffcanvas(voucher)">
 								<td>
 									<div class="form-check">
 										<input
@@ -247,6 +106,7 @@ templ VoucherTable(projectId string) {
 											type="checkbox"
 											:value="voucher.Id"
 											x-model="selectedVouchers"
+											@click.stop
 										/>
 									</div>
 								</td>
@@ -265,69 +125,55 @@ templ VoucherTable(projectId string) {
 											<span x-text="'Yes'"></span>
 										</template>
 										<template x-if="!voucher.is_printed">
-											<span class="d-flex align-items-center">
-												<i
-													class="fas fa-download ml-1"
-													@click="downloadVoucher(voucher.Id)"
-													style="cursor: pointer;"
-													title="Download Voucher"
-												></i>
-											</span>
+											<span x-text="'No'"></span>
 										</template>
 									</td>
 								</template>
 								<td>
-									<button
-										x-bind:hx-get="'/voucher/modal/' + voucher.Id"
-										hx-target="#modals-here"
-										hx-trigger="click"
-										data-bs-toggle="modal"
-										data-bs-target="#modals-here"
-										class="btn btn-link"
-									>Details</button>
-									<button
-										class="btn btn-link"
-										x-bind:hx-get="'/voucher/openOffcanvas/' + voucher.Id"
-										hx-target="#offcanvasDetails .offcanvas-replace"
-										hx-trigger="click"
-										data-bs-toggle="offcanvas"
-										data-bs-target="#offcanvasDetails"
-									>Create</button>
+									<button type="button" class="btn btn-sm btn-neutral" @click="openOffcanvas(voucher)">
+										<i class="bi bi-plus-circle me-2"></i>Create Voucher
+									</button>
+									<button type="button" class="btn btn-sm btn-neutral" @click.stop="downloadVoucher(voucher.Id)">
+										<i
+											class="fas fa-download ml-1"
+											style="cursor: pointer;"
+											title="Download Voucher"
+										></i>
+									</button>
 								</td>
 							</tr>
 						</template>
 						<template x-for="i in 10 - paginatedVouchers.length" :key="'empty' + i">
 							<tr>
-								<td colspan="8" class="py-7"></td>
+								<td colspan="8" class="py-8"></td>
 							</tr>
 						</template>
 					</tbody>
 				</table>
 			</div>
+			<!-- Offcanvas Section -->
+			<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel" :class="{ 'show': showOffcanvas }" :style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }">
+				<div class="offcanvas-header">
+					<h5 class="offcanvas-title" id="offcanvasOrderDetails">Order Details</h5>
+					<button type="button" class="btn-close" @click="closeOffcanvas()"></button>
+				</div>
+				<div class="offcanvas-body">
+					<!-- Display order details inside the offcanvas -->
+					<p><strong>Shipping Information:</strong></p>
+					<p>Name: <span x-text="modalOrder.shipping.first_name + ' ' + modalOrder.shipping.last_name"></span></p>
+					<p>Address: <span x-text="modalOrder.shipping.address_1"></span></p>
+					<p>City: <span x-text="modalOrder.shipping.city"></span></p>
+					<p>Postcode: <span x-text="modalOrder.shipping.postcode"></span></p>
+					<p><strong>Products:</strong></p>
+					<ul>
+						<template x-for="product in modalOrder.products" :key="product.id">
+							<li x-text="product.name + ' - Quantity: ' + product.quantity"></li>
+						</template>
+					</ul>
+					<p><strong>Payment Method:</strong> <span x-text="modalOrder.payment_method"></span></p>
+				</div>
+			</div>
 			@p.PaginationControl()
-		</div>
-	</div>
-	<div
-		id="modals-here"
-		class="modal modal-blur fade"
-		style="display: none"
-		aria-hidden="false"
-		tabindex="-1"
-	>
-		<div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-			<div class="modal-content"></div>
-		</div>
-	</div>
-	<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasDetails">
-		<div class="offcanvas-replace">
-			<div class="offcanvas-header">
-				<h5 class="offcanvas-title" id="offcanvasDetailsLabel">Voucher Details</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-			</div>
-			<div class="offcanvas-body">
-				<!-- Dynamic content will be injected here by HTMX -->
-				<p>Loading voucher details...</p>
-			</div>
 		</div>
 	</div>
 	<script>
@@ -349,6 +195,27 @@ function voucherTable(projectId) {
         errorMessage: '',
 		isNewTab: true, 
 		isPrinted: false,
+        showOffcanvas: false,
+		 modalOrder: {
+            billing: {
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                city: '',
+                postcode: '',
+                email: '',
+                phone: '',
+            },
+            shipping: {
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                city: '',
+                postcode: '',
+            },
+            products: [],
+            payment_method: ''
+        },
 
         async init() {
             await this.fetchVouchers(this.currentPage);
@@ -514,6 +381,36 @@ function voucherTable(projectId) {
             } finally {
                 this.loading = false;
             }
+        },
+		 openOffcanvas(voucher) {
+			// Check if products exists and is an array
+			if (!Array.isArray(voucher.products)) {			
+				// Set products to an empty array if it's not valid
+				voucher.products = []; 
+				
+    		}
+		 this.modalOrder = {
+                   ...this.modalOrder,
+                ...voucher,
+                billing: { ...this.modalOrder.billing, ...voucher.billing },
+                shipping: { ...this.modalOrder.shipping, ...voucher.shipping },
+                products: [...voucher.products],
+                payment_method: voucher.payment_method
+            };
+			
+            this.showOffcanvas = true;
+			  console.log('Opening offcanvas:', this.showOffcanvas);
+			
+        },
+        closeOffcanvas() {
+            this.showOffcanvas = false;
+            this.modalOrder = {
+                billing: { ...this.modalOrder.billing },
+                shipping: { ...this.modalOrder.shipping },
+                products: [],
+                payment_method: ''
+            };
+			 console.log('Closing offcanvas:', this.showOffcanvas);
         },
     };
 }

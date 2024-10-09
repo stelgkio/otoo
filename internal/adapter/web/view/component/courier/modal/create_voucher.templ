@@ -1,11 +1,8 @@
 package views
 
-import (
-	v "github.com/stelgkio/otoo/internal/core/domain/courier"
-	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
-)
+import ()
 
-templ CreateVoucher(projectId string, voucher *v.Voucher, order *w.OrderRecord) {
+templ CreateVoucher() {
 	<!-- Offcanvas for Courier Information -->
 	<div class="offcanvas-header">
 		<h5 class="offcanvas-title" id="orderProcessingOffcanvasLabel">Επεξεργασία Παραγγελίας #<span id="offcanvas-order-id"></span></h5>

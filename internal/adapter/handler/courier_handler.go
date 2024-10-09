@@ -114,6 +114,7 @@ func (dh *DashboardHandler) VoucherTable(ctx echo.Context) error {
 				VoucherID: record.VoucherID,
 				Status:    record.Status,
 				Shipping:  *record.Shipping,
+				Billing:   *record.Billing,
 				CreateAt:  record.CreatedAt,
 				Cod:       record.Cod,
 				Products:  record.Products,
@@ -168,11 +169,11 @@ func (dh *DashboardHandler) CreateVoucher(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	order, err := dh.orderSvc.GetOrderByID(voucher.ProjectID, voucher.OrderID)
+	_, err = dh.orderSvc.GetOrderByID(voucher.ProjectID, voucher.OrderID)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	return util.Render(ctx, m.CreateVoucher(voucher.ProjectID, voucher, order))
+	return util.Render(ctx, m.CreateVoucher())
 
 }

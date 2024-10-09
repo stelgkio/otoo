@@ -30,12 +30,27 @@ func NewVoucherRepository(mongo *mongo.Client) *VoucherRepository {
 func (r *VoucherRepository) CreateVoucher(ctx echo.Context, voucher *domain.Voucher, projectID string) (*domain.Voucher, error) {
 	collection := r.mongo.Database("otoo").Collection("vouchers")
 
-	// Insert the voucher into the collection
-	_, err := collection.InsertOne(context.Background(), voucher)
+	// Define the filter to find an existing voucher
+	filter := bson.M{"projectId": projectID, "is_active": true, "orderId": voucher.OrderID, "is_printed": false} // Ensure `OrderID` is a field in your voucher
+
+	// Define the update document
+	update := bson.M{
+		"$set": voucher, // Set the voucher fields to the new values
+	}
+
+	// Upsert the voucher into the collection
+	_, err := collection.UpdateOne(
+		context.Background(),
+		filter,
+		update,
+		options.Update().SetUpsert(true), // Enable upsert
+	)
+
 	if err != nil {
-		slog.Error("Failed to create voucher", "error", err)
+		slog.Error("Failed to create or update voucher", "error", err)
 		return nil, err
 	}
+
 	return voucher, nil
 }
 

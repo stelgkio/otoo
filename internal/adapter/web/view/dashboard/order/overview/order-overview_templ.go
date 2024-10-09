@@ -135,7 +135,7 @@ func OrderOverView(projectId, totalCount, count24h, count7d, count1m string) tem
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\r\n\tvar popoverTriggerList = document.querySelectorAll('[data-bs-toggle=\"popover\"]')\r\n\tvar popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))\r\n\t</script>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n\tvar popoverTriggerList = document.querySelectorAll('[data-bs-toggle=\"popover\"]')\n\tvar popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))\n\t</script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

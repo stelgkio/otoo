@@ -154,7 +154,7 @@ templ VoucherTable(projectId string) {
 			<!-- Offcanvas Section -->
 			<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel" :class="{ 'show': showOffcanvas }" :style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }">
 				<div class="offcanvas-header">
-					<h5 class="offcanvas-title" id="offcanvasOrderDetails">Order Details</h5>
+					<h5 class="offcanvas-title" id="offcanvasOrderDetails">Voucher Details</h5>
 					<button type="button" class="btn-close" @click="closeOffcanvas()"></button>
 				</div>
 				<div class="offcanvas-body">
@@ -183,6 +183,8 @@ templ VoucherTable(projectId string) {
 						</template>
 					</ul>
 					<p><strong>Payment Method:</strong> <span x-text="modalOrder.payment_method"></span></p>
+					<br/>
+					<p><strong>Payment Amount:</strong> <span x-text="modalOrder.cod"></span></p>
 				</div>
 			</div>
 			@p.PaginationControl()

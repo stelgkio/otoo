@@ -39,3 +39,4 @@ go.work
 
 build_and_push.sh
 /internal/adapter/web/view/**/*.txt
+/internal/adapter/web/view/**/*.go

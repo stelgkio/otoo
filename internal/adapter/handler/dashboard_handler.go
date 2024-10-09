@@ -742,6 +742,7 @@ func (dh *DashboardHandler) OrderTable(ctx echo.Context) error {
 				Products:       record.Order.LineItems,
 				CurrencySymbol: record.Order.CurrencySymbol,
 				PaymentMethod:  record.Order.PaymentMethodTitle,
+				CustomerNote:   record.Order.CustomerNote,
 			})
 		}
 	}

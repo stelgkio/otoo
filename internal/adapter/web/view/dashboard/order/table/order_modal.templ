@@ -27,34 +27,34 @@ templ OrderModal() {
 									<div class="row">
 										<div class="col-md-6 mb-3">
 											<label class="form-label small text-muted">First Name</label>
-											<input type="text" class="form-control form-control-sm" x-model="modalOrder.billing.first_name" :readonly="!editableBilling"/>
+											<input type="text" class="form-control form-control-sm" x-model="modalOrder.billing.first_name"/>
 										</div>
 										<div class="col-md-6 mb-3">
 											<label class="form-label small text-muted">Last Name</label>
-											<input type="text" class="form-control form-control-sm" x-model="modalOrder.billing.last_name" :readonly="!editableBilling"/>
+											<input type="text" class="form-control form-control-sm" x-model="modalOrder.billing.last_name"/>
 										</div>
 									</div>
 									<div class="mb-3">
 										<label class="form-label small text-muted">Address</label>
-										<input type="text" class="form-control form-control-sm" x-model="modalOrder.billing.address_1" :readonly="!editableBilling"/>
+										<input type="text" class="form-control form-control-sm" x-model="modalOrder.billing.address_1"/>
 									</div>
 									<div class="row">
 										<div class="col-md-6 mb-3">
 											<label class="form-label small text-muted">City</label>
-											<input type="text" class="form-control form-control-sm" x-model="modalOrder.billing.city" :readonly="!editableBilling"/>
+											<input type="text" class="form-control form-control-sm" x-model="modalOrder.billing.city"/>
 										</div>
 										<div class="col-md-6 mb-3">
 											<label class="form-label small text-muted">Postcode</label>
-											<input type="text" class="form-control form-control-sm" x-model="modalOrder.billing.postcode" :readonly="!editableBilling"/>
+											<input type="text" class="form-control form-control-sm" x-model="modalOrder.billing.postcode"/>
 										</div>
 									</div>
 									<div class="mb-3">
 										<label class="form-label small text-muted">Email</label>
-										<input type="email" class="form-control form-control-sm" x-model="modalOrder.billing.email" :readonly="!editableBilling"/>
+										<input type="email" class="form-control form-control-sm" x-model="modalOrder.billing.email"/>
 									</div>
 									<div class="mb-3">
 										<label class="form-label small text-muted">Phone</label>
-										<input type="tel" class="form-control form-control-sm" x-model="modalOrder.billing.phone" :readonly="!editableBilling"/>
+										<input type="tel" class="form-control form-control-sm" x-model="modalOrder.billing.phone"/>
 									</div>
 								</form>
 							</div>
@@ -71,27 +71,40 @@ templ OrderModal() {
 									</button>
 								</div>
 								<form>
-									<div class="mb-3">
-										<label class="form-label small text-muted">First Name</label>
-										<input type="text" class="form-control form-control-sm" x-model="modalOrder.shipping.first_name" :readonly="!editableShipping"/>
+									<div class="row">
+										<div class="col-md-6 mb-3">
+											<label class="form-label small text-muted">First Name</label>
+											<input type="text" class="form-control form-control-sm" x-model="modalOrder.shipping.first_name"/>
+										</div>
+										<div class="col-md-6 mb-3">
+											<label class="form-label small text-muted">Last Name</label>
+											<input type="text" class="form-control form-control-sm" x-model="modalOrder.shipping.last_name"/>
+										</div>
 									</div>
-									<div class="mb-3">
-										<label class="form-label small text-muted">Address</label>
-										<input type="text" class="form-control form-control-sm" x-model="modalOrder.shipping.address_1" :readonly="!editableShipping"/>
+									//Address1 Address2
+									<div class="row">
+										<div class="col-md-6 mb-3">
+											<label class="form-label small text-muted">Address</label>
+											<input type="text" class="form-control form-control-sm" x-model="modalOrder.shipping.address_1"/>
+										</div>
+										<div class="col-md-6 mb-3">
+											<label class="form-label small text-muted">Address 2</label>
+											<input type="text" class="form-control form-control-sm" x-model="modalOrder.shipping.address_2"/>
+										</div>
 									</div>
 									<div class="row">
 										<div class="col-md-6 mb-3">
 											<label class="form-label small text-muted">City</label>
-											<input type="text" class="form-control form-control-sm" x-model="modalOrder.shipping.city" :readonly="!editableShipping"/>
+											<input type="text" class="form-control form-control-sm" x-model="modalOrder.shipping.city"/>
 										</div>
 										<div class="col-md-6 mb-3">
 											<label class="form-label small text-muted">Postcode</label>
-											<input type="text" class="form-control form-control-sm" x-model="modalOrder.shipping.postcode" :readonly="!editableShipping"/>
+											<input type="text" class="form-control form-control-sm" x-model="modalOrder.shipping.postcode"/>
 										</div>
 									</div>
 									<div class="mb-3">
 										<label class="form-label small text-muted">Customer Notes</label>
-										<textarea class="form-control form-control-sm" rows="4" x-model="modalOrder.customer_notes" :readonly="!editableShipping"></textarea>
+										<textarea class="form-control form-control-sm" rows="4" x-model="modalOrder.customer_note"></textarea>
 									</div>
 								</form>
 							</div>
@@ -110,7 +123,7 @@ templ OrderModal() {
 								</div>
 								<div class="col-md-4">
 									<span class="d-block text-muted small text-muted">Total Amount</span>
-									<strong x-text="modalOrder.total_amount"></strong>
+									<strong x-text="modalOrder.total_amount + ' ' + modalOrder.currency_symbol"></strong>
 								</div>
 								<div class="col-md-4">
 									<span class="d-block text-muted small text-muted">Status</span>
@@ -141,7 +154,7 @@ templ OrderModal() {
 											<tr>
 												<td x-text="product.name"></td>
 												<td x-text="product.quantity" class="text-center"></td>
-												<td x-text="product.price" class="text-end"></td>
+												<td x-text="product.price + ' ' + modalOrder.currency_symbol" class="text-end"></td>
 											</tr>
 										</template>
 									</tbody>

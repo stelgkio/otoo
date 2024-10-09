@@ -144,7 +144,9 @@ func NewRouter(
 
 		extensiongroup.GET("/data-synchronizer/:projectId", dashboardHandler.DataSynchronizer)
 
-		extensiongroup.GET("/page/asc-courier/:projectId", dashboardHandler.AcsCourierPage)
+		extensiongroup.GET("/page/asc-courier/:projectId", dashboardHandler.CourierTable)
+		extensiongroup.GET("/page/courier4u/:projectId", dashboardHandler.CourierTable)
+		extensiongroup.GET("/page/redcourier/:projectId", dashboardHandler.CourierTable)
 		extensiongroup.GET("/page/wallet-expences/:projectId", dashboardHandler.WalletExpensesPage)
 		extensiongroup.GET("/page/data-synchronizer/:projectId", projectHandler.ProjectSynchronizePage)
 

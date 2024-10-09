@@ -25,16 +25,29 @@ templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExt
 			<ul class="nav nav-sm flex-column mt-1">
 				if len(extensions) != 0 {
 					for _, extension := range extensions {
-						<li class="nav-item">
-							<a
-								href="javascript:void(0)"
-								hx-get={ fmt.Sprintf("/extension/page/%s/%s", extension.Code, projectId) }
-								class="nav-link"
-								hx-target="#dashboard-content"
-							>
-								{ 	extension.Title }
-							</a>
-						</li>
+						if extension.Code == "asc-courier" || extension.Code == "courier4u" || extension.Code == "redcourier" {
+							<li class="nav-item extension-item" data-extension-code={ extension.Code }>
+								<a
+									href="javascript:void(0)"
+									hx-get={ fmt.Sprintf("/extension/page/%s/%s", extension.Code, projectId) }
+									class="nav-link"
+									hx-target="#dashboard-content"
+								>
+									Courier
+								</a>
+							</li>
+						} else {
+							<li class="nav-item">
+								<a
+									href="javascript:void(0)"
+									hx-get={ fmt.Sprintf("/extension/page/%s/%s", extension.Code, projectId) }
+									class="nav-link"
+									hx-target="#dashboard-content"
+								>
+									{ 	extension.Title }
+								</a>
+							</li>
+						}
 					}
 				}
 			</ul>

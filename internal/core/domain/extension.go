@@ -44,6 +44,16 @@ type ProjectExtension struct {
 	PaymentStatus string             `json:"payment_status" bson:"payment_status,omitempty"`
 }
 
+// ContainsExtensionID Function to check if any ProjectExtension contains the given ExtensionID
+func ContainsExtensionID(projectExtensions []*ProjectExtension, extensionID string) bool {
+	for _, projectExtension := range projectExtensions {
+		if projectExtension.ExtensionID == extensionID {
+			return true // Found a matching ExtensionID
+		}
+	}
+	return false // No matching ExtensionID found
+}
+
 // AcsCourierExtension represents active acs details for acs courier
 type AcsCourierExtension struct {
 	ID primitive.ObjectID `bson:"_id,omitempty"`

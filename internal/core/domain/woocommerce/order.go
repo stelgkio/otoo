@@ -104,6 +104,7 @@ type OrderTableList struct {
 	Products       []woocommerce.LineItem `bson:"products,omitempty" json:"products,omitempty"`
 	CurrencySymbol string                 `bson:"currency_symbol,omitempty" json:"currency_symbol,omitempty"`
 	PaymentMethod  string                 `bson:"payment_method,omitempty" json:"payment_method,omitempty"`
+	CustomerNote   string                 `bson:"customer_note,omitempty" json:"customer_note,omitempty"`
 }
 
 // OrderTableResponde represents an order table response

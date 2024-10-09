@@ -136,7 +136,7 @@ func SettingsGeneral(user *domain.User, project *domain.Project, projectExtensio
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n\tvar popoverTriggerList2 = document.querySelectorAll('[data-bs-toggle=\"popover\"]')\n\tvar popoverList2 = [...popoverTriggerList2].map(popoverTriggerEl2 => new bootstrap.Popover(popoverTriggerEl2))\n\t</script>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\r\n\tvar popoverTriggerList2 = document.querySelectorAll('[data-bs-toggle=\"popover\"]')\r\n\tvar popoverList2 = [...popoverTriggerList2].map(popoverTriggerEl2 => new bootstrap.Popover(popoverTriggerEl2))\r\n\t</script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

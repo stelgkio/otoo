@@ -1,0 +1,32 @@
+package views
+
+import (
+	"fmt"
+	c "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/table"
+)
+
+templ VoucherHtml(projectId string) {
+	<div class="mb-1 mb-xl-10">
+		<div class="col">
+			<div class="hstack gap-2 justify-content-start">
+				<button
+					class="btn btn-sm btn-neutral "
+					type="button"
+					hx-get={ fmt.Sprintf("/order/chart/%s", projectId) }
+					hx-target="#dashboard-order"
+				>
+					<i class="bi bi-bar-chart-fill"></i> <span class="ms-2">Charts</span>
+				</button>
+				<button
+					class="btn btn-sm btn-neutral "
+					type="button"
+					hx-get={ fmt.Sprintf("/order/tablehtml/%s", projectId) }
+					hx-target="#dashboard-order"
+				>
+					<i class="bi bi-box-seam-fill"></i> <span class="ms-2">Orders</span>
+				</button>
+			</div>
+		</div>
+	</div>
+	@c.VoucherTable(projectId)
+}

@@ -285,6 +285,7 @@ func NewRouter(
 		couriergroup.Use(configureJWT())
 		couriergroup.Use(auth.TokenRefresherMiddleware)
 		couriergroup.GET("/table/view/:projectId", dashboardHandler.CourierTable)
+		couriergroup.GET("/table/html/:projectId", dashboardHandler.VoucherTableHTML)
 		couriergroup.GET("/table/:projectId/:status/:page", dashboardHandler.VoucherTable)
 		couriergroup.GET("/modal/:Id", dashboardHandler.VoucherDetailModal)
 		couriergroup.GET("/openOffcanvas/:Id", dashboardHandler.CreateVoucher)

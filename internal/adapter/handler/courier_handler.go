@@ -21,11 +21,21 @@ func (dh *DashboardHandler) CourierTable(ctx echo.Context) error {
 	return util.Render(ctx, t.VoucherOverview(projectID))
 }
 
+// VoucherTableHTML returns the order dashboard
+func (dh *DashboardHandler) VoucherTableHTML(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+
+	return util.Render(ctx, t.VoucherHtml(projectID))
+}
+
 // VoucherTable returns the order dashboard
 func (dh *DashboardHandler) VoucherTable(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 	page := ctx.Param("page")
 	status, err := v.StringToVoucherStatus(ctx.Param("status"))
+	if page == "" {
+		page = "1"
+	}
 	pageNum, err := strconv.Atoi(page)
 	sort := ctx.QueryParam("sort")
 	direction := ctx.QueryParam("direction")
@@ -39,6 +49,9 @@ func (dh *DashboardHandler) VoucherTable(ctx echo.Context) error {
 	}
 	if direction == "" {
 		direction = "asc"
+	}
+	if status == "" {
+		status = v.VoucherStatusNew
 	}
 
 	var wg sync.WaitGroup
@@ -103,6 +116,7 @@ func (dh *DashboardHandler) VoucherTable(ctx echo.Context) error {
 				Shipping:  *record.Shipping,
 				CreateAt:  record.CreatedAt,
 				Cod:       record.Cod,
+				Products:  record.Products,
 			})
 		}
 	}

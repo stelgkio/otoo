@@ -171,7 +171,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" class=\"btn btn-sm btn-square btn-dark stretched-link\" hx-target=\"#dashboard-content\"><i class=\"bi bi-arrow-right\"></i></a></div></div>card-disabled</div>")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" class=\"btn btn-sm btn-square btn-dark stretched-link\" hx-target=\"#dashboard-content\"><i class=\"bi bi-arrow-right\"></i></a></div></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}

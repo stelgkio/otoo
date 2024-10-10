@@ -260,7 +260,6 @@ func NewRouter(
 
 		ordergroupB.POST("/bulk-action/:projectId", dashboardHandler.OrderBulkAction)
 		ordergroupB.PUT("/update/:orderId/:projectId", dashboardHandler.OrderUpdate)
-
 	}
 	productgroupB := e.Group("/product")
 	{

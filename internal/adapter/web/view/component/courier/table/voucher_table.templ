@@ -47,6 +47,18 @@ templ VoucherTable(projectId string) {
 					</li>
 				</ul>
 			</div>
+			<div class="d-flex gap-2 scrollable-x py-3 px-7 border-bottom">
+				<div class="align-items-center ms-auto text-sm text-muted text-primary-hover fw-semibold d-none d-md-flex" role="button">
+					<div class="hstack gap-2 ms-auto">
+						<button type="button" class="btn btn-sm btn-neutral d-none d-lg-inline-flex">
+							<i class="bi bi-arrow-90deg-right me-2"></i> Export
+						</button>
+						<a class="btn btn-sm btn-primary">
+							<i class="bi bi-plus-lg me-2"></i> New Voucher
+						</a>
+					</div>
+				</div>
+			</div>
 			<div class="table-responsive">
 				<table class="table table-hover table-nowrap">
 					<thead>

@@ -204,7 +204,11 @@ func (os *OrderService) UpdateOrder(projectID string, orderID int64, orderTable 
 			return
 		}
 
-		os.voucherSvc.UpdateVoucher(nil, order, projectID)
+		_, err = os.voucherSvc.UpdateVoucher(nil, order, projectID)
+		if err != nil {
+			errChan <- err
+			return
+		}
 
 		mu.Lock()
 		ordersToUpdate[0] = order

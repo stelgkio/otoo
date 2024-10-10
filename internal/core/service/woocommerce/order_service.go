@@ -204,6 +204,8 @@ func (os *OrderService) UpdateOrder(projectID string, orderID int64, orderTable 
 			return
 		}
 
+		os.voucherSvc.UpdateVoucher(nil, order, projectID)
+
 		mu.Lock()
 		ordersToUpdate[0] = order
 		mu.Unlock()

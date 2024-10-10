@@ -134,7 +134,7 @@ func (r *AnalyticsRepository) FindLatestWeeklyBalance(projectID string) (*domain
 	filter := bson.M{"projectId": projectID}
 
 	// Define options: Sort by the Timestamp field in descending order and limit the result to 1
-	opts := options.FindOne().SetSort(bson.D{{Key: "order_created", Value: -1}})
+	opts := options.FindOne().SetSort(bson.D{{Key: "timestamp", Value: -1}})
 
 	// Define a variable to hold the result
 	var result domain.WeeklyAnalytics

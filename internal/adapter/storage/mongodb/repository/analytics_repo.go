@@ -92,7 +92,7 @@ func (r *AnalyticsRepository) FindWeeklyBalance(projectID string, size, page int
 
 	// Define the pagination options: Sort by the Timestamp field in descending order
 	opts := options.Find().
-		SetSort(bson.D{{Key: "timestamp", Value: -1}}).
+		SetSort(bson.D{{Key: "order_created", Value: -1}}).
 		SetLimit(int64(size)).            // Limit results to the page size
 		SetSkip(int64((page - 1) * size)) // Skip records for pagination
 
@@ -134,7 +134,7 @@ func (r *AnalyticsRepository) FindLatestWeeklyBalance(projectID string) (*domain
 	filter := bson.M{"projectId": projectID}
 
 	// Define options: Sort by the Timestamp field in descending order and limit the result to 1
-	opts := options.FindOne().SetSort(bson.D{{Key: "timestamp", Value: -1}})
+	opts := options.FindOne().SetSort(bson.D{{Key: "order_created", Value: -1}})
 
 	// Define a variable to hold the result
 	var result domain.WeeklyAnalytics

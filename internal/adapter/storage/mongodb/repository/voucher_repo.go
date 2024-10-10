@@ -163,7 +163,7 @@ func (r *VoucherRepository) FindVoucherByProjectID(projectID string, size, page 
 	// Set sort field
 	sortField := sort
 	if sort == "" {
-		sortField = "timestamp" // Default sort field if none provided
+		sortField = "created_at" // Default sort field if none provided
 	}
 
 	// Create an aggregation pipeline

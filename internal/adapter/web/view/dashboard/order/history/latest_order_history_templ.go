@@ -56,9 +56,9 @@ func LatestOrderHistory(orders []*woo.OrderRecord) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
-			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(util.CalculateTimeDifference(item.OrderCreated.Format("2006-01-02 15:04:05"), time.Now().UTC().Format("2006-01-02 15:04:05")))
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(util.CalculateTimeDifference(item.Timestamp.Format("2006-01-02 15:04:05"), time.Now().UTC().Format("2006-01-02 15:04:05")))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 43, Col: 135}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/order/history/latest_order_history.templ`, Line: 43, Col: 132}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {

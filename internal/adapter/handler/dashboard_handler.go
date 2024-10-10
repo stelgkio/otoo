@@ -227,7 +227,7 @@ func (dh *DashboardHandler) DefaultDashboardOverView(ctx echo.Context) error {
 	// Fetch latest 10 order count
 	go func() {
 		defer wg.Done()
-		dh.orderSvc.Get10LatestOrders(ctx, projectID, w.OrderStatusCompleted, "order_created", orderListResults, orderListErrors)
+		dh.orderSvc.Get10LatestOrders(ctx, projectID, w.OrderStatusCompleted, "timestamp", orderListResults, orderListErrors)
 	}()
 	// Wait for all goroutines to finish
 	go func() {

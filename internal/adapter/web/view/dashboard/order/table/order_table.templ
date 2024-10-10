@@ -322,6 +322,7 @@ function orderTable(projectId) {
                     this.totalPages = result.meta.totalPages || 0;
                 } else {
                     console.error('Error fetching data:', result.message);
+					this.errorMessage = result.message || 'An error occurred while fetching data.';
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -473,6 +474,7 @@ function orderTable(projectId) {
 
         closeModal() {
             this.showModal = false;
+			  this.errorMessage ='';
             this.modalOrder = {
                 billing: { ...this.modalOrder.billing },
                 shipping: { ...this.modalOrder.shipping },
@@ -480,7 +482,41 @@ function orderTable(projectId) {
                 payment_method: '',
 				customer_note:''
             };
-        }
+        },
+		 async saveChanges() {
+            this.loading = true;
+            try {
+                const response = await fetch(`/order/update/${this.modalOrder.orderId}/${this.projectID}`, {
+                    method: 'PUT', // Or 'PUT' based on your API
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        billing: this.modalOrder.billing,
+                        shipping: this.modalOrder.shipping,
+                        products: this.modalOrder.products,
+                        payment_method: this.modalOrder.payment_method,
+                        customer_note: this.modalOrder.customer_note,
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Successfully saved, close the modal and refresh the order list
+                    this.closeModal();
+                    this.fetchOrders(this.currentPage);  // Refresh orders list
+                    console.log('Order updated successfully:', result);
+                } else {
+					 this.errorMessage =  'An error occurred while updating data.';
+                    console.error('Error saving changes:', result.message);
+                }
+            } catch (error) {
+                console.error('Error saving changes:', error);
+            } finally {
+                this.loading = false;
+            }
+        },
     };
 }
 </script>

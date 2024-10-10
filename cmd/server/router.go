@@ -259,6 +259,7 @@ func NewRouter(
 		ordergroupB.GET("/tablehtml/:projectId", dashboardHandler.OrderTableHTML)
 
 		ordergroupB.POST("/bulk-action/:projectId", dashboardHandler.OrderBulkAction)
+		ordergroupB.PUT("/update/:orderId/:projectId", dashboardHandler.OrderUpdate)
 
 	}
 	productgroupB := e.Group("/product")

@@ -820,6 +820,32 @@ func (dh *DashboardHandler) OrderCharts(ctx echo.Context) error {
 	return util.Render(ctx, chart.OrderCharts(projectID))
 }
 
+// OrderUpdate return charts for orders
+func (dh *DashboardHandler) OrderUpdate(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	orderIDstr := ctx.Param("orderId")
+	orderIO, err := strconv.ParseInt(orderIDstr, 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
+	}
+	req := new(w.OrderTableList)
+
+	if err := ctx.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
+	}
+	// Get project details using the project service
+	project, err := dh.projectSvc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
+	}
+	_, err = dh.orderSvc.UpdateOrder(projectID, orderIO, req, project)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
+	}
+
+	return ctx.JSON(http.StatusOK, map[string]string{"message": "Order updated successfully"})
+}
+
 // GetProjectAndUser retrieves project and user details from the context
 func GetProjectAndUser(ctx echo.Context, dh *DashboardHandler) (*domain.Project, *domain.User, string, error) {
 	// Extract project ID from the context

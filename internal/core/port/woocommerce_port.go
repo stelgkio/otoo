@@ -90,6 +90,7 @@ type OrderService interface {
 	GetAllOrdersFromWoocommerce(customerKey string, customerSecret string, domainURL string, projectID string, totalProduct int64) error
 	UpdateOrderStatusByID(projectID string, orderID int64, status string, project *d.Project) (*domain.OrderRecord, error)
 	BatchUpdateOrdersStatus(projectID string, orders []int64, status string, proj *d.Project) ([]*domain.OrderRecord, error)
+	UpdateOrder(projectID string, orderID int64, orderTable *domain.OrderTableList, proj *d.Project) (*domain.OrderRecord, error)
 	GetLatestOrderWeeklyBalance(ctx echo.Context, projectID string, results chan<- *domain.WeeklyAnalytics, errors chan<- error)
 }
 

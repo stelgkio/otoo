@@ -165,7 +165,18 @@ templ OrderModal() {
 				</div>
 				<div class="modal-footer border-0 pt-0">
 					<button type="button" class="btn btn-outline-secondary rounded-1 px-4" @click="closeModal">Close</button>
-					<button type="button" class="btn btn-primary rounded-1 px-4" @click="saveChanges">Save Changes</button>
+					<!-- Save Changes Button with Spinner -->
+					<button type="button" class="btn btn-primary rounded-1 px-4" @click="saveChanges">
+						<!-- Show this when not loading -->
+						<span x-show="!loading">Save Changes</span>
+						<!-- Spinner (Bootstrap spinner or custom) -->
+						<span x-show="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+						<!-- Optionally, show 'Saving...' text when loading -->
+						<span x-show="loading" class="ms-2">Saving...</span>
+					</button>
+				</div>
+				<div x-show="errorMessage" class="alert alert-danger mt-2" role="alert">
+					<span x-text="errorMessage"></span>
 				</div>
 			</div>
 		</div>

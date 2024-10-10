@@ -173,6 +173,65 @@ func (os *OrderService) BatchUpdateOrdersStatus(projectID string, orders []int64
 	return ordersToUpdate, nil
 }
 
+// UpdateOrder updates an order
+func (os *OrderService) UpdateOrder(projectID string, orderID int64, orderTable *domain.OrderTableList, proj *d.Project) (*domain.OrderRecord, error) {
+	client := InitClient(proj.WoocommerceProject.ConsumerKey, proj.WoocommerceProject.ConsumerSecret, proj.WoocommerceProject.Domain)
+
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+	errChan := make(chan error, 1)
+	ordersToUpdate := make([]*domain.OrderRecord, 1)
+
+	updateOrder := func(orderID int64) {
+		defer wg.Done()
+		order, err := os.p.GetOrderByID(projectID, orderID)
+		if err != nil {
+			errChan <- err
+			return
+		}
+		if order == nil {
+			return
+		}
+
+		order.Order.Shipping = &orderTable.Shipping
+		order.Order.CustomerNote = orderTable.CustomerNote
+		order.Order.Billing = &orderTable.Billing
+		order.Timestamp = time.Now().UTC()
+		order.UpdatedAt = time.Now().UTC()
+		err = os.p.OrderUpdate(order, orderID)
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		mu.Lock()
+		ordersToUpdate[0] = order
+		mu.Unlock()
+
+		_, err = client.Order.Update(&order.Order)
+		if err != nil {
+			errChan <- err
+			return
+		}
+	}
+
+	wg.Add(1)
+	go updateOrder(orderID)
+
+	go func() {
+		wg.Wait()
+		close(errChan)
+	}()
+
+	for err := range errChan {
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return ordersToUpdate[0], nil
+}
+
 // GetAllOrdersFromWoocommerce retrieves all orders from WooCommerce and saves them to MongoDB
 func (os *OrderService) GetAllOrdersFromWoocommerce(customerKey string, customerSecret string, domainURL string, projectID string, totalProduct int64) error {
 	client := InitClient(customerKey, customerSecret, domainURL)

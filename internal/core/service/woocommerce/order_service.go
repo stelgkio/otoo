@@ -55,8 +55,8 @@ func (os *OrderService) GetOrderCount(projectID string, orderStatus w.OrderStatu
 }
 
 // Get10LatestOrders retrieves the latest 10 orders for a given project ID
-func (os *OrderService) Get10LatestOrders(ctx echo.Context, projectID string, orderStatus w.OrderStatus, results chan<- []*domain.OrderRecord, errors chan<- error) {
-	orders, err := os.p.OrderFindByProjectID(projectID, 10, 1, orderStatus, "", "")
+func (os *OrderService) Get10LatestOrders(ctx echo.Context, projectID string, orderStatus w.OrderStatus, sort string, results chan<- []*domain.OrderRecord, errors chan<- error) {
+	orders, err := os.p.OrderFindByProjectID(projectID, 10, 1, orderStatus, sort, "")
 	if err != nil {
 		errors <- err
 	} else {
@@ -317,16 +317,18 @@ func (os *OrderService) createAndSaveAllCustomers(client *commerce.Client, proje
 		os.extensionSrv.UpdateSynchronizerOrderReceivedExtension(nil, projectID, len(resp))
 		for _, item := range resp {
 			Status, _ := domain.StringToOrderStatus(item.Status)
+			_, orcderCreate, _ := domain.ConvertDateString(item.DateCreatedGmt)
 			orderCh <- &w.OrderRecord{
-				ProjectID: projectID,
-				Event:     "order.created",
-				Error:     "",
-				CreatedAt: time.Now().UTC(),
-				Timestamp: time.Now().UTC(),
-				OrderID:   item.ID,
-				Order:     item,
-				IsActive:  true,
-				Status:    Status,
+				ProjectID:    projectID,
+				Event:        "order.created",
+				Error:        "",
+				CreatedAt:    time.Now().UTC(),
+				Timestamp:    time.Now().UTC(),
+				OrderID:      item.ID,
+				Order:        item,
+				IsActive:     true,
+				Status:       Status,
+				OrderCreated: orcderCreate,
 			}
 
 		}

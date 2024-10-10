@@ -105,7 +105,7 @@ func (dh *DashboardHandler) DefaultDashboard(ctx echo.Context) error {
 	// Fetch latest 10 order count
 	go func() {
 		defer wg.Done()
-		dh.orderSvc.Get10LatestOrders(ctx, projectID, w.OrderStatusCompleted, orderListResults, orderListErrors)
+		dh.orderSvc.Get10LatestOrders(ctx, projectID, w.OrderStatusCompleted, "order_created", orderListResults, orderListErrors)
 	}()
 	// Wait for all goroutines to finish
 	go func() {
@@ -227,7 +227,7 @@ func (dh *DashboardHandler) DefaultDashboardOverView(ctx echo.Context) error {
 	// Fetch latest 10 order count
 	go func() {
 		defer wg.Done()
-		dh.orderSvc.Get10LatestOrders(ctx, projectID, w.OrderStatusCompleted, orderListResults, orderListErrors)
+		dh.orderSvc.Get10LatestOrders(ctx, projectID, w.OrderStatusCompleted, "order_created", orderListResults, orderListErrors)
 	}()
 	// Wait for all goroutines to finish
 	go func() {
@@ -733,7 +733,7 @@ func (dh *DashboardHandler) OrderTable(ctx echo.Context) error {
 			orders = append(orders, w.OrderTableList{
 				ID:             record.ID,
 				ProjectID:      record.ProjectID,
-				Timestamp:      record.Timestamp,
+				OrderCreated:   record.OrderCreated,
 				OrderID:        record.OrderID,
 				TotalAmount:    record.Order.Total,
 				Status:         record.Status,

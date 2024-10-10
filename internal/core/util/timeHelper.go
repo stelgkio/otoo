@@ -41,26 +41,3 @@ func CalculateTimeDifference(startDateStr, endDateStr string) string {
 	}
 
 }
-
-// ConvertDateString  Function to convert and format the date
-func ConvertDateString(dateStr string) (string, error) {
-	// Define the layout for parsing the original string
-	layoutInput := "2006-01-02T15:04:05"
-
-	// Parse the input date string into a time.Time object
-	parsedTime, err := time.Parse(layoutInput, dateStr)
-	if err != nil {
-		return "", err
-	}
-
-	// Change the date to 2024-09-25 while keeping the same time
-	newDate := time.Date(2024, 9, 25, parsedTime.Hour(), parsedTime.Minute(), parsedTime.Second(), 0, parsedTime.Location())
-
-	// Define the layout for formatting the output string
-	layoutOutput := "2006-01-02 15:04:05"
-
-	// Format the new date into the desired string format
-	formattedTime := newDate.Format(layoutOutput)
-
-	return formattedTime, nil
-}

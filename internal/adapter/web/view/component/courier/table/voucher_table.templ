@@ -85,9 +85,9 @@ templ VoucherTable(projectId string) {
 								Order ID
 								<i :class="getSortIcon('orderId')"></i>
 							</th>
-							<th @click="sortTable('created_at')">
+							<th @click="sortTable('updated_at')">
 								Date
-								<i :class="getSortIcon('created_at')"></i>
+								<i :class="getSortIcon('updated_at')"></i>
 							</th>
 							<th @click="sortTable('cod')">
 								COD
@@ -125,8 +125,8 @@ templ VoucherTable(projectId string) {
 								<template x-if="!isNewTab">
 									<td x-text="voucher.Id"></td>
 								</template>
-								<td x-text="voucher.orderId"></td>
-								<td x-text="new Date(voucher.created_at).toLocaleString()"></td>
+								<td x-text="'#' + voucher.orderId"></td>
+								<td x-text="new Date(voucher.updated_at).toLocaleString()"></td>
 								<td x-text="voucher.cod"></td>
 								<td>
 									<span :class="badgeClass(voucher.status)" x-text="voucher.status"></span>

@@ -83,15 +83,17 @@ func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
 		return err
 	}
 
+	_, orcderCreate, _ := woo.ConvertDateString(req.DateCreatedGmt)
 	// Create an order record
 	orderRecord := &woo.OrderRecord{
-		ProjectID: project.Id.String(),
-		Event:     "order.created",
-		OrderID:   req.ID,
-		Order:     *req,
-		IsActive:  true,
-		CreatedAt: time.Now().UTC(),
-		Timestamp: time.Now().UTC(),
+		ProjectID:    project.Id.String(),
+		Event:        "order.created",
+		OrderID:      req.ID,
+		Order:        *req,
+		IsActive:     true,
+		CreatedAt:    time.Now().UTC(),
+		Timestamp:    time.Now().UTC(),
+		OrderCreated: orcderCreate,
 	}
 
 	// Convert order status from string to domain status
@@ -136,16 +138,17 @@ func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
 		slog.Error("Error validating order_updated webhook", "error", err)
 		return err
 	}
-
+	_, orcderCreate, _ := woo.ConvertDateString(req.DateCreatedGmt)
 	// Create an updated order record
 	updateOrderRecord := &woo.OrderRecord{
-		ProjectID: project.Id.String(),
-		Event:     "order.updated",
-		OrderID:   req.ID,
-		Order:     *req,
-		IsActive:  true,
-		UpdatedAt: time.Now().UTC(),
-		Timestamp: time.Now().UTC(),
+		ProjectID:    project.Id.String(),
+		Event:        "order.updated",
+		OrderID:      req.ID,
+		Order:        *req,
+		IsActive:     true,
+		UpdatedAt:    time.Now().UTC(),
+		Timestamp:    time.Now().UTC(),
+		OrderCreated: orcderCreate,
 	}
 
 	// Convert the status

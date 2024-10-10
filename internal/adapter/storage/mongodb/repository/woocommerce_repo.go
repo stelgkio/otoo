@@ -126,9 +126,9 @@ func (repo WoocommerceRepository) OrderFindByProjectIDWithTimePedio(projectID st
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	filter := bson.M{"projectId": projectID, "is_active": true, "status": orderStatus, "timestamp": bson.M{"$gte": timeperiod}}
+	filter := bson.M{"projectId": projectID, "is_active": true, "status": orderStatus, "order_created": bson.M{"$gte": timeperiod}}
 	if orderStatus == w.OrderStatusAll {
-		filter = bson.M{"projectId": projectID, "is_active": true, "timestamp": bson.M{"$gte": timeperiod}}
+		filter = bson.M{"projectId": projectID, "is_active": true, "order_created": bson.M{"$gte": timeperiod}}
 	}
 
 	sortOrder := 1
@@ -143,7 +143,7 @@ func (repo WoocommerceRepository) OrderFindByProjectIDWithTimePedio(projectID st
 	if sort == "total_amount" {
 		sortField = "order_total_amount_float"
 	} else if sort == "" {
-		sortField = "timestamp"
+		sortField = "order_created"
 	}
 
 	// Create an aggregation pipeline
@@ -201,9 +201,9 @@ func (repo WoocommerceRepository) GetOrderCount(projectID string, orderStatus w.
 		startTime = time.Time{} // Default to the epoch time for no filtering
 	}
 
-	filter := bson.M{"projectId": projectID, "is_active": true, "status": orderStatus, "timestamp": bson.M{"$gte": startTime}}
+	filter := bson.M{"projectId": projectID, "is_active": true, "status": orderStatus, "order_created": bson.M{"$gte": startTime}}
 	if orderStatus == w.OrderStatusAll {
-		filter = bson.M{"projectId": projectID, "is_active": true, "timestamp": bson.M{"$gte": startTime}}
+		filter = bson.M{"projectId": projectID, "is_active": true, "order_created": bson.M{"$gte": startTime}}
 	}
 
 	res, err := coll.CountDocuments(ctx, filter)
@@ -221,7 +221,7 @@ func (repo WoocommerceRepository) GetOrdersCountBetweenOrEquals(projectID string
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
-	filter := bson.M{"projectId": projectID, "is_active": true, "status": orderStatus, "timestamp": bson.M{"$gte": timeperiod}}
+	filter := bson.M{"projectId": projectID, "is_active": true, "status": orderStatus, "order_created": bson.M{"$gte": timeperiod}}
 	totalcount, err := coll.CountDocuments(ctx, filter)
 	return totalcount, err
 }

@@ -131,6 +131,7 @@ type VoucherTableList struct {
 	Products  []woocommerce.LineItem `bson:"products,omitempty" json:"products,omitempty"`
 	Cod       string                 `bson:"cod,omitempty" json:"cod,omitempty"`
 	CreateAt  time.Time              `bson:"created_at,omitempty" json:"created_at,omitempty"`
+	UpdatedAt time.Time              `json:"updated_at"  bson:"updated_at,omitempty"`
 	IsPrinted bool                   `bson:"is_printed,omitempty" json:"is_printed,omitempty"`
 }
 

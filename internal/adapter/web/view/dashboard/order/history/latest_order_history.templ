@@ -40,7 +40,7 @@ templ LatestOrderHistory(orders []*woo.OrderRecord) {
 									# { fmt.Sprintf("%d",item.OrderID) }
 								</span>
 								<span class="d-none d-sm-block text-muted text-xs">
-									{ util.CalculateTimeDifference(item.Timestamp.Format("2006-01-02 15:04:05"),time.Now().UTC().Format("2006-01-02 15:04:05")) }
+									{ util.CalculateTimeDifference(item.OrderCreated.Format("2006-01-02 15:04:05"),time.Now().UTC().Format("2006-01-02 15:04:05")) }
 								</span>
 							</div>
 						</div>
@@ -68,7 +68,7 @@ templ LatestOrderHistory(orders []*woo.OrderRecord) {
 						<div class="text-end">
 							<span
 								class="d-block text-heading text-sm fw-bold"
-							>{ item.Order.Total } { item.Order.Currency }</span>
+							>{ item.Order.Total } { item.Order.CurrencySymbol }</span>
 						</div>
 					</div>
 				}

@@ -204,9 +204,9 @@ templ OrderTable(projectId string) {
 								Order ID
 								<i :class="getSortIcon('orderId')"></i>
 							</th>
-							<th @click="sortTable('timestamp')">
-								Date
-								<i :class="getSortIcon('timestamp')"></i>
+							<th @click="sortTable('order_created')">
+								Order Created
+								<i :class="getSortIcon('order_created')"></i>
 							</th>
 							<th @click="sortTable('total_amount')">
 								Total Amount
@@ -236,8 +236,8 @@ templ OrderTable(projectId string) {
 										/>
 									</div>
 								</td>
-								<td x-text="order.orderId"></td>
-								<td x-text="new Date(order.timestamp).toLocaleString()"></td>
+								<td x-text="'#' + order.orderId"></td>
+								<td x-text="new Date(order.order_created).toLocaleString()"></td>
 								<td x-text="order.total_amount + ' ' + order.currency_symbol"></td>
 								<td>
 									<span :class="badgeClass(order.status)" x-text="order.status"></span>

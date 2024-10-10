@@ -80,7 +80,7 @@ type ProductService interface {
 
 // OrderService defines the methods for interacting with the Order service
 type OrderService interface {
-	Get10LatestOrders(ctx echo.Context, projectID string, orderStatus w.OrderStatus, results chan<- []*domain.OrderRecord, errors chan<- error)
+	Get10LatestOrders(ctx echo.Context, projectID string, orderStatus w.OrderStatus, sort string, results chan<- []*domain.OrderRecord, errors chan<- error)
 	GetOrderCountAsync(ctx echo.Context, projectID string, orderStatus w.OrderStatus, timeRange string, results chan<- int64, errors chan<- error)
 	GetOrdersCountBetweenOrEquals(projectID string, timePeriod time.Time, orderStatus w.OrderStatus) (int64, error)
 	GetOrderCount(projectID string, orderStatus w.OrderStatus, timeRange string) (int64, error)

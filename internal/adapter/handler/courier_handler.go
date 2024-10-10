@@ -115,7 +115,7 @@ func (dh *DashboardHandler) VoucherTable(ctx echo.Context) error {
 				Status:    record.Status,
 				Shipping:  *record.Shipping,
 				Billing:   *record.Billing,
-				CreateAt:  record.CreatedAt,
+				UpdatedAt: record.UpdatedAt,
 				Cod:       record.Cod,
 				Products:  record.Products,
 			})

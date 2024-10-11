@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Balance Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 100%;
+            padding: 20px;
+        }
+
+        .content {
+            max-width: 600px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1,
+        h2 {
+            color: #333333;
+        }
+
+        p {
+            color: #333333;
+            font-size: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #dddddd;
+        }
+
+        th {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="content">
+            <h1>Weekly Balance Report</h1>
+            <p>Dear <strong>{{.FullName}}</strong>,</p>
+            <p>We are pleased to provide you with your weekly balance report. Below are the details for the week ending
+                on <strong>{{.EndDate.Format "January 2, 2006"}}</strong>:</p>
+
+            <h2>Weekly Summary</h2>
+            <table>
+                <tr>
+                    <th>Week Start</th>
+                    <th>Week End</th>
+                    <th>Total Orders</th>
+                    <th>Last Week Orders</th>
+                    <th>Total Revenue</th>
+                    <th>Last Week Order Rate (%)</th>
+                </tr>
+                <tr>
+                    <td>{{.StartDate.Format "January 2, 2006"}}</td>
+                    <td>{{.EndDate.Format "January 2, 2006"}}</td>
+                    <td>{{.TotalOrders}}</td>
+                    <td>{{.ActiveOrders}}</td>
+                    <td>${{printf "%.2f" .TotalRevenue}}</td>
+                    <td>{{printf "%.2f" .ActiveOrderRate}}</td>
+                </tr>
+            </table>
+
+            <p>If you have any questions or need further assistance, feel free to reply to this email or contact our
+                support team.</p>
+            <p>Best regards,</p>
+            <p><strong>The KonektorX Team</strong></p>
+        </div>
+    </div>
+</body>
+
+</html>

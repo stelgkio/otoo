@@ -1,6 +1,9 @@
 package port
 
-import domain "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
+import (
+	d "github.com/stelgkio/otoo/internal/core/domain"
+	domain "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
+)
 
 // AnalyticsRepository defines the methods for interacting with the BestSellers repository
 type AnalyticsRepository interface {
@@ -28,7 +31,7 @@ type ProductBestSellers interface {
 // OrderAnalyticsCron defines the methods for interacting with the OrderAnalyticsCron repository
 type OrderAnalyticsCron interface {
 	RunOrderWeeklyBalanceJob() error
-	RunOrderWeeklyBalanceInitializeJob(projectID string) error
+	RunOrderWeeklyBalanceInitializeJob(project *d.Project, user *d.User) error
 	RunOrderMonthlyCountJob() error
-	RunOrderMonthlyCountInitializeJob(projectID string) error
+	RunOrderMonthlyCountInitializeJob(project *d.Project, user *d.User) error
 }

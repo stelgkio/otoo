@@ -197,7 +197,7 @@ func (ph *ProjectHandler) ProjectSynchronizeDone(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	_, err = ph.svc.GetProjectByID(ctx, projectID)
+	project, err := ph.svc.GetProjectByID(ctx, projectID)
 	if err != nil {
 		return err
 	}
@@ -283,8 +283,8 @@ func (ph *ProjectHandler) ProjectSynchronizeDone(ctx echo.Context) error {
 	if productCount == productTotal && orderCount == orderTotal && (customerCount > customerTotal || customerCount == customerTotal) {
 		ctx.Response().Header().Set("HX-Trigger", "done")
 		go ph.bestSellerSvc.RunAProductBestSellerInitializerJob(projectID)
-		go ph.orderAnalyticsSvc.RunOrderWeeklyBalanceInitializeJob(projectID)
-		go ph.orderAnalyticsSvc.RunOrderMonthlyCountInitializeJob(projectID)
+		go ph.orderAnalyticsSvc.RunOrderWeeklyBalanceInitializeJob(project, user)
+		go ph.orderAnalyticsSvc.RunOrderMonthlyCountInitializeJob(project, user)
 		return r.Render(ctx, syn.ProjectSynchronizerDone(user, projectID, customerTotal, productTotal, orderTotal, 100.0, 100.0, 100.0))
 	}
 	customerPercentage := (float64(customerCount) / float64(customerTotal)) * 100.0
@@ -498,7 +498,7 @@ func (ph *ProjectHandler) ProjectSynchronizeDonePage(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	_, err = ph.svc.GetProjectByID(ctx, projectID)
+	project, err := ph.svc.GetProjectByID(ctx, projectID)
 	if err != nil {
 		return err
 	}
@@ -519,8 +519,8 @@ func (ph *ProjectHandler) ProjectSynchronizeDonePage(ctx echo.Context) error {
 	}
 	ctx.Response().Header().Set("HX-Trigger", "done")
 	go ph.bestSellerSvc.RunAProductBestSellerInitializerJob(projectID)
-	go ph.orderAnalyticsSvc.RunOrderWeeklyBalanceInitializeJob(projectID)
-	go ph.orderAnalyticsSvc.RunOrderMonthlyCountInitializeJob(projectID)
+	go ph.orderAnalyticsSvc.RunOrderWeeklyBalanceInitializeJob(project, user)
+	go ph.orderAnalyticsSvc.RunOrderMonthlyCountInitializeJob(project, user)
 	return r.Render(ctx, synpage.ProjectSynchronizerDonePage(user, projectID, customerTotal, productTotal, orderTotal, 100.0, 100.0, 100.0))
 
 }

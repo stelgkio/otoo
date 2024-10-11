@@ -81,7 +81,14 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	woocommerceReportService := woocommerce.NewWoocommerceReportService(projectService)
 	//ProjectHandler
 	bestSellerCron := cronjob.NewProductBestSellerCron(projectService, analyticsRepo, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
-	analyticsCron := cronjob.NewOrderAnalyticsCron(projectService, userService, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService, analyticsRepo)
+	analyticsCron := cronjob.NewOrderAnalyticsCron(
+		projectService,
+		userService,
+		woocommerceCustomerService,
+		woocommerceProductService,
+		woocommerceOrderService,
+		analyticsRepo,
+		smtpService)
 	projectHandler := handler.NewProjectHandler(projectService,
 		userService,
 		woocommerceReportService,

@@ -365,3 +365,8 @@ func (os *OrderService) GetLatestOrderWeeklyBalance(ctx echo.Context, projectID 
 	}
 
 }
+
+// CountOrdersByMonth retrieves the latest order monthly balance for a given project ID
+func (os *OrderService) CountOrdersByMonth(projectID string) (map[string]int, error) {
+	return os.p.CountOrdersByMonth(projectID)
+}

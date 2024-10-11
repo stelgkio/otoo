@@ -22,6 +22,7 @@ type WoocommerceRepository interface {
 	OrderFindByProjectIDWithTimePedio(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string, timeperiod time.Time) ([]*w.OrderRecord, error)
 	GetOrderCount(projectID string, orderStatus w.OrderStatus, timeRange string) (int64, error)
 	GetOrdersCountBetweenOrEquals(projectID string, timeperiod time.Time, orderStatus w.OrderStatus) (int64, error)
+	CountOrdersByMonth(projectID string) (map[string]int, error)
 
 	CustomerCreate(data *w.CustomerRecord, email string) error
 	CustomerUpdate(data *w.CustomerRecord, email string) error
@@ -92,6 +93,7 @@ type OrderService interface {
 	BatchUpdateOrdersStatus(projectID string, orders []int64, status string, proj *d.Project) ([]*domain.OrderRecord, error)
 	UpdateOrder(projectID string, orderID int64, orderTable *domain.OrderTableList, proj *d.Project) (*domain.OrderRecord, error)
 	GetLatestOrderWeeklyBalance(ctx echo.Context, projectID string, results chan<- *domain.WeeklyAnalytics, errors chan<- error)
+	CountOrdersByMonth(projectID string) (map[string]int, error)
 }
 
 // ReportService defines the methods for interacting with the Report service

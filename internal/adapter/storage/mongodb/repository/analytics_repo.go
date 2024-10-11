@@ -92,7 +92,7 @@ func (r *AnalyticsRepository) FindWeeklyBalance(projectID string, size, page int
 
 	// Define the pagination options: Sort by the Timestamp field in descending order
 	opts := options.Find().
-		SetSort(bson.D{{Key: "order_created", Value: -1}}).
+		SetSort(bson.D{{Key: "timestamp", Value: -1}}).
 		SetLimit(int64(size)).            // Limit results to the page size
 		SetSkip(int64((page - 1) * size)) // Skip records for pagination
 
@@ -188,6 +188,128 @@ func (r *AnalyticsRepository) DeleteWeeklyBalance(projectID string) error {
 	res, err := coll.DeleteMany(ctx, filter) // Using DeleteMany, you can switch to DeleteOne if needed
 	if err != nil {
 		return fmt.Errorf("failed to delete weekly analytics for projectID: %s, error: %v", projectID, err)
+	}
+
+	if res.DeletedCount == 0 {
+		return fmt.Errorf("no records deleted for projectID: %s", projectID)
+	}
+
+	return nil
+}
+
+// FindMonthlyCount returns the monthly order count for a given project with pagination (size and page).
+func (r *AnalyticsRepository) FindMonthlyCount(projectID string, size, page int) ([]*domain.MonthlyOrderCountAnalytics, error) {
+	// Ensure size and page have valid values
+	if size <= 0 {
+		size = 10 // Default page size
+	}
+	if page <= 0 {
+		page = 1 // Default to the first page
+	}
+
+	coll := r.mongo.Database("otoo").Collection("monthly_order_count_analytics")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Define the filter: Find documents where the projectID matches
+	filter := bson.M{"projectId": projectID}
+
+	// Define the pagination options: Sort by the Timestamp field in descending order
+	opts := options.Find().
+		SetSort(bson.D{{Key: "timestamp", Value: -1}}).
+		SetLimit(int64(size)).            // Limit results to the page size
+		SetSkip(int64((page - 1) * size)) // Skip records for pagination
+
+	// Define a slice to hold the result
+	var results []*domain.MonthlyOrderCountAnalytics
+
+	// Query the database and find the MonthlyOrderCountAnalytics documents for the given project
+	cursor, err := coll.Find(ctx, filter, opts)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch monthly order counts for projectID: %s, error: %v", projectID, err)
+	}
+	defer cursor.Close(ctx)
+
+	// Decode each document and append to the results slice
+	for cursor.Next(ctx) {
+		var monthlyCount domain.MonthlyOrderCountAnalytics
+		if err := cursor.Decode(&monthlyCount); err != nil {
+			return nil, fmt.Errorf("error decoding document: %v", err)
+		}
+		results = append(results, &monthlyCount)
+	}
+
+	// Check if there was any error during the cursor iteration
+	if err := cursor.Err(); err != nil {
+		return nil, fmt.Errorf("cursor iteration error: %v", err)
+	}
+
+	// Return the results slice
+	return results, nil
+}
+
+// FindLatestMonthlyCount returns the latest monthly order count for a given project.
+func (r *AnalyticsRepository) FindLatestMonthlyCount(projectID string) (*domain.MonthlyOrderCountAnalytics, error) {
+	coll := r.mongo.Database("otoo").Collection("monthly_order_count_analytics")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Define the filter: Find documents where the projectID matches
+	filter := bson.M{"projectId": projectID}
+
+	// Define options: Sort by the Timestamp field in descending order and limit the result to 1
+	opts := options.FindOne().SetSort(bson.D{{Key: "timestamp", Value: -1}})
+
+	// Define a variable to hold the result
+	var result domain.MonthlyOrderCountAnalytics
+
+	// Query the database and find the latest MonthlyOrderCountAnalytics for the given project
+	err := coll.FindOne(ctx, filter, opts).Decode(&result)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			// Handle case when no document is found
+			return nil, nil
+		}
+		// Handle other potential errors
+		return nil, fmt.Errorf("failed to fetch latest monthly order count for projectID: %s, error: %v", projectID, err)
+	}
+
+	// Return the found document
+	return &result, nil
+}
+
+// CreateMonthlyCount creates a new monthly order count for a given project.
+func (r *AnalyticsRepository) CreateMonthlyCount(projectID string, data *domain.MonthlyOrderCountAnalytics) error {
+	coll := r.mongo.Database("otoo").Collection("monthly_order_count_analytics")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Set the project ID and timestamp for the new record
+	data.ProjectID = projectID
+	data.Timestamp = time.Now()
+
+	// Insert the new MonthlyOrderCountAnalytics record into the database
+	_, err := coll.InsertOne(ctx, data)
+	if err != nil {
+		return fmt.Errorf("failed to create monthly order count for projectID: %s, error: %v", projectID, err)
+	}
+
+	return nil
+}
+
+// DeleteMonthlyCount deletes the monthly order counts for a given project.
+func (r *AnalyticsRepository) DeleteMonthlyCount(projectID string) error {
+	coll := r.mongo.Database("otoo").Collection("monthly_order_count_analytics")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Define the filter: Find documents where the projectID matches
+	filter := bson.M{"projectId": projectID}
+
+	// Delete the document(s) matching the projectID
+	res, err := coll.DeleteMany(ctx, filter) // Using DeleteMany, you can switch to DeleteOne if needed
+	if err != nil {
+		return fmt.Errorf("failed to delete monthly order counts for projectID: %s, error: %v", projectID, err)
 	}
 
 	if res.DeletedCount == 0 {

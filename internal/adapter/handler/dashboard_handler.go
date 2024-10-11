@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	c "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/customer/overview"
@@ -818,6 +819,53 @@ func (dh *DashboardHandler) OrderBulkAction(ctx echo.Context) error {
 func (dh *DashboardHandler) OrderCharts(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 	return util.Render(ctx, chart.OrderCharts(projectID))
+}
+
+// OrderMonthlyCharts return charts for orders
+func (dh *DashboardHandler) OrderMonthlyCharts(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	now := time.Now()
+
+	months := make([]string, 12)
+	orderCounts := make([]int, 12)
+
+	// Get order counts by month from the service
+	orderMap, err := dh.analyticsRepo.FindLatestMonthlyCount(projectID)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	fmt.Println(orderMap)
+
+	// Iterate over the last 12 months
+	for i := 0; i < 12; i++ {
+		// Format as "Jan" for month name and "2006" for the year
+		month := now.AddDate(0, -i, 0).Format("Jan") // Format as "Jan 2024", "Dec 2023", etc.
+		months[11-i] = month                         // Store in reverse order
+
+		// Generate key for looking up order count in the format "YYYY-MM"
+		orderMonthKey := now.AddDate(0, -i, 0).Format("2006-01")
+
+		// Get order count from the map if it exists, otherwise default to 0
+		if count, exists := orderMap.MonthyData[orderMonthKey]; exists {
+			orderCounts[11-i] = count
+		} else {
+			orderCounts[11-i] = 0
+		}
+	}
+
+	// Struct for the JSON response
+	type ChartData struct {
+		Months []string `json:"months"`
+		Orders []int    `json:"orders"`
+	}
+
+	// Create and return chart data
+	chartData := ChartData{
+		Months: months,
+		Orders: orderCounts,
+	}
+
+	return ctx.JSON(http.StatusOK, chartData)
 }
 
 // OrderUpdate return charts for orders

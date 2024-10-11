@@ -284,6 +284,7 @@ func (ph *ProjectHandler) ProjectSynchronizeDone(ctx echo.Context) error {
 		ctx.Response().Header().Set("HX-Trigger", "done")
 		go ph.bestSellerSvc.RunAProductBestSellerInitializerJob(projectID)
 		go ph.orderAnalyticsSvc.RunOrderWeeklyBalanceInitializeJob(projectID)
+		go ph.orderAnalyticsSvc.RunOrderMonthlyCountInitializeJob(projectID)
 		return r.Render(ctx, syn.ProjectSynchronizerDone(user, projectID, customerTotal, productTotal, orderTotal, 100.0, 100.0, 100.0))
 	}
 	customerPercentage := (float64(customerCount) / float64(customerTotal)) * 100.0
@@ -519,6 +520,7 @@ func (ph *ProjectHandler) ProjectSynchronizeDonePage(ctx echo.Context) error {
 	ctx.Response().Header().Set("HX-Trigger", "done")
 	go ph.bestSellerSvc.RunAProductBestSellerInitializerJob(projectID)
 	go ph.orderAnalyticsSvc.RunOrderWeeklyBalanceInitializeJob(projectID)
+	go ph.orderAnalyticsSvc.RunOrderMonthlyCountInitializeJob(projectID)
 	return r.Render(ctx, synpage.ProjectSynchronizerDonePage(user, projectID, customerTotal, productTotal, orderTotal, 100.0, 100.0, 100.0))
 
 }

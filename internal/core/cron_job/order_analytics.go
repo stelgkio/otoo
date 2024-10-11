@@ -163,5 +163,64 @@ func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceInitializeJob(projectID strin
 	}
 
 	return nil
+}
 
+// RunOrderMonthlyCountJob runs the analytics job
+func (as *OrderAnalyticsCron) RunOrderMonthlyCountJob() error {
+	// Get all projects
+	allProjects, err := as.projectSvc.GetAllProjects()
+	if err != nil {
+		return err
+	}
+
+	// WaitGroup to wait for all goroutines to finish
+	var wg sync.WaitGroup
+	// Channel to collect errors from the goroutines
+	errChan := make(chan error, len(allProjects))
+
+	// Iterate over projects and run the job concurrently
+	for _, project := range allProjects {
+		wg.Add(1) // Increment the WaitGroup counter
+
+		// Capture projectID to avoid issues with goroutine closures
+		projectID := project.Id.String()
+
+		go func(projID string) {
+			defer wg.Done() // Decrement the WaitGroup counter when the goroutine completes
+			// Run the initializer job for each project
+			if err := as.RunOrderMonthlyCountInitializeJob(projID); err != nil {
+				// Send error to the channel if any occurs
+				errChan <- err
+			}
+		}(projectID)
+	}
+
+	// Close the error channel once all goroutines are done
+	go func() {
+		wg.Wait()
+		close(errChan)
+	}()
+
+	// Check for errors from the error channel
+	for e := range errChan {
+		if e != nil {
+			return e // Return the first error encountered
+		}
+	}
+
+	return nil // Return nil if no errors
+}
+
+// RunOrderMonthlyCountInitializeJob runs the analytics job
+func (as *OrderAnalyticsCron) RunOrderMonthlyCountInitializeJob(projectID string) error {
+	now := time.Now().UTC()
+	orderMap, err := as.orderSvc.CountOrdersByMonth(projectID)
+	nownew := time.Now().UTC()
+	newData := w.NewMonthlyAnalytics(projectID, orderMap, now, nownew)
+
+	err = as.analyticsRepo.CreateMonthlyCount(projectID, &newData)
+	if err != nil {
+		return err
+	}
+	return nil
 }

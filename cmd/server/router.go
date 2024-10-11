@@ -53,6 +53,14 @@ func NewRouter(
 
 		return c.JSON(http.StatusAccepted, "OK")
 	})
+	e.GET("/RunOrderMonthlyCountJob", func(c echo.Context) error {
+		err := orderAnalyticsCron.RunOrderMonthlyCountJob()
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+
+		return c.JSON(http.StatusAccepted, "OK")
+	})
 
 	e.GET("/RunAProductBestSellerDailyJob", func(c echo.Context) error {
 		err := productBestSellerCron.RunAProductBestSellerDailyJob()
@@ -256,6 +264,7 @@ func NewRouter(
 		ordergroupB.Use(auth.TokenRefresherMiddleware)
 		ordergroupB.GET("/table/:projectId/:status/:page", dashboardHandler.OrderTable)
 		ordergroupB.GET("/chart/:projectId", dashboardHandler.OrderCharts)
+		ordergroupB.GET("/monthy/chart/:projectId", dashboardHandler.OrderMonthlyCharts)
 		ordergroupB.GET("/tablehtml/:projectId", dashboardHandler.OrderTableHTML)
 
 		ordergroupB.POST("/bulk-action/:projectId", dashboardHandler.OrderBulkAction)

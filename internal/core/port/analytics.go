@@ -12,6 +12,11 @@ type AnalyticsRepository interface {
 	FindLatestWeeklyBalance(projectID string) (*domain.WeeklyAnalytics, error)
 	CreateWeeklyBalance(projectID string, data *domain.WeeklyAnalytics) error
 	DeleteWeeklyBalance(projectID string) error
+
+	FindMonthlyCount(projectID string, size, page int) ([]*domain.MonthlyOrderCountAnalytics, error)
+	FindLatestMonthlyCount(projectID string) (*domain.MonthlyOrderCountAnalytics, error)
+	CreateMonthlyCount(projectID string, data *domain.MonthlyOrderCountAnalytics) error
+	DeleteMonthlyCount(projectID string) error
 }
 
 // ProductBestSellers defines the methods for interacting with the ProductBestSellers repository
@@ -24,4 +29,6 @@ type ProductBestSellers interface {
 type OrderAnalyticsCron interface {
 	RunOrderWeeklyBalanceJob() error
 	RunOrderWeeklyBalanceInitializeJob(projectID string) error
+	RunOrderMonthlyCountJob() error
+	RunOrderMonthlyCountInitializeJob(projectID string) error
 }

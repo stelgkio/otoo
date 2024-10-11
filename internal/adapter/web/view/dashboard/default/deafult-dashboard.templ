@@ -107,39 +107,7 @@ templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo
                                         </div>
                                     </div> -->
 						</div>
-						<div class="card">
-							<div class="card-body pb-0">
-								<div class="d-flex justify-content-between align-items-center">
-									<div>
-										<h5>Orders</h5>
-									</div>
-									<div class="hstack align-items-center">
-										<a href="#" class="text-muted">
-											<i
-												class="bi bi-arrow-repeat"
-											></i>
-										</a>
-									</div>
-								</div>
-								<div class="mx-n4">
-									<div id="chart-users" data-height="270"></div>
-								</div>
-							</div>
-						</div>
-						<!-- <div class="card">
-                                    <div class="card-body pb-0">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <h5>Order Payment Status</h5>
-                                            </div>
-                                            <div class="hstack align-items-center"><a href="#" class="text-muted"><i
-                                                        class="bi bi-arrow-repeat"></i></a></div>
-                                        </div>
-                                        <div class="mx-n4">
-                                            <div id="chart" data-height="200"></div>
-                                        </div>
-                                    </div>
-                                </div> -->
+						@MonthlyChart(projectId)
 						@o.LatestOrderHistory(orders)
 					</div>
 				</div>
@@ -210,120 +178,158 @@ templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo
 			</div>
 		</main>
 	</div>
+}
+
+templ MonthlyChart(projectId string) {
+	<style>
+	/* Default styles for the menu */
+.apexcharts-menu {
+    background-color: white; /* Light background for light mode */
+    color: black; /* Text color for light mode */
+}
+
+/* Styles for the menu in dark mode */
+body.dark-mode .apexcharts-menu {
+    background-color: #333; /* Dark background for dark mode */
+    color: white; /* Text color for dark mode */
+}
+
+body.dark-mode .apexcharts-menu-item {
+    color: #ddd; /* Lighter text color for better contrast */
+}
+
+body.dark-mode .apexcharts-menu-item:hover {
+    background-color: #444; /* Darker hover effect for better UX */
+}</style>
+	<div x-data={ fmt.Sprintf("chartComponent('%s')", projectId) } x-init="fetchChartData">
+		<div class="card">
+			<div class="card-body pb-0">
+				<div class="d-flex justify-content-between align-items-center">
+					<div>
+						<h5>Orders</h5>
+					</div>
+					<div class="hstack align-items-center">
+						<a href="#" class="text-muted" @click="refreshChart">
+							<i class="bi bi-arrow-repeat"></i>
+						</a>
+					</div>
+				</div>
+				<div class="mx-n4">
+					<div id="chart-users" data-height="270"></div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<script>
-	    var chartElement2= document.querySelector("#chart-users");
-   
-        var options2= {
-            chart: {
-                type: "bar",
-                stacked: true,
-                zoom: {
-                    enabled: false
-                },
-                toolbar: {
-                    show: false
-                },
-                shadow: {
-                    enabled: false
-                },
-                offsetX: 0,
-                animations: {
-                    enabled: false,
-                    easing: "easeinout",
-                    speed: 800,
-                    animateGradually: {
-                        enabled: true,
-                        delay: 150
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('chartComponent', (projectId) => ({
+            projectID: projectId,  // Store project ID
+            chartData: {
+                months: [],  // Categories (Months)
+                orders: []  // Data for the chart
+            },
+        	chartInstance: null,  // Store the ApexCharts instance
+ 			
+            // Initialize and fetch data
+            async init() {
+                await this.fetchChartData();  // Fetch data first
+            },
+
+            // Fetch data from the server
+            async fetchChartData() {
+                try {
+                    const response = await fetch(`${window.location.origin}/order/monthy/chart/${this.projectID}`);
+                    const data = await response.json();                   
+
+                    // Assuming the API returns "months" and "orders" arrays
+                    this.chartData.months = data.months || [];
+                    this.chartData.orders = data.orders || [];
+
+                    // Render or update the chart after data is fetched
+                    this.renderChart();
+                } catch (error) {
+                    console.error('Error fetching chart data:', error);
+                }
+            },
+
+            // Render the chart using ApexCharts
+            renderChart() {
+                const chartElement = document.querySelector("#chart-users");
+
+                const options = {
+                    chart: {
+                        type: "bar",
+                        stacked: true,
+                        zoom: { enabled: true },
+                        toolbar: { show: true },
+                        height: 390,
+                        animations: {
+                            enabled: true,
+                            speed: 800,
+                        },
                     },
-                    dynamicAnimation: {
-                        enabled: true,
-                        speed: 350
-                    }
-                },
-                fontFamily: "#333",
-				height: 390,
-            },
-            colors: [ '#8957ff', '#ffc107', '#dc3545'],
-            plotOptions: {
-                bar: {
-                    columnWidth: "23px",
-                    borderRadius: 2
-                }
-            },
-            stroke: {
-                width: 4,
-                curve: "smooth"
-            },
-            series: [{
-                name: "Revenue",
-                data: [30, 10, 20, 10, 17, 12, 8, 20]
-            }],
-            markers: {
-                size: 0
-            },
-            xaxis: {
-				  axisBorder: {
-                    show: false
-                },
-                axisTicks: {
-                    show: false
-                },
-                categories: ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                labels: {
-                    style: {
-                         colors: "#e3dede",
-                        fontSize: "13px"
-                    }
-                }
-            },
-            yaxis: {
-                labels: {
-                    style: {
-                        colors: "#e3dede",
-                        fontSize: "13px"
-                    }
-                }
-            },
-            legend: {
-                show: false
-            },
-            grid: {
-                borderColor: "#999",
-                strokeDashArray: 3
-            },
-            dataLabels: {
-                enabled: false
-            },
-            tooltip: {
-                shared: true,
-                intersect: false,
-                y: {
-                    formatter: function (val) {
-                        return val.toFixed(0) + " orders";
-                    }
-                }
-            },
-            responsive: [{
-                breakpoint: 364,
-                options: {
+                    colors: ['#8957ff', '#ffc107', '#dc3545'],
                     plotOptions: {
                         bar: {
-                            columnWidth: "30px",
+                            columnWidth: "23px",
                             borderRadius: 2
                         }
+                    },
+                    series: [{
+                        name: "Orders",
+                        data: this.chartData.orders  // Fetched orders data
+                    }],
+                    xaxis: {
+                        categories: this.chartData.months,  // Fetched months (categories)
+                        labels: {
+                            style: {
+                                colors: "#e3dede",
+                                fontSize: "13px"
+                            }
+                        }
+                    },
+                    yaxis: {
+                        labels: {
+                            style: {
+                                colors: "#e3dede",
+                                fontSize: "13px"
+                            }
+                        }
+                    },
+                    grid: {
+                        borderColor: "#999",
+                        strokeDashArray: 3
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    tooltip: {
+                        shared: true,
+                        intersect: false,
+                        y: {
+                            formatter: function (val) {
+                                return val.toFixed(0) + " orders";
+                            }
+                        }
                     }
+                };
+
+                // Initialize chart only once
+                if (!this.chartInstance) {
+                    this.chartInstance = new ApexCharts(chartElement, options);
+                    this.chartInstance.render();
+                } else {
+                    this.chartInstance.updateOptions(options);  // Update chart if it already exists
                 }
-            }]
-		}
-        
+            },
 
-     
-
-       var barChart = new ApexCharts(chartElement2, options2);
-        barChart.render();
-
- 
-
-
-	</script>
+            // Method to refresh the chart (if needed)
+            refreshChart() {
+                this.fetchChartData();  // Fetch new data and re-render chart
+            },
+			// Display progress message if current month is in progress
+       
+        }));
+    });
+</script>
 }

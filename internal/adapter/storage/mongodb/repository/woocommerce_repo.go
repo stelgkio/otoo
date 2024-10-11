@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"log/slog"
 	"time"
@@ -224,6 +225,80 @@ func (repo WoocommerceRepository) GetOrdersCountBetweenOrEquals(projectID string
 	filter := bson.M{"projectId": projectID, "is_active": true, "status": orderStatus, "order_created": bson.M{"$gte": timeperiod}}
 	totalcount, err := coll.CountDocuments(ctx, filter)
 	return totalcount, err
+}
+
+// CountOrdersByMonth returns a count of orders for the last 12 months
+func (repo WoocommerceRepository) CountOrdersByMonth(projectID string) (map[string]int, error) {
+	collection := repo.mongo.Database("otoo").Collection("woocommerce_orders")
+	ctx, cancel := context.WithTimeout(context.Background(), 55*time.Second)
+	defer cancel()
+	now := time.Now()
+	months := make([]string, 0)
+
+	// Create an array of the last 12 months in "YYYY-MM" format
+	for i := 0; i < 12; i++ {
+		month := now.AddDate(0, -i, 0).Format("2006-01")
+		months = append(months, month)
+	}
+
+	// MongoDB aggregation pipeline
+	pipeline := mongo.Pipeline{
+		{
+			{"$match", bson.M{
+				"projectId":     projectID,
+				"order_created": bson.M{"$gte": now.AddDate(0, -11, 0)},
+			}},
+		},
+		{
+			{"$group", bson.M{
+				"_id": bson.M{
+					"year":  bson.M{"$year": "$order_created"},
+					"month": bson.M{"$month": "$order_created"},
+				},
+				"count": bson.M{"$sum": 1},
+			}},
+		},
+		{
+			{"$sort", bson.M{"_id.year": 1, "_id.month": 1}},
+		},
+	}
+
+	cursor, err := collection.Aggregate(ctx, pipeline)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	// Map to store counts of each month
+	monthlyCounts := make(map[string]int)
+
+	// Iterate through the results
+	for cursor.Next(context.TODO()) {
+		var result struct {
+			ID struct {
+				Year  int `bson:"year"`
+				Month int `bson:"month"`
+			} `bson:"_id"`
+			Count int `bson:"count"`
+		}
+
+		if err := cursor.Decode(&result); err != nil {
+			return nil, err
+		}
+
+		// Format the month to "YYYY-MM"
+		monthKey := fmt.Sprintf("%04d-%02d", result.ID.Year, result.ID.Month)
+		monthlyCounts[monthKey] = result.Count
+	}
+
+	// Fill in the months with 0 counts if they have no orders
+	for _, month := range months {
+		if _, exists := monthlyCounts[month]; !exists {
+			monthlyCounts[month] = 0
+		}
+	}
+
+	return monthlyCounts, nil
 }
 
 // GetOrderByID get order by id

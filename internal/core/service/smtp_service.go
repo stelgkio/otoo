@@ -25,7 +25,7 @@ func NewSmtpService() *SmtpService {
 }
 
 // SendEmail sends an email to the user
-func (s *SmtpService) SendEmail(ctx echo.Context, sender, email, template, subject string, isHtml bool) error {
+func (s *SmtpService) SendEmail(ctx echo.Context, sender, email, template, subject string, isHTML bool) error {
 	config, err := config.New()
 	if err != nil {
 		slog.Error("Error loading environment variables", "error", err)
@@ -104,20 +104,19 @@ func (s *SmtpService) SendContactEmail(ctx echo.Context, req *domain.ContactRequ
 
 }
 
-type WeeklyData struct {
-	FullName        string
-	StartDate       time.Time
-	EndDate         time.Time
-	TotalOrders     int64
-	ActiveOrders    int64
-	TotalRevenue    float64
-	ActiveOrderRate float64
-}
-
 // SendWeeklyBalanceEmail sends a forget password email to the user
 func (s *SmtpService) SendWeeklyBalanceEmail(ctx echo.Context, req *w.WeeklyAnalytics, email, fullname string) error {
 	// Assume you have a struct that holds the email content.
 
+	type WeeklyData struct {
+		FullName        string
+		StartDate       time.Time
+		EndDate         time.Time
+		TotalOrders     int64
+		ActiveOrders    int64
+		TotalRevenue    float64
+		ActiveOrderRate float64
+	}
 	emailData := WeeklyData{
 		FullName:        fullname,
 		StartDate:       req.StartDate,

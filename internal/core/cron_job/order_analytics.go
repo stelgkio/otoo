@@ -164,28 +164,19 @@ func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceInitializeJob(project *domain
 	//TODO: change this to save the weeklybalance
 	//as.bestSellerSvc.DeleteBestSellers(projectID)
 	for items := range orderWeeklyBalance {
-		if items == nil {
-			fmt.Println("Received nil from orderWeeklyBalance channel")
-			continue
-		}
 
 		weekBalance := w.NewWeeklyAnalytics(project.Id.String(), orderCount, lastWeekCount, ordertWeeklyBalance, lastWeek, now)
 		weekBalance.CalculatePercentages()
-
-		// Check that items is not nil before dereferencing
-		result := w.CompareAnalytics(weekBalance.AnalyticsBase, items.AnalyticsBase)
-		weekBalance.AddComparisonResult(result)
-		// Create weekly balance after comparisons
-		if err := as.analyticsRepo.CreateWeeklyBalance(project.Id.String(), weekBalance); err != nil {
-			return fmt.Errorf("failed to create weekly balance: %v", err)
+		if items != nil {
+			result := w.CompareAnalytics(weekBalance.AnalyticsBase, items.AnalyticsBase)
+			weekBalance.AddComparisonResult(result)
+			fmt.Println("The result of the 2 weeks is", result)
 		}
+		as.analyticsRepo.CreateWeeklyBalance(project.Id.String(), weekBalance)
 		fullname := fmt.Sprintf("%s %s", user.Name, user.LastName)
-		if err := as.smtpSvc.SendWeeklyBalanceEmail(nil, weekBalance, user.Email, fullname); err != nil {
-			fmt.Println("Error sending email:", err)
-			return err
-		}
-
+		as.smtpSvc.SendWeeklyBalanceEmail(nil, weekBalance, user.Email, fullname)
 	}
+
 	for err := range orderWeeklyBalanceErrors {
 		fmt.Println("Error finding orders:", err)
 		return err
@@ -255,6 +246,6 @@ func (as *OrderAnalyticsCron) RunOrderMonthlyCountInitializeJob(project *domain.
 	if err != nil {
 		return err
 	}
-	go as.smtpSvc.SendMonthlyOrdersEmail(nil, &newData, user.Email, fmt.Sprintf("%s %s", user.Name, user.LastName))
+	//go as.smtpSvc.SendMonthlyOrdersEmail(nil, &newData, user.Email, fmt.Sprintf("%s %s", user.Name, user.LastName))
 	return nil
 }

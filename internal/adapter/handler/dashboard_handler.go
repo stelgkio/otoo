@@ -286,7 +286,9 @@ func (dh *DashboardHandler) DefaultDashboardOverView(ctx echo.Context) error {
 		orderList = item
 	}
 	for item := range orderWeeklyBalance {
-		weeklyBalance = item
+		if item != nil {
+			weeklyBalance = item
+		}
 	}
 
 	response := map[string]string{

@@ -80,13 +80,13 @@ func (ph *ProjectHandler) CreateProject(ctx echo.Context) error {
 
 	}
 	if err != nil {
-		slog.Error("Create project error", "error", err)
+		slog.Error("Create project error Validate", "error", err)
 		return r.Render(ctx, p.ProjectCreateForm(true, nil, new(domain.ProjectRequest)))
 	}
 
 	_, err = ph.reportSvc.GetCustomerTotalCountTestCredential(ctx, req.ConsumerKey, req.ConsumerSecret, req.Domain)
 	if err != nil {
-		slog.Error("Create project error", "error", err)
+		slog.Error("Create project error GetCustomerTotalCountTestCredential", "error", err)
 		validationErrors["consumer_key"] = "Consumer Key is invalid"
 		validationErrors["consumer_secret"] = "Consumer Secret is invalid "
 		validationErrors["domain"] = "Domain is not available"
@@ -95,7 +95,7 @@ func (ph *ProjectHandler) CreateProject(ctx echo.Context) error {
 
 	dom, err := ph.svc.CreateProject(ctx, req)
 	if err != nil {
-		slog.Error("Create project error", "error", err)
+		slog.Error("Create project error CreateProject", "error", err)
 		return r.Render(ctx, p.ProjectCreateForm(true, nil, new(domain.ProjectRequest)))
 	}
 

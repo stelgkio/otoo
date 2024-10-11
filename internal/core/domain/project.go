@@ -104,6 +104,9 @@ func (p *ProjectRequest) Validate() map[string](string) {
 	if p.Name == "" {
 		errors["name"] = "Name is required"
 	}
+	if p.Description == "" {
+		errors["description"] = "Description is required"
+	}
 	if p.Domain == "" {
 		errors["domain"] = "Domain is required"
 	} else if !isValidHttpsURL(p.Domain) {

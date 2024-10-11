@@ -141,7 +141,7 @@ func (s *SmtpService) SendWeeklyBalanceEmail(ctx echo.Context, req *w.WeeklyAnal
 	// Convert the buffer to a string
 	body := tpl.String()
 
-	subject := "KonektorX: Your Message Has Been Received"
+	subject := "KonektorX: Weekly Balance Report"
 
 	go s.SendEmail(ctx, "hello@konektorx.com", email, body, subject, true)
 	return nil
@@ -166,7 +166,7 @@ func (s *SmtpService) SendMonthlyOrdersEmail(ctx echo.Context, req *w.MonthlyOrd
 	// Convert the buffer to a string
 	body := tpl.String()
 
-	subject := "KonektorX: Your Message Has Been Received"
+	subject := "KonektorX: Monthly Balance Report"
 
 	go s.SendEmail(ctx, "hello@konektorx.com", email, body, subject, true)
 	return nil

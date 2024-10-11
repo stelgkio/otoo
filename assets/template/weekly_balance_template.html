@@ -79,7 +79,7 @@
                     <td>{{.EndDate.Format "January 2, 2006"}}</td>
                     <td>{{.TotalOrders}}</td>
                     <td>{{.ActiveOrders}}</td>
-                    <td>${{printf "%.2f" .TotalRevenue}}</td>
+                    <td>€{{printf "%.2f" .TotalRevenue}}</td>
                     <td>{{printf "%.2f" .ActiveOrderRate}}</td>
                 </tr>
             </table>

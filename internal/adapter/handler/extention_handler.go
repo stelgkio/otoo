@@ -25,7 +25,12 @@ func (dh *DashboardHandler) Extention(ctx echo.Context) error {
 	}
 
 	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
-	return util.Render(ctx, e.Extensions(projectID, extensions, projectExtensions))
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return util.Render(ctx, e.Extensions(projectID, extensions, projectExtensions))
+	}
+	project, user, projectID, err := GetProjectAndUser(ctx, dh)
+	return util.Render(ctx, et.ExtensionTemplate(user, project.Name, projectID, extensions, projectExtensions))
+
 }
 
 // StripeSuccesRedirect  the redirect handler for Stripe success

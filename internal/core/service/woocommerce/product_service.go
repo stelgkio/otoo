@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"log/slog"
+	"math"
 	"sync"
 	"time"
 
@@ -56,9 +57,9 @@ func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectID 
 	var wg sync.WaitGroup
 	productCh := make(chan *w.ProductRecord, totalProduct) // Channel to distribute products to workers
 	errorCh := make(chan *w.ProductRecord, 1)              // Buffered channel for error results
-
+	workers := int(math.Ceil(float64(totalProduct) / 100))
 	// Worker pool to process products
-	for i := 0; i < workerCount; i++ {
+	for i := 0; i < workers; i++ {
 		wg.Add(1)
 		go func(projectID string) {
 			defer wg.Done()

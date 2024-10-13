@@ -8,6 +8,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	synpage "github.com/stelgkio/otoo/internal/adapter/web/view/component/data_synchronizer/synchronize"
+	syntmp "github.com/stelgkio/otoo/internal/adapter/web/view/component/data_synchronizer/synchronize/template"
 	syn "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/progress/synchronize"
 	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
@@ -331,7 +332,7 @@ func (ph *ProjectHandler) ProjectSynchronizePage(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	_, err = ph.svc.GetProjectByID(ctx, projectID)
+	project, err := ph.svc.GetProjectByID(ctx, projectID)
 	if err != nil {
 		return err
 	}
@@ -413,8 +414,11 @@ func (ph *ProjectHandler) ProjectSynchronizePage(ctx echo.Context) error {
 			return fmt.Errorf(" error: %v", err)
 		}
 	}
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, synpage.ProjectSynchronizerPage(user, projectID, customerTotal, productTotal, orderTotal))
+	}
 
-	return r.Render(ctx, synpage.ProjectSynchronizerPage(user, projectID, customerTotal, productTotal, orderTotal))
+	return r.Render(ctx, syntmp.ProjectSynchonizerTemplate(user, project.Name, projectID, customerTotal, productTotal, orderTotal))
 }
 
 // ProjectSynchronizeStartPage POST /project/synchronize/:projectId

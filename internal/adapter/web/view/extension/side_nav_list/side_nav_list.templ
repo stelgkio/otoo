@@ -31,6 +31,7 @@ templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExt
 									href="javascript:void(0)"
 									hx-get={ fmt.Sprintf("/extension/page/%s/%s", extension.Code, projectId) }
 									class="nav-link"
+									hx-push-url="true"
 									hx-target="#dashboard-content"
 									hx-indicator="#spinnerCourier"
 								>
@@ -50,6 +51,7 @@ templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExt
 									class="nav-link"
 									hx-indicator="#spinnerD"
 									hx-target="#dashboard-content"
+									hx-push-url="true"
 								>
 									<span
 										id="spinnerD"

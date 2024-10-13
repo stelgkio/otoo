@@ -8,6 +8,7 @@ import (
 	pn "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/notification"
 	ps "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/project_secrets"
 	wp "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/settings_general"
+	st "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/template"
 	pw "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/webhooks"
 	"github.com/stelgkio/otoo/internal/core/auth"
 	r "github.com/stelgkio/otoo/internal/core/util"
@@ -39,7 +40,12 @@ func (ph *ProjectHandler) ProjectSettings(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return r.Render(ctx, wp.SettingsGeneral(user, project, projectExtensions))
+
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, wp.SettingsGeneral(user, project, projectExtensions))
+	}
+	return r.Render(ctx, st.SettginsTemplate(user, project.Name, projectID, project, projectExtensions))
+
 }
 
 // ProjectSettingsSercrets GET /project/settings/secret/:projectId

@@ -47,6 +47,7 @@ templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo
 												hx-get={ fmt.Sprintf("/dashboard/order/%s", projectId) }
 												hx-target="#dashboard-content"
 												class="h6 stretched-link"
+												hx-push-url="true"
 											>
 												Orders
 											</a>
@@ -69,6 +70,7 @@ templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo
 												hx-get={ fmt.Sprintf("/dashboard/customer/%s", projectId) }
 												hx-target="#dashboard-content"
 												class="h6 stretched-link"
+												hx-push-url="true"
 											>Customers</a>
 										</div>
 										<div class="text-sm fw-semibold mt-3">{ counts["customer_count"] } </div>
@@ -89,6 +91,7 @@ templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo
 												hx-get={ fmt.Sprintf("/dashboard/product/%s", projectId) }
 												hx-target="#dashboard-content"
 												class="h6 stretched-link"
+												hx-push-url="true"
 											>Products</a>
 										</div>
 										<div class="text-sm fw-semibold mt-3">{ counts["product_count"] } </div>

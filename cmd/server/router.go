@@ -211,6 +211,10 @@ func NewRouter(
 			settingsroup.DELETE("/webhook/delete/:projectId", WooCommerceHandler.DeleteAllWebhooks)
 			settingsroup.GET("/webhook/createall/:projectId", WooCommerceHandler.WebhookCreateAll)
 			settingsroup.GET("/team/:projectId", projectHandler.ProjectSettingsTeam)
+
+			settingsroup.GET("/team/:projectId", projectHandler.ProjectSettingsTeam)
+			settingsroup.GET("/asc-courier/:projectId", projectHandler.ProjectSettingsAcsCourier)
+			settingsroup.GET("/courier4u/:projectId", projectHandler.ProjectSettingsCourier4u)
 		}
 	}
 	//woocommerce group

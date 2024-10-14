@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	ac "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/acs-courier"
+	cu "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/courier4u"
 	pn "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/notification"
 	ps "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/project_secrets"
 	wp "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/settings_general"
@@ -205,6 +207,56 @@ func (ph *ProjectHandler) ProjectSettingsTeam(ctx echo.Context) error {
 	}
 	if ctx.Request().Header.Get("HX-Request") == "true" {
 		return r.Render(ctx, tm.Team(project, projectExtensions))
+	}
+	return r.Render(ctx, st.TeamTemplate(user, project.Name, projectID, project, projectExtensions))
+}
+
+// ProjectSettingsAcsCourier GET /project/settings/team/:projectId
+func (ph *ProjectHandler) ProjectSettingsAcsCourier(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := ph.userSvc.GetUserById(ctx, userID)
+	if err != nil {
+		return err
+	}
+	project, err := ph.svc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	projectExtensions, err := ph.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, ac.SettingsCourier4u(projectID, projectExtensions))
+	}
+	return r.Render(ctx, st.TeamTemplate(user, project.Name, projectID, project, projectExtensions))
+}
+
+// ProjectSettingsCourier4u GET /project/settings/team/:projectId
+func (ph *ProjectHandler) ProjectSettingsCourier4u(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := ph.userSvc.GetUserById(ctx, userID)
+	if err != nil {
+		return err
+	}
+	project, err := ph.svc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	projectExtensions, err := ph.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, cu.SettingsCourier4u(projectID, projectExtensions))
 	}
 	return r.Render(ctx, st.TeamTemplate(user, project.Name, projectID, project, projectExtensions))
 }

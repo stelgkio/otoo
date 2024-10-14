@@ -1,0 +1,17 @@
+package views
+
+import (
+	h "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/settings_header"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ SettingsCourier4u(projectId string, projectExtensions []*domain.ProjectExtension) {
+	<div
+		id="dashboard-content"
+		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
+	>
+		<main class="container-fluid px-3 py-5 p-lg-6 p-xxl-8">
+			@h.SettingsHeader("Acs Courier", 7, projectId, projectExtensions)
+		</main>
+	</div>
+}

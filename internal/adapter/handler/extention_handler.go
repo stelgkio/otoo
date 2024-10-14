@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"log"
 	"log/slog"
+	"net/http"
 	"os"
 	"time"
 
@@ -14,6 +16,8 @@ import (
 	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stelgkio/otoo/internal/core/util"
+	"github.com/stripe/stripe-go/v72"
+	"github.com/stripe/stripe-go/v72/sub"
 )
 
 // Extention get extention
@@ -54,19 +58,19 @@ func (dh *DashboardHandler) StripeSuccesRedirect(ctx echo.Context) error {
 		return err
 	}
 	if extension.Code == "asc-courier" {
-		dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension)
+		//dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, "")
 
 		return util.Render(ctx, et.ExtentionAcsSubscriptionSuccessTemplate(user, project.Name, projectID, extensionID))
 	}
 	if extension.Code == "courier4u" {
-		dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension)
+		//dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, "")
 		return util.Render(ctx, et.ExtentionCourier4uSubscriptionSuccessTemplate(user, project.Name, projectID, extensionID))
 	}
 	if extension.Code == "wallet-expences" {
-		dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension)
+		//dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, "")
 	}
 	if extension.Code == "team-member" {
-		dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension)
+		//dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, "")
 	}
 	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
 	return util.Render(ctx, e.Extensions(projectID, nil, projectExtensions))
@@ -75,13 +79,39 @@ func (dh *DashboardHandler) StripeSuccesRedirect(ctx echo.Context) error {
 // StripeFailRedirect the redirect handler for Stripe fail
 func (dh *DashboardHandler) StripeFailRedirect(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
+	extensionID := ctx.Param("extensionId")
 
-	extensions, err := dh.extensionSvc.GetAllExtensions(ctx)
+	extension, err := dh.extensionSvc.GetExtensionByID(ctx, extensionID)
 	if err != nil {
 		return err
 	}
+
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := dh.userSvc.GetUserById(ctx, userID)
+	project, err := dh.projectSvc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	if extension.Code == "asc-courier" {
+		dh.extensionSvc.DeleteProjectExtension(ctx, extensionID, projectID)
+
+		return util.Render(ctx, et.ExtentionAcsSubscriptionFailTemplate(user, project.Name, projectID, extensionID))
+	}
+	if extension.Code == "courier4u" {
+		dh.extensionSvc.DeleteProjectExtension(ctx, extensionID, projectID)
+		return util.Render(ctx, et.ExtentionCourier4uSubscriptionFailTemplate(user, project.Name, projectID, extensionID))
+	}
+	if extension.Code == "wallet-expences" {
+		dh.extensionSvc.DeleteProjectExtension(ctx, extensionID, projectID)
+	}
+	if extension.Code == "team-member" {
+		dh.extensionSvc.DeleteProjectExtension(ctx, extensionID, projectID)
+	}
 	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
-	return util.Render(ctx, e.Extensions(projectID, extensions, projectExtensions))
+	return util.Render(ctx, e.Extensions(projectID, nil, projectExtensions))
 }
 
 // AcsCourier get extention courier page
@@ -130,6 +160,36 @@ func (dh *DashboardHandler) AcsCourierFormPost(ctx echo.Context) error {
 	return util.Render(ctx, ac.ASC_Courier_Subscription(os.Getenv("STRIPE_PUBLICK_KEY"), projectID, extension.ID.Hex()))
 }
 
+// AcsCourierDeActivate post form with acs courier data
+func (dh *DashboardHandler) AcsCourierDeActivate(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	extension, err := dh.extensionSvc.GetExtensionByCode(ctx, "asc-courier")
+	if err != nil {
+		return err
+	}
+	projectExtensions, err := dh.extensionSvc.GetProjectExtensionByID(ctx, extension.ID.Hex(), projectID)
+	if err != nil {
+		return err
+	}
+	subscriptionID := projectExtensions.SubscriptionID
+	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
+	params := &stripe.SubscriptionCancelParams{}
+	_, err = sub.Cancel(subscriptionID, params)
+	if err != nil {
+		log.Printf("Error canceling subscription: %v", err)
+		return err
+	}
+	log.Printf("Subscription %s canceled successfully", subscriptionID)
+
+	err = dh.extensionSvc.DeleteProjectExtension(ctx, extension.ID.Hex(), projectID)
+	if err != nil {
+		return err
+	}
+
+	return ctx.Redirect(http.StatusMovedPermanently, ctx.Request().RequestURI)
+
+}
+
 // Courier4u get extention courier page
 func (dh *DashboardHandler) Courier4u(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
@@ -174,6 +234,35 @@ func (dh *DashboardHandler) Courier4uFormPost(ctx echo.Context) error {
 	dh.extensionSvc.CreateCourier4uProjectExtension(ctx, projectID, req)
 
 	return util.Render(ctx, cu.Courier4uSubscriptio(os.Getenv("STRIPE_PUBLICK_KEY"), projectID, extension.ID.Hex()))
+}
+
+// Courier4uDeActivate post form with acs courier data
+func (dh *DashboardHandler) Courier4uDeActivate(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	extension, err := dh.extensionSvc.GetExtensionByCode(ctx, "courier4u")
+	if err != nil {
+		return err
+	}
+	projectExtensions, err := dh.extensionSvc.GetProjectExtensionByID(ctx, extension.ID.Hex(), projectID)
+	if err != nil {
+		return err
+	}
+	subscriptionID := projectExtensions.SubscriptionID
+	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
+	params := &stripe.SubscriptionCancelParams{}
+	_, err = sub.Cancel(subscriptionID, params)
+	if err != nil {
+		log.Printf("Error canceling subscription: %v", err)
+		return err
+	}
+	log.Printf("Subscription %s canceled successfully", subscriptionID)
+
+	err = dh.extensionSvc.DeleteProjectExtension(ctx, extension.ID.Hex(), projectID)
+	if err != nil {
+		return err
+	}
+
+	return ctx.Redirect(http.StatusMovedPermanently, ctx.Request().RequestURI)
 }
 
 // WalletExpenses get extention

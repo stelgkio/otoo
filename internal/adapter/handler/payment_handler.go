@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -16,6 +15,7 @@ import (
 	"github.com/stripe/stripe-go/v72/customer"
 	"github.com/stripe/stripe-go/v72/invoice"
 	"github.com/stripe/stripe-go/v72/sub"
+	"github.com/stripe/stripe-go/v72/webhook"
 )
 
 // Payment get extention
@@ -132,23 +132,23 @@ type SessionOutput struct {
 	ID string `json:"id"`
 }
 
-// MaxBodyBytes is the maximum size of the request body
-const MaxBodyBytes = int64(65536)
-
 func getEvent(c echo.Context) (*stripe.Event, error) {
-	// Limit the size of the request body
+	const MaxBodyBytes = int64(65536)
 	c.Request().Body = http.MaxBytesReader(c.Response(), c.Request().Body, MaxBodyBytes)
 
-	// Read the request body
 	payload, err := io.ReadAll(c.Request().Body)
 	if err != nil {
 		return nil, err
 	}
 
-	// Unmarshal the payload into a Stripe Event
-	var event stripe.Event
-	if err := json.Unmarshal(payload, &event); err != nil {
-		return nil, err
+	// Get the Stripe-Signature header value
+	sigHeader := c.Request().Header.Get("Stripe-Signature")
+	webhookSecret := os.Getenv("STRIPE_WEBHOOK_SECRET")
+
+	// Verify the webhook signature
+	event, err := webhook.ConstructEvent(payload, sigHeader, webhookSecret)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to verify webhook signature: %s", err)
 	}
 
 	return &event, nil
@@ -157,6 +157,7 @@ func getEvent(c echo.Context) (*stripe.Event, error) {
 // PaymentEvent handles the Stripe webhook event
 func (dh *DashboardHandler) PaymentEvent(c echo.Context) error {
 	// Retrieve the Stripe event
+	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
 	event, err := getEvent(c)
 	if err != nil {
 		slog.Error("Failed to get event:", "error", err)
@@ -167,6 +168,7 @@ func (dh *DashboardHandler) PaymentEvent(c echo.Context) error {
 
 	// Handle the event based on its type
 	if event.Type == "customer.subscription.created" {
+		slog.Info("Unhandled event type", "eventType", event.Type)
 		// Access the customer ID and subscription ID from the event data
 		customerID := event.Data.Object["customer"].(string)
 		subscriptionID := event.Data.Object["id"].(string)
@@ -195,11 +197,50 @@ func (dh *DashboardHandler) PaymentEvent(c echo.Context) error {
 
 		slog.Info("Subscription metadata - ProjectId", "projectID", projectID)
 		slog.Info("Subscription metadata - ExtensionID", "extensionID", extensionID)
+		err = dh.SubscriptionCreated(c, subscriptionID, projectID, extensionID)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create subscription"})
+		}
 	}
+	if event.Type == "customer.subscription.deleted" {
+		slog.Info("Unhandled event type", "eventType", event.Type)
+		// Access the customer ID and subscription ID from the event data
+		customerID := event.Data.Object["customer"].(string)
+		subscriptionID := event.Data.Object["id"].(string)
 
+		// Retrieve the customer details from Stripe
+		cust, err := customer.Get(customerID, nil)
+		if err != nil {
+			slog.Error("Failed to retrieve customer", "error", err)
+			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve customer"})
+		}
+
+		// Retrieve the subscription details from Stripe
+		subscription, err := sub.Get(subscriptionID, nil)
+		if err != nil {
+			slog.Error("Failed to retrieve subscription", "error", err)
+			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve subscription"})
+		}
+
+		// Access metadata from the customer object
+		email := cust.Metadata["FinalEmail"]
+		slog.Info("Customer metadata - Subscription created by", "email", email)
+
+		// Access metadata from the subscription object
+		projectID := subscription.Metadata["ProjectId"]
+		extensionID := subscription.Metadata["ExtensionID"]
+
+		slog.Info("Subscription metadata - ProjectId", "projectID", projectID)
+		slog.Info("Subscription metadata - ExtensionID", "extensionID", extensionID)
+
+		err = dh.SubscriptionDeleted(c, subscriptionID, projectID, extensionID)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to delete subscription"})
+		}
+	}
 	if event.Type == "invoice.payment_succeeded" {
 		// This event is triggered when a subscription payment succeeds
-
+		slog.Info("Unhandled event type", "eventType", event.Type)
 		// Access the customer ID and invoice ID from the event data
 		customerID := event.Data.Object["customer"].(string)
 		invoiceID := event.Data.Object["id"].(string)
@@ -241,14 +282,101 @@ func (dh *DashboardHandler) PaymentEvent(c echo.Context) error {
 		slog.Info("Subscription payment for project", "projectID", projectID)
 		slog.Info("Subscription metadata - ExtensionID", "extensionID", extensionID)
 
-		// Additional logic to update your system for successful payment
-		// (e.g., mark invoice as paid in your database)
-
 	}
-
 	if event.Type == "invoice.payment_failed" {
-		slog.Warn("Unhandled event type", "eventType", event.Type)
+		// This event is triggered when a subscription payment succeeds
+		slog.Info("Unhandled event type", "eventType", event.Type)
+		// Access the customer ID and invoice ID from the event data
+		customerID := event.Data.Object["customer"].(string)
+		invoiceID := event.Data.Object["id"].(string)
+
+		// Retrieve the customer details from Stripe
+		cust, err := customer.Get(customerID, nil)
+
+		if err != nil {
+			slog.Error("Failed to retrieve customer", "error", err)
+			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve customer"})
+		}
+		// Access metadata from the customer object
+		email := cust.Metadata["FinalEmail"]
+		slog.Info("Customer metadata - Subscription payment by", "email", email)
+
+		// Retrieve the invoice details from Stripe
+		invoice, err := invoice.Get(invoiceID, nil)
+		if err != nil {
+			slog.Error("Failed to retrieve invoice", "error", err)
+			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve invoice"})
+		}
+
+		// Access the subscription ID related to the payment
+		subscriptionID := invoice.Subscription.ID
+
+		// Retrieve subscription details from Stripe
+		subscription, err := sub.Get(subscriptionID, nil)
+		if err != nil {
+			slog.Error("Failed to retrieve subscription", "error", err)
+			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve subscription"})
+		}
+
+		// Log the payment success for the subscription
+		slog.Info("Subscription payment succeeded", "subscriptionID", subscriptionID)
+
+		// You can also access metadata from the invoice or subscription object if needed
+		projectID := subscription.Metadata["ProjectId"]
+		extensionID := subscription.Metadata["ExtensionID"]
+		slog.Info("Subscription payment for project", "projectID", projectID)
+		slog.Info("Subscription metadata - ExtensionID", "extensionID", extensionID)
+		err = dh.SubscriptionDeleted(c, subscriptionID, projectID, extensionID)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed payment delete subscription"})
+		}
 	}
 
 	return c.NoContent(http.StatusOK)
+}
+
+// SubscriptionCreated asd
+func (dh *DashboardHandler) SubscriptionCreated(ctx echo.Context, subscriptionID, projectID, extensionID string) error {
+	extension, err := dh.extensionSvc.GetExtensionByID(ctx, extensionID)
+	if err != nil {
+		return err
+	}
+
+	if extension.Code == "asc-courier" {
+		if err := dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, subscriptionID); err != nil {
+			return err
+		}
+	}
+	if extension.Code == "courier4u" {
+		if err := dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, subscriptionID); err != nil {
+			return err
+		}
+	}
+	if extension.Code == "wallet-expences" {
+		if err := dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, subscriptionID); err != nil {
+			return err
+		}
+	}
+	if extension.Code == "team-member" {
+		if err := dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, subscriptionID); err != nil {
+			return err
+		}
+	}
+	if extension.Code == "data-synchronizer" {
+		if err := dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 365, subscriptionID); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// SubscriptionDeleted delete
+func (dh *DashboardHandler) SubscriptionDeleted(ctx echo.Context, subscriptionID, projectID, extensionID string) error {
+	err := dh.extensionSvc.DeleteProjectExtension(ctx, extensionID, projectID)
+	if err != nil {
+		return nil
+	}
+
+	return nil
 }

@@ -15,7 +15,7 @@ type ExtensionRepository interface {
 
 	//////////////////PROJECT ExtensionS/////////////////////////
 
-	CreateProjectExtension(ctx echo.Context, projectID string, ex *domain.Extension) error
+	CreateProjectExtension(ctx echo.Context, projectID string, ex *domain.Extension, days int, subID string) error
 	GetAllProjectExtensions(ctx echo.Context, projectID string) ([]*domain.ProjectExtension, error)
 	GetProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.ProjectExtension, error)
 	DeleteProjectExtension(ctx echo.Context, extensionID, projectID string) error
@@ -54,7 +54,7 @@ type ExtensionService interface {
 
 	//////////////////PROJECT ExtensionS/////////////////////////
 
-	CreateProjectExtension(ctx echo.Context, projectID string, e *domain.Extension) error
+	CreateProjectExtension(ctx echo.Context, projectID string, e *domain.Extension, days int, subID string) error
 	GetAllProjectExtensions(ctx echo.Context, projectID string) ([]*domain.ProjectExtension, error)
 	GetProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.ProjectExtension, error)
 	DeleteProjectExtension(ctx echo.Context, extensionID, projectID string) error

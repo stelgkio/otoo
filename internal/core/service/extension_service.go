@@ -46,8 +46,8 @@ func (ex *ExtensionService) DeleteExtension(ctx echo.Context, extensionID string
 //////////////////PROJECT Extension/////////////////////////
 
 // CreateProjectExtension creates a new ProjectExtension
-func (ex *ExtensionService) CreateProjectExtension(ctx echo.Context, projectID string, e *domain.Extension) error {
-	return ex.repo.CreateProjectExtension(ctx, projectID, e)
+func (ex *ExtensionService) CreateProjectExtension(ctx echo.Context, projectID string, e *domain.Extension, days int, subId string) error {
+	return ex.repo.CreateProjectExtension(ctx, projectID, e, days, subId)
 }
 
 // GetAllProjectExtensions gets all ProjectExtensions

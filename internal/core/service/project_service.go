@@ -71,7 +71,7 @@ func (ps *ProjectService) CreateProject(ctx echo.Context, req *domain.ProjectReq
 	if err != nil {
 		return nil, err
 	}
-	ps.extensionSrv.CreateProjectExtension(ctx, project.Id.String(), extension)
+	ps.extensionSrv.CreateProjectExtension(ctx, project.Id.String(), extension, 365, "")
 
 	go ps.wp.WoocommerceCreateAllWebHookAsync(req.ConsumerKey, req.ConsumerSecret, req.Domain, pr.Id.String())
 	return pr, nil

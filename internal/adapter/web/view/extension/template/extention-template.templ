@@ -25,3 +25,15 @@ templ ExtensionTemplate(user *domain.User, projectName string, projectId string,
 		@ex.Extensions(projectId, extensions, projectExtensions)
 	}
 }
+
+templ ExtentionAcsSubscriptionFailTemplate(user *domain.User, projectName, projectId, extensionId string) {
+	@t.DashboardTemplate(user, projectName, projectId) {
+		@ac.ASC_Courier_Subscription_Success(projectId, extensionId)
+	}
+}
+
+templ ExtentionCourier4uSubscriptionFailTemplate(user *domain.User, projectName, projectId, extensionId string) {
+	@t.DashboardTemplate(user, projectName, projectId) {
+		@cu.Courier4uSubscriptionSuccess(projectId, extensionId)
+	}
+}

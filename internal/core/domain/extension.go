@@ -40,7 +40,7 @@ type ProjectExtension struct {
 	CreatedAt          time.Time          `json:"created_at"  bson:"created_at,omitempty"`
 	UpdatedAt          time.Time          `json:"updated_at"  bson:"updated_at,omitempty"`
 	DeletedAt          time.Time          `json:"deleted_at"  bson:"deleted_at,omitempty"`
-	IsActive           bool               `json:"is_active" bson:"is_active,omitempty"`
+	IsActive           bool               `json:"is_active" bson:"is_active"`
 	PaymentStatus      string             `json:"payment_status" bson:"payment_status,omitempty"`
 	SubscriptionPeriod int                `json:"subscription_period" bson:"subscription_period,omitempty"`
 	SubscriptionID     string             `json:"subscription_id" bson:"subscription_id,omitempty"`
@@ -50,6 +50,16 @@ type ProjectExtension struct {
 func ContainsExtensionID(projectExtensions []*ProjectExtension, extensionID string) bool {
 	for _, projectExtension := range projectExtensions {
 		if projectExtension.ExtensionID == extensionID {
+			return true // Found a matching ExtensionID
+		}
+	}
+	return false // No matching ExtensionID found
+}
+
+// ContainsExtensionCode Function to check if any ProjectExtension contains the given ExtensionID
+func ContainsExtensionCode(projectExtensions []*ProjectExtension, extensionCode string) bool {
+	for _, projectExtension := range projectExtensions {
+		if projectExtension.Code == extensionCode {
 			return true // Found a matching ExtensionID
 		}
 	}

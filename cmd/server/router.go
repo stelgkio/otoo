@@ -45,6 +45,8 @@ func NewRouter(
 		return r.Render(c, con.ContantComponent())
 	})
 
+	e.POST("/webhook", dashboardHandler.PaymentEvent)
+
 	e.GET("/RunOrderWeeklyBalanceJob", func(c echo.Context) error {
 		err := orderAnalyticsCron.RunOrderWeeklyBalanceJob()
 		if err != nil {
@@ -147,9 +149,11 @@ func NewRouter(
 
 		extensiongroup.GET("/asc-courier/:projectId", dashboardHandler.AcsCourier)
 		extensiongroup.POST("/asc-courier/:projectId", dashboardHandler.AcsCourierFormPost)
+		extensiongroup.POST("/asc-courier/deactivate/:projectId", dashboardHandler.AcsCourierDeActivate)
 
 		extensiongroup.GET("/courier4u/:projectId", dashboardHandler.Courier4u)
 		extensiongroup.POST("/courier4u/:projectId", dashboardHandler.Courier4uFormPost)
+		extensiongroup.POST("/courier4u/deactivate/:projectId", dashboardHandler.Courier4uDeActivate)
 
 		extensiongroup.GET("/wallet-expences/:projectId", dashboardHandler.WalletExpenses)
 
@@ -164,7 +168,6 @@ func NewRouter(
 		extensiongroup.GET("/project_extensions/:projectId", dashboardHandler.ProjectExtensionsList)
 	}
 
-	e.POST("/payment/event", dashboardHandler.PaymentEvent)
 	//Payment group
 	paymentgroup := e.Group("/payment")
 	{

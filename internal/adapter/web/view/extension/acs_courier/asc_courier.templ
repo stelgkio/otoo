@@ -225,6 +225,7 @@ templ ASC_Courier(projectId, extensionId string, errors map[string](string), val
 								type="button"
 								class="btn btn-sm btn-neutral"
 								hx-get={ fmt.Sprintf("/extension/%s", projectId) }
+								hx-push-url="true"
 								hx-target="#dashboard-content"
 							>Cancel</button>
 							<button

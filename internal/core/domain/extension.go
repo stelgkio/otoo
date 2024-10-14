@@ -31,17 +31,19 @@ type Extension struct {
 
 // ProjectExtension represents active project Extension
 type ProjectExtension struct {
-	ID            primitive.ObjectID `bson:"_id,omitempty"`
-	Title         string             `json:"title" bson:"title,omitempty"`
-	Description   string             `json:"description" bson:"description,omitempty"`
-	Code          string             `json:"code" bson:"code,omitempty"`
-	ProjectID     string             `json:"project_id" bson:"project_id,omitempty"`
-	ExtensionID   string             `json:"Extension_id" bson:"extension_id,omitempty"`
-	CreatedAt     time.Time          `json:"created_at"  bson:"created_at,omitempty"`
-	UpdatedAt     time.Time          `json:"updated_at"  bson:"updated_at,omitempty"`
-	DeletedAt     time.Time          `json:"deleted_at"  bson:"deleted_at,omitempty"`
-	IsActive      bool               `json:"is_active" bson:"is_active,omitempty"`
-	PaymentStatus string             `json:"payment_status" bson:"payment_status,omitempty"`
+	ID                 primitive.ObjectID `bson:"_id,omitempty"`
+	Title              string             `json:"title" bson:"title,omitempty"`
+	Description        string             `json:"description" bson:"description,omitempty"`
+	Code               string             `json:"code" bson:"code,omitempty"`
+	ProjectID          string             `json:"project_id" bson:"project_id,omitempty"`
+	ExtensionID        string             `json:"Extension_id" bson:"extension_id,omitempty"`
+	CreatedAt          time.Time          `json:"created_at"  bson:"created_at,omitempty"`
+	UpdatedAt          time.Time          `json:"updated_at"  bson:"updated_at,omitempty"`
+	DeletedAt          time.Time          `json:"deleted_at"  bson:"deleted_at,omitempty"`
+	IsActive           bool               `json:"is_active" bson:"is_active,omitempty"`
+	PaymentStatus      string             `json:"payment_status" bson:"payment_status,omitempty"`
+	SubscriptionPeriod int                `json:"subscription_period" bson:"subscription_period,omitempty"`
+	SubscriptionID     string             `json:"subscription_id" bson:"subscription_id,omitempty"`
 }
 
 // ContainsExtensionID Function to check if any ProjectExtension contains the given ExtensionID
@@ -97,6 +99,31 @@ func (p *AcsCourierExtension) Validate() map[string](string) {
 	if p.BillingCode == "" {
 		errors["billing_code"] = "BillingCode is required"
 
+	}
+
+	return errors
+}
+
+// Courier4uExtension represents active acs details for acs courier
+type Courier4uExtension struct {
+	ID primitive.ObjectID `bson:"_id,omitempty"`
+
+	ProjectID     string    `json:"project_id" bson:"project_id,omitempty"`
+	ExtensionID   string    `json:"extension_id" bson:"extension_id,omitempty"`
+	CreatedAt     time.Time `json:"created_at"  bson:"created_at,omitempty"`
+	UpdatedAt     time.Time `json:"updated_at"  bson:"updated_at,omitempty"`
+	DeletedAt     time.Time `json:"deleted_at"  bson:"deleted_at,omitempty"`
+	IsActive      bool      `json:"is_active" bson:"is_active,omitempty"`
+	CourierAPIKey string    `json:"courier_api_key" bson:"acs_api_key" form:"courier_api_key"`
+}
+
+// Validate validates the request body
+func (p *Courier4uExtension) Validate() map[string](string) {
+
+	errors := make(map[string]string)
+
+	if p.CourierAPIKey == "" {
+		errors["courier_api_key"] = "Api Key Id is required"
 	}
 
 	return errors

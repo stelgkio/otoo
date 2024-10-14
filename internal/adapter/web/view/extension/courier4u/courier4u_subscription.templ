@@ -1,0 +1,131 @@
+package views
+
+import "fmt"
+
+templ Courier4uSubscriptio(stripePublishableKey string, projectId, extensionId string) {
+	<div
+		id="dashboard-content"
+		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
+	>
+		<main class="container-fluid px-6 pb-10">
+			<form
+				autocomplete="off"
+				x-data={ fmt.Sprintf("subscriptionForm('%s','%s','%s')", stripePublishableKey,
+			projectId, extensionId) }
+			>
+				<header class="py-4 border-bottom">
+					<div class="row align-items-center">
+						<div class="col">
+							<div class="d-flex align-items-center gap-4">
+								<div>
+									<button
+										type="button"
+										class="btn-close text-xs"
+										aria-label="Close"
+										hx-get={ fmt.Sprintf("/extension/%s", projectId) }
+										hx-target="#dashboard-content"
+									></button>
+								</div>
+								<div class="vr opacity-20 my-1"></div>
+								<h1 class="h4 ls-tight">Courier4u</h1>
+							</div>
+						</div>
+						<div class="col">
+							<div class="hstack gap-2 justify-content-end">
+								<button
+									type="button"
+									@click="createSubscription"
+									class="btn btn-xs btn-primary rounded-pill text-nowrap"
+								>
+									<span class="pe-2"><i class="bi bi-plus-circle"></i> </span><span>Subscription</span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</header>
+			</form>
+			<div class="col-12">
+				<div class="col d-flex align-items-center justify-content-center">
+					<article class="article mw-read">
+						<div class="card card-pricing text-bg-primary border-0 shadow-4 shadow-6-hover">
+							<div class="p-6">
+								<h3 class="text-reset ls-tight mb-1">Courier4u</h3>
+								<div class="d-flex align-items-center my-5">
+									<span class="d-block display-5 text-reset">29€/mo</span>
+								</div>
+								<p class="text-reset text-opacity-75 mb-4">
+									<p>
+										Accelerate your shipping process with KonektorX Courier4u. Manage and send
+										orders
+										with
+										speed
+										and
+										ease.
+									</p>
+								</p>
+							</div>
+						</div>
+						<ul class="list-unstyled mt-7">
+							<li class="py-2 d-flex align-items-center">
+								<div
+									class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3"
+								>
+									<i class="bi bi-check"></i>
+								</div>
+								<p>Automatic order status updates</p>
+							</li>
+							<li class="py-2 d-flex align-items-center">
+								<div
+									class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3"
+								>
+									<i class="bi bi-check"></i>
+								</div>
+								<p>Download shipping vouchers</p>
+							</li>
+							<li class="py-2 d-flex align-items-center">
+								<div
+									class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3"
+								>
+									<i class="bi bi-check"></i>
+								</div>
+								<p>Send customer notifications via email</p>
+							</li>
+						</ul>
+					</article>
+				</div>
+			</div>
+		</main>
+		<script>
+		function subscriptionForm(stripePublishableKey, projectId, extensionId) {
+			return {
+
+				createSubscription() {
+					const stripe = Stripe(stripePublishableKey);
+
+					const value = {
+
+						projectId: projectId, // Add additional data if needed
+						extensionId: extensionId // Add additional data if needed
+					};
+
+					fetch("/payment", {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(value)
+					})
+						.then(async response => {
+							const res = await response.json();
+							const id = res.id;
+							stripe.redirectToCheckout({ sessionId: id });
+						})
+						.catch(error => {
+							console.error('Error creating subscription:', error);
+						});
+				}
+			};
+		}
+	</script>
+	</div>
+}

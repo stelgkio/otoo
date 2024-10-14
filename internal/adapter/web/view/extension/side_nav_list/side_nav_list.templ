@@ -9,11 +9,12 @@ templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExt
 	<li class="nav-item my-1" id="extensions-dropdown">
 		<a
 			class="nav-link d-flex align-items-center rounded-pill"
-			href="#sidebar-components"
+			href="#extension-components"
 			data-bs-toggle="collapse"
 			role="button"
 			aria-expanded="false"
-			aria-controls="sidebar-components"
+			aria-controls="extension-components"
+			onfocus="handleExtensionsClick()"
 		>
 			<i class="bi bi-grid-1x2-fill"></i>
 			<span>Extensions</span>
@@ -21,7 +22,7 @@ templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExt
 				class="badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto"
 			></span>
 		</a>
-		<div class="collapse" id="sidebar-components">
+		<div class="collapse" id="extension-components">
 			<ul class="nav nav-sm flex-column mt-1">
 				if len(extensions) != 0 {
 					for _, extension := range extensions {
@@ -68,14 +69,23 @@ templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExt
 		</div>
 	</li>
 	<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        let courierItems = document.querySelectorAll('.extension-item[data-extension-code="asc-courier"], .extension-item[data-extension-code="courier4u"], .extension-item[data-extension-code="redcourier"]');
-        if (courierItems.length > 0) {
-            courierItems[0].querySelector('a').textContent = 'Courier';
-            for (let i = 1; i < courierItems.length; i++) {
-                courierItems[i].remove();
-            }
+
+function handleExtensionsClick() {
+	
+    // Log the click event
+     let courierItems = document.querySelectorAll('.extension-item[data-extension-code="asc-courier"], .extension-item[data-extension-code="courier4u"], .extension-item[data-extension-code="redcourier"]');
+    
+    console.log(courierItems); // Debugging line
+
+    if (courierItems.length > 0) {       
+        for (let i = 1; i < courierItems.length; i++) {
+            console.log(`Removing: ${courierItems[i].outerHTML}`); // Debugging line
+            courierItems[i].remove();
         }
-    });
+    }
+}
+
+
+
 </script>
 }

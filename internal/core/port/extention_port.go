@@ -27,6 +27,12 @@ type ExtensionRepository interface {
 	GetACSProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.AcsCourierExtension, error)
 	DeleteACSProjectExtension(ctx echo.Context, extensionID, projectID string) error
 
+	////////////////// Courier4u Extension/////////////////////////
+	CreateCourier4uProjectExtension(ctx echo.Context, projectID string, e *domain.Courier4uExtension) error
+	GetAllCourier4uProjectExtensions(ctx echo.Context, projectID string) ([]*domain.Courier4uExtension, error)
+	GetCourier4uProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.Courier4uExtension, error)
+	DeleteCourier4uProjectExtension(ctx echo.Context, extensionID, projectID string) error
+
 	////////////////// Data Synchronizer Extension/////////////////////////
 
 	CreateSynchronizerProjectExtension(ctx echo.Context, projectID string, e *domain.DataSynchronizerExtension) error
@@ -54,11 +60,16 @@ type ExtensionService interface {
 	DeleteProjectExtension(ctx echo.Context, extensionID, projectID string) error
 
 	////////////////// ACS Extension/////////////////////////
-
 	CreateACSProjectExtension(ctx echo.Context, projectID string, e *domain.AcsCourierExtension) error
 	GetAllACSProjectExtensions(ctx echo.Context, projectID string) ([]*domain.AcsCourierExtension, error)
 	GetACSProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.AcsCourierExtension, error)
 	DeleteACSProjectExtension(ctx echo.Context, extensionID, projectID string) error
+
+	////////////////// Courier4u Extension/////////////////////////
+	CreateCourier4uProjectExtension(ctx echo.Context, projectID string, e *domain.Courier4uExtension) error
+	GetAllCourier4uProjectExtensions(ctx echo.Context, projectID string) ([]*domain.Courier4uExtension, error)
+	GetCourier4uProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.Courier4uExtension, error)
+	DeleteCourier4uProjectExtension(ctx echo.Context, extensionID, projectID string) error
 
 	////////////////// Data Synchronizer Extension/////////////////////////
 

@@ -155,7 +155,7 @@ func SideBar(user *domain.User, projectName, projectId string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\" class=\"nav-link\">Orders</a></li></ul></div></li></ul><hr class=\"navbar-divider my-5 opacity-70\"><ul class=\"navbar-nav\"><li><span class=\"nav-link text-xs fw-semibold text-uppercase text-muted ls-wide\">Resources</span></li><li class=\"nav-item my-1\" id=\"extensions-dropdown\"><a class=\"nav-link d-flex align-items-center rounded-pill\" href=\"#sidebar-components\" data-bs-toggle=\"collapse\" role=\"button\" aria-expanded=\"false\" aria-controls=\"sidebar-components\" hx-trigger=\"load\" hx-get=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\" class=\"nav-link\">Orders</a></li></ul></div></li></ul><hr class=\"navbar-divider my-5 opacity-70\"><ul class=\"navbar-nav\"><li><span class=\"nav-link text-xs fw-semibold text-uppercase text-muted ls-wide\">Resources</span></li><li class=\"nav-item my-1\" id=\"extensions-dropdown\"><a class=\"nav-link d-flex align-items-center rounded-pill\" href=\"#extension-components\" data-bs-toggle=\"collapse\" role=\"button\" aria-expanded=\"false\" aria-controls=\"extension-components\" hx-trigger=\"load\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -168,7 +168,7 @@ func SideBar(user *domain.User, projectName, projectId string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#extensions-dropdown\"><i class=\"bi bi-grid-1x2-fill\"></i> <span>Extensions</span> <span class=\"badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto\"></span></a><div class=\"collapse\" id=\"sidebar-components\"></div></li><li class=\"nav-item my-1\"><a class=\"nav-link d-flex align-items-center rounded-pill\" href=\"javascript:void(0)\" hx-get=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#extensions-dropdown\"><i class=\"bi bi-grid-1x2-fill\"></i> <span>Extensions</span> <span class=\"badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto\"></span></a><div class=\"collapse\" id=\"extension-components\"></div></li><li class=\"nav-item my-1\"><a class=\"nav-link d-flex align-items-center rounded-pill\" href=\"javascript:void(0)\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

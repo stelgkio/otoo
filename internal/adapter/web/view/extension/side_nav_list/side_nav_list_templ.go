@@ -31,7 +31,7 @@ func SideNavList(projectId, extensionId string, extensions []*domain.ProjectExte
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"nav-item my-1\" id=\"extensions-dropdown\"><a class=\"nav-link d-flex align-items-center rounded-pill\" href=\"#sidebar-components\" data-bs-toggle=\"collapse\" role=\"button\" aria-expanded=\"false\" aria-controls=\"sidebar-components\"><i class=\"bi bi-grid-1x2-fill\"></i> <span>Extensions</span> <span class=\"badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto\"></span></a><div class=\"collapse\" id=\"sidebar-components\"><ul class=\"nav nav-sm flex-column mt-1\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"nav-item my-1\" id=\"extensions-dropdown\"><a class=\"nav-link d-flex align-items-center rounded-pill\" href=\"#extension-components\" data-bs-toggle=\"collapse\" role=\"button\" aria-expanded=\"false\" aria-controls=\"extension-components\" onfocus=\"handleExtensionsClick()\"><i class=\"bi bi-grid-1x2-fill\"></i> <span>Extensions</span> <span class=\"badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto\"></span></a><div class=\"collapse\" id=\"extension-components\"><ul class=\"nav nav-sm flex-column mt-1\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -45,7 +45,7 @@ func SideNavList(projectId, extensionId string, extensions []*domain.ProjectExte
 					var templ_7745c5c3_Var2 string
 					templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(extension.Code)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/extension/side_nav_list/side_nav_list.templ`, Line: 29, Col: 79}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/extension/side_nav_list/side_nav_list.templ`, Line: 30, Col: 79}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 					if templ_7745c5c3_Err != nil {
@@ -58,7 +58,7 @@ func SideNavList(projectId, extensionId string, extensions []*domain.ProjectExte
 					var templ_7745c5c3_Var3 string
 					templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/extension/page/%s/%s", extension.Code, projectId))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/extension/side_nav_list/side_nav_list.templ`, Line: 32, Col: 81}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/extension/side_nav_list/side_nav_list.templ`, Line: 33, Col: 81}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 					if templ_7745c5c3_Err != nil {
@@ -76,7 +76,7 @@ func SideNavList(projectId, extensionId string, extensions []*domain.ProjectExte
 					var templ_7745c5c3_Var4 string
 					templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/extension/page/%s/%s", extension.Code, projectId))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/extension/side_nav_list/side_nav_list.templ`, Line: 50, Col: 81}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/extension/side_nav_list/side_nav_list.templ`, Line: 51, Col: 81}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 					if templ_7745c5c3_Err != nil {
@@ -89,7 +89,7 @@ func SideNavList(projectId, extensionId string, extensions []*domain.ProjectExte
 					var templ_7745c5c3_Var5 string
 					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(extension.Title)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/extension/side_nav_list/side_nav_list.templ`, Line: 61, Col: 35}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/extension/side_nav_list/side_nav_list.templ`, Line: 62, Col: 35}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 					if templ_7745c5c3_Err != nil {
@@ -102,7 +102,7 @@ func SideNavList(projectId, extensionId string, extensions []*domain.ProjectExte
 				}
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</ul></div></li><script>\n    document.addEventListener('DOMContentLoaded', function() {\n        let courierItems = document.querySelectorAll('.extension-item[data-extension-code=\"asc-courier\"], .extension-item[data-extension-code=\"courier4u\"], .extension-item[data-extension-code=\"redcourier\"]');\n        if (courierItems.length > 0) {\n            courierItems[0].querySelector('a').textContent = 'Courier';\n            for (let i = 1; i < courierItems.length; i++) {\n                courierItems[i].remove();\n            }\n        }\n    });\n</script>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</ul></div></li><script>\n\nfunction handleExtensionsClick() {\n\t\n    // Log the click event\n     let courierItems = document.querySelectorAll('.extension-item[data-extension-code=\"asc-courier\"], .extension-item[data-extension-code=\"courier4u\"], .extension-item[data-extension-code=\"redcourier\"]');\n    \n    console.log(courierItems); // Debugging line\n\n    if (courierItems.length > 0) {       \n        for (let i = 1; i < courierItems.length; i++) {\n            console.log(`Removing: ${courierItems[i].outerHTML}`); // Debugging line\n            courierItems[i].remove();\n        }\n    }\n}\n\n\n\n</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

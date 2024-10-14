@@ -28,13 +28,13 @@ templ Extensions(projectId string, extensions []*domain.Extension, projectExtens
 									<div class="p-6">
 										<h3 class="text-reset ls-tight mb-1">ASC Courier</h3>
 										<div class="d-flex align-items-center my-5">
-											<span class="d-block display-5 text-reset">10€/mo</span>
+											<span class="d-block display-5 text-reset">29€/mo</span>
 										</div>
 										<p class="text-reset text-opacity-75 mb-4">
 											{ extension.Description }
 										</p>
 										<div class="mt-7 mb-2 d-flex justify-content-between align-items-center">
-											<span class="text-sm fw-semibold">Start Shipping with Otoo!</span>
+											<span class="text-sm fw-semibold">Start Shipping with KonnektorX!</span>
 											<a
 												href="javascript:void(0)"
 												hx-get={ fmt.Sprintf("/extension/asc-courier/%s", projectId) }
@@ -52,16 +52,89 @@ templ Extensions(projectId string, extensions []*domain.Extension, projectExtens
 									<div class="p-6">
 										<h3 class="text-reset ls-tight mb-1">ASC Courier</h3>
 										<div class="d-flex align-items-center my-5">
-											<span class="d-block display-5 text-reset">10€/mo</span>
+											<span class="d-block display-5 text-reset">29€/mo</span>
 										</div>
 										<p class="text-reset text-opacity-75 mb-4">
 											{ extension.Description }
 										</p>
 										<div class="mt-7 mb-2 d-flex justify-content-between align-items-center">
-											<span class="text-sm fw-semibold">Start Shipping with Otoo!</span>
+											<span class="text-sm fw-semibold">Start Shipping with KonektorX!</span>
 											<a
 												href="javascript:void(0)"
 												hx-get={ fmt.Sprintf("/extension/asc-courier/%s", projectId) }
+												hx-push-url="true"
+												class="btn btn-sm btn-square btn-dark stretched-link"
+												hx-target="#dashboard-content"
+											>
+												<i class="bi bi-arrow-right"></i>
+											</a>
+										</div>
+									</div>
+								</div>
+							}
+							<ul class="list-unstyled mt-7">
+								<li class="py-2 d-flex align-items-center">
+									<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
+										<i class="bi bi-check"></i>
+									</div>
+									<p>Automatic order status updates</p>
+								</li>
+								<li class="py-2 d-flex align-items-center">
+									<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
+										<i class="bi bi-check"></i>
+									</div>
+									<p>Download shipping vouchers</p>
+								</li>
+								<li class="py-2 d-flex align-items-center">
+									<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
+										<i class="bi bi-check"></i>
+									</div>
+									<p>Send customer notifications via email</p>
+								</li>
+							</ul>
+						</div>
+					} else if extension.Code == "courier4u" {
+						<!-- Wallet & Expenses Overview Card -->
+						<div class="col">
+							if  domain.ContainsExtensionID(projectExtensions,extension.ID.Hex()) {
+								<div class="card card-pricing text-bg-secondary border-0 shadow-4 shadow-6-hover card-disabled">
+									<div class="p-6">
+										<h3 class="text-reset ls-tight mb-1">{ extension.Title }</h3>
+										<div class="d-flex align-items-center my-5">
+											<span class="d-block display-5 text-reset">29€/mo</span>
+										</div>
+										<p class="text-reset text-opacity-75 mb-4">
+											{ extension.Description }
+										</p>
+										<div class="mt-7 mb-2 d-flex justify-content-between align-items-center">
+											<span class="text-sm fw-semibold">Start Shipping with KonektorX!</span>
+											<a
+												href="javascript:void(0)"
+												hx-get={ fmt.Sprintf("/extension/courier4u/%s", projectId) }
+												hx-push-url="true"
+												class="btn btn-sm btn-square btn-dark stretched-link"
+												hx-target="#dashboard-content"
+											>
+												<i class="bi bi-download"></i>
+											</a>
+										</div>
+									</div>
+								</div>
+							} else {
+								<div class="card card-pricing text-bg-secondary border-0 shadow-4 shadow-6-hover ">
+									<div class="p-6">
+										<h3 class="text-reset ls-tight mb-1">{ extension.Title }</h3>
+										<div class="d-flex align-items-center my-5">
+											<span class="d-block display-5 text-reset">29€/mo</span>
+										</div>
+										<p class="text-reset text-opacity-75 mb-4">
+											{ extension.Description }
+										</p>
+										<div class="mt-7 mb-2 d-flex justify-content-between align-items-center">
+											<span class="text-sm fw-semibold">Start Shipping with KonektorX!</span>
+											<a
+												href="javascript:void(0)"
+												hx-get={ fmt.Sprintf("/extension/courier4u/%s", projectId) }
 												hx-push-url="true"
 												class="btn btn-sm btn-square btn-dark stretched-link"
 												hx-target="#dashboard-content"
@@ -101,7 +174,7 @@ templ Extensions(projectId string, extensions []*domain.Extension, projectExtens
 									<div class="p-6">
 										<h3 class="text-reset ls-tight mb-1">Wallet & Expenses</h3>
 										<div class="d-flex align-items-center my-5">
-											<span class="d-block display-5 text-reset">13€/mo</span>
+											<span class="d-block display-5 text-reset">23€/mo</span>
 										</div>
 										<p class="text-reset text-opacity-75 mb-4">
 											{ extension.Description }
@@ -125,7 +198,7 @@ templ Extensions(projectId string, extensions []*domain.Extension, projectExtens
 									<div class="p-6">
 										<h3 class="text-reset ls-tight mb-1">Wallet & Expenses</h3>
 										<div class="d-flex align-items-center my-5">
-											<span class="d-block display-5 text-reset">13€/mo</span>
+											<span class="d-block display-5 text-reset">23€/mo</span>
 										</div>
 										<p class="text-reset text-opacity-75 mb-4">
 											{ extension.Description }
@@ -180,7 +253,7 @@ templ Extensions(projectId string, extensions []*domain.Extension, projectExtens
 									<div class="p-6">
 										<h3 class="text-reset ls-tight mb-1">Data Synchronizer</h3>
 										<div class="d-flex align-items-center my-5">
-											<span class="d-block display-5 text-reset">29€/yr</span>
+											<span class="d-block display-5 text-reset">290€/yr</span>
 										</div>
 										<p class="text-reset text-opacity-75 mb-4">
 											{ extension.Description }
@@ -204,7 +277,7 @@ templ Extensions(projectId string, extensions []*domain.Extension, projectExtens
 									<div class="p-6">
 										<h3 class="text-reset ls-tight mb-1">Data Synchronizer</h3>
 										<div class="d-flex align-items-center my-5">
-											<span class="d-block display-5 text-reset">29€/yr</span>
+											<span class="d-block display-5 text-reset">290€/yr</span>
 										</div>
 										<p class="text-reset text-opacity-75 mb-4">
 											{ extension.Description }
@@ -248,6 +321,67 @@ templ Extensions(projectId string, extensions []*domain.Extension, projectExtens
 										<i class="bi bi-check"></i>
 									</div>
 									<p>Build custom analytics and reports</p>
+								</li>
+							</ul>
+						</div>
+					} else if extension.Code == "team-member" {
+						<!-- Data Synchronizer Card -->
+						<div class="col">
+							if  domain.ContainsExtensionID(projectExtensions,extension.ID.Hex()) {
+								<div class="card card-pricing text-bg-dark shadow-4 shadow-6-hover card-disabled">
+									<div class="p-6">
+										<h3 class="text-reset ls-tight mb-1">{ extension.Title } </h3>
+										<div class="d-flex align-items-center my-5">
+											<span class="d-block display-5 text-reset">20€/mo</span>
+										</div>
+										<p class="text-reset text-opacity-75 mb-4">
+											{ extension.Description }
+										</p>
+										<div class="mt-7 mb-2 d-flex justify-content-between align-items-center">
+											<span class="text-sm fw-semibold">Add Team Member to your project!</span>
+											<a
+												href="javascript:void(0)"
+												hx-get={ fmt.Sprintf("/extension/data-synchronizer/%s", projectId) }
+												hx-push-url={ fmt.Sprintf("/extension/data-synchronizer/%s", projectId) }
+												class="btn btn-sm btn-square btn-white stretched-link"
+												hx-target="#dashboard-content"
+											>
+												<i class="bi bi-download"></i>
+											</a>
+										</div>
+									</div>
+								</div>
+							} else {
+								<div class="card card-pricing text-bg-dark shadow-4 shadow-6-hover ">
+									<div class="p-6">
+										<h3 class="text-reset ls-tight mb-1">{ extension.Title } </h3>
+										<div class="d-flex align-items-center my-5">
+											<span class="d-block display-5 text-reset">20€/mo</span>
+										</div>
+										<p class="text-reset text-opacity-75 mb-4">
+											{ extension.Description }
+										</p>
+										<div class="mt-7 mb-2 d-flex justify-content-between align-items-center">
+											<span class="text-sm fw-semibold">Add Team Member to your project!</span>
+											<a
+												href="javascript:void(0)"
+												hx-get={ fmt.Sprintf("/extension/data-synchronizer/%s", projectId) }
+												hx-push-url={ fmt.Sprintf("/extension/data-synchronizer/%s", projectId) }
+												class="btn btn-sm btn-square btn-white stretched-link"
+												hx-target="#dashboard-content"
+											>
+												<i class="bi bi-arrow-right"></i>
+											</a>
+										</div>
+									</div>
+								</div>
+							}
+							<ul class="list-unstyled mt-7">
+								<li class="py-2 d-flex align-items-center">
+									<div class="icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3">
+										<i class="bi bi-check"></i>
+									</div>
+									<p>Add as many users you want to your project</p>
 								</li>
 							</ul>
 						</div>

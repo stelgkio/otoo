@@ -148,6 +148,9 @@ func NewRouter(
 		extensiongroup.GET("/asc-courier/:projectId", dashboardHandler.AcsCourier)
 		extensiongroup.POST("/asc-courier/:projectId", dashboardHandler.AcsCourierFormPost)
 
+		extensiongroup.GET("/courier4u/:projectId", dashboardHandler.Courier4u)
+		extensiongroup.POST("/courier4u/:projectId", dashboardHandler.Courier4uFormPost)
+
 		extensiongroup.GET("/wallet-expences/:projectId", dashboardHandler.WalletExpenses)
 
 		extensiongroup.GET("/data-synchronizer/:projectId", dashboardHandler.DataSynchronizer)
@@ -207,6 +210,7 @@ func NewRouter(
 			settingsroup.POST("/secrets/update/:projectId", projectHandler.ProjectSecretsUpdate)
 			settingsroup.DELETE("/webhook/delete/:projectId", WooCommerceHandler.DeleteAllWebhooks)
 			settingsroup.GET("/webhook/createall/:projectId", WooCommerceHandler.WebhookCreateAll)
+			settingsroup.GET("/team/:projectId", projectHandler.ProjectSettingsTeam)
 		}
 	}
 	//woocommerce group

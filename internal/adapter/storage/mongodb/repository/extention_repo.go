@@ -668,3 +668,111 @@ func (ex *ExtensionRepository) DeleteSynchronizerProjectExtension(ctx echo.Conte
 
 	return nil
 }
+
+//////////////////  Courier4u Extension  /////////////////////////
+
+// CreateCourier4uProjectExtension creates a new ProjectExtension
+func (ex *ExtensionRepository) CreateCourier4uProjectExtension(ctx echo.Context, projectID string, e *domain.Courier4uExtension) error {
+	collection := ex.mongo.Database("otoo").Collection("courier4u_project_extensions")
+
+	filter := bson.M{"extension_id": e.ExtensionID, "is_active": true, "project_id": projectID}
+	update := bson.M{"$set": e}
+
+	// Set upsert option to true
+	opt := options.Update().SetUpsert(true)
+
+	// Perform the upsert operation
+	_, err := collection.UpdateOne(context.TODO(), filter, update, opt)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// GetAllCourier4uProjectExtensions gets all ProjectExtensions
+func (ex *ExtensionRepository) GetAllCourier4uProjectExtensions(ctx echo.Context, projectID string) ([]*domain.Courier4uExtension, error) {
+	collection := ex.mongo.Database("otoo").Collection("courier4u_project_extensions")
+
+	filter := bson.M{
+		"project_id": projectID,
+		"is_active":  true,
+	}
+
+	cursor, err := collection.Find(ctx.Request().Context(), filter)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+	defer cursor.Close(ctx.Request().Context())
+
+	var projectExtensions []*domain.Courier4uExtension
+	for cursor.Next(ctx.Request().Context()) {
+		var projectExtension domain.Courier4uExtension
+		if err := cursor.Decode(&projectExtension); err != nil {
+			return nil, err
+		}
+		projectExtensions = append(projectExtensions, &projectExtension)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return projectExtensions, nil
+}
+
+// GetCourier4uProjectExtensionByID gets a ProjectExtension by ID
+func (ex *ExtensionRepository) GetCourier4uProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.Courier4uExtension, error) {
+	collection := ex.mongo.Database("otoo").Collection("courier4u_project_extensions")
+
+	filter := bson.M{
+		"project_id":   projectID,
+		"extension_id": extensionID,
+		"is_active":    true,
+	}
+
+	var projectExtension domain.Courier4uExtension
+	err := collection.FindOne(ctx.Request().Context(), filter).Decode(&projectExtension)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &projectExtension, nil
+}
+
+// DeleteCourier4uProjectExtension deletes a ProjectExtension by ID
+func (ex *ExtensionRepository) DeleteCourier4uProjectExtension(ctx echo.Context, extensionID, projectID string) error {
+	collection := ex.mongo.Database("otoo").Collection("courier4u_project_extensions")
+
+	extID, err := primitive.ObjectIDFromHex(extensionID)
+	if err != nil {
+		return errors.New("Invalid extension ID format")
+	}
+
+	filter := bson.M{
+		"_id":          extID,
+		"project_id":   projectID,
+		"extension_id": extensionID,
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"deleted_at": time.Now(),
+			"is_active":  false,
+		},
+	}
+
+	result, err := collection.UpdateOne(ctx.Request().Context(), filter, update)
+	if err != nil {
+		return err
+	}
+	if result.MatchedCount == 0 {
+		return errors.New("ProjectExtension not found")
+	}
+
+	return nil
+}

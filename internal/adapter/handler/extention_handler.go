@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 	e "github.com/stelgkio/otoo/internal/adapter/web/view/extension"
 	ac "github.com/stelgkio/otoo/internal/adapter/web/view/extension/acs_courier"
+	cu "github.com/stelgkio/otoo/internal/adapter/web/view/extension/courier4u"
 	nv "github.com/stelgkio/otoo/internal/adapter/web/view/extension/side_nav_list"
 	et "github.com/stelgkio/otoo/internal/adapter/web/view/extension/template"
 	"github.com/stelgkio/otoo/internal/core/auth"
@@ -56,6 +57,16 @@ func (dh *DashboardHandler) StripeSuccesRedirect(ctx echo.Context) error {
 		dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension)
 
 		return util.Render(ctx, et.ExtentionAcsSubscriptionSuccessTemplate(user, project.Name, projectID, extensionID))
+	}
+	if extension.Code == "courier4u" {
+		dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension)
+		return util.Render(ctx, et.ExtentionCourier4uSubscriptionSuccessTemplate(user, project.Name, projectID, extensionID))
+	}
+	if extension.Code == "wallet-expences" {
+		dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension)
+	}
+	if extension.Code == "team-member" {
+		dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension)
 	}
 	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
 	return util.Render(ctx, e.Extensions(projectID, nil, projectExtensions))
@@ -117,6 +128,52 @@ func (dh *DashboardHandler) AcsCourierFormPost(ctx echo.Context) error {
 	dh.extensionSvc.CreateACSProjectExtension(ctx, projectID, req)
 
 	return util.Render(ctx, ac.ASC_Courier_Subscription(os.Getenv("STRIPE_PUBLICK_KEY"), projectID, extension.ID.Hex()))
+}
+
+// Courier4u get extention courier page
+func (dh *DashboardHandler) Courier4u(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	extension, err := dh.extensionSvc.GetExtensionByCode(ctx, "courier4u")
+	if err != nil {
+		return err
+	}
+	//TODO:  by projectID and extensionID find AcsCourierExtension
+	acs, err := dh.extensionSvc.GetCourier4uProjectExtensionByID(ctx, extension.ID.Hex(), projectID)
+	if err != nil {
+		return err
+	}
+	if acs == nil {
+		acs = new(domain.Courier4uExtension)
+	}
+
+	return util.Render(ctx, cu.Courier4u(projectID, extension.ID.Hex(), nil, acs))
+}
+
+// Courier4uFormPost post form with acs courier data
+func (dh *DashboardHandler) Courier4uFormPost(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	extension, err := dh.extensionSvc.GetExtensionByCode(ctx, "courier4u")
+	if err != nil {
+		return err
+	}
+	req := new(domain.Courier4uExtension)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("Create project binding error", "error", err)
+		return util.Render(ctx, cu.Courier4u(projectID, extension.ID.Hex(), nil, req))
+	}
+	validationErrors := req.Validate()
+	if len(validationErrors) > 0 {
+		return util.Render(ctx, cu.Courier4u(projectID, extension.ID.Hex(), validationErrors, req))
+	}
+
+	req.ProjectID = projectID
+	req.ExtensionID = extension.ID.Hex()
+	req.CreatedAt = time.Now().UTC()
+	req.IsActive = true
+
+	dh.extensionSvc.CreateCourier4uProjectExtension(ctx, projectID, req)
+
+	return util.Render(ctx, cu.Courier4uSubscriptio(os.Getenv("STRIPE_PUBLICK_KEY"), projectID, extension.ID.Hex()))
 }
 
 // WalletExpenses get extention

@@ -8,6 +8,7 @@ import (
 	pn "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/notification"
 	ps "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/project_secrets"
 	wp "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/settings_general"
+	tm "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/team"
 	st "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/template"
 	pw "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/webhooks"
 	"github.com/stelgkio/otoo/internal/core/auth"
@@ -181,4 +182,29 @@ func (ph *ProjectHandler) ProjectSecretsUpdate(ctx echo.Context) error {
 	proj, err := ph.svc.UpdateProject(ctx, project)
 
 	return r.Render(ctx, ps.ProjectSecrets(proj, projectExtensions))
+}
+
+// ProjectSettingsTeam GET /project/settings/team/:projectId
+func (ph *ProjectHandler) ProjectSettingsTeam(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := ph.userSvc.GetUserById(ctx, userID)
+	if err != nil {
+		return err
+	}
+	project, err := ph.svc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	projectExtensions, err := ph.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, tm.Team(project, projectExtensions))
+	}
+	return r.Render(ctx, st.TeamTemplate(user, project.Name, projectID, project, projectExtensions))
 }

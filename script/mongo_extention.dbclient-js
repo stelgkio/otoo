@@ -1,6 +1,6 @@
 db('otoo').collection('extensions').insertOne({
             title: "ACS Courier",
-            description: "Accelerate your shipping process with Otoo ASC Courier. Manage and send orders with speed and ease.",
+            description: "Accelerate your shipping process with KonnektorX ASC Courier. Manage and send orders with speed and ease.",
             code: "asc-courier",
             created_at: new Date(),
             updated_at: new Date(),
@@ -11,7 +11,7 @@ db('otoo').collection('extensions').insertOne({
 
 db('otoo').collection('extensions').insertOne({
             title: "Wallet & Expenses",
-            description: "Track and manage your expenses, from Facebook ad spend to courier fees and taxes, seamlessly integrated with your Otoo account.",
+            description: "Track and manage your expenses, from Facebook ad spend to courier fees and taxes, seamlessly integrated with your KonnektorX account.",
             code: "wallet-expences",
             created_at: new Date(),
             updated_at: new Date(),
@@ -21,8 +21,29 @@ db('otoo').collection('extensions').insertOne({
         },)
 
 db('otoo').collection('extensions').insertOne({
+    title: "Courier4u",
+    description: "Accelerate your shipping process with KonnektorX Courier4u. Manage and send orders with speed and ease.",
+    code: "wallet-expences",
+    created_at: new Date(),
+    updated_at: new Date(),
+    price_Id:"prod_Qd6ExiHsuFHPt6",
+    is_active: true,
+    price: 13,
+},)
+db('otoo').collection('extensions').insertOne({
+    title: "TeamMember",
+    description: "Add team members to your KonnektorX account for seamless collaboration and management.",
+    code: "team-member",
+    created_at: new Date(),
+    updated_at: new Date(),
+    price_Id:"prod_Qd6ExiHsuFHPt6",
+    is_active: true,
+    price: 20,
+},)
+
+db('otoo').collection('extensions').insertOne({
         title: "Data Synchronizer",
-        description: "Keep your eShop and Otoo perfectly in sync. Effortlessly transfer product details, customer information, and order data.",
+        description: "Keep your eShop and KonnektorX perfectly in sync. Effortlessly transfer product details, customer information, and order data.",
         code: "data-synchronizer",
         created_at: new Date(),
         updated_at: new Date(),

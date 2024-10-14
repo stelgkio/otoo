@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 	m "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/modal"
 	t "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/overview"
+	tmpl "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/template"
 	v "github.com/stelgkio/otoo/internal/core/domain/courier"
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/util"
@@ -18,14 +19,28 @@ import (
 func (dh *DashboardHandler) CourierTable(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 
-	return util.Render(ctx, t.VoucherOverview(projectID))
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return util.Render(ctx, t.VoucherOverview(projectID))
+	}
+
+	project, user, projectID, err := GetProjectAndUser(ctx, dh)
+	if err != nil {
+		return err
+	}
+	return util.Render(ctx, tmpl.CourierTemplate(user, project.Name, projectID))
 }
 
 // VoucherTableHTML returns the order dashboard
 func (dh *DashboardHandler) VoucherTableHTML(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
-
-	return util.Render(ctx, t.VoucherHtml(projectID))
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return util.Render(ctx, t.VoucherHtml(projectID))
+	}
+	project, user, projectID, err := GetProjectAndUser(ctx, dh)
+	if err != nil {
+		return err
+	}
+	return util.Render(ctx, tmpl.VoucherHtmlTemplate(user, project.Name, projectID))
 }
 
 // VoucherTable returns the order dashboard

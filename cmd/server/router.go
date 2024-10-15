@@ -176,6 +176,7 @@ func NewRouter(
 		//Attach jwt token refresher.
 		paymentgroup.Use(auth.TokenRefresherMiddleware)
 		paymentgroup.POST("", dashboardHandler.Payment)
+		paymentgroup.GET("/table/:projectId/:page", dashboardHandler.PaymentTable)
 
 	}
 	//Project group
@@ -218,6 +219,8 @@ func NewRouter(
 			settingsroup.GET("/team/:projectId", projectHandler.ProjectSettingsTeam)
 			settingsroup.GET("/asc-courier/:projectId", projectHandler.ProjectSettingsAcsCourier)
 			settingsroup.GET("/courier4u/:projectId", projectHandler.ProjectSettingsCourier4u)
+
+			settingsroup.GET("/payment/:projectId", projectHandler.ProjectSettingsPayment)
 		}
 	}
 	//woocommerce group

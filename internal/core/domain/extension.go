@@ -7,11 +7,10 @@ import (
 )
 
 const (
-	AcsCode = "asc-courier"
-
-	DataSynchronizerCode = "data-synchronizer"
-
-	WalletExpences = "wallet-expences"
+	AcsCode              string = "asc-courier"
+	DataSynchronizerCode string = "data-synchronizer"
+	WalletExpences       string = "wallet-expences"
+	Courier4u            string = "courier4u"
 )
 
 // Extension here we store all the available extensions we can add to the project
@@ -56,14 +55,16 @@ func ContainsExtensionID(projectExtensions []*ProjectExtension, extensionID stri
 	return false // No matching ExtensionID found
 }
 
-// ContainsExtensionCode Function to check if any ProjectExtension contains the given ExtensionID
-func ContainsExtensionCode(projectExtensions []*ProjectExtension, extensionCode string) bool {
+// ContainsExtensionCodes Function to check if any ProjectExtension contains the given ExtensionID
+func ContainsExtensionCodes(projectExtensions []*ProjectExtension, extensionCodes []string) bool {
 	for _, projectExtension := range projectExtensions {
-		if projectExtension.Code == extensionCode {
-			return true // Found a matching ExtensionID
+		for _, code := range extensionCodes {
+			if projectExtension.Code == code {
+				return true // Found a matching ExtensionCode
+			}
 		}
 	}
-	return false // No matching ExtensionID found
+	return false // No matching ExtensionCode found
 }
 
 // AcsCourierExtension represents active acs details for acs courier

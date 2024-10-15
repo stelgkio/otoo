@@ -7,9 +7,13 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"strconv"
+	"sync"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stelgkio/otoo/internal/core/auth"
+	woo "github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stripe/stripe-go/v72"
 	"github.com/stripe/stripe-go/v72/checkout/session"
 	"github.com/stripe/stripe-go/v72/customer"
@@ -195,12 +199,9 @@ func (dh *DashboardHandler) PaymentEvent(c echo.Context) error {
 		projectID := subscription.Metadata["ProjectId"]
 		extensionID := subscription.Metadata["ExtensionID"]
 
-		slog.Info("Subscription metadata - ProjectId", "projectID", projectID)
-		slog.Info("Subscription metadata - ExtensionID", "extensionID", extensionID)
-		err = dh.SubscriptionCreated(c, subscriptionID, projectID, extensionID)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create subscription"})
-		}
+		slog.Info("Subscription created metadata - ProjectId", "projectID", projectID)
+		slog.Info("Subscription created metadata - ExtensionID", "extensionID", extensionID)
+
 	}
 	if event.Type == "customer.subscription.deleted" {
 		slog.Info("Unhandled event type", "eventType", event.Type)
@@ -230,8 +231,8 @@ func (dh *DashboardHandler) PaymentEvent(c echo.Context) error {
 		projectID := subscription.Metadata["ProjectId"]
 		extensionID := subscription.Metadata["ExtensionID"]
 
-		slog.Info("Subscription metadata - ProjectId", "projectID", projectID)
-		slog.Info("Subscription metadata - ExtensionID", "extensionID", extensionID)
+		slog.Info("Subscription deleted metadata - ProjectId", "projectID", projectID)
+		slog.Info("Subscription deleted metadata - ExtensionID", "extensionID", extensionID)
 
 		err = dh.SubscriptionDeleted(c, subscriptionID, projectID, extensionID)
 		if err != nil {
@@ -274,13 +275,31 @@ func (dh *DashboardHandler) PaymentEvent(c echo.Context) error {
 		}
 
 		// Log the payment success for the subscription
-		slog.Info("Subscription payment succeeded", "subscriptionID", subscriptionID)
+		slog.Info("Payment succeeded", "subscriptionID", subscriptionID)
 
 		// You can also access metadata from the invoice or subscription object if needed
 		projectID := subscription.Metadata["ProjectId"]
 		extensionID := subscription.Metadata["ExtensionID"]
-		slog.Info("Subscription payment for project", "projectID", projectID)
-		slog.Info("Subscription metadata - ExtensionID", "extensionID", extensionID)
+		slog.Info("Payment succeeded for project", "projectID", projectID)
+		slog.Info("Payment succeeded  - ExtensionID", "extensionID", extensionID)
+		err = dh.SubscriptionCreated(c, subscriptionID, projectID, extensionID)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create subscription"})
+		}
+		projectExtensions, err := dh.extensionSvc.GetProjectExtensionByID(nil, extensionID, projectID)
+		if err != nil {
+			return err
+		}
+
+		now := time.Now().UTC()
+
+		nextpay := now.Add(time.Duration(projectExtensions.SubscriptionPeriod) * 24 * time.Hour)
+		extensions, err := dh.extensionSvc.GetExtensionByID(nil, extensionID)
+		if err != nil {
+			return err
+		}
+		payment := woo.NewPaymentSuccess(projectID, projectExtensions.ID.Hex(), projectExtensions.Code, int64(extensions.Price), nextpay)
+		dh.paymentSvc.CreatePayment(nil, payment)
 
 	}
 	if event.Type == "invoice.payment_failed" {
@@ -319,16 +338,32 @@ func (dh *DashboardHandler) PaymentEvent(c echo.Context) error {
 		}
 
 		// Log the payment success for the subscription
-		slog.Info("Subscription payment succeeded", "subscriptionID", subscriptionID)
+		slog.Info("Payment failed", "subscriptionID", subscriptionID)
 
 		// You can also access metadata from the invoice or subscription object if needed
 		projectID := subscription.Metadata["ProjectId"]
 		extensionID := subscription.Metadata["ExtensionID"]
-		slog.Info("Subscription payment for project", "projectID", projectID)
-		slog.Info("Subscription metadata - ExtensionID", "extensionID", extensionID)
-		err = dh.SubscriptionDeleted(c, subscriptionID, projectID, extensionID)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed payment delete subscription"})
+		slog.Info("Payment failed for project", "projectID", projectID)
+		slog.Info("Payment failed - ExtensionID", "extensionID", extensionID)
+
+		projectExtensions, err := dh.extensionSvc.GetProjectExtensionByID(nil, extensionID, projectID)
+		if projectExtensions != nil {
+
+			if err != nil {
+				return err
+			}
+			extensions, err := dh.extensionSvc.GetExtensionByID(nil, extensionID)
+			if err != nil {
+				return err
+			}
+			now := time.Now().UTC()
+
+			payment := woo.NewPaymentFail(projectID, projectExtensions.ID.Hex(), projectExtensions.Code, int64(extensions.Price), now)
+			dh.paymentSvc.CreatePayment(nil, payment)
+			err = dh.SubscriptionDeleted(c, subscriptionID, projectID, extensionID)
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed payment delete subscription"})
+			}
 		}
 	}
 
@@ -379,4 +414,109 @@ func (dh *DashboardHandler) SubscriptionDeleted(ctx echo.Context, subscriptionID
 	}
 
 	return nil
+}
+
+// PaymentTable return payment
+func (dh *DashboardHandler) PaymentTable(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	page := ctx.Param("page")
+	pageNum, err := strconv.Atoi(page)
+	sort := ctx.QueryParam("sort")
+	direction := ctx.QueryParam("direction")
+	itemsPerPage := 12
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, fmt.Errorf("invalid page number: %v", err))
+	}
+
+	if sort == "" {
+		sort = "extension_name"
+	}
+	if direction == "" {
+		direction = "asc"
+	}
+	var wg sync.WaitGroup
+	// Fetch	var wg sync.WaitGroup
+	wg.Add(2)
+
+	paymentCountChan := make(chan int64, 1)
+	paymentListChan := make(chan []*woo.Payment, 1)
+	errChan := make(chan error, 1)
+	errListChan := make(chan error, 1)
+
+	go func() {
+		defer wg.Done()
+		dh.paymentSvc.GetPaymentCountAsync(ctx, projectID, paymentCountChan, errChan)
+	}()
+
+	// Fetch  10 orders
+	go func() {
+		defer wg.Done()
+		dh.paymentSvc.FindPaymentByProjectIDAsync(ctx, projectID, itemsPerPage, pageNum, sort, direction, paymentListChan, errListChan)
+	}()
+	// Wait for all goroutines to finish
+	go func() {
+		wg.Wait()
+		close(paymentCountChan)
+		close(paymentListChan)
+		close(errChan)
+		close(errListChan)
+	}()
+
+	var totalItems int64
+	var paymentRecord []*woo.Payment
+
+	for err := range errChan {
+		if err != nil {
+			return ctx.JSON(http.StatusInternalServerError, map[string]string{"failed to fetch order count": err.Error()})
+		}
+	}
+	for errList := range errListChan {
+		if errList != nil {
+			return ctx.JSON(http.StatusInternalServerError, map[string]string{"error to fetch order": errList.Error()})
+		}
+	}
+
+	for item := range paymentCountChan {
+		totalItems = item
+	}
+	for item := range paymentListChan {
+		paymentRecord = item
+	}
+
+	// Convert orderRecords to OrderTableList for the response
+	var payments []woo.PaymentTableList
+	if paymentRecord != nil {
+		for _, record := range paymentRecord {
+			payments = append(payments, woo.PaymentTableList{
+				ID:            record.ID,
+				ProjectID:     record.ProjectID,
+				ExtensionName: record.ExtensionName,
+				Amount:        float64(record.Amount),
+				IsPaid:        record.IsPaid,
+				IsFail:        record.IsFail,
+				CreatedAt:     record.CreatedAt,
+			})
+		}
+	}
+
+	// Prepare metadata
+
+	totalPages := int(totalItems) / itemsPerPage
+	if int(totalItems)%itemsPerPage > 0 {
+		totalPages++
+	}
+
+	// Create response object
+	response := woo.PaymentTableResponde{
+		Data: payments,
+		Meta: woo.Meta{
+			TotalItems:   int(totalItems),
+			CurrentPage:  pageNum,
+			ItemsPerPage: itemsPerPage,
+			TotalPages:   totalPages,
+		},
+	}
+
+	return ctx.JSON(http.StatusOK, response)
+
 }

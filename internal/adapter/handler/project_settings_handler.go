@@ -8,6 +8,7 @@ import (
 	ac "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/acs-courier"
 	cu "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/courier4u"
 	pn "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/notification"
+	pm "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/payment"
 	ps "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/project_secrets"
 	wp "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/settings_general"
 	tm "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/team"
@@ -95,6 +96,21 @@ func (ph *ProjectHandler) ProjectSettingsWebHook(ctx echo.Context) error {
 		return err
 	}
 	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions))
+}
+
+// ProjectSettingsWebHook GET /project/settings/webhook/:projectId
+func (ph *ProjectHandler) ProjectSettingsPayment(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+
+	project, err := ph.svc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	projectExtensions, err := ph.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	return r.Render(ctx, pm.SettingsPayments(project, projectExtensions))
 }
 
 // ProjectUpdate POST /project/settings/update/:projectId

@@ -10,6 +10,7 @@ import (
 	m "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/modal"
 	t "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/overview"
 	tmpl "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/template"
+	"github.com/stelgkio/otoo/internal/core/domain"
 	v "github.com/stelgkio/otoo/internal/core/domain/courier"
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/util"
@@ -18,7 +19,20 @@ import (
 // CourierTable returns the order dashboard
 func (dh *DashboardHandler) CourierTable(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
+	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	extensionCodes := []string{
+		domain.AcsCode,
+		domain.Courier4u,
+	}
+	yes := domain.ContainsExtensionCodes(projectExtensions, extensionCodes)
 
+	if !yes {
+		ctx.Response().Header().Set("HX-Redirect", fmt.Sprintf("/extension/%s", projectID))
+		return ctx.String(http.StatusOK, "Redirecting...")
+	}
 	if ctx.Request().Header.Get("HX-Request") == "true" {
 		return util.Render(ctx, t.VoucherOverview(projectID))
 	}
@@ -33,12 +47,26 @@ func (dh *DashboardHandler) CourierTable(ctx echo.Context) error {
 // VoucherTableHTML returns the order dashboard
 func (dh *DashboardHandler) VoucherTableHTML(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
-	if ctx.Request().Header.Get("HX-Request") == "true" {
-		return util.Render(ctx, t.VoucherHtml(projectID))
-	}
+
 	project, user, projectID, err := GetProjectAndUser(ctx, dh)
 	if err != nil {
 		return err
+	}
+	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	extensionCodes := []string{
+		domain.AcsCode,
+		domain.Courier4u,
+	}
+	yes := domain.ContainsExtensionCodes(projectExtensions, extensionCodes)
+	if !yes {
+		ctx.Response().Header().Set("HX-Redirect", fmt.Sprintf("/extension/%s", projectID))
+		return ctx.String(http.StatusOK, "Redirecting...")
+	}
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return util.Render(ctx, t.VoucherHtml(projectID))
 	}
 	return util.Render(ctx, tmpl.VoucherHtmlTemplate(user, project.Name, projectID))
 }

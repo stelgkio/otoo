@@ -178,7 +178,7 @@ func ExtentionAcsSubscriptionFailTemplate(user *domain.User, projectName, projec
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = ac.ASC_Courier_Subscription_Success(projectId, extensionId).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = ac.ASC_Courier_Subscription_Fail(projectId, extensionId).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -222,7 +222,7 @@ func ExtentionCourier4uSubscriptionFailTemplate(user *domain.User, projectName, 
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = cu.Courier4uSubscriptionSuccess(projectId, extensionId).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = cu.Courier4uSubscriptionFail(projectId, extensionId).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

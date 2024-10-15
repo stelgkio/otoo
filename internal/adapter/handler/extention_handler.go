@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"log"
 	"log/slog"
 	"net/http"
@@ -177,7 +178,7 @@ func (dh *DashboardHandler) AcsCourierDeActivate(ctx echo.Context) error {
 	_, err = sub.Cancel(subscriptionID, params)
 	if err != nil {
 		log.Printf("Error canceling subscription: %v", err)
-		return err
+
 	}
 	log.Printf("Subscription %s canceled successfully", subscriptionID)
 
@@ -186,7 +187,8 @@ func (dh *DashboardHandler) AcsCourierDeActivate(ctx echo.Context) error {
 		return err
 	}
 
-	return ctx.Redirect(http.StatusMovedPermanently, ctx.Request().RequestURI)
+	ctx.Response().Header().Set("HX-Redirect", fmt.Sprintf("/extension/%s", projectID))
+	return ctx.String(http.StatusOK, "Redirecting...")
 
 }
 
@@ -253,7 +255,6 @@ func (dh *DashboardHandler) Courier4uDeActivate(ctx echo.Context) error {
 	_, err = sub.Cancel(subscriptionID, params)
 	if err != nil {
 		log.Printf("Error canceling subscription: %v", err)
-		return err
 	}
 	log.Printf("Subscription %s canceled successfully", subscriptionID)
 
@@ -262,7 +263,8 @@ func (dh *DashboardHandler) Courier4uDeActivate(ctx echo.Context) error {
 		return err
 	}
 
-	return ctx.Redirect(http.StatusMovedPermanently, ctx.Request().RequestURI)
+	ctx.Response().Header().Set("HX-Redirect", fmt.Sprintf("/extension/%s", projectID))
+	return ctx.String(http.StatusOK, "Redirecting...")
 }
 
 // WalletExpenses get extention

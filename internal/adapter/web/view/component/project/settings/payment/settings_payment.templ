@@ -1,0 +1,305 @@
+package views
+
+import (
+	"fmt"
+	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/pagination"
+	h "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/settings_header"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ SettingsPayments(project *domain.Project, projectExtensions []*domain.ProjectExtension) {
+	<div
+		id="dashboard-content"
+		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
+	>
+		<main class="container-fluid px-3 py-5 p-lg-6 p-xxl-8">
+			@h.SettingsHeader("Payments", 5, project.Id.String(), projectExtensions)
+			<div
+				id="dashboard-order-table"
+				x-data={ fmt.Sprintf("paymetTable('%s')", project.Id.String()) }
+				x-init="init()"
+			>
+				<div class="border-top">
+					<div class="table-responsive">
+						<table class="table table-hover table-nowrap">
+							<thead>
+								<tr>
+									<th>
+										<div class="text-base">
+											<div class="form-check">
+												<input
+													class="form-check-input"
+													type="checkbox"
+													@change="selectAll()"
+													x-model="selectAllCheckbox"
+												/>
+											</div>
+										</div>
+									</th>
+									<th @click="sortTable('extension_name')">
+										Extension Name
+										<i :class="getSortIcon('extension_name')"></i>
+									</th>
+									<th @click="sortTable('event')">
+										Amount
+										<i :class="getSortIcon('event')"></i>
+									</th>
+									<th>
+										Status
+									</th>
+									<th @click="sortTable('created_at')">
+										Created
+										<i :class="getSortIcon('created_at')"></i>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<template x-if="!loading && totalItems === 0">
+									<tr>
+										<td colspan="8">No payment found.</td>
+									</tr>
+								</template>
+								<template x-for="webhook in paginatedpayments" :key="webhook.id">
+									<tr>
+										<td>
+											<div class="form-check">
+												<input
+													class="form-check-input"
+													type="checkbox"
+													:value="webhook.id"
+													x-model="selectedpayments"
+												/>
+											</div>
+										</td>
+										<td x-text="webhook.extension_name"></td>
+										<td x-text="webhook.amount"></td>
+										<td>
+											<span :class="badgeClass(webhook)" x-text="paymentStatus(webhook)"></span>
+										</td>
+										<td x-text="new Date(webhook.created_at).toLocaleString()"></td>
+									</tr>
+								</template>
+								<template x-for="i in 12 - paginatedpayments.length" :key="'empty' + i">
+									<tr>
+										<td colspan="5" class="py-7"></td>
+									</tr>
+								</template>
+							</tbody>
+						</table>
+					</div>
+					@p.PaginationControl()
+				</div>
+			</div>
+		</main>
+		<script>
+		function paymetTable(projectId) {
+			return {
+				projectID: projectId,
+				currentTab: 'all',
+				payments: [],
+				selectedpayments: [],
+				selectAllCheckbox: false,
+				sortKey: 'created_at',
+				sortAsc: false,
+				currentPage: 1,
+				itemsPerPage: 12,
+				totalItems: 0,
+				totalPages: 0,
+				loading: false,
+				showUI: false,
+				errorMessage: '',
+				selectedStatus: '',
+
+				async init() {
+					await this.fetchpayments(this.currentPage);
+					// this.showUI = true; // Show UI after the delay
+				},
+
+				async fetchpayments(page = 1) {
+					this.loading = true;
+					try {
+
+						const url = this.getUrlForTab(this.currentTab, page);
+						const response = await fetch(url);
+						const result = await response.json();
+						if (response.ok) {
+							this.payments = result.data || [];
+							this.totalItems = result.meta.totalItems || 0;
+							this.currentPage = result.meta.currentPage || 1;
+							this.itemsPerPage = result.meta.itemsPerPage || 10;
+							this.totalPages = result.meta.totalPages || 0;
+						} else {
+							console.error('Error fetching data:', result.message);
+						}
+					} catch (error) {
+						console.error('Error fetching data:', error);
+					} finally {
+						this.loading = false;
+					}
+				},
+
+				getUrlForTab(tab, page) {
+					const baseUrl = `${window.location.origin}/payment/table/${this.projectID}`;
+					const sortDirection = this.sortAsc ? 'asc' : 'desc'; // Determine sort direction
+					switch (tab) {
+						case 'all':
+							return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+						case 'completed':
+							return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+						case 'processing':
+							return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+						case 'pending':
+							return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+						case 'cancelled':
+							return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+						default:
+							return `${baseUrl}/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+					}
+				},
+
+				selectTab(tab) {
+					this.currentTab = tab;
+					this.currentPage = 1; // Reset to first page
+					this.fetchpayments(this.currentPage);
+				},
+
+				selectAll() {
+					this.selectedpayments = this.selectAllCheckbox ? this.payments.map(d => d.id) : [];
+				},
+				sortTable(key) {
+					if (this.sortKey === key) {
+						// Toggle sort direction if the same column is clicked
+						this.sortAsc = !this.sortAsc;
+					} else {
+						// Set new sort key and default to ascending order
+						this.sortKey = key;
+						this.sortAsc = true;
+					}
+
+					// Sort the fetched webhook data locally
+					this.payments = this.payments.sort((a, b) => {
+						let valueA = a[key];
+						let valueB = b[key];
+
+						// Handle different data types (string, number, etc.)
+						if (typeof valueA === 'string') {
+							valueA = valueA.toLowerCase(); // Make string comparisons case-insensitive
+							valueB = valueB.toLowerCase();
+						}
+
+						if (this.sortAsc) {
+							return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
+						} else {
+							return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
+						}
+					});
+				},
+				getSortIcon(key) {
+					if (this.sortKey !== key) return '';
+					return this.sortAsc ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
+				},
+
+				changePage(page) {
+					if (page < 1 || page > this.totalPages) return;
+					this.fetchpayments(page);
+				},
+
+				get paginatedpayments() {
+					return this.payments;
+				},
+
+				get currentPageStart() {
+					return (this.currentPage - 1) * this.itemsPerPage + 1;
+				},
+
+				get currentPageEnd() {
+					return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
+				},
+				get pageNumbers() {
+					const range = 2; // Number of pages to show around the current page
+					let start = Math.max(1, this.currentPage - range);
+					let end = Math.min(this.totalPages, this.currentPage + range);
+
+					// Adjust range if there are not enough pages on one side
+					if (this.totalPages - end < range) {
+						end = this.totalPages;
+						start = Math.max(1, end - 2 * range);
+					} else if (start <= range) {
+						start = 1;
+						end = Math.min(this.totalPages, start + 2 * range);
+					}
+
+					return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+				},
+				badgeClass(webhook) {
+					const baseClass = 'badge bg-body-secondary badge-custom'; // Add badge-custom class
+					if (webhook.is_paid) {
+						return `${baseClass} text-success`; // Green for paid
+					} else if (webhook.fail) {
+						return `${baseClass} text-danger`; // Red for failed
+					} else {
+						return baseClass;
+					}
+				},
+
+				paymentStatus(webhook) {
+					if (webhook.is_paid) {
+						return 'Paid'; // Show 'Paid' if is_paid is true
+					} else if (webhook.fail) {
+						return 'Failed'; // Show 'Failed' if fail is true
+					} else {
+						return 'Pending'; // Default status if neither is true
+					}
+				},
+				async applyAction() {
+					this.loading = true;
+					this.errorMessage = ""; // Clear previous error message
+					this.showDropdown = true; // Close dropdown on action
+
+					const selectedOrderIds = this.selectedOrders.join(',');
+					if (!selectedOrderIds || !this.selectedStatus) {
+						this.errorMessage = 'Please select at least one order and a status.';
+						this.loading = false;
+						this.showDropdown = true;
+						return;
+					}
+
+					try {
+						const response = await fetch(`/webhook/bulk-action/${this.projectID}`, {
+							method: 'POST',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({
+								status: this.selectedStatus,
+								payments: selectedOrderIds.split(','),
+							}),
+						});
+						const result = await response.json();
+
+						if (response.ok) {
+							// Handle success (e.g., show a success message or refresh the table)
+							this.fetchOrders(this.currentPage);
+							console.log('Bulk action successful:', result);
+							this.showDropdown = false;
+						} else {
+							this.errorMessage = result.message || 'An error occurred while processing the request.';
+						}
+					} catch (error) {
+						console.error('Error during bulk action:', error);
+						this.errorMessage = 'An error occurred while processing the request.';
+						this.showDropdown = true;
+					} finally {
+						this.loading = false;
+
+					}
+				},
+				async createpayments() {
+					// Logic for creating a new webhook (could be a form, modal, or redirection)
+					console.log("Redirecting to create payments...");
+					window.location.href = `/payments/create/${this.projectID}`;  // Example: Redirecting to a webhook creation page
+				},
+			};
+		}
+
+	</script>
+	</div>
+}

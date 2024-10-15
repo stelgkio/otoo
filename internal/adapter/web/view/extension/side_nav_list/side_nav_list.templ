@@ -36,12 +36,13 @@ templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExt
 									hx-target="#dashboard-content"
 									hx-indicator="#spinnerCourier"
 								>
+									Courier
 									<span
 										id="spinnerCourier"
 										class="htmx-indicator spinner-border spinner-border-sm"
 										role="status"
 										aria-hidden="true"
-									></span> Courier
+									></span>
 								</a>
 							</li>
 						} else {
@@ -54,12 +55,13 @@ templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExt
 									hx-target="#dashboard-content"
 									hx-push-url="true"
 								>
+									{ extension.Title }
 									<span
 										id="spinnerD"
 										class="htmx-indicator spinner-border spinner-border-sm"
 										role="status"
 										aria-hidden="true"
-									></span> { extension.Title }
+									></span>
 								</a>
 							</li>
 						}

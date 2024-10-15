@@ -26,12 +26,12 @@ func DomainKeyValidation(valid bool, consumerKey, consumerSecret string, errors 
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"row align-items-center g-3 mt-6\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">Consumer key</label></div><div class=\"col-md-8 col-xl-5\">")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if errors["consumer_key"] != "" {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input name=\"consumer_key\" type=\"password\" class=\"form-control is-invalid\" placeholder=\"Consumer key\" autocomplete=\"off\" value=\"")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -44,7 +44,7 @@ func DomainKeyValidation(valid bool, consumerKey, consumerSecret string, errors 
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-post=\"/project/validation/key\" hx-target=\"#key-validation\"><div class=\"invalid-feedback\" style=\"display: block;\">")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -57,12 +57,12 @@ func DomainKeyValidation(valid bool, consumerKey, consumerSecret string, errors 
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input name=\"consumer_key\" type=\"password\" class=\"form-control\" placeholder=\"Consumer key\" autocomplete=\"off\" value=\"")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -75,17 +75,17 @@ func DomainKeyValidation(valid bool, consumerKey, consumerSecret string, errors 
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-post=\"/project/validation/key\" hx-target=\"#key-validation\">")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 6)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"col-md-2\"><a href=\"https://woocommerce.com/document/woocommerce-rest-api/\" target=\"_blank\" class=\"tooltip-container\"><i class=\"bi bi-info-circle\"></i> <span class=\"tooltip-text\"></span></a></div></div><hr class=\"my-6\"><div class=\"row align-items-center g-3 mt-6\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">Consumer secret</label></div><div class=\"col-md-8 col-xl-5\">")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 7)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if errors["consumer_secret"] != "" {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input name=\"consumer_secret\" type=\"password\" class=\"form-control is-invalid\" placeholder=\"Consumer secret\" autocomplete=\"off\" value=\"")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 8)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -98,7 +98,7 @@ func DomainKeyValidation(valid bool, consumerKey, consumerSecret string, errors 
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-post=\"/project/validation/key\" hx-target=\"#key-validation\"><div class=\"invalid-feedback\" style=\"display: block;\">")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 9)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -111,12 +111,12 @@ func DomainKeyValidation(valid bool, consumerKey, consumerSecret string, errors 
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 10)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input name=\"consumer_secret\" type=\"password\" class=\"form-control\" placeholder=\"Consumer secret\" autocomplete=\"off\" value=\"")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 11)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -129,12 +129,12 @@ func DomainKeyValidation(valid bool, consumerKey, consumerSecret string, errors 
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-post=\"/project/validation/key\" hx-target=\"#key-validation\">")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 12)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"col-md-2\"><a href=\"https://woocommerce.com/document/woocommerce-rest-api/\" target=\"_blank\" class=\"tooltip-container\"><i class=\"bi bi-info-circle\"></i> <span class=\"tooltip-text\"></span></a></div></div>")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 13)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

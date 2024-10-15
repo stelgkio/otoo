@@ -27,7 +27,7 @@ func ProjectNameValidation(valid bool, name string) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if !valid {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"col-md-8 col-xl-5\" hx-target=\"this\" hx-swap=\"outerHTML\"><input name=\"name\" type=\"text\" hx-post=\"/project/validation/name\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -40,12 +40,12 @@ func ProjectNameValidation(valid bool, name string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"form-control is-invalid\" placeholder=\"Project name\"><div class=\"invalid-feedback\" style=\"display: block;\">Project name already exists!</div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"col-md-8 col-xl-5\" hx-target=\"this\" hx-swap=\"outerHTML\"><input name=\"name\" type=\"text\" hx-post=\"/project/validation/name\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -58,7 +58,7 @@ func ProjectNameValidation(valid bool, name string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"form-control\" placeholder=\"Project name\"></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -31,18 +31,18 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"dashboard-content\" class=\"flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2\"><main class=\"container-fluid px-3 py-5 p-lg-6 p-xxl-8\"><div class=\"mb-6 mb-xl-10\"><div class=\"row g-3 align-items-center\"><div class=\"col\"><h1 class=\"ls-tight\">Extensions</h1></div></div></div><div class=\"row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-6 justify-content-center\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, extension := range extensions {
 			if extension.Code == "asc-courier" {
-				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- ASC Courier Card --> <div class=\"col\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				if domain.ContainsExtensionID(projectExtensions, extension.ID.Hex()) {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-primary border-0 shadow-4 shadow-6-hover card-disabled\"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">ASC Courier</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">29€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -55,7 +55,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Start Shipping with KonnektorX!</span> <a href=\"javascript:void(0)\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -68,12 +68,12 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" class=\"btn btn-sm btn-square btn-dark stretched-link\" hx-target=\"#dashboard-content\"><i class=\"bi bi-download\"></i></a></div></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				} else {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 6)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-primary border-0 shadow-4 shadow-6-hover \"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">ASC Courier</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">29€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -86,7 +86,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 7)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Start Shipping with KonektorX!</span> <a href=\"javascript:void(0)\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -99,22 +99,22 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 8)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" class=\"btn btn-sm btn-square btn-dark stretched-link\" hx-target=\"#dashboard-content\"><i class=\"bi bi-arrow-right\"></i></a></div></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 9)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"list-unstyled mt-7\"><li class=\"py-2 d-flex align-items-center\"><div class=\"icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3\"><i class=\"bi bi-check\"></i></div><p>Automatic order status updates</p></li><li class=\"py-2 d-flex align-items-center\"><div class=\"icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3\"><i class=\"bi bi-check\"></i></div><p>Download shipping vouchers</p></li><li class=\"py-2 d-flex align-items-center\"><div class=\"icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3\"><i class=\"bi bi-check\"></i></div><p>Send customer notifications via email</p></li></ul></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			} else if extension.Code == "courier4u" {
-				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 10)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Wallet & Expenses Overview Card --> <div class=\"col\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				if domain.ContainsExtensionID(projectExtensions, extension.ID.Hex()) {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 11)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-secondary border-0 shadow-4 shadow-6-hover card-disabled\"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -127,7 +127,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 12)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">29€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -140,7 +140,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 13)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Start Shipping with KonektorX!</span> <a href=\"javascript:void(0)\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -153,12 +153,12 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 14)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" class=\"btn btn-sm btn-square btn-dark stretched-link\" hx-target=\"#dashboard-content\"><i class=\"bi bi-download\"></i></a></div></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				} else {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 15)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-secondary border-0 shadow-4 shadow-6-hover \"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -171,7 +171,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 16)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">29€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -184,7 +184,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 17)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Start Shipping with KonektorX!</span> <a href=\"javascript:void(0)\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -197,22 +197,22 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 18)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" class=\"btn btn-sm btn-square btn-dark stretched-link\" hx-target=\"#dashboard-content\"><i class=\"bi bi-arrow-right\"></i></a></div></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 19)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"list-unstyled mt-7\"><li class=\"py-2 d-flex align-items-center\"><div class=\"icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3\"><i class=\"bi bi-check\"></i></div><p>Automatic order status updates</p></li><li class=\"py-2 d-flex align-items-center\"><div class=\"icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3\"><i class=\"bi bi-check\"></i></div><p>Download shipping vouchers</p></li><li class=\"py-2 d-flex align-items-center\"><div class=\"icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3\"><i class=\"bi bi-check\"></i></div><p>Send customer notifications via email</p></li></ul></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			} else if extension.Code == "wallet-expences" {
-				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 20)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Wallet & Expenses Overview Card --> <div class=\"col\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				if domain.ContainsExtensionID(projectExtensions, extension.ID.Hex()) {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 21)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-secondary border-0 shadow-4 shadow-6-hover card-disabled\"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">Wallet & Expenses</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">23€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -225,7 +225,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 22)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Optimize Your Finances with Otoo!</span> <a href=\"javascript:void(0)\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -238,12 +238,12 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 23)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" class=\"btn btn-sm btn-square btn-dark stretched-link\" hx-target=\"#dashboard-content\"><i class=\"bi bi-download\"></i></a></div></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				} else {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 24)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-secondary border-0 shadow-4 shadow-6-hover \"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">Wallet & Expenses</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">23€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -256,7 +256,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 25)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Optimize Your Finances with Otoo!</span> <a href=\"javascript:void(0)\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -269,22 +269,22 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 26)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" class=\"btn btn-sm btn-square btn-dark stretched-link\" hx-target=\"#dashboard-content\"><i class=\"bi bi-arrow-right\"></i></a></div></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 27)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"list-unstyled mt-7\"><li class=\"py-2 d-flex align-items-center\"><div class=\"icon icon-xs text-base icon-shape rounded-circle bg-secondary-subtle text-secondary me-3\"><i class=\"bi bi-check\"></i></div><p>Integrate with Facebook campaigns</p></li><li class=\"py-2 d-flex align-items-center\"><div class=\"icon icon-xs text-base icon-shape rounded-circle bg-secondary-subtle text-secondary me-3\"><i class=\"bi bi-check\"></i></div><p>Monitor courier charges</p></li><li class=\"py-2 d-flex align-items-center\"><div class=\"icon icon-xs text-base icon-shape rounded-circle bg-secondary-subtle text-secondary me-3\"><i class=\"bi bi-check\"></i></div><p>Automatic tax calculations</p></li><li class=\"py-2 d-flex align-items-center\"><div class=\"icon icon-xs text-base icon-shape rounded-circle bg-secondary-subtle text-secondary me-3\"><i class=\"bi bi-check\"></i></div><p>Priority support for Otoo users</p></li></ul></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			} else if extension.Code == "data-synchronizer" {
-				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 28)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Data Synchronizer Card --> <div class=\"col\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				if domain.ContainsExtensionID(projectExtensions, extension.ID.Hex()) {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 29)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-dark shadow-4 shadow-6-hover card-disabled\"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">Data Synchronizer</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">290€/yr</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -297,7 +297,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 30)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Synchronize with Otoo!</span> <a href=\"javascript:void(0)\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -310,7 +310,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 31)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -323,12 +323,12 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 32)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"btn btn-sm btn-square btn-white stretched-link\" hx-target=\"#dashboard-content\"><i class=\"bi bi-download\"></i></a></div></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				} else {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 33)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-dark shadow-4 shadow-6-hover \"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">Data Synchronizer</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">290€/yr</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -341,7 +341,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 34)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Synchronize with Otoo!</span> <a href=\"javascript:void(0)\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -354,7 +354,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 35)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -367,22 +367,22 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 36)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"btn btn-sm btn-square btn-white stretched-link\" hx-target=\"#dashboard-content\"><i class=\"bi bi-arrow-right\"></i></a></div></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 37)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"list-unstyled mt-7\"><li class=\"py-2 d-flex align-items-center\"><div class=\"icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3\"><i class=\"bi bi-check\"></i></div><p>Retrieve customer data seamlessly</p></li><li class=\"py-2 d-flex align-items-center\"><div class=\"icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3\"><i class=\"bi bi-check\"></i></div><p>Sync product information and variations</p></li><li class=\"py-2 d-flex align-items-center\"><div class=\"icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3\"><i class=\"bi bi-check\"></i></div><p>Access full order history</p></li><li class=\"py-2 d-flex align-items-center\"><div class=\"icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3\"><i class=\"bi bi-check\"></i></div><p>Build custom analytics and reports</p></li></ul></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			} else if extension.Code == "team-member" {
-				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 38)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Data Synchronizer Card --> <div class=\"col\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				if domain.ContainsExtensionID(projectExtensions, extension.ID.Hex()) {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 39)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-dark shadow-4 shadow-6-hover card-disabled\"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -395,7 +395,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 40)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">20€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -408,7 +408,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 41)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Add Team Member to your project!</span> <a href=\"javascript:void(0)\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -421,7 +421,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 42)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -434,12 +434,12 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 43)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"btn btn-sm btn-square btn-white stretched-link\" hx-target=\"#dashboard-content\"><i class=\"bi bi-download\"></i></a></div></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				} else {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 44)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-dark shadow-4 shadow-6-hover \"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -452,7 +452,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 45)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">20€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -465,7 +465,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 46)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Add Team Member to your project!</span> <a href=\"javascript:void(0)\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -478,7 +478,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 47)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -491,18 +491,18 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 48)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"btn btn-sm btn-square btn-white stretched-link\" hx-target=\"#dashboard-content\"><i class=\"bi bi-arrow-right\"></i></a></div></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 49)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"list-unstyled mt-7\"><li class=\"py-2 d-flex align-items-center\"><div class=\"icon icon-xs text-base icon-shape rounded-circle bg-primary-subtle text-primary me-3\"><i class=\"bi bi-check\"></i></div><p>Add as many users you want to your project</p></li></ul></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 50)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></main></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

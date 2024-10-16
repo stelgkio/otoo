@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
-	wp "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/progress/webhooks"
-	pw "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/webhooks"
+	wp "github.com/stelgkio/otoo/internal/adapter/web/view/project/progress/webhooks"
+	pw "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/webhooks"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/port"

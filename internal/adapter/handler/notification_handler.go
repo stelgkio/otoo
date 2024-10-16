@@ -3,7 +3,7 @@ package handler
 import (
 	"github.com/labstack/echo/v4"
 	t "github.com/stelgkio/otoo/internal/adapter/web/view/component/navigation/notification"
-	pn "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/notification"
+	pn "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/notification"
 	"github.com/stelgkio/otoo/internal/core/util"
 )
 

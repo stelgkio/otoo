@@ -65,6 +65,20 @@ func (repo *UserRepository) GetUserById(ctx echo.Context, id uuid.UUID) (*domain
 	return &user, nil
 }
 
+// GetAdminUserByProjectId creates a user in the database
+func (repo *UserRepository) GetAdminUserByProjectId(ctx echo.Context, id uuid.UUID) (*domain.User, error) {
+	var user domain.User
+	err := repo.db.Model(&user).Where("projectId =?", id).Where("is_active =true").Where("role = client").Select()
+	if err != nil {
+		if err == pg.ErrNoRows {
+			return nil, e.ErrDataNotFound
+		}
+		return nil, e.ErrInternal
+	}
+
+	return &user, nil
+}
+
 // UpdateUser creates a new user in the database
 func (repo *UserRepository) UpdateUser(ctx echo.Context, user *domain.User) (*domain.User, error) {
 	_, err := repo.db.Model(user).Where("email =?", user.Email).Where("is_active =true").Update()
@@ -85,4 +99,20 @@ func (repo *UserRepository) DeleteUser(ctx echo.Context, id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+func (repo *UserRepository) FindUsersByProjectId(ctx echo.Context, id uuid.UUID) ([]*domain.User, error) {
+	var users []*domain.User
+
+	query := repo.db.Model(&users).
+		Where("project_id =?", id).
+		Where("is_active =true").
+		Order("name ASC")
+
+	err := query.Select()
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+
 }

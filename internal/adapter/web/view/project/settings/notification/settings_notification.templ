@@ -1,0 +1,24 @@
+package views
+
+import (
+	h "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/settings_header"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ SettingsNotifications(project *domain.Project, notifiactions []*domain.Notification, projectExtensions []*domain.ProjectExtension) {
+	<div
+		id="dashboard-content"
+		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
+	>
+		<main class="container-fluid px-3 py-5 p-lg-6 p-xxl-8">
+			@h.SettingsHeader("Project Notification", 4, project.Id.String(), projectExtensions)
+			if notifiactions != nil {
+				@NotifiactionTable(project.Id.String(), notifiactions)
+			} else {
+				<div>
+					<h4 class="fw-semibold mb-1">No recent notifications for this project.</h4>
+				</div>
+			}
+		</main>
+	</div>
+}

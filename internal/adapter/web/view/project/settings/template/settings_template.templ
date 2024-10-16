@@ -1,0 +1,20 @@
+package views
+
+import (
+	t "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/template"
+	s "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/settings_general"
+	tm "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/team"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ SettginsTemplate(user *domain.User, projectName string, projectId string, project *domain.Project, projectExtensions []*domain.ProjectExtension) {
+	@t.DashboardTemplate(user, projectName, projectId) {
+		@s.SettingsGeneral(user, project, projectExtensions)
+	}
+}
+
+templ TeamTemplate(user *domain.User, projectName string, projectId string, project *domain.Project, projectExtensions []*domain.ProjectExtension) {
+	@t.DashboardTemplate(user, projectName, projectId) {
+		@tm.Team(project, projectExtensions)
+	}
+}

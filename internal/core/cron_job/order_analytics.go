@@ -61,7 +61,8 @@ func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceJob() error {
 
 		// Capture projectID to avoid issues with goroutine closures
 		projectID := project.Id.String()
-		user, err := as.userSvc.GetUserById(nil, project.UserId)
+		//TODO: user should be admin
+		user, err := as.userSvc.GetAdminUserByProjectId(nil, project.Id)
 		if err != nil {
 			return err
 		}
@@ -204,7 +205,7 @@ func (as *OrderAnalyticsCron) RunOrderMonthlyCountJob() error {
 
 		// Capture projectID to avoid issues with goroutine closures
 		projectID := project.Id.String()
-		user, err := as.userSvc.GetUserById(nil, project.UserId)
+		user, err := as.userSvc.GetAdminUserByProjectId(nil, project.Id)
 		if err != nil {
 			return err
 		}

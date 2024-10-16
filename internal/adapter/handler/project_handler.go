@@ -6,11 +6,11 @@ import (
 
 	"github.com/labstack/echo/v4"
 	er "github.com/stelgkio/otoo/internal/adapter/web/view/component/error"
-	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/create"
-	l "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/list"
-	wp "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/progress/webhooks"
-	v "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/validation"
-	d "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/view"
+	p "github.com/stelgkio/otoo/internal/adapter/web/view/project/create"
+	l "github.com/stelgkio/otoo/internal/adapter/web/view/project/list"
+	wp "github.com/stelgkio/otoo/internal/adapter/web/view/project/progress/webhooks"
+	v "github.com/stelgkio/otoo/internal/adapter/web/view/project/validation"
+	d "github.com/stelgkio/otoo/internal/adapter/web/view/project/view"
 	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stelgkio/otoo/internal/core/port"
@@ -118,14 +118,6 @@ func (ph *ProjectHandler) ProjectCreateForm(ctx echo.Context) error {
 
 // ProjectListPage  GET /project/list
 func (ph *ProjectHandler) ProjectListPage(ctx echo.Context) error {
-
-	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{}, 1, 10)
-	if err != nil {
-		return err
-	}
-	if ctx.Request().Header.Get("HX-Request") == "true" {
-		return r.Render(ctx, l.ProjectListPage(projects))
-	}
 	userID, err := auth.GetUserID(ctx)
 	if err != nil {
 		return err
@@ -134,6 +126,16 @@ func (ph *ProjectHandler) ProjectListPage(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
+	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{
+		ProjectID: user.ProjectID,
+	}, 1, 100)
+	if err != nil {
+		return err
+	}
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, l.ProjectListPage(projects))
+	}
+
 	return r.Render(ctx, d.ProjectDashboard(projects, user))
 
 }
@@ -141,15 +143,17 @@ func (ph *ProjectHandler) ProjectListPage(ctx echo.Context) error {
 // GetProjectDashboardPage GET /dashboard
 func (ph *ProjectHandler) GetProjectDashboardPage(ctx echo.Context) error {
 
-	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{}, 1, 10)
-	if err != nil {
-		return err
-	}
 	userID, err := auth.GetUserID(ctx)
 	if err != nil {
 		return err
 	}
 	user, err := ph.userSvc.GetUserById(ctx, userID)
+	if err != nil {
+		return err
+	}
+	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{
+		ProjectID: user.ProjectID,
+	}, 1, 100)
 	if err != nil {
 		return err
 	}
@@ -163,6 +167,7 @@ func (ph *ProjectHandler) ProjectNameValidation(ctx echo.Context) error {
 	if err := ctx.Bind(req); err != nil {
 		slog.Error("Error binding request", "error", err)
 	}
+
 	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{Name: req.Name}, 1, 10)
 	if err != nil {
 		return err

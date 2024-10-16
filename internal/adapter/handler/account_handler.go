@@ -1,16 +1,22 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	f "github.com/stelgkio/otoo/internal/adapter/web/view/account/forgot_password"
 	l "github.com/stelgkio/otoo/internal/adapter/web/view/account/login"
 	reg "github.com/stelgkio/otoo/internal/adapter/web/view/account/register"
 	re "github.com/stelgkio/otoo/internal/adapter/web/view/account/reset_password"
+	us "github.com/stelgkio/otoo/internal/adapter/web/view/account/user"
+	tm "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/team"
+	st "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/template"
+	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stelgkio/otoo/internal/core/port"
 	r "github.com/stelgkio/otoo/internal/core/util"
@@ -18,15 +24,23 @@ import (
 
 // AuthHandler represents the HTTP handler for authentication-related requests
 type AuthHandler struct {
-	svc port.AuthService
-	urs port.UserService
+	svc          port.AuthService
+	urs          port.UserService
+	projectSvc   port.ProjectService
+	extensionSvc port.ExtensionService
 }
 
 // NewAuthHandler creates a new AuthHandler instance
-func NewAuthHandler(svc port.AuthService, urs port.UserService) *AuthHandler {
+func NewAuthHandler(
+	svc port.AuthService,
+	urs port.UserService,
+	projectSvc port.ProjectService,
+	extensionSvc port.ExtensionService) *AuthHandler {
 	return &AuthHandler{
 		svc,
 		urs,
+		projectSvc,
+		extensionSvc,
 	}
 }
 
@@ -71,7 +85,6 @@ func (ah *AuthHandler) Login(ctx echo.Context) (err error) {
 	_, err = ah.svc.Login(ctx, req.Email, req.Password)
 	if err != nil {
 		return r.Render(ctx, l.Login(err))
-		//ctx.String(http.StatusBadRequest, err.Error())
 	}
 
 	//AuthResponse(token)
@@ -230,3 +243,88 @@ func (ah *AuthHandler) ResetPassword(ctx echo.Context) error {
 
 	return ctx.Redirect(http.StatusMovedPermanently, "/login")
 }
+
+func (ah *AuthHandler) UserList(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	id, err := uuid.Parse(projectID)
+	if err != nil {
+		fmt.Println("Invalid UUID format:", err)
+		return err
+	}
+	users, err := ah.urs.FindUsersByProjectId(ctx, id)
+
+	return r.Render(ctx, us.UserList(users))
+}
+
+func (ah *AuthHandler) AddMember(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	req := new(registerRequest)
+	if err := ctx.Bind(req); err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{
+			"error": errors.New("Oups something when wrong").Error(),
+		})
+
+	}
+
+	// validate email is not taken
+	validate := validator.New()
+	// validate password is the same as confirm password
+	if req.Password != req.ConfirmationPassword {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{
+			"error": errors.New("invalid confirmation password").Error(),
+		})
+	}
+	// Validate the User struct
+	err := validate.Struct(req)
+	if err != nil {
+		// Validation failed, handle the error
+		//errors := err.(validator.ValidationErrors)
+		return ctx.JSON(http.StatusBadRequest, map[string]string{
+			"error": "Oups something when wrong",
+		})
+	}
+
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+
+	user, err := ah.urs.GetUserById(ctx, userID)
+	if err != nil {
+		return err
+	}
+	project, err := ah.projectSvc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	projectExtensions, err := ah.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+
+	newUser, err := domain.NewClientUser(req.Email, req.Password, req.Name, req.LastName, domain.ClientUser)
+	if err != nil {
+		slog.Error("error new user:", "StatusBadRequest", err)
+		return ctx.JSON(http.StatusBadRequest, map[string]string{
+			"error": "error creating new user",
+		})
+	}
+	newUser.AddProject(project.Id)
+
+	_, err = ah.urs.CreateUser(ctx, newUser)
+	if err != nil {
+		slog.Error("error create new user:", "StatusBadRequest", err)
+		return ctx.JSON(http.StatusBadRequest, map[string]string{
+			"error": errors.New("eerror creating new user").Error(),
+		})
+	}
+
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, tm.Team(project, projectExtensions))
+	}
+	return r.Render(ctx, st.TeamTemplate(user, project.Name, projectID, project, projectExtensions))
+}
+
+// return ctx.JSON(http.StatusBadRequest, map[string]string{
+// 	"error": err.Error(),
+// })

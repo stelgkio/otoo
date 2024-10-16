@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 	synpage "github.com/stelgkio/otoo/internal/adapter/web/view/component/data_synchronizer/synchronize"
 	syntmp "github.com/stelgkio/otoo/internal/adapter/web/view/component/data_synchronizer/synchronize/template"
-	syn "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/progress/synchronize"
+	syn "github.com/stelgkio/otoo/internal/adapter/web/view/project/progress/synchronize"
 	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"

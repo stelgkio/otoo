@@ -93,6 +93,15 @@ func NewRouter(
 		return c.Redirect(http.StatusMovedPermanently, c.Echo().Reverse("index"))
 	})
 
+	//user
+
+	usergroup := e.Group("/user")
+	{
+		usergroup.Use(configureJWT())
+		usergroup.Use(auth.TokenRefresherMiddleware)
+		usergroup.GET("/list/:projectId", authHandler.UserList)
+		usergroup.POST("/addmember/:projectId", authHandler.AddMember)
+	}
 	//Dashboard
 	dashboardgroup := e.Group("/dashboard")
 	{
@@ -216,7 +225,6 @@ func NewRouter(
 			settingsroup.GET("/webhook/createall/:projectId", WooCommerceHandler.WebhookCreateAll)
 			settingsroup.GET("/team/:projectId", projectHandler.ProjectSettingsTeam)
 
-			settingsroup.GET("/team/:projectId", projectHandler.ProjectSettingsTeam)
 			settingsroup.GET("/asc-courier/:projectId", projectHandler.ProjectSettingsAcsCourier)
 			settingsroup.GET("/courier4u/:projectId", projectHandler.ProjectSettingsCourier4u)
 

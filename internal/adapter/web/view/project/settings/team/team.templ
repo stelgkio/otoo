@@ -1,0 +1,125 @@
+package views
+
+import (
+	"fmt"
+	h "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/settings_header"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ Team(project *domain.Project, projectExtensions []*domain.ProjectExtension) {
+	<div
+		id="dashboard-content"
+		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
+	>
+		<main class="container-fluid px-3 py-5 p-lg-6 p-xxl-8">
+			@h.SettingsHeader("Team", 6, project.Id.String(), projectExtensions)
+			<div class="vstack gap-5 mt-8">
+				<div class="d-flex align-items-end justify-content-between">
+					<div>
+						<h3 class="fw-semibold mb-1">Your Team</h3>
+						<p class="text-sm text-muted">The new user can not add new extesion to project.</p>
+					</div>
+					<div>
+						<button type="button" class="btn btn-neutral btn-sm" data-bs-toggle="modal" data-bs-target="#modalShare">
+							<span
+								id="spinner"
+								class="htmx-indicator spinner-border spinner-border-sm"
+								role="status"
+								aria-hidden="true"
+								hx-boost="validate"
+							></span>Add team member
+						</button>
+					</div>
+				</div>
+				<hr class="my-0"/>
+				<div class="row justify-content-between">
+					<div class="col-md-4">
+						<label class="form-label">Members</label>
+					</div>
+					<div
+						class="col-md-8 col-xl-7"
+						hx-get={ fmt.Sprintf("/user/list/%s", project.Id.String()) }
+						hx-trigger="load"
+						hx-target="#user-list"
+					>
+						<div id="user-list" class="list-group"></div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="modalShare" tabindex="-1" aria-labelledby="modalShare" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content shadow-3">
+						<form autocomplete="off" class="needs-validation" novalidate>
+							<div class="modal-header justify-content-start">
+								<div class="icon icon-shape rounded-3 bg-primary-subtle text-primary text-lg me-4"><i class="bi bi-microsoft-teams"></i></div>
+								<div>
+									<h5 class="mb-1">Add team member</h5>
+									// <small class="d-block text-xs text-muted">This will send email to new user</small>
+								</div>
+							</div>
+							<div class="modal-body">
+								<div>
+									<label class="form-label">Name</label>
+									<input class="form-control" name="name" placeholder="Name" required type="text"/>
+									<div class="invalid-feedback">Please provide a name.</div>
+								</div>
+								<div>
+									<label class="form-label">Last Name</label>
+									<input class="form-control" name="last_name" placeholder="Last Name" required type="text"/>
+									<div class="invalid-feedback">Please provide a last name.</div>
+								</div>
+								<div>
+									<label class="form-label">Email </label>
+									<input class="form-control" name="email" placeholder="Email address" required type="email"/>
+								</div>
+								<div>
+									<label class="form-label">Password</label>
+									<div class="password-container">
+										<input type="password" class="form-control" name="password" required placeholder="Password" id="password"/>
+										<i class="fas fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
+									</div>
+								</div>
+								<div>
+									<label class="form-label">Confirmation Password</label>
+									<div class="password-container">
+										<input type="password" class="form-control" name="confirmationpassword" required placeholder="Confirmation Password" id="confirm-password"/>
+										<i class="fas fa-eye toggle-password" onclick="togglePassword('confirm-password', this)"></i>
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<div class="me-auto"></div>
+								<button type="button" class="btn btn-sm btn-neutral" data-bs-dismiss="modal">Close</button>
+								<button
+									type="submit"
+									hx-post={ fmt.Sprintf("/user/addmember/%s", project.Id.String()) }
+									class="btn btn-sm btn-primary"
+									data-bs-dismiss="modal"
+									aria-label="Close"
+									hx-indicator="#spinner"
+									hx-target="#dashboard-content"
+								>Add Member</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</main>
+		<script>   
+
+
+    function togglePassword(inputId, icon) {
+        const input = document.getElementById(inputId);
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            input.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
+    }
+</script>
+	</div>
+}

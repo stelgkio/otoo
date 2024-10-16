@@ -63,6 +63,13 @@ func (us *UserService) CreateUser(ctx echo.Context, user *domain.User) (*domain.
 
 	return user, nil
 }
+func (us *UserService) GetAdminUserByProjectId(ctx echo.Context, projectid uuid.UUID) (*domain.User, error) {
+	user, err := us.repo.GetAdminUserByProjectId(ctx, projectid)
+	if err != nil && err != e.ErrDataNotFound {
+		return nil, e.ErrInternal
+	}
+	return user, nil
+}
 
 func (us *UserService) GetUserById(ctx echo.Context, id uuid.UUID) (*domain.User, error) {
 	user, err := us.repo.GetUserById(ctx, id)
@@ -97,5 +104,14 @@ func (us *UserService) DeleteUser(ctx echo.Context, userId uuid.UUID) error {
 		return e.ErrInternal
 	}
 	return nil
+
+}
+
+func (us *UserService) FindUsersByProjectId(ctx echo.Context, id uuid.UUID) ([]*domain.User, error) {
+	users, err := us.repo.FindUsersByProjectId(ctx, id)
+	if err != nil && err != e.ErrDataNotFound {
+		return nil, e.ErrInternal
+	}
+	return users, nil
 
 }

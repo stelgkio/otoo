@@ -16,15 +16,17 @@ type ProjectService struct {
 	wp           port.WoocommerceWebhookService
 	wc           port.ProductService
 	extensionSrv port.ExtensionService
+	userSvc      port.UserService
 }
 
 // NewProjectService creates a new user service instance
-func NewProjectService(repo port.ProjectRepository, wp port.WoocommerceWebhookService, wc port.ProductService, extensionSrv port.ExtensionService) *ProjectService {
+func NewProjectService(repo port.ProjectRepository, wp port.WoocommerceWebhookService, wc port.ProductService, extensionSrv port.ExtensionService, userSvc port.UserService) *ProjectService {
 	return &ProjectService{
 		repo,
 		wp,
 		wc,
 		extensionSrv,
+		userSvc,
 	}
 }
 
@@ -59,19 +61,23 @@ func (ps *ProjectService) CreateProject(ctx echo.Context, req *domain.ProjectReq
 		project.ShopifyProject = shop
 		project.WoocommerceProject = domain.WoocommerceProject{}
 	}
-	project.UserId = userID
+
 	project.IsActive = true
 
 	pr, err := ps.repo.CreateProject(ctx, project)
 	if err != nil {
 		return nil, errors.New("project is not created")
 	}
+	//TODO: get user and add projectId
+	user, _ := ps.userSvc.GetUserById(ctx, userID)
+	user.AddProject(pr.Id)
+	ps.userSvc.UpdateUser(ctx, user)
 
 	extension, err := ps.extensionSrv.GetExtensionByCode(ctx, domain.DataSynchronizerCode)
 	if err != nil {
 		return nil, err
 	}
-	ps.extensionSrv.CreateProjectExtension(ctx, project.Id.String(), extension, 365, "")
+	ps.extensionSrv.CreateProjectExtension(ctx, project.Id.String(), extension, 830, "")
 
 	go ps.wp.WoocommerceCreateAllWebHookAsync(req.ConsumerKey, req.ConsumerSecret, req.Domain, pr.Id.String())
 	return pr, nil

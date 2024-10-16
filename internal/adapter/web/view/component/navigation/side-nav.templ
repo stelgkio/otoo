@@ -52,10 +52,17 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 					</a>
 					<div class="dropdown-menu dropdown-menu-end">
 						<div class="dropdown-header">
-							<span class="d-block text-heading fw-semibold">{ user.Name }{ user.LastName }</span>
+							<a
+								href="javascript:void(0)"
+								class="dropdown-item"
+								hx-get="/profile"
+								hx-target="#dashboard-content"
+							>
+								{ user.Name }{ user.LastName }
+							</a>
 						</div>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">
+						<a class="dropdown-item" href={ templ.URL("/dashboard/project/" + projectId) }>
 							<i
 								class="bi bi-cpu-fill me-3"
 							></i> { projectName }

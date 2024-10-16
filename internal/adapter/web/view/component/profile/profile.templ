@@ -1,17 +1,17 @@
 package views
 
 import (
-	"github.com/stelgkio/otoo/internal/core/domain"
 	h "github.com/stelgkio/otoo/internal/adapter/web/view/component/profile/profile_header"
+	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-templ Profile( user *domain.User) {
+templ Profile(user *domain.User) {
 	<div
 		id="dashboard-content"
 		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
 	>
 		<main class="container-fluid px-3 py-5 p-lg-6 p-xxl-8">
-			@h.ProfileHeader("Account Settings",1)
+			@h.ProfileHeader("Account Settings", 1)
 			<form>
 				<div class="d-flex align-items-end justify-content-between">
 					<div>
@@ -53,8 +53,20 @@ templ Profile( user *domain.User) {
 					<div class="col-md-8 col-xl-5">
 						<div class="">
 							//<label class="form-label visually-hidden">Bio</label>
-							<input type="email" class="form-control" name="email" value={ user.Email }/>
+							<input type="email" class="form-control" name="email" disabled value={ user.Email }/>
 						</div>
+					</div>
+					<div class="col-md-2">
+						<span
+							class="text-muted text-opacity-60 text-opacity-100-hover"
+							tabindex="0"
+							data-bs-toggle="popover"
+							data-bs-trigger="hover focus"
+							data-bs-placement="right"
+							data-bs-html="true"
+							data-bs-content="Contact our support team to change your email."
+							role="button"
+						><i class="bi bi-info-circle"></i></span>
 					</div>
 				</div>
 				<hr class="my-6 d-md-none"/>
@@ -77,6 +89,8 @@ templ Profile( user *domain.User) {
 					<h4 class="fw-semibold mb-1">Delete Account</h4>
 					<p class="text-sm text-muted">
 						By deleting this account you are lossing all of your data!
+						<br/>
+						<strong>Make sure you have deactivate all of your extensions!</strong>
 					</p>
 				</div>
 				<div class="d-md-flex gap-2">
@@ -121,5 +135,9 @@ templ Profile( user *domain.User) {
 				</div>
 			</div>
 		</div>
+		<script>
+	var popoverTriggerList2 = document.querySelectorAll('[data-bs-toggle="popover"]')
+	var popoverList2 = [...popoverTriggerList2].map(popoverTriggerEl2 => new bootstrap.Popover(popoverTriggerEl2))
+	</script>
 	</div>
 }

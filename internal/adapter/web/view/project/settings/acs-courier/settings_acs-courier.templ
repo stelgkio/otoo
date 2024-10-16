@@ -1,0 +1,77 @@
+package views
+
+import (
+	"fmt"
+	h "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/settings_header"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ SettingsCourier4u(projectId string, projectExtensions []*domain.ProjectExtension) {
+	<div
+		id="dashboard-content"
+		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
+	>
+		<main class="container-fluid px-3 py-5 p-lg-6 p-xxl-8">
+			@h.SettingsHeader("Acs Courier", 7, projectId, projectExtensions)
+			<div class="d-flex align-items-end justify-content-between">
+				<div>
+					<h3 class="fw-semibold mb-1">Acs Courier</h3>
+					<p class="text-sm text-muted">DeActivate extension and remove subscription</p>
+				</div>
+				<div>
+					<button
+						data-bs-target="#DeActivateAcsCourier"
+						data-bs-toggle="modal"
+						class="btn btn-sm btn-danger"
+					>
+						<span
+							id="spinneracs"
+							class="htmx-indicator spinner-border spinner-border-sm"
+							role="status"
+							aria-hidden="true"
+						></span>DeActivate
+					</button>
+				</div>
+			</div>
+		</main>
+		<div
+			class="modal fade"
+			id="DeActivateAcsCourier"
+			tabindex="-1"
+			aria-labelledby="DeActivateAcsCourierLabel"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content overflow-hidden">
+					<div class="modal-header pb-0 border-0">
+						<h1 class="modal-title h4" id="DeActivateAcsCourierLabel">Deactivate Acs Courier</h1>
+						<button
+							type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close"
+						></button>
+					</div>
+					<div class="modal-body p-0">
+						<div class="px-6 py-5 border-bottom">
+							<h3 class="modal-title h4" id="DeActivateAcsCourierLabel">Are you sure you want to deactivate extension and remove subscription?</h3>
+						</div>
+						<div class="px-6 py-5 bg-body-secondary d-flex justify-content-center">
+							<button
+								type="submit"
+								hx-post={ fmt.Sprintf("/extension/asc-courier/deactivate/%s", projectId) }
+								class="btn btn-sm btn-danger"
+								hx-target="#dashboard-content"
+								data-bs-dismiss="modal"
+								aria-label="Close"
+								hx-indicator="#spinneracs"
+							>
+								Delete 
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}

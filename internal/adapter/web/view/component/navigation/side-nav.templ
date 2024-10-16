@@ -213,27 +213,29 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 						</a>
 						<div class="collapse" id="extension-components"></div>
 					</li>
-					<li class="nav-item my-1">
-						<a
-							class="nav-link d-flex align-items-center rounded-pill"
-							href="javascript:void(0)"
-							hx-get={ fmt.Sprintf("/extension/%s", projectId) }
-							hx-push-url="true"
-							hx-target="#dashboard-content"
-						>
-							<i class="bi bi-calendar2-plus-fill"></i>
-							<span>
-								Add
-								Extensions
-							</span>
-							<span
-								class="badge badge-sm rounded-pill me-n2 bg-warning-subtle text-warning ms-auto"
+					if ( ConvertUserRole(user.Role) == "admin") {
+						<li class="nav-item my-1">
+							<a
+								class="nav-link d-flex align-items-center rounded-pill"
+								href="javascript:void(0)"
+								hx-get={ fmt.Sprintf("/extension/%s", projectId) }
+								hx-push-url="true"
+								hx-target="#dashboard-content"
 							>
-								🔥
-								Hot
-							</span>
-						</a>
-					</li>
+								<i class="bi bi-calendar2-plus-fill"></i>
+								<span>
+									Add
+									Extensions
+								</span>
+								<span
+									class="badge badge-sm rounded-pill me-n2 bg-warning-subtle text-warning ms-auto"
+								>
+									🔥
+									Hot
+								</span>
+							</a>
+						</li>
+					}
 					<li class="nav-item my-1">
 						<a
 							class="nav-link d-flex align-items-center rounded-pill"
@@ -256,6 +258,14 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 			</div>
 		</div>
 	</nav>
+}
+
+func ConvertUserRole(role domain.UserRole) string {
+	if role == "client" {
+		return "admin"
+	} else {
+		return "user"
+	}
 }
 
 func getInitials(name, lastName string) (string, error) {

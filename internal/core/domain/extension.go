@@ -11,6 +11,7 @@ const (
 	DataSynchronizerCode string = "data-synchronizer"
 	WalletExpences       string = "wallet-expences"
 	Courier4u            string = "courier4u"
+	TeamMember           string = "team-member"
 )
 
 // Extension here we store all the available extensions we can add to the project

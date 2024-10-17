@@ -38,7 +38,10 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	extensionRepo := mongorepo.NewExtensionRepository(mongodb)
 	voucherRepo := mongorepo.NewVoucherRepository(mongodb)
 	paymentRepo := mongorepo.NewPaymentRepository(mongodb)
+	usersprojectsRepo := repository.NewUserProjectRepository(db)
 
+	// UserProject
+	usersprojectsService := service.NewUsersProjectsService(usersprojectsRepo)
 	//Voucher
 	voucherService := courier.NewVoucherService(voucherRepo)
 	// NewExtensionService
@@ -74,9 +77,9 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 		voucherService)
 
 	//Project
-	projectService := service.NewProjectService(projectRepo, woocommerceWebhookService, woocommerceProductService, extensionService, userService)
+	projectService := service.NewProjectService(projectRepo, woocommerceWebhookService, woocommerceProductService, extensionService, userService, usersprojectsService)
 	// Auth
-	authHandler := handler.NewAuthHandler(authService, userService, projectService, extensionService)
+	authHandler := handler.NewAuthHandler(authService, userService, projectService, extensionService, usersprojectsService)
 	//WooCommerceRepostServer
 	woocommerceReportService := woocommerce.NewWoocommerceReportService(projectService)
 	//ProjectHandler

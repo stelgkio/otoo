@@ -41,3 +41,21 @@ type ProjectService interface {
 	// GetAllProjects returns all projects
 	GetAllProjects() ([]*domain.Project, error)
 }
+
+// UserProjectRepository interface
+type UserProjectRepository interface {
+	RemoveAllUsersFromProject(ctx echo.Context, projectID uuid.UUID) error
+	FindUsersByProjectID(ctx echo.Context, projectID uuid.UUID) ([]*domain.User, error)
+	FindProjectsByUserID(ctx echo.Context, userID uuid.UUID) ([]*domain.Project, error)
+	RemoveUserFromProject(ctx echo.Context, userID uuid.UUID, projectID uuid.UUID) error
+	AddUserToProject(ctx echo.Context, userID uuid.UUID, projectID uuid.UUID) error
+}
+
+// UserProjectService interface
+type UserProjectService interface {
+	RemoveAllUsersFromProject(ctx echo.Context, projectID uuid.UUID) error
+	FindUsersByProjectID(ctx echo.Context, projectID uuid.UUID) ([]*domain.User, error)
+	FindProjectsByUserID(ctx echo.Context, userID uuid.UUID) ([]*domain.Project, error)
+	RemoveUserFromProject(ctx echo.Context, userID uuid.UUID, projectID uuid.UUID) error
+	AddUserToProject(ctx echo.Context, userID uuid.UUID, projectID uuid.UUID) error
+}

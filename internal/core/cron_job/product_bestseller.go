@@ -87,6 +87,9 @@ func (as *ProductBestSellerCron) RunAProductBestSellerInitializerJob(projectID s
 	}
 
 	worker := int(math.Ceil(float64(totalCount) / 10))
+	if worker == 0 {
+		worker = 1
+	}
 
 	wg.Add(worker)
 	orderListResults := make(chan []*w.OrderRecord, worker)

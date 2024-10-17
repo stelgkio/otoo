@@ -31,7 +31,7 @@ type ProductBestSellers interface {
 // OrderAnalyticsCron defines the methods for interacting with the OrderAnalyticsCron repository
 type OrderAnalyticsCron interface {
 	RunOrderWeeklyBalanceJob() error
-	RunOrderWeeklyBalanceInitializeJob(project *d.Project, user *d.User) error
+	RunOrderWeeklyBalanceInitializeJob(project *d.Project, user []*d.User) error
 	RunOrderMonthlyCountJob() error
-	RunOrderMonthlyCountInitializeJob(project *d.Project, user *d.User) error
+	RunOrderMonthlyCountInitializeJob(project *d.Project, user []*d.User) error
 }

@@ -1,8 +1,17 @@
 package views
 
-import "github.com/stelgkio/otoo/internal/core/domain"
+import (
+	"fmt"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
 
-templ UserList(users []*domain.User) {
+templ UserList(users []*domain.User, projectId string) {
+	<style>
+.fade-me-out.htmx-swapping {
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+</style>
 	for _, user := range users {
 		<div class="list-group-item d-flex align-items-center">
 			<div class="me-4"></div>
@@ -23,9 +32,15 @@ templ UserList(users []*domain.User) {
 						<i class="bi bi-three-dots-vertical"></i>
 					</a>
 					<div class="dropdown-menu">
-						<a href="#!" class="dropdown-item">Action </a>
-						<a href="#!" class="dropdown-item">Another action </a>
-						<a href="#!" class="dropdown-item">Something else here</a>
+						<a href="#!" class="dropdown-item">Update User </a>
+						<a
+							href="javascript:void(0)"
+							class="dropdown-item text-danger "
+							class="fade-me-out"
+							hx-delete={ fmt.Sprintf("/user/delete/%s/%s", user.Id.String(), projectId) }
+							hx-swap="outerHTML swap:1s"
+							hx-target="#dashboard-content"
+						>Delete User</a>
 					</div>
 				</div>
 			</div>

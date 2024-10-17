@@ -62,14 +62,14 @@ func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceJob() error {
 		// Capture projectID to avoid issues with goroutine closures
 		projectID := project.Id.String()
 		//TODO: user should be admin
-		user, err := as.userSvc.GetAdminUserByProjectId(nil, project.Id)
+		users, err := as.userSvc.GetAdminUserByProjectId(nil, project.Id)
 		if err != nil {
 			return err
 		}
 		go func(projID string) {
 			defer wg.Done() // Decrement the WaitGroup counter when the goroutine completes
 			// Run the initializer job for each project
-			if err := as.RunOrderWeeklyBalanceInitializeJob(project, user); err != nil {
+			if err := as.RunOrderWeeklyBalanceInitializeJob(project, users); err != nil {
 				// Send error to the channel if any occurs
 				errChan <- err
 			}
@@ -93,13 +93,13 @@ func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceJob() error {
 }
 
 // RunOrderWeeklyBalanceInitializeJob runs the analytics job
-func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceInitializeJob(project *domain.Project, user *domain.User) error {
+func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceInitializeJob(project *domain.Project, users []*domain.User) error {
 	var wg sync.WaitGroup
 	// Log input parameters
 	if project == nil {
 		return fmt.Errorf("project is nil")
 	}
-	if user == nil {
+	if len(users) > 0 {
 		return fmt.Errorf("user is nil")
 	}
 	now := time.Now().UTC()
@@ -113,7 +113,9 @@ func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceInitializeJob(project *domain
 	}
 
 	worker := int(math.Ceil(float64(lastWeekCount) / 10))
-
+	if worker == 0 {
+		worker = 1
+	}
 	wg.Add(worker)
 	orderListResults := make(chan []*w.OrderRecord, worker)
 	orderListErrors := make(chan error, 1)
@@ -162,8 +164,6 @@ func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceInitializeJob(project *domain
 	close(orderWeeklyBalance)
 	close(orderWeeklyBalanceErrors)
 
-	//TODO: change this to save the weeklybalance
-	//as.bestSellerSvc.DeleteBestSellers(projectID)
 	for items := range orderWeeklyBalance {
 
 		weekBalance := w.NewWeeklyAnalytics(project.Id.String(), orderCount, lastWeekCount, ordertWeeklyBalance, lastWeek, now)
@@ -174,8 +174,10 @@ func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceInitializeJob(project *domain
 			fmt.Println("The result of the 2 weeks is", result)
 		}
 		as.analyticsRepo.CreateWeeklyBalance(project.Id.String(), weekBalance)
-		fullname := fmt.Sprintf("%s %s", user.Name, user.LastName)
-		as.smtpSvc.SendWeeklyBalanceEmail(nil, weekBalance, user.Email, fullname)
+		for _, user := range users {
+			fullname := fmt.Sprintf("%s %s", user.Name, user.LastName)
+			as.smtpSvc.SendWeeklyBalanceEmail(nil, weekBalance, user.Email, fullname)
+		}
 	}
 
 	for err := range orderWeeklyBalanceErrors {
@@ -205,14 +207,14 @@ func (as *OrderAnalyticsCron) RunOrderMonthlyCountJob() error {
 
 		// Capture projectID to avoid issues with goroutine closures
 		projectID := project.Id.String()
-		user, err := as.userSvc.GetAdminUserByProjectId(nil, project.Id)
+		users, err := as.userSvc.GetAdminUserByProjectId(nil, project.Id)
 		if err != nil {
 			return err
 		}
 		go func(projID string) {
 			defer wg.Done() // Decrement the WaitGroup counter when the goroutine completes
 			// Run the initializer job for each project
-			if err := as.RunOrderMonthlyCountInitializeJob(project, user); err != nil {
+			if err := as.RunOrderMonthlyCountInitializeJob(project, users); err != nil {
 				// Send error to the channel if any occurs
 				errChan <- err
 			}
@@ -236,7 +238,7 @@ func (as *OrderAnalyticsCron) RunOrderMonthlyCountJob() error {
 }
 
 // RunOrderMonthlyCountInitializeJob runs the analytics job
-func (as *OrderAnalyticsCron) RunOrderMonthlyCountInitializeJob(project *domain.Project, user *domain.User) error {
+func (as *OrderAnalyticsCron) RunOrderMonthlyCountInitializeJob(project *domain.Project, user []*domain.User) error {
 	now := time.Now().UTC()
 	nextMonth := now.Add(30 * 24 * time.Hour)
 	orderMap, err := as.orderSvc.CountOrdersByMonth(project.Id.String())

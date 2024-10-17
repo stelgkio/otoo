@@ -261,6 +261,9 @@ func (os *OrderService) createAndSaveAllCustomers(client *commerce.Client, proje
 	orderCh := make(chan *w.OrderRecord, totalOrder) // Channel to distribute order to workers
 	errorCh := make(chan *w.OrderRecord, 1)          // Buffered channel for error results
 	workers := int(math.Ceil(float64(totalOrder) / 100))
+	if workers == 0 {
+		workers = 1
+	}
 	// Worker pool to process products
 	for i := 0; i < workers; i++ {
 		wg.Add(1)

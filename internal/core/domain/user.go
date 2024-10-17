@@ -19,16 +19,17 @@ const (
 
 // User ...
 type User struct {
+	tableName struct{} `pg:"user,alias:user"`
 	Base
-	Name        string `json:"name" pg:"name,notnull"`
-	Email       string `json:"email" pg:"email,unique,notnull"`
-	Password    string `json:"password" pg:"password,notnull"`
-	Role        UserRole
-	ValidatedAt time.Time
-	LastLogin   time.Time
-	LastName    string    `json:"last_name" pg:"last_name,notnull"`
-	ProjectID   uuid.UUID `pg:"fk:projectId,type:uuid"`
-	Project     *Project  `pg:"rel:has-one"`
+	Name               string `json:"name" pg:"name,notnull"`
+	Email              string `json:"email" pg:"email,unique,notnull"`
+	Password           string `json:"password" pg:"password,notnull"`
+	Role               UserRole
+	ValidatedAt        time.Time
+	LastLogin          time.Time
+	LastName           string     `json:"last_name" pg:"last_name,notnull"`
+	Projects           []*Project `pg:"many2many:user_projects"`
+	ReseveNotification bool       `json:"reseve_notification" pg:"reseve_notification"`
 }
 
 // NewUser creates a instance of user with hashed password
@@ -49,6 +50,7 @@ func NewUser(email string, password string, name string, lastName string) (*User
 	u.Name = name
 	u.LastName = lastName
 	u.IsActive = true
+	u.ReseveNotification = true
 	return u, nil
 }
 
@@ -70,6 +72,7 @@ func NewClientUser(email string, password string, name string, lastName string, 
 	u.Name = name
 	u.LastName = lastName
 	u.IsActive = true
+	u.ReseveNotification = true
 	return u, nil
 }
 
@@ -81,7 +84,7 @@ func (u *User) ValidateEmail(email string) error {
 
 // AddProject to user
 func (u *User) AddProject(projectID uuid.UUID) {
-	u.ProjectID = projectID
+
 }
 func (pt UserRole) String() string {
 	return string(pt)

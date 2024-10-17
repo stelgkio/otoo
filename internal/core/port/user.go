@@ -13,7 +13,7 @@ type UserRepository interface {
 	//GetUserByID selects a user by id
 	GetUserById(ctx echo.Context, id uuid.UUID) (*domain.User, error)
 	// GetUser returns a user by projectid
-	GetAdminUserByProjectId(ctx echo.Context, projectid uuid.UUID) (*domain.User, error)
+	GetAdminUserByProjectId(ctx echo.Context, id uuid.UUID) ([]*domain.User, error)
 	// // GetUserByEmail selects a user by email
 	GetUserByEmail(ctx echo.Context, email string) (*domain.User, error)
 	// // ListUsers selects a list of users with pagination
@@ -23,6 +23,7 @@ type UserRepository interface {
 	// // DeleteUser deletes a user
 	DeleteUser(ctx echo.Context, id uuid.UUID) error
 	FindUsersByProjectId(ctx echo.Context, id uuid.UUID) ([]*domain.User, error)
+	FindProjectsByUserId(ctx echo.Context, userId uuid.UUID) ([]*domain.Project, error)
 }
 
 // UserService is an interface for interacting with user-related business logic
@@ -32,7 +33,7 @@ type UserService interface {
 	// GetUser returns a user by id
 	GetUserById(ctx echo.Context, id uuid.UUID) (*domain.User, error)
 	// GetUser returns a user by projectid
-	GetAdminUserByProjectId(ctx echo.Context, projectid uuid.UUID) (*domain.User, error)
+	GetAdminUserByProjectId(ctx echo.Context, id uuid.UUID) ([]*domain.User, error)
 	// GetUser returns a user by id
 	GetUserByEmail(ctx echo.Context, email string) (*domain.User, error)
 	// // ListUsers returns a list of users with pagination
@@ -42,4 +43,5 @@ type UserService interface {
 	// // DeleteUser deletes a user
 	DeleteUser(ctx echo.Context, id uuid.UUID) error
 	FindUsersByProjectId(ctx echo.Context, id uuid.UUID) ([]*domain.User, error)
+	FindProjectsByUserId(ctx echo.Context, userId uuid.UUID) ([]*domain.Project, error)
 }

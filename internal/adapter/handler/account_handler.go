@@ -28,6 +28,7 @@ type AuthHandler struct {
 	urs          port.UserService
 	projectSvc   port.ProjectService
 	extensionSvc port.ExtensionService
+	protouserSvc port.UserProjectService
 }
 
 // NewAuthHandler creates a new AuthHandler instance
@@ -35,12 +36,14 @@ func NewAuthHandler(
 	svc port.AuthService,
 	urs port.UserService,
 	projectSvc port.ProjectService,
-	extensionSvc port.ExtensionService) *AuthHandler {
+	extensionSvc port.ExtensionService,
+	protouserSvc port.UserProjectService) *AuthHandler {
 	return &AuthHandler{
 		svc,
 		urs,
 		projectSvc,
 		extensionSvc,
+		protouserSvc,
 	}
 }
 
@@ -253,7 +256,7 @@ func (ah *AuthHandler) UserList(ctx echo.Context) error {
 	}
 	users, err := ah.urs.FindUsersByProjectId(ctx, id)
 
-	return r.Render(ctx, us.UserList(users))
+	return r.Render(ctx, us.UserList(users, projectID))
 }
 
 func (ah *AuthHandler) AddMember(ctx echo.Context) error {
@@ -309,9 +312,25 @@ func (ah *AuthHandler) AddMember(ctx echo.Context) error {
 			"error": "error creating new user",
 		})
 	}
-	newUser.AddProject(project.Id)
 
-	_, err = ah.urs.CreateUser(ctx, newUser)
+	userExist, err := ah.urs.GetUserByEmail(ctx, req.Email)
+	if err != nil {
+		return err
+	}
+
+	if userExist == nil {
+		usr, err := ah.urs.CreateUser(ctx, newUser)
+		err = ah.protouserSvc.AddUserToProject(ctx, usr.Id, project.Id)
+		if err != nil {
+			slog.Error("error create new user:", "StatusBadRequest", err)
+			return ctx.JSON(http.StatusBadRequest, map[string]string{
+				"error": errors.New("eerror creating new user").Error(),
+			})
+		}
+	} else {
+		err = ah.protouserSvc.AddUserToProject(ctx, userExist.Id, project.Id)
+	}
+
 	if err != nil {
 		slog.Error("error create new user:", "StatusBadRequest", err)
 		return ctx.JSON(http.StatusBadRequest, map[string]string{
@@ -325,6 +344,48 @@ func (ah *AuthHandler) AddMember(ctx echo.Context) error {
 	return r.Render(ctx, st.TeamTemplate(user, project.Name, projectID, project, projectExtensions))
 }
 
-// return ctx.JSON(http.StatusBadRequest, map[string]string{
-// 	"error": err.Error(),
-// })
+// RemoveMember @Router
+func (ah *AuthHandler) RemoveMember(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	userID := ctx.Param("userId")
+	useruuID, err := uuid.Parse(userID)
+
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{
+			"error": errors.New("invalid user id").Error(),
+		})
+
+	}
+
+	user, err := ah.urs.GetUserById(ctx, useruuID)
+	if err != nil {
+		return err
+	}
+	project, err := ah.projectSvc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	projectExtensions, err := ah.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	if user.Role == domain.Client {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{
+			"error": errors.New("Cannot remove admin user. Contact our support for more information").Error(),
+		})
+	}
+	err = ah.protouserSvc.RemoveUserFromProject(ctx, useruuID, project.Id)
+
+	err = ah.urs.DeleteUser(ctx, useruuID)
+	if err != nil {
+		slog.Error("error create new user:", "StatusBadRequest", err)
+		return ctx.JSON(http.StatusBadRequest, map[string]string{
+			"error": errors.New("error removing user").Error(),
+		})
+	}
+
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, tm.Team(project, projectExtensions))
+	}
+	return r.Render(ctx, st.TeamTemplate(user, project.Name, projectID, project, projectExtensions))
+}

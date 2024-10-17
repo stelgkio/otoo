@@ -45,6 +45,25 @@ templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExt
 									></span>
 								</a>
 							</li>
+						} else if extension.Code == "team-member" {
+							// <li class="nav-item">
+							// 	<a
+							// 		href="javascript:void(0)"
+							// 		hx-get={ fmt.Sprintf("/project/settings/team/%s", projectId) }
+							// 		hx-target="#dashboard-content"
+							// 		hx-indicator="#spinnerTeam"
+							// 		hx-push-url="true"
+							// 		class="nav-link active"
+							// 	>
+							// 		{ extension.Title }
+							// 		<span
+							// 			id="spinnerTeam"
+							// 			class="htmx-indicator spinner-border spinner-border-sm"
+							// 			role="status"
+							// 			aria-hidden="true"
+							// 		></span>
+							// 	</a>
+							// </li>
 						} else {
 							<li class="nav-item">
 								<a

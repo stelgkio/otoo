@@ -24,7 +24,7 @@ func NewUserService(repo port.UserRepository) *UserService {
 	}
 }
 
-// Register creates a new user
+// CreateUser creates a new user
 func (us *UserService) CreateUser(ctx echo.Context, user *domain.User) (*domain.User, error) {
 	u, err := us.repo.GetUserByEmail(ctx, user.Email)
 	if err != nil && err != e.ErrDataNotFound {
@@ -41,36 +41,19 @@ func (us *UserService) CreateUser(ctx echo.Context, user *domain.User) (*domain.
 		return nil, e.ErrInternal
 	}
 
-	////
-	///    REDIS
-	//
-
-	// cacheKey := util.GenerateCacheKey("user", user.ID)
-	// userSerialized, err := util.Serialize(user)
-	// if err != nil {
-	// 	return nil, util.ErrInternal
-	// }
-
-	// err = us.cache.Set(ctx, cacheKey, userSerialized, 0)
-	// if err != nil {
-	// 	return nil, util.ErrInternal
-	// }
-
-	// err = us.cache.DeleteByPrefix(ctx, "users:*")
-	// if err != nil {
-	// 	return nil, util.ErrInternal
-	// }
-
 	return user, nil
 }
-func (us *UserService) GetAdminUserByProjectId(ctx echo.Context, projectid uuid.UUID) (*domain.User, error) {
-	user, err := us.repo.GetAdminUserByProjectId(ctx, projectid)
+
+// GetAdminUserByProjectId retrieves a user by project id
+func (us *UserService) GetAdminUserByProjectId(ctx echo.Context, projectid uuid.UUID) ([]*domain.User, error) {
+	users, err := us.repo.GetAdminUserByProjectId(ctx, projectid)
 	if err != nil && err != e.ErrDataNotFound {
 		return nil, e.ErrInternal
 	}
-	return user, nil
+	return users, nil
 }
 
+// GetUserById retrieves a user by id
 func (us *UserService) GetUserById(ctx echo.Context, id uuid.UUID) (*domain.User, error) {
 	user, err := us.repo.GetUserById(ctx, id)
 	if err != nil && err != e.ErrDataNotFound {
@@ -79,6 +62,8 @@ func (us *UserService) GetUserById(ctx echo.Context, id uuid.UUID) (*domain.User
 	return user, nil
 
 }
+
+// GetUserByEmail retrieves a user by email
 func (us *UserService) GetUserByEmail(ctx echo.Context, email string) (*domain.User, error) {
 	user, err := us.repo.GetUserByEmail(ctx, email)
 	if err != nil && err != e.ErrDataNotFound {
@@ -88,6 +73,7 @@ func (us *UserService) GetUserByEmail(ctx echo.Context, email string) (*domain.U
 
 }
 
+// UpdateUser updates a user
 func (us *UserService) UpdateUser(ctx echo.Context, user *domain.User) (*domain.User, error) {
 	user, err := us.repo.UpdateUser(ctx, user)
 	if err != nil && err != e.ErrDataNotFound {
@@ -97,9 +83,10 @@ func (us *UserService) UpdateUser(ctx echo.Context, user *domain.User) (*domain.
 
 }
 
-func (us *UserService) DeleteUser(ctx echo.Context, userId uuid.UUID) error {
+// DeleteUser deletes a user
+func (us *UserService) DeleteUser(ctx echo.Context, userID uuid.UUID) error {
 
-	err := us.repo.DeleteUser(ctx, userId)
+	err := us.repo.DeleteUser(ctx, userID)
 	if err != nil && err != e.ErrDataNotFound {
 		return e.ErrInternal
 	}
@@ -107,6 +94,7 @@ func (us *UserService) DeleteUser(ctx echo.Context, userId uuid.UUID) error {
 
 }
 
+// FindUsersByProjectId retrieves a user by project id
 func (us *UserService) FindUsersByProjectId(ctx echo.Context, id uuid.UUID) ([]*domain.User, error) {
 	users, err := us.repo.FindUsersByProjectId(ctx, id)
 	if err != nil && err != e.ErrDataNotFound {
@@ -114,4 +102,13 @@ func (us *UserService) FindUsersByProjectId(ctx echo.Context, id uuid.UUID) ([]*
 	}
 	return users, nil
 
+}
+
+// FindProjectsByUserId retrieves a user by project id
+func (us *UserService) FindProjectsByUserId(ctx echo.Context, userId uuid.UUID) ([]*domain.Project, error) {
+	users, err := us.repo.FindProjectsByUserId(ctx, userId)
+	if err != nil && err != e.ErrDataNotFound {
+		return nil, e.ErrInternal
+	}
+	return users, nil
 }

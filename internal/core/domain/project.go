@@ -23,6 +23,7 @@ const (
 
 // Project represents a project
 type Project struct {
+	tableName struct{} `pg:"project,alias:project"`
 	Base
 	Name        string      `json:"name" pg:"name,notnull"`
 	Description string      `json:"description" pg:"description,notnull"`
@@ -30,6 +31,7 @@ type Project struct {
 	WoocommerceProject
 	ShopifyProject
 	ValidatedAt types.NullTime
+	Users       []*User `pg:"many2many:user_projects"`
 }
 
 // NewProject creates a instance of user with hashed password
@@ -137,4 +139,9 @@ type FindProjectRequest struct {
 func isValidHttpsURL(url string) bool {
 	re := regexp.MustCompile(`^https:\/\/[a-zA-Z0-9\-._~:\/?#@!$&'()*+,;=%]+$`)
 	return re.MatchString(url)
+}
+
+// AddUser to user
+func (u *Project) AddUser(userID uuid.UUID) {
+
 }

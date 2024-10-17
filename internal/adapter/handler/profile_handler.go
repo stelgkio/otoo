@@ -102,21 +102,14 @@ func (ph *ProfileHandler) ProfileDelete(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-
-	err = ph.psrv.SoftDeleteProjects(ctx, userID)
-	if err != nil {
-		return err
-	}
-
 	err = ph.asrc.Logout(ctx)
+	err = ph.svc.DeleteUser(ctx, userID)
+
 	if err != nil {
 		ctx.Response().Header().Set("HX-Redirect", "/index")
 		return ctx.Redirect(http.StatusAccepted, "/index")
 	}
-	err = ph.svc.DeleteUser(ctx, userID)
-	if err != nil {
-		return err
-	}
+
 	ctx.Response().Header().Set("HX-Redirect", "/index")
 	return ctx.NoContent(http.StatusOK)
 

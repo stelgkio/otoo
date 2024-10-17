@@ -12,21 +12,23 @@ import (
 )
 
 type ProjectService struct {
-	repo         port.ProjectRepository
-	wp           port.WoocommerceWebhookService
-	wc           port.ProductService
-	extensionSrv port.ExtensionService
-	userSvc      port.UserService
+	repo           port.ProjectRepository
+	wp             port.WoocommerceWebhookService
+	wc             port.ProductService
+	extensionSrv   port.ExtensionService
+	userSvc        port.UserService
+	userprojectSvc port.UserProjectService
 }
 
 // NewProjectService creates a new user service instance
-func NewProjectService(repo port.ProjectRepository, wp port.WoocommerceWebhookService, wc port.ProductService, extensionSrv port.ExtensionService, userSvc port.UserService) *ProjectService {
+func NewProjectService(repo port.ProjectRepository, wp port.WoocommerceWebhookService, wc port.ProductService, extensionSrv port.ExtensionService, userSvc port.UserService, userprojectSvc port.UserProjectService) *ProjectService {
 	return &ProjectService{
 		repo,
 		wp,
 		wc,
 		extensionSrv,
 		userSvc,
+		userprojectSvc,
 	}
 }
 
@@ -69,15 +71,20 @@ func (ps *ProjectService) CreateProject(ctx echo.Context, req *domain.ProjectReq
 		return nil, errors.New("project is not created")
 	}
 	//TODO: get user and add projectId
-	user, _ := ps.userSvc.GetUserById(ctx, userID)
-	user.AddProject(pr.Id)
-	ps.userSvc.UpdateUser(ctx, user)
+
+	ps.userprojectSvc.AddUserToProject(ctx, userID, pr.Id)
 
 	extension, err := ps.extensionSrv.GetExtensionByCode(ctx, domain.DataSynchronizerCode)
 	if err != nil {
 		return nil, err
 	}
-	ps.extensionSrv.CreateProjectExtension(ctx, project.Id.String(), extension, 830, "")
+	ps.extensionSrv.CreateProjectExtension(ctx, project.Id.String(), extension, 370, "")
+
+	extension2, err := ps.extensionSrv.GetExtensionByCode(ctx, domain.TeamMember)
+	if err != nil {
+		return nil, err
+	}
+	ps.extensionSrv.CreateProjectExtension(ctx, project.Id.String(), extension2, 370, "")
 
 	go ps.wp.WoocommerceCreateAllWebHookAsync(req.ConsumerKey, req.ConsumerSecret, req.Domain, pr.Id.String())
 	return pr, nil

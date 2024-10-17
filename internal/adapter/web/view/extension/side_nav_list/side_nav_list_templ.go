@@ -68,6 +68,11 @@ func SideNavList(projectId, extensionId string, extensions []*domain.ProjectExte
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
+				} else if extension.Code == "team-member" {
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("                 ")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
 				} else {
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"nav-item\"><a href=\"javascript:void(0)\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
@@ -76,7 +81,7 @@ func SideNavList(projectId, extensionId string, extensions []*domain.ProjectExte
 					var templ_7745c5c3_Var4 string
 					templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/extension/page/%s/%s", extension.Code, projectId))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/extension/side_nav_list/side_nav_list.templ`, Line: 52, Col: 81}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/extension/side_nav_list/side_nav_list.templ`, Line: 71, Col: 81}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 					if templ_7745c5c3_Err != nil {
@@ -89,7 +94,7 @@ func SideNavList(projectId, extensionId string, extensions []*domain.ProjectExte
 					var templ_7745c5c3_Var5 string
 					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(extension.Title)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/extension/side_nav_list/side_nav_list.templ`, Line: 58, Col: 26}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/extension/side_nav_list/side_nav_list.templ`, Line: 77, Col: 26}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 					if templ_7745c5c3_Err != nil {

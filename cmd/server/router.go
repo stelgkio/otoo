@@ -101,6 +101,7 @@ func NewRouter(
 		usergroup.Use(auth.TokenRefresherMiddleware)
 		usergroup.GET("/list/:projectId", authHandler.UserList)
 		usergroup.POST("/addmember/:projectId", authHandler.AddMember)
+		usergroup.DELETE("/delete/:userId/:projectId", authHandler.RemoveMember)
 	}
 	//Dashboard
 	dashboardgroup := e.Group("/dashboard")

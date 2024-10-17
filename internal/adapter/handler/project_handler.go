@@ -126,9 +126,7 @@ func (ph *ProjectHandler) ProjectListPage(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{
-		ProjectID: user.ProjectID,
-	}, 1, 100)
+	projects, err := ph.userSvc.FindProjectsByUserId(ctx, userID)
 	if err != nil {
 		return err
 	}
@@ -151,9 +149,7 @@ func (ph *ProjectHandler) GetProjectDashboardPage(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{
-		ProjectID: user.ProjectID,
-	}, 1, 100)
+	projects, err := ph.userSvc.FindProjectsByUserId(ctx, userID)
 	if err != nil {
 		return err
 	}

@@ -132,7 +132,6 @@ type FindProjectRequest struct {
 	Description string      `json:"description" form:"description"`
 	ProjectType ProjectType `json:"project_type" form:"project_type"`
 	Domain      string      `json:"domain" form:"domain"`
-	ProjectID   uuid.UUID   `json:"project_id`
 }
 
 // isValidHttpsURL checks if a given URL is a valid HTTPS URL

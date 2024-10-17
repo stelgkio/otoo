@@ -48,7 +48,6 @@ func (repo *ProjectRepository) FindProjects(ctx echo.Context, filters *domain.Fi
 		query = query.WhereOr("woocommerce_domain =?", filters.Domain)
 	}
 	query = query.
-		Where("id =?", filters.ProjectID).
 		Where("is_active =true").
 		Order("name ASC").
 		Limit(limit).

@@ -131,7 +131,7 @@ func (ph *ProjectHandler) ProjectListPage(ctx echo.Context) error {
 		return err
 	}
 	if ctx.Request().Header.Get("HX-Request") == "true" {
-		return r.Render(ctx, l.ProjectListPage(projects))
+		return r.Render(ctx, l.ProjectListPage(projects, user))
 	}
 
 	return r.Render(ctx, d.ProjectDashboard(projects, user))

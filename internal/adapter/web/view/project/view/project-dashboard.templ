@@ -8,7 +8,7 @@ import (
 
 templ ProjectDashboard(projects []*domain.Project, user *domain.User) {
 	@t.ProjectTemplate(user) {
-		@l.ProjectListPage(projects)
+		@l.ProjectListPage(projects, user)
 		<script>
 	    var chartElement2= document.querySelector("#chart-users");   
         var options2= {

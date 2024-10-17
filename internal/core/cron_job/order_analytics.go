@@ -10,6 +10,7 @@ import (
 	"github.com/stelgkio/otoo/internal/core/domain"
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/port"
+	"github.com/stelgkio/otoo/internal/core/util"
 )
 
 // OrderAnalyticsCron represents the cron job for order analytics
@@ -60,20 +61,24 @@ func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceJob() error {
 		wg.Add(1) // Increment the WaitGroup counter
 
 		// Capture projectID to avoid issues with goroutine closures
-		projectID := project.Id.String()
+		//	projectID := project.Id.String()
 		//TODO: user should be admin
-		users, err := as.userSvc.GetAdminUserByProjectId(nil, project.Id)
+		usersList, err := as.userSvc.FindUsersByProjectId(nil, project.Id)
+		usersSlice := util.Filter(usersList, func(u *domain.User) bool {
+			return u.ReseveNotification == true
+		})
 		if err != nil {
 			return err
 		}
-		go func(projID string) {
+		go func(project *domain.Project, users []*domain.User) {
 			defer wg.Done() // Decrement the WaitGroup counter when the goroutine completes
 			// Run the initializer job for each project
-			if err := as.RunOrderWeeklyBalanceInitializeJob(project, users); err != nil {
+			err := as.RunOrderWeeklyBalanceInitializeJob(project, users)
+			if err != nil {
 				// Send error to the channel if any occurs
 				errChan <- err
 			}
-		}(projectID)
+		}(project, usersSlice)
 	}
 
 	// Close the error channel once all goroutines are done
@@ -99,7 +104,7 @@ func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceInitializeJob(project *domain
 	if project == nil {
 		return fmt.Errorf("project is nil")
 	}
-	if len(users) > 0 {
+	if len(users) == 0 {
 		return fmt.Errorf("user is nil")
 	}
 	now := time.Now().UTC()
@@ -207,7 +212,10 @@ func (as *OrderAnalyticsCron) RunOrderMonthlyCountJob() error {
 
 		// Capture projectID to avoid issues with goroutine closures
 		projectID := project.Id.String()
-		users, err := as.userSvc.GetAdminUserByProjectId(nil, project.Id)
+		usersList, err := as.userSvc.FindUsersByProjectId(nil, project.Id)
+		users := util.Filter(usersList, func(u *domain.User) bool {
+			return u.ReseveNotification == true
+		})
 		if err != nil {
 			return err
 		}

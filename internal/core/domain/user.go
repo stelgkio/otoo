@@ -55,7 +55,7 @@ func NewUser(email string, password string, name string, lastName string) (*User
 }
 
 // NewClientUser creates a instance of user with hashed password
-func NewClientUser(email string, password string, name string, lastName string, role UserRole) (*User, error) {
+func NewClientUser(email string, password string, name string, lastName string, role UserRole, reseveNotification bool) (*User, error) {
 	var err error
 	u := new(User)
 	var hash util.Hash
@@ -72,7 +72,7 @@ func NewClientUser(email string, password string, name string, lastName string, 
 	u.Name = name
 	u.LastName = lastName
 	u.IsActive = true
-	u.ReseveNotification = true
+	u.ReseveNotification = reseveNotification
 	return u, nil
 }
 
@@ -88,4 +88,14 @@ func (u *User) AddProject(projectID uuid.UUID) {
 }
 func (pt UserRole) String() string {
 	return string(pt)
+}
+
+// ContainsUserID Function to check if any ProjectExtension contains the given ExtensionID
+func ContainsUserID(users []*User, userID uuid.UUID) bool {
+	for _, user := range users {
+		if user.Id == userID {
+			return true // Found a matching ExtensionID
+		}
+	}
+	return false // No matching ExtensionID found
 }

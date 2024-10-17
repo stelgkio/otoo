@@ -19,6 +19,7 @@ import (
 	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stelgkio/otoo/internal/core/port"
+	"github.com/stelgkio/otoo/internal/core/util"
 	r "github.com/stelgkio/otoo/internal/core/util"
 )
 
@@ -76,6 +77,53 @@ type resetPosswordRequest struct {
 	ConfirmationPassword string `form:"confirmationpassword" validate:"required,min=8"`
 }
 
+// registerRequest represents the request body for creating a user
+type registerRequest struct {
+	Email                string `form:"email" validate:"required,email"`
+	Password             string `form:"password" validate:"required,min=8"`
+	ConfirmationPassword string `form:"confirmationpassword" validate:"required,min=8"`
+	Name                 string `form:"name" validate:"required"`
+	LastName             string `form:"last_name" validate:"required"`
+}
+
+type addmemberRequest struct {
+	Email                string `form:"email" validate:"required,email"`
+	Password             string `form:"password" validate:"required,min=8"`
+	ConfirmationPassword string `form:"confirmationpassword" validate:"required,min=8"`
+	Name                 string `form:"name" validate:"required"`
+	LastName             string `form:"last_name" validate:"required"`
+	ReceiveNotification  bool   `form:"receive_notification"`
+}
+
+// Validate validates the request body
+func (p *addmemberRequest) Validate() map[string](string) {
+
+	errors := make(map[string]string)
+
+	if p.Name == "" {
+		errors["name"] = "Name is required"
+	}
+
+	if p.LastName == "" {
+		errors["lastname"] = "LastName is required"
+	}
+	if p.Email == "" {
+		errors["email"] = "Email is required"
+	}
+	if p.Password == "" {
+		errors["password"] = "Password key is required"
+	}
+	if p.ConfirmationPassword == "" {
+		errors["confirmation_password"] = "Confirmation Password is required"
+	}
+	// Check if Password and Confirmation Password match
+	if p.Password != p.ConfirmationPassword {
+		errors["confirmation_password"] = "Passwords do not match"
+	}
+
+	return errors
+}
+
 // Login @Router			/login [post]
 func (ah *AuthHandler) Login(ctx echo.Context) (err error) {
 
@@ -111,15 +159,6 @@ func (ah *AuthHandler) Logout(ctx echo.Context) (err error) {
 	}
 	ctx.Response().Header().Set("HX-Redirect", "/")
 	return ctx.Redirect(http.StatusAccepted, "/index")
-}
-
-// registerRequest represents the request body for creating a user
-type registerRequest struct {
-	Email                string `form:"email" validate:"required,email"`
-	Password             string `form:"password" validate:"required,min=8"`
-	ConfirmationPassword string `form:"confirmationpassword" validate:"required,min=8"`
-	Name                 string `form:"name" validate:"required"`
-	LastName             string `form:"last_name" validate:"required"`
 }
 
 // RegisterForm @Router			/register [get]
@@ -259,9 +298,14 @@ func (ah *AuthHandler) UserList(ctx echo.Context) error {
 	return r.Render(ctx, us.UserList(users, projectID))
 }
 
+func (ah *AuthHandler) CreateMemberModal(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+
+	return r.Render(ctx, us.CreateMeember(projectID, nil))
+}
 func (ah *AuthHandler) AddMember(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
-	req := new(registerRequest)
+	req := new(addmemberRequest)
 	if err := ctx.Bind(req); err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{
 			"error": errors.New("Oups something when wrong").Error(),
@@ -269,22 +313,12 @@ func (ah *AuthHandler) AddMember(ctx echo.Context) error {
 
 	}
 
-	// validate email is not taken
-	validate := validator.New()
-	// validate password is the same as confirm password
-	if req.Password != req.ConfirmationPassword {
+	validationErrors := req.Validate()
+	if len(validationErrors) > 0 {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{
-			"error": errors.New("invalid confirmation password").Error(),
+			"error": util.ConcatenateErrors(validationErrors),
 		})
-	}
-	// Validate the User struct
-	err := validate.Struct(req)
-	if err != nil {
-		// Validation failed, handle the error
-		//errors := err.(validator.ValidationErrors)
-		return ctx.JSON(http.StatusBadRequest, map[string]string{
-			"error": "Oups something when wrong",
-		})
+
 	}
 
 	userID, err := auth.GetUserID(ctx)
@@ -305,7 +339,7 @@ func (ah *AuthHandler) AddMember(ctx echo.Context) error {
 		return err
 	}
 
-	newUser, err := domain.NewClientUser(req.Email, req.Password, req.Name, req.LastName, domain.ClientUser)
+	newUser, err := domain.NewClientUser(req.Email, req.Password, req.Name, req.LastName, domain.ClientUser, req.ReceiveNotification)
 	if err != nil {
 		slog.Error("error new user:", "StatusBadRequest", err)
 		return ctx.JSON(http.StatusBadRequest, map[string]string{
@@ -324,18 +358,20 @@ func (ah *AuthHandler) AddMember(ctx echo.Context) error {
 		if err != nil {
 			slog.Error("error create new user:", "StatusBadRequest", err)
 			return ctx.JSON(http.StatusBadRequest, map[string]string{
-				"error": errors.New("eerror creating new user").Error(),
+				"error": errors.New("error creating new user").Error(),
 			})
 		}
 	} else {
-		err = ah.protouserSvc.AddUserToProject(ctx, userExist.Id, project.Id)
-	}
+		users, _ := ah.urs.FindUsersByProjectId(ctx, project.Id)
+		if !domain.ContainsUserID(users, userExist.Id) {
+			err = ah.protouserSvc.AddUserToProject(ctx, userExist.Id, project.Id)
+		}
 
-	if err != nil {
 		slog.Error("error create new user:", "StatusBadRequest", err)
 		return ctx.JSON(http.StatusBadRequest, map[string]string{
-			"error": errors.New("eerror creating new user").Error(),
+			"error": errors.New("error creating new user").Error(),
 		})
+
 	}
 
 	if ctx.Request().Header.Get("HX-Request") == "true" {
@@ -349,7 +385,7 @@ func (ah *AuthHandler) RemoveMember(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 	userID := ctx.Param("userId")
 	useruuID, err := uuid.Parse(userID)
-
+	logedinUserID, err := auth.GetUserID(ctx)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{
 			"error": errors.New("invalid user id").Error(),
@@ -377,6 +413,11 @@ func (ah *AuthHandler) RemoveMember(ctx echo.Context) error {
 	err = ah.protouserSvc.RemoveUserFromProject(ctx, useruuID, project.Id)
 
 	err = ah.urs.DeleteUser(ctx, useruuID)
+	if useruuID == logedinUserID {
+		ah.svc.Logout(ctx)
+		ctx.Response().Header().Set("HX-Redirect", "/index")
+		return ctx.Redirect(http.StatusAccepted, "/index")
+	}
 	if err != nil {
 		slog.Error("error create new user:", "StatusBadRequest", err)
 		return ctx.JSON(http.StatusBadRequest, map[string]string{

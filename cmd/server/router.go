@@ -100,6 +100,7 @@ func NewRouter(
 		usergroup.Use(configureJWT())
 		usergroup.Use(auth.TokenRefresherMiddleware)
 		usergroup.GET("/list/:projectId", authHandler.UserList)
+		usergroup.GET("/createMember/:projectId", authHandler.CreateMemberModal)
 		usergroup.POST("/addmember/:projectId", authHandler.AddMember)
 		usergroup.DELETE("/delete/:userId/:projectId", authHandler.RemoveMember)
 	}

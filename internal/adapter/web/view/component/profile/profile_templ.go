@@ -31,7 +31,7 @@ func Profile(user *domain.User) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"dashboard-content\" class=\"flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2\"><main class=\"container-fluid px-3 py-5 p-lg-6 p-xxl-8\">")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -39,7 +39,7 @@ func Profile(user *domain.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form><div class=\"d-flex align-items-end justify-content-between\"><div><h4 class=\"fw-semibold mb-1\">General</h4><p class=\"text-sm text-muted\">Update your personal data.</p></div><div class=\"d-none d-md-flex gap-2\"><button type=\"submit\" hx-indicator=\"#spinner\" hx-post=\"/profile/user/update\" hx-target=\"#dashboard-content\" class=\"btn btn-sm btn-primary\"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Update</button></div></div><hr class=\"my-6\"><div class=\"row align-items-center\"><div class=\"col-md-2\"><label class=\"form-label\" for=\"name\">Name</label></div><div class=\"col-md-8 col-xl-5\"><div class=\"\"><input type=\"text\" class=\"form-control\" name=\"name\" value=\"")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -52,7 +52,7 @@ func Profile(user *domain.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div></div></div><hr class=\"my-6\"><div class=\"row align-items-center\"><div class=\"col-md-2\"><label class=\"form-label\" for=\"last_name\">Last Name</label></div><div class=\"col-md-8 col-xl-5\"><div class=\"\"><input type=\"text\" class=\"form-control\" name=\"last_name\" value=\"")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -65,7 +65,7 @@ func Profile(user *domain.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div></div></div><hr class=\"my-6\"><div class=\"row align-items-center\"><div class=\"col-md-2\"><label class=\"form-label\" for=\"email\">Email</label></div><div class=\"col-md-8 col-xl-5\"><div class=\"\"><input type=\"email\" class=\"form-control\" name=\"email\" disabled value=\"")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -78,7 +78,7 @@ func Profile(user *domain.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div></div><div class=\"col-md-2\"><span class=\"text-muted text-opacity-60 text-opacity-100-hover\" tabindex=\"0\" data-bs-toggle=\"popover\" data-bs-trigger=\"hover focus\" data-bs-placement=\"right\" data-bs-html=\"true\" data-bs-content=\"Contact our support team to change your email.\" role=\"button\"><i class=\"bi bi-info-circle\"></i></span></div></div><hr class=\"my-6 d-md-none\"><div class=\"d-flex d-md-none justify-content-end gap-2 mb-6\"><button type=\"submit\" hx-indicator=\"#spinner\" hx-post=\"/profile/user/update\" hx-target=\"#dashboard-content\" class=\"btn btn-sm btn-primary \"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Update</button></div></form><hr class=\"my-6\"><div class=\"d-flex align-items-end justify-content-between\"><div><h4 class=\"fw-semibold mb-1\">Delete Account</h4><p class=\"text-sm text-muted\">By deleting this account you are lossing all of your data!<br><strong>Make sure you have deactivate all of your extensions!</strong></p></div><div class=\"d-md-flex gap-2\"><button data-bs-target=\"#deleteAccountModal\" data-bs-toggle=\"modal\" class=\"btn btn-sm btn-danger\">Delete </button></div></div></main><div class=\"modal fade\" id=\"deleteAccountModal\" tabindex=\"-1\" aria-labelledby=\"deleteAccountModalLabel\" aria-hidden=\"true\"><div class=\"modal-dialog modal-dialog-centered\"><div class=\"modal-content overflow-hidden\"><div class=\"modal-header pb-0 border-0\"><h1 class=\"modal-title h4\" id=\"deleteAccountModalLabel\">Delete Account</h1><button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button></div><div class=\"modal-body p-0\"><div class=\"px-6 py-5 border-bottom\"><h3 class=\"modal-title h4\" id=\"deleteAccountModalLabel\">Are you sure you want to delete this account?</h3></div><div class=\"px-6 py-5 bg-body-secondary d-flex justify-content-center\"><button type=\"submit\" hx-post=\"/profile/user/delete\" class=\"btn btn-sm btn-danger\">Delete </button></div></div></div></div></div><script>\n\tvar popoverTriggerList2 = document.querySelectorAll('[data-bs-toggle=\"popover\"]')\n\tvar popoverList2 = [...popoverTriggerList2].map(popoverTriggerEl2 => new bootstrap.Popover(popoverTriggerEl2))\n\t</script></div>")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

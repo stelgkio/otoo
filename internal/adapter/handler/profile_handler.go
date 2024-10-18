@@ -1,14 +1,12 @@
 package handler
 
 import (
-	"log/slog"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 	reg "github.com/stelgkio/otoo/internal/adapter/web/view/account/register"
 	h "github.com/stelgkio/otoo/internal/adapter/web/view/component/profile"
 	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/profile/profile_password"
-	pe "github.com/stelgkio/otoo/internal/adapter/web/view/component/profile/update_profile_error"
 	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stelgkio/otoo/internal/core/port"
@@ -18,9 +16,10 @@ import (
 
 // registerRequest represents the request body for creating a user
 type updateProfileRequest struct {
-	Email    string `form:"email" validate:"required,email"`
-	Name     string `form:"name" validate:"required"`
-	LastName string `form:"last_name" validate:"required"`
+	Email               string `form:"email" validate:"required,email"`
+	Name                string `form:"name" validate:"required"`
+	LastName            string `form:"last_name" validate:"required"`
+	ReceiveNotification bool   `form:"receive_notification"`
 }
 
 // ProfileHandler represents the HTTP handler for user-related requests
@@ -70,20 +69,21 @@ func (ph *ProfileHandler) ProfileUpdate(ctx echo.Context) error {
 		return err
 	}
 
-	if user.Email != req.Email {
-		userByEmail, err := ph.svc.GetUserByEmail(ctx, req.Email)
-		if err != nil {
-			return err
-		}
-		if userByEmail != nil {
-			slog.Error(" ProfileUpdate:", "user email already exist", userByEmail.Email)
-			user.Email = req.Email
-			return r.Render(ctx, pe.ProfileUpdateError(user))
-		}
-	}
-	user.Email = req.Email
+	// if user.Email != req.Email {
+	// 	userByEmail, err := ph.svc.GetUserByEmail(ctx, req.Email)
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// 	if userByEmail != nil {
+	// 		slog.Error(" ProfileUpdate:", "user email already exist", userByEmail.Email)
+	// 		user.Email = req.Email
+	// 		return r.Render(ctx, pe.ProfileUpdateError(user))
+	// 	}
+	// }
+	// user.Email = req.Email
 	user.LastName = req.LastName
 	user.Name = req.Name
+	user.ReseveNotification = req.ReceiveNotification
 
 	newUser, err := ph.svc.UpdateUser(ctx, user)
 	if err != nil {

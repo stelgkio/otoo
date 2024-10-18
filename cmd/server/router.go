@@ -89,6 +89,9 @@ func NewRouter(
 	//e.GET("projectlist", homeHandler.ProjectList)
 	e.GET("register", authHandler.RegisterForm)
 	e.POST("register", authHandler.Register)
+
+	e.GET("addextensionForm/:key", dashboardHandler.AddManualExtensionForm)
+
 	e.GET("", func(c echo.Context) error {
 		return c.Redirect(http.StatusMovedPermanently, c.Echo().Reverse("index"))
 	})

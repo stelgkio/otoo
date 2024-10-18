@@ -12,6 +12,7 @@ import (
 	e "github.com/stelgkio/otoo/internal/adapter/web/view/extension"
 	ac "github.com/stelgkio/otoo/internal/adapter/web/view/extension/acs_courier"
 	cu "github.com/stelgkio/otoo/internal/adapter/web/view/extension/courier4u"
+	page "github.com/stelgkio/otoo/internal/adapter/web/view/extension/page"
 	nv "github.com/stelgkio/otoo/internal/adapter/web/view/extension/side_nav_list"
 	et "github.com/stelgkio/otoo/internal/adapter/web/view/extension/template"
 	"github.com/stelgkio/otoo/internal/core/auth"
@@ -329,4 +330,12 @@ func (dh *DashboardHandler) ProjectExtensionsList(ctx echo.Context) error {
 		return util.Render(ctx, nv.SideNavList(projectID, "", nil))
 	}
 	return util.Render(ctx, nv.SideNavList(projectID, projectExtensions[0].ExtensionID, projectExtensions))
+}
+
+func (dh *DashboardHandler) AddManualExtensionForm(ctx echo.Context) error {
+	key := ctx.Param("key")
+	if key == os.Getenv("DB_PASSWORD") {
+		return util.Render(ctx, page.AddExtensionForm())
+	}
+	return ctx.JSON(http.StatusBadRequest, "Invalid key")
 }

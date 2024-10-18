@@ -99,3 +99,34 @@ func ContainsUserID(users []*User, userID uuid.UUID) bool {
 	}
 	return false // No matching ExtensionID found
 }
+
+// UpdatePasswordRequest represents the request body for updating a user's password.
+type UpdatePasswordRequest struct {
+	CurrentPassword      string `form:"current-password" validate:"required"`
+	Password             string `form:"password" validate:"required"`
+	ConfirmationPassword string `form:"confirmation-password" validate:"required"`
+}
+
+// Validate validates the request body
+func (p *UpdatePasswordRequest) Validate() map[string](string) {
+
+	errors := make(map[string]string)
+
+	if p.CurrentPassword == "" {
+		errors["currentPassword"] = "CurrentPassword is required"
+	}
+	if p.Password == "" {
+		errors["password"] = "Password is required"
+	}
+	if p.ConfirmationPassword == "" {
+		errors["confirmationPassword"] = "ConfirmationPassword is required"
+	}
+	if p.Password != "" && p.ConfirmationPassword != "" {
+
+		if p.Password != p.ConfirmationPassword {
+			errors["password"] = "Password is not matching"
+			errors["confirmationPassword"] = "Password is not matching"
+		}
+	}
+	return errors
+}

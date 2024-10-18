@@ -5,11 +5,14 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	reg "github.com/stelgkio/otoo/internal/adapter/web/view/account/register"
 	h "github.com/stelgkio/otoo/internal/adapter/web/view/component/profile"
 	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/profile/profile_password"
 	pe "github.com/stelgkio/otoo/internal/adapter/web/view/component/profile/update_profile_error"
 	"github.com/stelgkio/otoo/internal/core/auth"
+	"github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stelgkio/otoo/internal/core/port"
+	"github.com/stelgkio/otoo/internal/core/util"
 	r "github.com/stelgkio/otoo/internal/core/util"
 )
 
@@ -49,12 +52,6 @@ func (ph *ProfileHandler) Profile(ctx echo.Context) error {
 
 	return r.Render(ctx, h.Profile(user))
 
-}
-
-// ProfilePassword 	@Router			/profile/password [get]
-func (ph *ProfileHandler) ProfilePassword(ctx echo.Context) error {
-
-	return r.Render(ctx, p.ProfilePassword())
 }
 
 // ProfileUpdate 	@Router			/profile/update [post]
@@ -113,4 +110,87 @@ func (ph *ProfileHandler) ProfileDelete(ctx echo.Context) error {
 	ctx.Response().Header().Set("HX-Redirect", "/index")
 	return ctx.NoContent(http.StatusOK)
 
+}
+
+// ProfilePassword 	@Router			/profile/password [get]
+func (ph *ProfileHandler) ProfilePassword(ctx echo.Context) error {
+	req := new(domain.UpdatePasswordRequest)
+	return r.Render(ctx, p.ProfilePassword(nil, req, false))
+}
+
+// UpdatePassword 	@Router			/profile/password/update [post]
+func (ph *ProfileHandler) UpdatePassword(ctx echo.Context) error {
+	req := new(domain.UpdatePasswordRequest)
+	if err := ctx.Bind(req); err != nil {
+		return r.Render(ctx, reg.Register(http.StatusBadRequest, nil, nil))
+
+	}
+	validationErrors := req.Validate()
+
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := ph.svc.GetUserById(ctx, userID)
+	if err != nil {
+		return err
+	}
+
+	correctpass, err := ph.asrc.ValidateCurrentPassword(ctx, req.CurrentPassword, user.Email)
+	if err != nil {
+		validationErrors["currentPassword"] = "Current password is incorrect"
+	}
+	if !correctpass {
+		validationErrors["currentPassword"] = "Current password is incorrect"
+	}
+	if len(validationErrors) > 0 {
+		return r.Render(ctx, p.ProfilePassword(validationErrors, req, false))
+	}
+
+	var hash util.Hash
+	user.Password, err = hash.Generate(req.Password)
+	ph.svc.UpdateUser(ctx, user)
+	return r.Render(ctx, p.ProfilePassword(validationErrors, req, true))
+}
+
+// ValidateCurrentPassword 	@Router			/profile/password/validate [post]
+func (ph *ProfileHandler) ValidateCurrentPassword(ctx echo.Context) error {
+
+	req := new(domain.UpdatePasswordRequest)
+	if err := ctx.Bind(req); err != nil {
+		return r.Render(ctx, reg.Register(http.StatusBadRequest, nil, nil))
+
+	}
+	validationErrors := req.Validate()
+
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := ph.svc.GetUserById(ctx, userID)
+	if err != nil {
+		return err
+	}
+
+	correctpass, err := ph.asrc.ValidateCurrentPassword(ctx, req.CurrentPassword, user.Email)
+	if err != nil {
+		validationErrors["currentPassword"] = "Current password is incorrect"
+	}
+	if !correctpass {
+		validationErrors["currentPassword"] = "Current password is incorrect"
+	}
+
+	return r.Render(ctx, p.CurrentPasswordValidation(req.CurrentPassword, validationErrors))
+}
+
+// ValidateNewPassword 	@Router			/profile/password/validate [post]
+func (ph *ProfileHandler) ValidateNewPassword(ctx echo.Context) error {
+
+	req := new(domain.UpdatePasswordRequest)
+	if err := ctx.Bind(req); err != nil {
+		return r.Render(ctx, reg.Register(http.StatusBadRequest, nil, nil))
+
+	}
+	validationErrors := req.Validate()
+	return r.Render(ctx, p.NewPasswordValidation(req.Password, req.ConfirmationPassword, validationErrors))
 }

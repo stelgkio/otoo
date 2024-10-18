@@ -91,3 +91,19 @@ func (as *AuthService) ForgotPassword(ctx echo.Context, email string) error {
 func (as *AuthService) ResetPassword(ctx echo.Context) error {
 	return nil
 }
+
+func (as AuthService) ValidateCurrentPassword(ctx echo.Context, password, email string) (bool, error) {
+	user, err := as.repo.GetUserByEmail(ctx, email)
+	if err != nil {
+		if err == e.ErrDataNotFound {
+			return false, e.ErrInvalidCredentials
+		}
+		return false, e.ErrInternal
+	}
+
+	err = e.ComparePassword(password, user.Password)
+	if err != nil {
+		return false, e.ErrInvalidCredentials
+	}
+	return true, nil
+}

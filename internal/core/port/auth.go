@@ -20,4 +20,5 @@ type AuthService interface {
 	Logout(ctx echo.Context) error
 	ForgotPassword(ctx echo.Context, email string) error
 	ResetPassword(ctx echo.Context) error
+	ValidateCurrentPassword(ctx echo.Context, password, email string) (bool, error)
 }

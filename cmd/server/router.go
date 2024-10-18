@@ -310,6 +310,9 @@ func NewRouter(
 		profilegroup.Use(auth.TokenRefresherMiddleware)
 		profilegroup.GET("", profileHandler.Profile).Name = "profile"
 		profilegroup.GET("/password", profileHandler.ProfilePassword)
+		profilegroup.POST("/password/update", profileHandler.UpdatePassword)
+		profilegroup.POST("/validation/currentpassword", profileHandler.ValidateCurrentPassword)
+		profilegroup.POST("/validation/newpassword", profileHandler.ValidateNewPassword)
 		profilegroup.POST("/user/update", profileHandler.ProfileUpdate)
 		profilegroup.POST("/user/delete", profileHandler.ProfileDelete)
 	}

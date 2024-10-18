@@ -7,13 +7,13 @@ import (
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-templ SettingsPayments(project *domain.Project, projectExtensions []*domain.ProjectExtension) {
+templ SettingsPayments(project *domain.Project, projectExtensions []*domain.ProjectExtension, user *domain.User) {
 	<div
 		id="dashboard-content"
 		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
 	>
 		<main class="container-fluid px-3 py-5 p-lg-6 p-xxl-8">
-			@h.SettingsHeader("Payments", 5, project.Id.String(), projectExtensions)
+			@h.SettingsHeader("Payments", 5, project.Id.String(), projectExtensions, user)
 			<div
 				id="dashboard-order-table"
 				x-data={ fmt.Sprintf("paymetTable('%s')", project.Id.String()) }

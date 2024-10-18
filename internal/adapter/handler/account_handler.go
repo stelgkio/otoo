@@ -375,7 +375,7 @@ func (ah *AuthHandler) AddMember(ctx echo.Context) error {
 	}
 
 	if ctx.Request().Header.Get("HX-Request") == "true" {
-		return r.Render(ctx, tm.Team(project, projectExtensions))
+		return r.Render(ctx, tm.Team(project, projectExtensions, nil))
 	}
 	return r.Render(ctx, st.TeamTemplate(user, project.Name, projectID, project, projectExtensions))
 }
@@ -426,7 +426,7 @@ func (ah *AuthHandler) RemoveMember(ctx echo.Context) error {
 	}
 
 	if ctx.Request().Header.Get("HX-Request") == "true" {
-		return r.Render(ctx, tm.Team(project, projectExtensions))
+		return r.Render(ctx, tm.Team(project, projectExtensions, nil))
 	}
 	return r.Render(ctx, st.TeamTemplate(user, project.Name, projectID, project, projectExtensions))
 }

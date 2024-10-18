@@ -703,7 +703,7 @@ func (w WooCommerceHandler) DeleteAllWebhooks(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions))
+	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions, nil))
 }
 
 // WebhookBulkAction handles bulk actions for webhooks
@@ -714,6 +714,7 @@ func (w WooCommerceHandler) WebhookBulkAction(ctx echo.Context) error {
 // WebhookCreateAll handles the creation of all webhooks
 func (w WooCommerceHandler) WebhookCreateAll(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
+
 	project, err := w.s.GetProjectByID(ctx, projectID)
 	if err != nil {
 		return err
@@ -724,6 +725,6 @@ func (w WooCommerceHandler) WebhookCreateAll(ctx echo.Context) error {
 		return err
 	}
 
-	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions))
+	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions, nil))
 
 }

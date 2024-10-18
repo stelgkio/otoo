@@ -60,17 +60,31 @@ func (ph *ProjectHandler) ProjectSettingsSercrets(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
+
 	projectExtensions, err := ph.extensionSvc.GetAllProjectExtensions(ctx, projectID)
 	if err != nil {
 		return err
 	}
-	return r.Render(ctx, ps.ProjectSecrets(project, projectExtensions))
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := ph.userSvc.GetUserById(ctx, userID)
+	if err != nil {
+	}
+	return r.Render(ctx, ps.ProjectSecrets(project, projectExtensions, user))
 }
 
 // ProjectSettingsNotification GET /project/settings/notification/:projectId
 func (ph *ProjectHandler) ProjectSettingsNotification(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
-
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := ph.userSvc.GetUserById(ctx, userID)
+	if err != nil {
+	}
 	project, err := ph.svc.GetProjectByID(ctx, projectID)
 	if err != nil {
 		return err
@@ -80,13 +94,19 @@ func (ph *ProjectHandler) ProjectSettingsNotification(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return r.Render(ctx, pn.SettingsNotifications(project, notifications, projectExtensions))
+	return r.Render(ctx, pn.SettingsNotifications(project, notifications, projectExtensions, user))
 }
 
 // ProjectSettingsWebHook GET /project/settings/webhook/:projectId
 func (ph *ProjectHandler) ProjectSettingsWebHook(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
-
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := ph.userSvc.GetUserById(ctx, userID)
+	if err != nil {
+	}
 	project, err := ph.svc.GetProjectByID(ctx, projectID)
 	if err != nil {
 		return err
@@ -95,13 +115,19 @@ func (ph *ProjectHandler) ProjectSettingsWebHook(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions))
+	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions, user))
 }
 
 // ProjectSettingsWebHook GET /project/settings/webhook/:projectId
 func (ph *ProjectHandler) ProjectSettingsPayment(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
-
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := ph.userSvc.GetUserById(ctx, userID)
+	if err != nil {
+	}
 	project, err := ph.svc.GetProjectByID(ctx, projectID)
 	if err != nil {
 		return err
@@ -110,7 +136,7 @@ func (ph *ProjectHandler) ProjectSettingsPayment(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return r.Render(ctx, pm.SettingsPayments(project, projectExtensions))
+	return r.Render(ctx, pm.SettingsPayments(project, projectExtensions, user))
 }
 
 // ProjectUpdate POST /project/settings/update/:projectId
@@ -175,7 +201,13 @@ func (ph *ProjectHandler) ProjectDelete(ctx echo.Context) error {
 // ProjectSecretsUpdate POST /project/settings/secreate/update/:projectId
 func (ph *ProjectHandler) ProjectSecretsUpdate(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
-
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := ph.userSvc.GetUserById(ctx, userID)
+	if err != nil {
+	}
 	project, err := ph.svc.GetProjectByID(ctx, projectID)
 	if err != nil {
 		return err
@@ -186,7 +218,7 @@ func (ph *ProjectHandler) ProjectSecretsUpdate(ctx echo.Context) error {
 	}
 	req := new(updateProjectRequest)
 	if err := ctx.Bind(req); err != nil {
-		return r.Render(ctx, ps.ProjectSecrets(project, projectExtensions))
+		return r.Render(ctx, ps.ProjectSecrets(project, projectExtensions, user))
 		//return ctx.String(http.StatusBadRequest, "bad request")
 	}
 	project.WoocommerceProject.ConsumerKey = req.ConsumerKey
@@ -195,11 +227,11 @@ func (ph *ProjectHandler) ProjectSecretsUpdate(ctx echo.Context) error {
 	_, err = ph.reportSvc.GetCustomerTotalCountTestCredential(ctx, req.ConsumerKey, req.ConsumerSecret, project.WoocommerceProject.Domain)
 	if err != nil {
 		slog.Error("Project new secrets error", "error", err)
-		return r.Render(ctx, ps.ProjectSecretsError(project, projectExtensions))
+		return r.Render(ctx, ps.ProjectSecretsError(project, projectExtensions, user))
 	}
 	proj, err := ph.svc.UpdateProject(ctx, project)
 
-	return r.Render(ctx, ps.ProjectSecrets(proj, projectExtensions))
+	return r.Render(ctx, ps.ProjectSecrets(proj, projectExtensions, user))
 }
 
 // ProjectSettingsTeam GET /project/settings/team/:projectId
@@ -222,7 +254,7 @@ func (ph *ProjectHandler) ProjectSettingsTeam(ctx echo.Context) error {
 		return err
 	}
 	if ctx.Request().Header.Get("HX-Request") == "true" {
-		return r.Render(ctx, tm.Team(project, projectExtensions))
+		return r.Render(ctx, tm.Team(project, projectExtensions, user))
 	}
 	return r.Render(ctx, st.TeamTemplate(user, project.Name, projectID, project, projectExtensions))
 }
@@ -247,7 +279,7 @@ func (ph *ProjectHandler) ProjectSettingsAcsCourier(ctx echo.Context) error {
 		return err
 	}
 	if ctx.Request().Header.Get("HX-Request") == "true" {
-		return r.Render(ctx, ac.SettingsCourier4u(projectID, projectExtensions))
+		return r.Render(ctx, ac.SettingsCourier4u(projectID, projectExtensions, user))
 	}
 	return r.Render(ctx, st.TeamTemplate(user, project.Name, projectID, project, projectExtensions))
 }
@@ -272,7 +304,7 @@ func (ph *ProjectHandler) ProjectSettingsCourier4u(ctx echo.Context) error {
 		return err
 	}
 	if ctx.Request().Header.Get("HX-Request") == "true" {
-		return r.Render(ctx, cu.SettingsCourier4u(projectID, projectExtensions))
+		return r.Render(ctx, cu.SettingsCourier4u(projectID, projectExtensions, user))
 	}
 	return r.Render(ctx, st.TeamTemplate(user, project.Name, projectID, project, projectExtensions))
 }

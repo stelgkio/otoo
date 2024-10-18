@@ -14,7 +14,7 @@ templ SettingsGeneral(user *domain.User, project *domain.Project, projectExtensi
 		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
 	>
 		<main class="container-fluid px-3 py-5 p-lg-6 p-xxl-8">
-			@h.SettingsHeader("Project Settings", 1, project.Id.String(), projectExtensions)
+			@h.SettingsHeader("Project Settings", 1, project.Id.String(), projectExtensions, user)
 			<form>
 				<div class="d-flex align-items-end justify-content-between">
 					<div>
@@ -85,24 +85,26 @@ templ SettingsGeneral(user *domain.User, project *domain.Project, projectExtensi
 					</button>
 				</div>
 			</form>
-			<hr class="my-6"/>
-			<div class="d-flex align-items-end justify-content-between">
-				<div>
-					<h4 class="fw-semibold mb-1">Delete Project</h4>
-					<p class="text-sm text-muted">
-						By deleting this project you are lossing all of your data!
-						<br/>
-						<strong>Make sure you have deactivate all of your extensions!</strong>
-					</p>
+			if ConvertUserRole(user.Role) == "admin" {
+				<hr class="my-6"/>
+				<div class="d-flex align-items-end justify-content-between">
+					<div>
+						<h4 class="fw-semibold mb-1">Delete Project</h4>
+						<p class="text-sm text-muted">
+							By deleting this project you are lossing all of your data!
+							<br/>
+							<strong>Make sure you have deactivate all of your extensions!</strong>
+						</p>
+					</div>
+					<div class="d-md-flex gap-2">
+						<button
+							data-bs-target="#deleteProjectModal"
+							data-bs-toggle="modal"
+							class="btn btn-sm btn-danger"
+						>Delete </button>
+					</div>
 				</div>
-				<div class="d-md-flex gap-2">
-					<button
-						data-bs-target="#deleteProjectModal"
-						data-bs-toggle="modal"
-						class="btn btn-sm btn-danger"
-					>Delete </button>
-				</div>
-			</div>
+			}
 		</main>
 		<div
 			class="modal fade"
@@ -151,5 +153,13 @@ templ SettingsGeneral(user *domain.User, project *domain.Project, projectExtensi
 	var popoverTriggerList2 = document.querySelectorAll('[data-bs-toggle="popover"]')
 	var popoverList2 = [...popoverTriggerList2].map(popoverTriggerEl2 => new bootstrap.Popover(popoverTriggerEl2))
 	</script>
+	}
+}
+
+func ConvertUserRole(role domain.UserRole) string {
+	if role == "client" {
+		return "admin"
+	} else {
+		return "user"
 	}
 }

@@ -65,7 +65,7 @@ func (dh *DashboardHandler) DeleteNotificationSettings(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	project, _, _, err := GetProjectAndUser(ctx, dh)
+	project, user, _, err := GetProjectAndUser(ctx, dh)
 	if err != nil {
 		return err
 	}
@@ -78,5 +78,5 @@ func (dh *DashboardHandler) DeleteNotificationSettings(ctx echo.Context) error {
 		return err
 	}
 
-	return util.Render(ctx, pn.SettingsNotifications(project, notifications, projectExtensions))
+	return util.Render(ctx, pn.SettingsNotifications(project, notifications, projectExtensions, user))
 }

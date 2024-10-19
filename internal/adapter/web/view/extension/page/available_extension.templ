@@ -1,0 +1,13 @@
+package views
+
+import "github.com/stelgkio/otoo/internal/core/domain"
+
+templ AvailableExtension(extensions []*domain.Extension) {
+	<label class="form-label" for="last_name"></label>
+	<select class="form-select" aria-label="Default select example" name="extension">
+		<option selected>Available extension</option>
+		for _, extension := range extensions {
+			<option value={ extension.ID.Hex() }>{ extension.Title }</option>
+		}
+	</select>
+}

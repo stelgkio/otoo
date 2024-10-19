@@ -95,6 +95,11 @@ func (ps *ProjectService) FindProjects(ctx echo.Context, filters *domain.FindPro
 	return ps.repo.FindProjects(ctx, filters, skip, limit)
 }
 
+// SearchByDomain finds projects by domain
+func (ps *ProjectService) SearchByDomain(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error) {
+	return ps.repo.SearchByDomain(ctx, filters, skip, limit)
+}
+
 // SoftDeleteProjects is doing a soft delete to this projects
 func (ps *ProjectService) SoftDeleteProjects(ctx echo.Context, userID uuid.UUID) error {
 	return ps.repo.DeleteProjectsByUserID(ctx, userID)

@@ -332,10 +332,66 @@ func (dh *DashboardHandler) ProjectExtensionsList(ctx echo.Context) error {
 	return util.Render(ctx, nv.SideNavList(projectID, projectExtensions[0].ExtensionID, projectExtensions))
 }
 
+// AddManualExtensionForm get extention
 func (dh *DashboardHandler) AddManualExtensionForm(ctx echo.Context) error {
 	key := ctx.Param("key")
-	if key == os.Getenv("DB_PASSWORD") {
+	if key == os.Getenv("EXTENSION_KEY") {
 		return util.Render(ctx, page.AddExtensionForm())
 	}
 	return ctx.JSON(http.StatusBadRequest, "Invalid key")
+}
+
+// AddManualExtensionForm get extention
+func (dh *DashboardHandler) GetAllAvailableExtensios(ctx echo.Context) error {
+	extension, err := dh.extensionSvc.GetAllExtensions(ctx)
+	if err != nil {
+		return err
+	}
+	return util.Render(ctx, page.AvailableExtension(extension))
+
+}
+
+// AddManualExtensionForm get extention
+func (dh *DashboardHandler) ExtensionTable(ctx echo.Context) error {
+	projectId := ctx.QueryParam("project")
+	extension, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectId)
+	if err != nil {
+		return err
+	}
+	return util.Render(ctx, page.ExtensionTable(extension, projectId))
+
+}
+
+func (dh *DashboardHandler) DeleteProjectExtension(ctx echo.Context) error {
+	projectextensionID := ctx.Param("Id")
+
+	err := dh.extensionSvc.DeleteProjectExtensionByID(ctx, projectextensionID)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+	return ctx.NoContent(http.StatusOK)
+}
+
+func (dh *DashboardHandler) AddProjectExtension(ctx echo.Context) error {
+
+	type extension struct {
+		ProjectID   string `form:"project"`
+		ExtensionID string `form:"extension"`
+		Period      int    `form:"period"`
+	}
+	req := new(extension)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("Create project binding error", "error", err)
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+	ext, err := dh.extensionSvc.GetExtensionByID(ctx, req.ExtensionID)
+	err = dh.extensionSvc.CreateProjectExtension(ctx, req.ProjectID, ext, req.Period, domain.CustomSubsctiption)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+	projExtension, err := dh.extensionSvc.GetAllProjectExtensions(ctx, req.ProjectID)
+	if err != nil {
+		return err
+	}
+	return util.Render(ctx, page.ExtensionTable(projExtension, req.ProjectID))
 }

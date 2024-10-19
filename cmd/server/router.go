@@ -90,8 +90,6 @@ func NewRouter(
 	e.GET("register", authHandler.RegisterForm)
 	e.POST("register", authHandler.Register)
 
-	e.GET("addextensionForm/:key", dashboardHandler.AddManualExtensionForm)
-
 	e.GET("", func(c echo.Context) error {
 		return c.Redirect(http.StatusMovedPermanently, c.Echo().Reverse("index"))
 	})
@@ -180,8 +178,13 @@ func NewRouter(
 		extensiongroup.GET("/page/data-synchronizer/:projectId", projectHandler.ProjectSynchronizePage)
 
 		extensiongroup.GET("/project_extensions/:projectId", dashboardHandler.ProjectExtensionsList)
-	}
+		extensiongroup.DELETE("/project_extension/:Id", dashboardHandler.DeleteProjectExtension)
+		extensiongroup.POST("/project_extension", dashboardHandler.AddProjectExtension)
 
+		extensiongroup.GET("/addextensionForm/:key", dashboardHandler.AddManualExtensionForm)
+		extensiongroup.GET("/all", dashboardHandler.GetAllAvailableExtensios)
+		extensiongroup.GET("/table", dashboardHandler.ExtensionTable)
+	}
 	//Payment group
 	paymentgroup := e.Group("/payment")
 	{
@@ -213,6 +216,8 @@ func NewRouter(
 		projectgroup.POST("/validation/name", projectHandler.ProjectNameValidation)
 		projectgroup.POST("/validation/domain", projectHandler.ProjectDomainValidation)
 		projectgroup.POST("/validation/key", projectHandler.ProjectKeyValidation)
+
+		projectgroup.GET("/findbydomain", projectHandler.FindProjectByDomain)
 
 		projectgroup.GET("/webhooks/:projectId", projectHandler.CheckWebHooks)
 		projectgroup.GET("/:projectId", projectHandler.CheckWebHooks)

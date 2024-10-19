@@ -60,6 +60,33 @@ func (repo *ProjectRepository) FindProjects(ctx echo.Context, filters *domain.Fi
 	return projects, nil
 }
 
+// SearchByDomain finds projects in the database
+func (repo *ProjectRepository) SearchByDomain(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error) {
+
+	var projects []*domain.Project
+
+	offset := (skip - 1) * limit
+
+	query := repo.db.Model(&projects)
+
+	if filters.Domain != "" {
+		// Use LIKE for partial matches; surround the domain with '%' to match anywhere in the string
+		query = query.WhereOr("shopify_domain LIKE ?", "%"+filters.Domain+"%")
+		query = query.WhereOr("woocommerce_domain LIKE ?", "%"+filters.Domain+"%")
+	}
+	query = query.
+		Where("is_active =true").
+		Order("name ASC").
+		Limit(limit).
+		Offset(offset)
+
+	err := query.Select()
+	if err != nil {
+		return nil, err
+	}
+	return projects, nil
+}
+
 // DeleteProjectsByUserID is doing a soft delete to this projects
 func (repo *ProjectRepository) DeleteProjectsByUserID(ctx echo.Context, userID uuid.UUID) error {
 	project := &domain.Project{}

@@ -55,94 +55,74 @@ templ AddExtensionForm() {
 							<h1 class="ls-tight fw-bolder h3">Add manualy extension to existing project</h1>
 						</div>
 						<form>
+							<div id="selectedValueDisplay"></div>
+							<br/>
+							<br/>
 							<div class="row g-5">
 								<div class=" mt-5">
-									<label for="exampleSelect" class="form-label">Select Project Search </label>
+									<label for="exampleSelect" class="form-label">Search project by domain</label>
 									<!-- Select2 field -->
 									<select
 										class="form-select"
-										name="make"
+										name="project"
 										id="exampleSelect"
 										style="width: 100%;"
-										hx-get="/projectextension"
-										hx-target="#projectextension"
+										hx-get="/extension/table"
+										hx-target="#table_extension"
 										hx-trigger="select2-change"
 									>
 										<!-- Options will be dynamically loaded via JavaScript (mock data) -->
 									</select>
 								</div>
-								<div id="projectextension">
-									<div class="col-sm-12">
-										<label class="form-label" for="last_name"></label>
-										<select class="form-select" aria-label="Default select example" name="make" hx-get="/projectextension" hx-target="#projectextension">
-											<option selected>Available extension</option>
-											<option value="30">One Month</option>
-											<option value="60">Two Month</option>
-											<option value="90">Three Month</option>
-											<option value="356">One Year</option>
-										</select>
-									</div>
-									<div class="col-sm-12 pb-5">
-										<label class="form-label" for="last_name"></label>
-										<select class="form-select" aria-label="Default select example">
-											<option selected>Extension period</option>
-											<option value="30">One Month</option>
-											<option value="60">Two Month</option>
-											<option value="90">Three Month</option>
-											<option value="356">One Year</option>
-										</select>
-									</div>
-									<div class="col-sm-12 ">
-										<input type="submit" class="btn btn-dark w-100 " value="Add extension "/>
-										<table class="table">
-											<thead>
-												<tr>
-													<th scope="col">Extension </th>
-													<th scope="col">Expires </th>
-													<th scope="col">Action </th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<th scope="row">1</th>
-													<th scope="row">10</th>
-													<th scope="row">
-														<button
-															data-bs-target="#deleteAccountModal"
-															data-bs-toggle="modal"
-															class="btn btn-sm btn-danger"
-														>Delete </button>
-													</th>
-												</tr>
-												<tr>
-													<th scope="row">2</th>
-													<th scope="row">20</th>
-													<th scope="row">
-														<button
-															data-bs-target="#deleteAccountModal"
-															data-bs-toggle="modal"
-															class="btn btn-sm btn-danger"
-														>Delete </button>
-													</th>
-												</tr>
-												<tr>
-													<th scope="row">3</th>
-													<th scope="row">30</th>
-													<th scope="row">
-														<button
-															data-bs-target="#deleteAccountModal"
-															data-bs-toggle="modal"
-															class="btn btn-sm btn-danger"
-														>Delete </button>
-													</th>
-												</tr>
-											</tbody>
-										</table>
-									</div>
+								<div
+									class="col-sm-12"
+									hx-trigger="load"
+									hx-get="/extension/all"
+									hx-target="#projectextension"
+								>
+									<div
+										class="col-sm-12"
+										id="projectextension"
+									></div>
+								</div>
+								<div class="col-sm-12 pb-5">
+									<label class="form-label" for="last_name"></label>
+									<select class="form-select" name="period" aria-label="Default select example">
+										<option selected>Extension period</option>
+										<option value="30">One Month</option>
+										<option value="60">Two Month</option>
+										<option value="90">Three Month</option>
+										<option value="182">Six Month</option>
+										<option value="365">One Year</option>
+									</select>
+								</div>
+								<div class="col-sm-12 ">
+									<input
+										type="submit"
+										class="btn btn-dark w-100 "
+										value="Add extension"
+										type="submit"
+										hx-post="/extension/project_extension"
+										hx-indicator="#spinner"
+										class="btn btn-sm btn-primary"
+										hx-target="#table_extension"
+									/>
 								</div>
 							</div>
 						</form>
-						//	<div class="py-5 text-center"><span class="text-xs text-uppercase fw-semibold">or</span></div>
+						<div class=" pt-10" id="table_extension"></div>
+					</div>
+				</div>
+			</div>
+			<!-- Bootstrap Toast (hidden by default) -->
+			<div class="toast-container position-fixed bottom-0 end-0 p-3">
+				<div id="error-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+					<div class="toast-header">
+						<strong class="me-auto text-danger">Error</strong>
+						<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+					</div>
+					<div class="toast-body" id="toast-body">
+						<!-- Error message will be inserted here -->
 					</div>
 				</div>
 			</div>
@@ -152,107 +132,78 @@ templ AddExtensionForm() {
 			<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 			<!-- Select2 JS -->
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
-			<!-- Initialize Select2 with Ajax search -->
-			// 		<script>
-			//     $(document).ready(function() {
-			//         $('#exampleSelect').select2({
-			//             placeholder: 'Search for an option...',
-			//             ajax: {
-			//                 url: '/search-options',  // Replace with your search endpoint
-			//                 dataType: 'json',
-			//                 delay: 250,  // Delay in ms for better performance
-			//                 data: function(params) {
-			//                     return {
-			//                         q: params.term // Search term sent to the server
-			//                     };
-			//                 },
-			//                 processResults: function (data) {
-			//                     // Map the data into the format Select2 expects
-			//                     return {
-			//                         results: $.map(data, function (item) {
-			//                             return {
-			//                                 id: item.id,  // The id of the option
-			//                                 text: item.text  // The display text of the option
-			//                             };
-			//                         })
-			//                     };
-			//                 },
-			//                 cache: true  // Cache the results to avoid repeated requests
-			//             },
-			//             minimumInputLength: 2,  // Minimum characters before search triggers
-			//             width: '100%'  // Ensure the select2 dropdown covers the full width
-			//         });
-			//     });
-			// </script>
 			<script>
-        // Mock data array simulating options from a server
-        var mockData = [
-            { id: 1, text: "Apple" },
-            { id: 2, text: "Banana" },
-            { id: 3, text: "Cherry" },
-            { id: 4, text: "Date" },
-            { id: 5, text: "Elderberry" },
-            { id: 6, text: "Fig" },
-            { id: 7, text: "Grape" },
-            { id: 8, text: "Honeydew" },
-            { id: 9, text: "Kiwi" },
-            { id: 10, text: "Lemon" },
-            { id: 11, text: "Mango" },
-            { id: 12, text: "Nectarine" },
-            { id: 13, text: "Orange" },
-            { id: 14, text: "Papaya" },
-            { id: 15, text: "Quince" },
-            { id: 16, text: "Raspberry" },
-            { id: 17, text: "Strawberry" },
-            { id: 18, text: "Tomato" },
-            { id: 19, text: "Ugli fruit" },
-            { id: 20, text: "Watermelon" }
-        ];
-
-        // Initialize Select2 with Ajax-like search but using mock data
-        $(document).ready(function() {
-            $('#exampleSelect').select2({
-                placeholder: 'Search for a fruit...',
-                ajax: {
-                    transport: function (params, success, failure) {
-                        // Simulate an asynchronous data fetch (mocking an AJAX call)
-                        setTimeout(function() {
-                            var results = mockData.filter(function(item) {
-                                return item.text.includes(params.data.term);
-                            });
-                            success({
-                                results: results
-                            });
-                        }, 250); // Simulate a 250ms delay to mimic server response time
-                    },
-                    delay: 250,  // Delay the search to avoid instant requests (good practice)
-                    minimumInputLength: 1,  // Minimum characters before triggering search
-                    processResults: function (data) {
-                        // Process the mock data and return in the format Select2 expects
-                        return {
-                            results: data.results
-                        };
-                    }
+    $(document).ready(function() {
+        $('#exampleSelect').select2({
+            placeholder: 'Search for a project...',
+            ajax: {
+                url: '/project/findbydomain', // Replace with your actual URL
+                dataType: 'json',
+                delay: 250,  // Delay in ms for better performance
+                data: function(params) {
+                    return {
+                        domain: params.term // The search term
+                    };
                 },
-                // Custom template for displaying the value and text
-                templateResult: function (data) {
-                    if (!data.id) { return data.text; }  // If there's no ID, just return the text
-
-                    // Show the format "Value: Text"
-                    return $('<span >Value: ' + data.id + ' - ' + data.text + '</span>');
+                processResults: function(data) {
+                    // Assuming your API returns a JSON array like: [{ id: 1, text: "Apple" }, ...]
+                    return {
+                        results: data // Return the results in the expected format
+                    };
                 },
-                // Custom template for showing the selected option in the input
-                templateSelection: function (data) {
-                    return 'Value: ' + data.id + ' - ' + data.text;
-                }
-            });
-        }).on('select2:select', function (e) {
-        // Trigger the custom event for HTMX
-        var selectElement = document.getElementById('exampleSelect');
-        var customEvent = new CustomEvent('select2-change');  // Custom event
-        selectElement.dispatchEvent(customEvent);  // Dispatch the event
+                cache: true  // Cache the results to avoid repeated requests
+            },
+            minimumInputLength: 1,  // Minimum characters before search triggers
+            // Custom template for displaying the value and text
+            templateResult: function(data) {
+                if (!data.id) { return data.domain; }  // If there's no ID, just return the text
+                return $('<span>Value: ' + data.id + ' - ' + data.domain + '</span>');
+            },
+            // Custom template for showing the selected option in the input
+            templateSelection: function(data) {
+                return 'Value: ' + data.id + ' - ' + data.domain;
+            }
+        }).on('select2:select', function(e) {
+			// Get the selected data
+                var selectedData = e.params.data;
+
+                // Update a text element with the selected value
+                $('#selectedValueDisplay').text('ProjectId : ' + selectedData.id + ' - Domain: ' + selectedData.domain);
+                
+            // Trigger the custom event for HTMX
+            var selectElement = document.getElementById('exampleSelect');
+            var customEvent = new CustomEvent('select2-change');  // Custom event
+            selectElement.dispatchEvent(customEvent);  // Dispatch the event
+        });
     });
-    </script>
+
+	
+
+document.body.addEventListener('htmx:responseError', function (event) {
+    // Get the error message from the response
+    const response = event.detail.xhr.responseText;
+    let errorMsg = 'An unexpected error occurred.';
+
+    try {
+        // Try to parse the response as JSON (in case the error is in JSON format)
+        const errorData = JSON.parse(response);
+        if (errorData.error) {
+            errorMsg = errorData.error;
+        }
+    } catch (e) {
+        // If not JSON, assume the response is plain text
+        errorMsg = response;
+    }
+
+    // Set the error message in the toast body
+    document.getElementById('toast-body').innerText = errorMsg;
+
+    // Show the toast
+    const toastElement = document.getElementById('error-toast');
+    const toast = new bootstrap.Toast(toastElement);
+    toast.show();
+});
+</script>
 		</body>
 	</html>
 }

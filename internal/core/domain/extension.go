@@ -14,6 +14,10 @@ const (
 	TeamMember           string = "team-member"
 )
 
+const (
+	CustomSubsctiption string = "invoice subscription"
+)
+
 // Extension here we store all the available extensions we can add to the project
 type Extension struct {
 	ID                 primitive.ObjectID `bson:"_id,omitempty"`
@@ -66,6 +70,13 @@ func ContainsExtensionCodes(projectExtensions []*ProjectExtension, extensionCode
 		}
 	}
 	return false // No matching ExtensionCode found
+}
+
+// CalculateDaysUntilExpiration Function to calculate days until expiration
+func CalculateDaysUntilExpiration(extension *ProjectExtension) int {
+	expirationDate := extension.CreatedAt.AddDate(0, 0, extension.SubscriptionPeriod)
+	daysUntilExpiration := int(expirationDate.Sub(time.Now()).Hours() / 24)
+	return daysUntilExpiration
 }
 
 // AcsCourierExtension represents active acs details for acs courier

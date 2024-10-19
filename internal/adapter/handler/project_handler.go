@@ -2,6 +2,7 @@ package handler
 
 import (
 	"log/slog"
+	"net/http"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -202,6 +203,33 @@ func (ph *ProjectHandler) ProjectDomainValidation(ctx echo.Context) error {
 	}
 
 	return r.Render(ctx, v.DomainUrlValidation(valid, req.Domain, errors))
+}
+
+// FindProjectByDomain  GET /project/validation/domain
+func (ph *ProjectHandler) FindProjectByDomain(ctx echo.Context) error {
+	domainq := ctx.QueryParam("domain")
+	domainq = "https://" + domainq
+	trimmedDomain := strings.TrimRight(domainq, "/")
+
+	// Call the service to find projects by domain
+	projects, err := ph.svc.SearchByDomain(ctx, &domain.FindProjectRequest{Domain: trimmedDomain}, 1, 10)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
+	// Create a response slice to hold the formatted projects
+	var response []map[string]interface{}
+
+	// Iterate over the projects and format them
+	for _, project := range projects {
+		response = append(response, map[string]interface{}{
+			"id":     project.Id,                        // Assuming project has an ID field
+			"domain": project.WoocommerceProject.Domain, // Assuming project has a Domain field
+		})
+	}
+
+	// Return the response as JSON
+	return ctx.JSON(http.StatusOK, response)
 }
 
 // ProjectKeyValidation POST /project/validation/key

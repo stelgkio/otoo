@@ -249,6 +249,22 @@ func (ex *ExtensionRepository) DeleteProjectExtension(c echo.Context, extensionI
 	return err
 }
 
+// DeleteProjectExtensionByID deletes a ProjectExtension by ID
+func (ex *ExtensionRepository) DeleteProjectExtensionByID(c echo.Context, ID string) error {
+	collection := ex.mongo.Database("otoo").Collection("project_extensions")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	extID, err := primitive.ObjectIDFromHex(ID)
+	if err != nil {
+		return errors.New("Invalid extension ID format")
+	}
+	filter := bson.M{"_id": extID, "is_active": true}
+	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now().UTC()}}
+
+	_, err = collection.UpdateOne(ctx, filter, update)
+	return err
+}
+
 //////////////////  ACS Extension  /////////////////////////
 
 // CreateACSProjectExtension creates a new ProjectExtension

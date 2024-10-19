@@ -65,6 +65,11 @@ func (ex *ExtensionService) DeleteProjectExtension(ctx echo.Context, extensionID
 	return ex.repo.DeleteProjectExtension(ctx, extensionID, projectID)
 }
 
+// DeleteProjectExtensionByID deletes a ProjectExtension by ID
+func (ex *ExtensionService) DeleteProjectExtensionByID(ctx echo.Context, projectExtensionID string) error {
+	return ex.repo.DeleteProjectExtensionByID(ctx, projectExtensionID)
+}
+
 ////////////////// ACS Extension/////////////////////////
 
 // CreateACSProjectExtension creates a new ProjectExtension

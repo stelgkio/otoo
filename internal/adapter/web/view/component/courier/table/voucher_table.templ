@@ -167,7 +167,7 @@ templ VoucherTable(projectId string) {
 			<div class="offcanvas offcanvas-end w-50" data-bs-backdrop="true" tabindex="-1" id="orderProcessingOffcanvas" aria-labelledby="orderProcessingOffcanvasLabel" :class="{ 'show': showOffcanvas }" :style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }">
 				<div class="offcanvas-header">
 					<h5 class="offcanvas-title" id="orderProcessingOffcanvasLabel">
-						<i class="bi bi-pencil-square"></i> Επεξεργασία Παραγγελίας #<span x-text="modalOrder.orderId"></span>
+						<i class="bi bi-pencil-square"></i> Edit Order #<span x-text="modalOrder.orderId"></span>
 					</h5>
 					<button type="button" class="btn-close" @click="closeOffcanvas()"></button>
 				</div>
@@ -176,12 +176,12 @@ templ VoucherTable(projectId string) {
 					<ul class="nav nav-tabs" id="orderTabs" role="tablist">
 						<li class="nav-item" role="presentation">
 							<button class="nav-link active" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer-info" type="button" role="tab" aria-controls="customer-info" aria-selected="true">
-								<i class="bi bi-person"></i> Πελάτης
+								<i class="bi bi-person"></i> Customer
 							</button>
 						</li>
 						<li class="nav-item" role="presentation">
 							<button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping-info" type="button" role="tab" aria-controls="shipping-info" aria-selected="false">
-								<i class="bi bi-truck"></i> Αποστολή
+								<i class="bi bi-truck"></i> Shipping
 							</button>
 						</li>
 					</ul>
@@ -192,19 +192,19 @@ templ VoucherTable(projectId string) {
 							<div class="p-3">
 								<!-- Section for Customer Details -->
 								<div class="card mb-3 shadow-sm">
-									<div class="card-header bg-light">
+									<div class="card-header">
 										<h6 class="mb-0">
-											<i class="bi bi-person"></i> Πληροφορίες Πελάτη
+											<i class="bi bi-person"></i> Customer Information
 										</h6>
 									</div>
 									<div class="card-body">
 										<div class="row g-2">
 											<div class="col-md-6">
-												<label for="customerName" class="form-label small">Όνομα</label>
+												<label for="customerName" class="form-label small">First Name</label>
 												<input type="text" class="form-control form-control-sm" id="customerName" x-model="modalOrder.billing.first_name" required/>
 											</div>
 											<div class="col-md-6">
-												<label for="customerSurname" class="form-label small">Επώνυμο</label>
+												<label for="customerSurname" class="form-label small">Last Name</label>
 												<input type="text" class="form-control form-control-sm" id="customerSurname" x-model="modalOrder.billing.last_name" required/>
 											</div>
 											<div class="col-md-6">
@@ -212,11 +212,11 @@ templ VoucherTable(projectId string) {
 												<input type="email" class="form-control form-control-sm" id="customerEmail" x-model="modalOrder.billing.email" required/>
 											</div>
 											<div class="col-md-6">
-												<label for="customerPhone" class="form-label small">Τηλέφωνο</label>
+												<label for="customerPhone" class="form-label small">Phone</label>
 												<input type="tel" class="form-control form-control-sm" id="customerPhone" x-model="modalOrder.billing.phone" required/>
 											</div>
 											<div class="col-12">
-												<label for="customerAddress" class="form-label small">Διεύθυνση</label>
+												<label for="customerAddress" class="form-label small">Address</label>
 												<div class="input-group input-group-sm">
 													<span class="input-group-text">
 														<i class="bi bi-geo-alt"></i>
@@ -225,11 +225,11 @@ templ VoucherTable(projectId string) {
 												</div>
 											</div>
 											<div class="col-md-6">
-												<label for="customerCity" class="form-label small">Πόλη</label>
+												<label for="customerCity" class="form-label small">City</label>
 												<input type="text" class="form-control form-control-sm" id="customerCity" x-model="modalOrder.billing.city" required/>
 											</div>
 											<div class="col-md-6">
-												<label for="customerPostalCode" class="form-label small">Ταχ. Κώδικας</label>
+												<label for="customerPostalCode" class="form-label small">Postal Code</label>
 												<input type="text" class="form-control form-control-sm" id="customerPostalCode" x-model="modalOrder.billing.postcode" required/>
 											</div>
 										</div>
@@ -237,9 +237,9 @@ templ VoucherTable(projectId string) {
 								</div>
 								<!-- Section for Products -->
 								<div class="card mb-3 shadow-sm">
-									<div class="card-header bg-light">
+									<div class="card-header">
 										<h6 class="mb-0">
-											<i class="bi bi-box-seam me-2 text-muted"></i>Προϊόντα
+											<i class="bi bi-box-seam"></i> Products
 										</h6>
 									</div>
 									<div class="card-body">
@@ -247,9 +247,9 @@ templ VoucherTable(projectId string) {
 											<table class="table table-sm">
 												<thead>
 													<tr>
-														<th>Προϊόν</th>
-														<th>Ποσότητα</th>
-														<th>Τιμή</th>
+														<th>Product</th>
+														<th>Quantity</th>
+														<th>Price</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -267,19 +267,19 @@ templ VoucherTable(projectId string) {
 								</div>
 								<!-- Section for Delivery Instructions -->
 								<div class="card mb-3 shadow-sm">
-									<div class="card-header bg-light">
+									<div class="card-header">
 										<h6 class="mb-0">
-											<i class="bi bi-chat-right-text"></i> Οδηγίες Παράδοσης
+											<i class="bi bi-chat-right-text"></i> Delivery Instructions
 										</h6>
 									</div>
 									<div class="card-body">
-										<textarea class="form-control form-control-sm" id="deliveryInstructions" rows="2" placeholder="Προσθέστε ειδικές οδηγίες..."></textarea>
+										<textarea class="form-control form-control-sm" id="deliveryInstructions" rows="2" placeholder="Add special instructions..."></textarea>
 									</div>
 								</div>
 								<div class="col-12">
 									<div class="form-check">
 										<input class="form-check-input" type="checkbox" id="storePickup"/>
-										<label class="form-check-label" for="storePickup">Παραλαβή από το κατάστημα</label>
+										<label class="form-check-label" for="storePickup">Store Pickup</label>
 									</div>
 								</div>
 							</div>
@@ -289,23 +289,23 @@ templ VoucherTable(projectId string) {
 							<div class="p-3">
 								<!-- Section for Shipping Information -->
 								<div class="card mb-3 shadow-sm">
-									<div class="card-header bg-light">
+									<div class="card-header">
 										<h6 class="mb-0">
-											<i class="bi bi-truck"></i> Πληροφορίες Αποστολής
+											<i class="bi bi-truck"></i> Shipping Information
 										</h6>
 									</div>
 									<div class="card-body">
 										<div class="mb-3">
-											<label for="shippingCompany" class="form-label small">Εταιρεία Αποστολής</label>
+											<label for="shippingCompany" class="form-label small">Shipping Company</label>
 											<select class="form-select form-select-sm" id="shippingCompany" required>
-												<option value="">Επιλέξτε εταιρεία...</option>
+												<option value="">Select company...</option>
 												<option value="acs" selected>ACS Courier</option>
 												<option value="dhl">DHL</option>
 												<option value="fedex">FedEx</option>
 											</select>
 										</div>
 										<div class="mb-3">
-											<label for="orderId" class="form-label small">Αριθμός Παραγγελίας</label>
+											<label for="orderId" class="form-label small">Order Number</label>
 											<div class="input-group input-group-sm">
 												<span class="input-group-text">
 													<i class="bi bi-upc-scan"></i>
@@ -314,7 +314,7 @@ templ VoucherTable(projectId string) {
 											</div>
 										</div>
 										<div class="mb-3">
-											<label for="parcelWeight" class="form-label small">Βάρος Δέματος (kg)</label>
+											<label for="parcelWeight" class="form-label small">Parcel Weight (kg)</label>
 											<div class="input-group input-group-sm">
 												<span class="input-group-text">
 													<i class="bi bi-body-text"></i>
@@ -326,31 +326,31 @@ templ VoucherTable(projectId string) {
 								</div>
 								<!-- Section for Delivery Options -->
 								<div class="card mb-3 shadow-sm">
-									<div class="card-header bg-light">
+									<div class="card-header">
 										<h6 class="mb-0">
-											<i class="bi bi-box-arrow-in-down"></i> Επιλογές Παράδοσης
+											<i class="bi bi-box-arrow-in-down"></i> Delivery Options
 										</h6>
 									</div>
 									<div class="card-body">
 										<div class="form-check">
 											<input class="form-check-input" type="radio" name="deliveryOption" id="standardDelivery" checked/>
-											<label class="form-check-label" for="standardDelivery">Κανονική Παράδοση</label>
+											<label class="form-check-label" for="standardDelivery">Standard Delivery</label>
 										</div>
 										<div class="form-check">
 											<input class="form-check-input" type="radio" name="deliveryOption" id="saturdayDelivery"/>
-											<label class="form-check-label" for="saturdayDelivery">Παράδοση Σάββατο</label>
+											<label class="form-check-label" for="saturdayDelivery">Saturday Delivery</label>
 										</div>
 										<div class="form-check">
 											<input class="form-check-input" type="radio" name="deliveryOption" id="urgentDelivery"/>
-											<label class="form-check-label" for="urgentDelivery">Επείγουσα Παράδοση</label>
+											<label class="form-check-label" for="urgentDelivery">Urgent Delivery</label>
 										</div>
 										<div class="form-check">
 											<input class="form-check-input" type="radio" name="deliveryOption" id="pickupDelivery"/>
-											<label class="form-check-label" for="pickupDelivery">Παράδοση - Παραλαβή</label>
+											<label class="form-check-label" for="pickupDelivery">Pickup</label>
 										</div>
 										<div class="form-check">
 											<input class="form-check-input" type="radio" name="deliveryOption" id="sameDayDelivery"/>
-											<label class="form-check-label" for="sameDayDelivery">Αυθημερόν</label>
+											<label class="form-check-label" for="sameDayDelivery">Same Day</label>
 										</div>
 									</div>
 								</div>
@@ -359,7 +359,7 @@ templ VoucherTable(projectId string) {
 					</div>
 					<!-- Save Button -->
 					<div class="mt-auto p-3 border-top">
-						<button type="button" class="btn btn-primary w-100" id="saveBtn">Αποθήκευση Αλλαγών</button>
+						<button type="button" class="btn btn-primary w-100" id="saveBtn">Save Changes</button>
 					</div>
 				</div>
 			</div>

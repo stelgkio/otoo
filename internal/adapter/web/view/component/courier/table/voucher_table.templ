@@ -239,7 +239,12 @@ templ VoucherTable(projectId string) {
 									</div>
 									<div class="col-12">
 										<label for="customerAddress" class="form-label small">Διεύθυνση</label>
-										<input type="text" class="form-control form-control-sm" id="customerAddress" x-model="modalOrder.billing.address_1" required/>
+										<div class="input-group input-group-sm">
+											<span class="input-group-text">
+												<i class="bi bi-geo-alt"></i>
+											</span>
+											<input type="text" class="form-control form-control-sm" id="customerAddress" x-model="modalOrder.billing.address_1" required/>
+										</div>
 									</div>
 									<div class="col-md-6">
 										<label for="customerCity" class="form-label small">Πόλη</label>
@@ -249,16 +254,13 @@ templ VoucherTable(projectId string) {
 										<label for="customerPostalCode" class="form-label small">Ταχ. Κώδικας</label>
 										<input type="text" class="form-control form-control-sm" id="customerPostalCode" x-model="modalOrder.billing.postcode" required/>
 									</div>
-									<div class="col-md-6">
-										<label for="parcelWeight" class="form-label small">Βάρος Δέματος (kg)</label>
-										<input type="number" class="form-control form-control-sm" id="parcelWeight" step="0.1" required/>
-									</div>
-									<div class="col-md-6">
-										<label for="courierPayment" class="form-label small">Ποσό Πληρωμής Courier</label>
-										<div class="input-group input-group-sm">
-											<span class="input-group-text">€</span>
-											<input type="number" class="form-control form-control-sm" id="courierPayment" step="0.01" x-model="modalOrder.cod" required/>
-										</div>
+									<div class="mb-3">
+										<label class="form-label small">Προϊόντα</label>
+										<ul class="list-group">
+											<template x-for="product in modalOrder.products" :key="product.id">
+												<li class="list-group-item" x-text="product.name + ' - Ποσότητα: ' + product.quantity"></li>
+											</template>
+										</ul>
 									</div>
 									<div class="col-12">
 										<div class="form-check">
@@ -284,7 +286,28 @@ templ VoucherTable(projectId string) {
 								</div>
 								<div class="mb-3">
 									<label for="orderId" class="form-label small">Αριθμός Παραγγελίας</label>
-									<input type="text" class="form-control form-control-sm" id="orderId" x-model="modalOrder.orderId" required/>
+									<div class="input-group input-group-sm">
+										<span class="input-group-text">
+											<i class="bi bi-upc-scan"></i> <!-- Bootstrap UPC scan icon -->
+										</span>
+										<input type="text" class="form-control form-control-sm" id="orderId" x-model="modalOrder.orderId" required readonly/>
+									</div>
+								</div>
+								<div class="mb-3">
+									<label for="parcelWeight" class="form-label small">Βάρος Δέματος (kg)</label>
+									<div class="input-group input-group-sm">
+										<span class="input-group-text">
+											<i class="bi bi-body-text"></i> <!-- Bootstrap weight icon -->
+										</span>
+										<input type="number" class="form-control form-control-sm" id="parcelWeight" placeholder="0.5" step="0.5" required/>
+									</div>
+								</div>
+								<div class="mb-3">
+									<label for="courierPayment" class="form-label small">Ποσό Πληρωμής Courier</label>
+									<div class="input-group input-group-sm">
+										<span class="input-group-text">€</span>
+										<input type="number" class="form-control form-control-sm" id="courierPayment" step="0.01" x-model="modalOrder.cod" required/>
+									</div>
 								</div>
 								<div class="mb-3 border p-3 rounded">
 									<label class="form-label small d-block">Επιλογές Παράδοσης</label>
@@ -317,14 +340,6 @@ templ VoucherTable(projectId string) {
 										<option value="car">Αυτοκίνητο</option>
 										<option value="van">Βαν</option>
 									</select>
-								</div>
-								<div class="mb-3">
-									<label class="form-label small">Προϊόντα</label>
-									<ul class="list-group">
-										<template x-for="product in modalOrder.products" :key="product.id">
-											<li class="list-group-item" x-text="product.name + ' - Ποσότητα: ' + product.quantity"></li>
-										</template>
-									</ul>
 								</div>
 							</div>
 						</div>

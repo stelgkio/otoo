@@ -163,42 +163,7 @@ templ VoucherTable(projectId string) {
 					</tbody>
 				</table>
 			</div>
-			<!-- Offcanvas Section -->
-			// <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel" :class="{ 'show': showOffcanvas }" :style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }">
-			// 	<div class="offcanvas-header">
-			// 		<h5 class="offcanvas-title" id="offcanvasOrderDetails">Voucher Details</h5>
-			// 		<button type="button" class="btn-close" @click="closeOffcanvas()"></button>
-			// 	</div>
-			// 	<div class="offcanvas-body">
-			// 		<!-- Display order details inside the offcanvas -->
-			// 		<p><strong>Shipping Information:</strong></p>
-			// 		<p>Name: <span x-text="modalOrder.shipping.first_name + ' ' + modalOrder.shipping.last_name"></span></p>
-			// 		<p>Address: <span x-text="modalOrder.shipping.address_1"></span></p>
-			// 		<p>City: <span x-text="modalOrder.shipping.city"></span></p>
-			// 		<p>Postcode: <span x-text="modalOrder.shipping.postcode"></span></p>
-			// 		<!-- Display billing information -->
-			// 		<br/>
-			// 		<p><strong>Billing Information:</strong></p>
-			// 		<p>Name: <span x-text="modalOrder.billing.first_name + ' ' + modalOrder.billing.last_name"></span></p>
-			// 		<p>Address: <span x-text="modalOrder.billing.address_1"></span></p>
-			// 		<p>City: <span x-text="modalOrder.billing.city"></span></p>
-			// 		<p>State: <span x-text="modalOrder.billing.state"></span></p>
-			// 		<p>Postcode: <span x-text="modalOrder.billing.postcode"></span></p>
-			// 		<p>Country: <span x-text="modalOrder.billing.country"></span></p>
-			// 		<p>Email: <span x-text="modalOrder.billing.email"></span></p>
-			// 		<p>Phone: <span x-text="modalOrder.billing.phone"></span></p>
-			// 		<br/>
-			// 		<p><strong>Products:</strong></p>
-			// 		<ul>
-			// 			<template x-for="product in modalOrder.products" :key="product.id">
-			// 				<li x-text="product.name + ' - Quantity: ' + product.quantity"></li>
-			// 			</template>
-			// 		</ul>
-			// 		<p><strong>Payment Method:</strong> <span x-text="modalOrder.payment_method"></span></p>
-			// 		<br/>
-			// 		<p><strong>Payment Amount:</strong> <span x-text="modalOrder.cod"></span></p>
-			// 	</div>
-			// </div>
+			/* Start Off canvas */
 			<div class="offcanvas offcanvas-end w-50" data-bs-backdrop="true" tabindex="-1" id="orderProcessingOffcanvas" aria-labelledby="orderProcessingOffcanvasLabel" :class="{ 'show': showOffcanvas }" :style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }">
 				<div class="offcanvas-header">
 					<h5 class="offcanvas-title" id="orderProcessingOffcanvasLabel">

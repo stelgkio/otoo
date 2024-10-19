@@ -164,39 +164,175 @@ templ VoucherTable(projectId string) {
 				</table>
 			</div>
 			<!-- Offcanvas Section -->
-			<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel" :class="{ 'show': showOffcanvas }" :style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }">
+			// <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel" :class="{ 'show': showOffcanvas }" :style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }">
+			// 	<div class="offcanvas-header">
+			// 		<h5 class="offcanvas-title" id="offcanvasOrderDetails">Voucher Details</h5>
+			// 		<button type="button" class="btn-close" @click="closeOffcanvas()"></button>
+			// 	</div>
+			// 	<div class="offcanvas-body">
+			// 		<!-- Display order details inside the offcanvas -->
+			// 		<p><strong>Shipping Information:</strong></p>
+			// 		<p>Name: <span x-text="modalOrder.shipping.first_name + ' ' + modalOrder.shipping.last_name"></span></p>
+			// 		<p>Address: <span x-text="modalOrder.shipping.address_1"></span></p>
+			// 		<p>City: <span x-text="modalOrder.shipping.city"></span></p>
+			// 		<p>Postcode: <span x-text="modalOrder.shipping.postcode"></span></p>
+			// 		<!-- Display billing information -->
+			// 		<br/>
+			// 		<p><strong>Billing Information:</strong></p>
+			// 		<p>Name: <span x-text="modalOrder.billing.first_name + ' ' + modalOrder.billing.last_name"></span></p>
+			// 		<p>Address: <span x-text="modalOrder.billing.address_1"></span></p>
+			// 		<p>City: <span x-text="modalOrder.billing.city"></span></p>
+			// 		<p>State: <span x-text="modalOrder.billing.state"></span></p>
+			// 		<p>Postcode: <span x-text="modalOrder.billing.postcode"></span></p>
+			// 		<p>Country: <span x-text="modalOrder.billing.country"></span></p>
+			// 		<p>Email: <span x-text="modalOrder.billing.email"></span></p>
+			// 		<p>Phone: <span x-text="modalOrder.billing.phone"></span></p>
+			// 		<br/>
+			// 		<p><strong>Products:</strong></p>
+			// 		<ul>
+			// 			<template x-for="product in modalOrder.products" :key="product.id">
+			// 				<li x-text="product.name + ' - Quantity: ' + product.quantity"></li>
+			// 			</template>
+			// 		</ul>
+			// 		<p><strong>Payment Method:</strong> <span x-text="modalOrder.payment_method"></span></p>
+			// 		<br/>
+			// 		<p><strong>Payment Amount:</strong> <span x-text="modalOrder.cod"></span></p>
+			// 	</div>
+			// </div>
+			<div class="offcanvas offcanvas-end" tabindex="-1" id="orderProcessingOffcanvas" aria-labelledby="orderProcessingOffcanvasLabel" :class="{ 'show': showOffcanvas }" :style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }">
 				<div class="offcanvas-header">
-					<h5 class="offcanvas-title" id="offcanvasOrderDetails">Voucher Details</h5>
+					<h5 class="offcanvas-title" id="orderProcessingOffcanvasLabel">Επεξεργασία Παραγγελίας #<span x-text="modalOrder.orderId"></span></h5>
 					<button type="button" class="btn-close" @click="closeOffcanvas()"></button>
 				</div>
-				<div class="offcanvas-body">
-					<!-- Display order details inside the offcanvas -->
-					<p><strong>Shipping Information:</strong></p>
-					<p>Name: <span x-text="modalOrder.shipping.first_name + ' ' + modalOrder.shipping.last_name"></span></p>
-					<p>Address: <span x-text="modalOrder.shipping.address_1"></span></p>
-					<p>City: <span x-text="modalOrder.shipping.city"></span></p>
-					<p>Postcode: <span x-text="modalOrder.shipping.postcode"></span></p>
-					<!-- Display billing information -->
-					<br/>
-					<p><strong>Billing Information:</strong></p>
-					<p>Name: <span x-text="modalOrder.billing.first_name + ' ' + modalOrder.billing.last_name"></span></p>
-					<p>Address: <span x-text="modalOrder.billing.address_1"></span></p>
-					<p>City: <span x-text="modalOrder.billing.city"></span></p>
-					<p>State: <span x-text="modalOrder.billing.state"></span></p>
-					<p>Postcode: <span x-text="modalOrder.billing.postcode"></span></p>
-					<p>Country: <span x-text="modalOrder.billing.country"></span></p>
-					<p>Email: <span x-text="modalOrder.billing.email"></span></p>
-					<p>Phone: <span x-text="modalOrder.billing.phone"></span></p>
-					<br/>
-					<p><strong>Products:</strong></p>
-					<ul>
-						<template x-for="product in modalOrder.products" :key="product.id">
-							<li x-text="product.name + ' - Quantity: ' + product.quantity"></li>
-						</template>
+				<div class="offcanvas-body d-flex flex-column">
+					<!-- Tabs -->
+					<ul class="nav nav-tabs" id="orderTabs" role="tablist">
+						<li class="nav-item" role="presentation">
+							<button class="nav-link active" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer-info" type="button" role="tab" aria-controls="customer-info" aria-selected="true">Πελάτης</button>
+						</li>
+						<li class="nav-item" role="presentation">
+							<button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping-info" type="button" role="tab" aria-controls="shipping-info" aria-selected="false">Αποστολή</button>
+						</li>
 					</ul>
-					<p><strong>Payment Method:</strong> <span x-text="modalOrder.payment_method"></span></p>
-					<br/>
-					<p><strong>Payment Amount:</strong> <span x-text="modalOrder.cod"></span></p>
+					<!-- Tab Content -->
+					<div class="tab-content flex-grow-1 overflow-auto" id="orderTabContent">
+						<!-- Customer Information Tab -->
+						<div class="tab-pane fade show active" id="customer-info" role="tabpanel" aria-labelledby="customer-tab">
+							<div class="p-3">
+								<h6 class="mb-3 border-bottom pb-2">Πληροφορίες Πελάτη</h6>
+								<div class="row g-2">
+									<div class="col-md-6">
+										<label for="customerName" class="form-label small">Όνομα</label>
+										<input type="text" class="form-control form-control-sm" id="customerName" x-model="modalOrder.billing.first_name" required/>
+									</div>
+									<div class="col-md-6">
+										<label for="customerSurname" class="form-label small">Επώνυμο</label>
+										<input type="text" class="form-control form-control-sm" id="customerSurname" x-model="modalOrder.billing.last_name" required/>
+									</div>
+									<div class="col-md-6">
+										<label for="customerEmail" class="form-label small">Email</label>
+										<input type="email" class="form-control form-control-sm" id="customerEmail" x-model="modalOrder.billing.email" required/>
+									</div>
+									<div class="col-md-6">
+										<label for="customerPhone" class="form-label small">Τηλέφωνο</label>
+										<input type="tel" class="form-control form-control-sm" id="customerPhone" x-model="modalOrder.billing.phone" required/>
+									</div>
+									<div class="col-12">
+										<label for="customerAddress" class="form-label small">Διεύθυνση</label>
+										<input type="text" class="form-control form-control-sm" id="customerAddress" x-model="modalOrder.billing.address_1" required/>
+									</div>
+									<div class="col-md-6">
+										<label for="customerCity" class="form-label small">Πόλη</label>
+										<input type="text" class="form-control form-control-sm" id="customerCity" x-model="modalOrder.billing.city" required/>
+									</div>
+									<div class="col-md-6">
+										<label for="customerPostalCode" class="form-label small">Ταχ. Κώδικας</label>
+										<input type="text" class="form-control form-control-sm" id="customerPostalCode" x-model="modalOrder.billing.postcode" required/>
+									</div>
+									<div class="col-md-6">
+										<label for="parcelWeight" class="form-label small">Βάρος Δέματος (kg)</label>
+										<input type="number" class="form-control form-control-sm" id="parcelWeight" step="0.1" required/>
+									</div>
+									<div class="col-md-6">
+										<label for="courierPayment" class="form-label small">Ποσό Πληρωμής Courier</label>
+										<div class="input-group input-group-sm">
+											<span class="input-group-text">€</span>
+											<input type="number" class="form-control form-control-sm" id="courierPayment" step="0.01" x-model="modalOrder.cod" required/>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" id="storePickup"/>
+											<label class="form-check-label" for="storePickup">Παραλαβή από το κατάστημα</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Shipping Information Tab -->
+						<div class="tab-pane fade" id="shipping-info" role="tabpanel" aria-labelledby="shipping-tab">
+							<div class="p-3">
+								<h6 class="mb-3 border-bottom pb-2">Πληροφορίες Αποστολής</h6>
+								<div class="mb-3">
+									<label for="shippingCompany" class="form-label small">Εταιρεία Αποστολής</label>
+									<select class="form-select form-select-sm" id="shippingCompany" required>
+										<option value="">Επιλέξτε εταιρεία...</option>
+										<option value="acs">ACS Courier</option>
+										<option value="dhl">DHL</option>
+										<option value="fedex">FedEx</option>
+									</select>
+								</div>
+								<div class="mb-3">
+									<label for="orderId" class="form-label small">Αριθμός Παραγγελίας</label>
+									<input type="text" class="form-control form-control-sm" id="orderId" x-model="modalOrder.orderId" required/>
+								</div>
+								<div class="mb-3 border p-3 rounded">
+									<label class="form-label small d-block">Επιλογές Παράδοσης</label>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="deliveryOption" id="standardDelivery" checked/>
+										<label class="form-check-label" for="standardDelivery">Κανονική Παράδοση</label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="deliveryOption" id="saturdayDelivery"/>
+										<label class="form-check-label" for="saturdayDelivery">Παράδοση Σάββατο</label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="deliveryOption" id="urgentDelivery"/>
+										<label class="form-check-label" for="urgentDelivery">Επείγουσα Παράδοση</label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="deliveryOption" id="pickupDelivery"/>
+										<label class="form-check-label" for="pickupDelivery">Παράδοση - Παραλαβή</label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="deliveryOption" id="sameDayDelivery"/>
+										<label class="form-check-label" for="sameDayDelivery">Αυθημερόν</label>
+									</div>
+								</div>
+								<div class="mb-3">
+									<label for="vehicleType" class="form-label small">Τύπος Οχήματος</label>
+									<select class="form-select form-select-sm" id="vehicleType" required>
+										<option value="">Επιλέξτε όχημα...</option>
+										<option value="bike">Μηχανή</option>
+										<option value="car">Αυτοκίνητο</option>
+										<option value="van">Βαν</option>
+									</select>
+								</div>
+								<div class="mb-3">
+									<label class="form-label small">Προϊόντα</label>
+									<ul class="list-group">
+										<template x-for="product in modalOrder.products" :key="product.id">
+											<li class="list-group-item" x-text="product.name + ' - Ποσότητα: ' + product.quantity"></li>
+										</template>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- Save Button -->
+					<div class="mt-auto p-3 border-top">
+						<button type="button" class="btn btn-primary w-100" id="saveBtn">Αποθήκευση Αλλαγών</button>
+					</div>
 				</div>
 			</div>
 			@p.PaginationControl()

@@ -63,10 +63,8 @@ func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceJob() error {
 		// Capture projectID to avoid issues with goroutine closures
 		//	projectID := project.Id.String()
 		//TODO: user should be admin
-		usersList, err := as.userSvc.FindUsersByProjectId(nil, project.Id)
-		usersSlice := util.Filter(usersList, func(u *domain.User) bool {
-			return u.ReseveNotification == true
-		})
+		usersSlice, err := as.userSvc.FindUsersByProjectId(nil, project.Id)
+
 		if err != nil {
 			return err
 		}
@@ -107,6 +105,9 @@ func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceInitializeJob(project *domain
 	if len(users) == 0 {
 		return fmt.Errorf("user is nil")
 	}
+	usersSlice := util.Filter(users, func(u *domain.User) bool {
+		return u.ReseveNotification == true
+	})
 	now := time.Now().UTC()
 	lastWeek := now.Add(-7 * 24 * time.Hour)
 
@@ -179,7 +180,7 @@ func (as *OrderAnalyticsCron) RunOrderWeeklyBalanceInitializeJob(project *domain
 			fmt.Println("The result of the 2 weeks is", result)
 		}
 		as.analyticsRepo.CreateWeeklyBalance(project.Id.String(), weekBalance)
-		for _, user := range users {
+		for _, user := range usersSlice {
 			fullname := fmt.Sprintf("%s %s", user.Name, user.LastName)
 			as.smtpSvc.SendWeeklyBalanceEmail(nil, weekBalance, user.Email, fullname)
 		}

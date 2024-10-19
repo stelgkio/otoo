@@ -72,7 +72,7 @@ templ ProductTable(projectId string) {
 						<!-- Fill remaining rows if less than 10 -->
 						<template x-for="i in 10 - paginatedProducts.length" :key="'empty' + i">
 							<tr>
-								<td colspan="7" class="py-7"></td>
+								<td colspan="7" class="py-5"></td>
 							</tr>
 						</template>
 					</tbody>

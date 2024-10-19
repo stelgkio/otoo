@@ -170,7 +170,7 @@ templ OrderTable(projectId string) {
 				</div>
 			</div>
 			<div class="table-responsive">
-				<table class="table table-hover table-sm table-nowrap">
+				<table class="table table-hover table-striped table-sm table-nowrap">
 					<thead>
 						<tr>
 							<th>
@@ -227,18 +227,11 @@ templ OrderTable(projectId string) {
 								<td>
 									<span :class="badgeClass(order.status)" x-text="order.status"></span>
 								</td>
-								<!-- Action column with the eye icon for modal -->
 								<td>
 									<button type="button" class="btn btn-sm btn-neutral" @click="loadModalData(order)">
 										<i class="bi bi-eye"></i>
 									</button>
 								</td>
-							</tr>
-						</template>
-						<!-- Fill remaining rows if there are less than 10 orders to ensure table looks consistent -->
-						<template x-for="i in 10 - paginatedOrders.length" :key="'empty' + i">
-							<tr>
-								<td colspan="6" class="py-8"></td>
 							</tr>
 						</template>
 					</tbody>
@@ -249,7 +242,9 @@ templ OrderTable(projectId string) {
 		</div>
 	</div>
 	<script>
-function orderTable(projectId) {
+
+
+	function orderTable(projectId) {
     return {
         projectID: projectId,
         currentTab: 'all',

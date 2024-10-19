@@ -37,7 +37,13 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	projectRepo := repository.NewProjectRepository(db)
 	extensionRepo := mongorepo.NewExtensionRepository(mongodb)
 	voucherRepo := mongorepo.NewVoucherRepository(mongodb)
+	paymentRepo := mongorepo.NewPaymentRepository(mongodb)
+	usersprojectsRepo := repository.NewUserProjectRepository(db)
 
+	// UserProject
+	usersprojectsService := service.NewUsersProjectsService(usersprojectsRepo)
+	//Voucher
+	voucherService := courier.NewVoucherService(voucherRepo)
 	// NewExtensionService
 	extensionService := service.NewExtensionService(extensionRepo)
 	//WooCommerceCustomerServer
@@ -45,10 +51,9 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	//WooCommerceProductServer
 	woocommerceProductService := woocommerce.NewProductService(woocommerceRepo, projectRepo, extensionService)
 	//WooCommerceOrderServer
-	woocommerceOrderService := woocommerce.NewOrderService(woocommerceRepo, projectRepo, extensionService)
-
-	//Voucher
-	voucherService := courier.NewVoucherService(voucherRepo)
+	woocommerceOrderService := woocommerce.NewOrderService(woocommerceRepo, projectRepo, extensionService, voucherService, analyticsRepo)
+	//PaymentService
+	paymentService := service.NewPaymentService(paymentRepo)
 	//Smtp
 	smtpService := service.NewSmtpService()
 
@@ -61,31 +66,61 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
 
-	//Auth
-	authHandler := handler.NewAuthHandler(authService, userService)
-
 	//WooCommerce
 	woocommerceWebhookService := woocommerce.NewWoocommerceWebhookService(woocommerceRepo)
-	WooCommerceHandler := handler.NewWooCommerceHandler(woocommerceRepo, projectRepo, woocommerceCustomerService, woocommerceProductService, woocommerceWebhookService, extensionService, voucherService)
+	WooCommerceHandler := handler.NewWooCommerceHandler(woocommerceRepo,
+		projectRepo,
+		woocommerceCustomerService,
+		woocommerceProductService,
+		woocommerceWebhookService,
+		extensionService,
+		voucherService)
 
 	//Project
-	projectService := service.NewProjectService(projectRepo, woocommerceWebhookService, woocommerceProductService, extensionService)
-
+	projectService := service.NewProjectService(projectRepo, woocommerceWebhookService, woocommerceProductService, extensionService, userService, usersprojectsService)
+	// Auth
+	authHandler := handler.NewAuthHandler(authService, userService, projectService, extensionService, usersprojectsService)
 	//WooCommerceRepostServer
 	woocommerceReportService := woocommerce.NewWoocommerceReportService(projectService)
 	//ProjectHandler
 	bestSellerCron := cronjob.NewProductBestSellerCron(projectService, analyticsRepo, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
-	projectHandler := handler.NewProjectHandler(projectService, userService, woocommerceReportService, woocommerceProductService, woocommerceCustomerService, woocommerceOrderService, bestSellerCron, notificationService, extensionService, woocommerceWebhookService)
+	analyticsCron := cronjob.NewOrderAnalyticsCron(
+		projectService,
+		userService,
+		woocommerceCustomerService,
+		woocommerceProductService,
+		woocommerceOrderService,
+		analyticsRepo,
+		smtpService)
+	projectHandler := handler.NewProjectHandler(projectService,
+		userService,
+		woocommerceReportService,
+		woocommerceProductService,
+		woocommerceCustomerService,
+		woocommerceOrderService,
+		bestSellerCron,
+		notificationService,
+		extensionService,
+		woocommerceWebhookService,
+		analyticsCron)
 
 	//Home
 	homeHandler := handler.NewHomeHandler(projectService, contactService)
 
 	//Dashboard
-	dashboardHandler := handler.NewDashboardHandler(projectService, userService, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService, analyticsRepo, extensionService, notificationService)
+	dashboardHandler := handler.NewDashboardHandler(projectService,
+		userService,
+		woocommerceCustomerService,
+		woocommerceProductService,
+		woocommerceOrderService,
+		analyticsRepo,
+		extensionService,
+		notificationService,
+		voucherService,
+		paymentService)
 
 	//Profile
 	profileHandler := handler.NewProfileHandler(userService, projectService, authService)
-	analyticsCron := cronjob.NewOrderAnalyticsCron(projectService, userService, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
 
 	//Router
 	_, err := NewRouter(s, userHandler, authHandler, homeHandler, projectHandler, WooCommerceHandler, dashboardHandler, profileHandler, analyticsCron, bestSellerCron)

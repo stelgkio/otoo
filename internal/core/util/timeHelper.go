@@ -5,7 +5,8 @@ import (
 	"time"
 )
 
-func CalculateTimeDifference(startDateStr, endDateStr string) (string) {
+// CalculateTimeDifference calculates the time difference between two dates
+func CalculateTimeDifference(startDateStr, endDateStr string) string {
 	// Define the layout of the input date strings
 	layout := "2006-01-02 15:04:05" // Layout for parsing date strings
 
@@ -29,14 +30,14 @@ func CalculateTimeDifference(startDateStr, endDateStr string) (string) {
 	hours := int(duration.Hours()) % 24
 	minutes := int(duration.Minutes()) % 60
 
-	if days == 0 && hours ==0  {
-		return	fmt.Sprintf(" %d minutes ago",minutes)
-	}else if days == 0{
-		return	fmt.Sprintf("%d hours, and %d minutes ago",hours,minutes)
-	} else if days > 0  {
-		return	fmt.Sprintf("%d days, %d hours, and %d minutes ago",days,hours,minutes)
-	}else { 
+	if days == 0 && hours == 0 {
+		return fmt.Sprintf(" %d minutes ago", minutes)
+	} else if days == 0 {
+		return fmt.Sprintf("%d hours, and %d minutes ago", hours, minutes)
+	} else if days > 0 {
+		return fmt.Sprintf("%d days, %d hours, and %d minutes ago", days, hours, minutes)
+	} else {
 		return "just now"
 	}
-	
+
 }

@@ -16,6 +16,7 @@ type ProjectRepository interface {
 	GetProjectByDomain(ctx echo.Context, id string) (*domain.Project, error)
 	// // ListProject selects a list of project with pagination
 	FindProjects(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error)
+	SearchByDomain(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error)
 	// // UpdateProject updates a project
 	UpdateProject(ctx echo.Context, user *domain.Project) (*domain.Project, error)
 	// // DeleteUser deletes a user
@@ -33,6 +34,7 @@ type ProjectService interface {
 	GetProjectByID(ctx echo.Context, id string) (*domain.Project, error)
 	// // ListUsers returns a list of users with pagination
 	FindProjects(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error)
+	SearchByDomain(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error)
 	// // UpdateProject updates a project
 	UpdateProject(ctx echo.Context, user *domain.Project) (*domain.Project, error)
 	// // DeleteUser deletes a user
@@ -40,4 +42,22 @@ type ProjectService interface {
 	SoftDeleteProjects(ctx echo.Context, userID uuid.UUID) error
 	// GetAllProjects returns all projects
 	GetAllProjects() ([]*domain.Project, error)
+}
+
+// UserProjectRepository interface
+type UserProjectRepository interface {
+	RemoveAllUsersFromProject(ctx echo.Context, projectID uuid.UUID) error
+	FindUsersByProjectID(ctx echo.Context, projectID uuid.UUID) ([]*domain.User, error)
+	FindProjectsByUserID(ctx echo.Context, userID uuid.UUID) ([]*domain.Project, error)
+	RemoveUserFromProject(ctx echo.Context, userID uuid.UUID, projectID uuid.UUID) error
+	AddUserToProject(ctx echo.Context, userID uuid.UUID, projectID uuid.UUID) error
+}
+
+// UserProjectService interface
+type UserProjectService interface {
+	RemoveAllUsersFromProject(ctx echo.Context, projectID uuid.UUID) error
+	FindUsersByProjectID(ctx echo.Context, projectID uuid.UUID) ([]*domain.User, error)
+	FindProjectsByUserID(ctx echo.Context, userID uuid.UUID) ([]*domain.Project, error)
+	RemoveUserFromProject(ctx echo.Context, userID uuid.UUID, projectID uuid.UUID) error
+	AddUserToProject(ctx echo.Context, userID uuid.UUID, projectID uuid.UUID) error
 }

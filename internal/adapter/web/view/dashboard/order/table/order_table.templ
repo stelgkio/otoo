@@ -10,21 +10,21 @@ templ OrderTable(projectId string) {
 		<div class="mb-1 mb-xl-10">
 			<div class="col">
 				<div class="hstack gap-2 justify-content-start">
+					// <button
+					// 	class="btn btn-sm btn-neutral "
+					// 	type="button"
+					// 	hx-get={ fmt.Sprintf("/order/chart/%s", projectId) }
+					// 	hx-target="#dashboard-order"
+					// >
+					// 	<i class="bi bi-bar-chart-fill"></i> <span class="ms-2">Charts</span>
+					// </button>
 					<button
 						class="btn btn-sm btn-neutral "
 						type="button"
-						hx-get={ fmt.Sprintf("/order/chart/%s", projectId) }
+						hx-get={ fmt.Sprintf("/voucher/table/html/%s", projectId) }
 						hx-target="#dashboard-order"
 					>
-						<i class="bi bi-bar-chart-fill"></i> <span class="ms-2">Charts</span>
-					</button>
-					<button
-						class="btn btn-sm btn-neutral "
-						type="button"
-						hx-get={ fmt.Sprintf("/order/chart/%s", projectId) }
-						hx-target="#dashboard-order"
-					>
-						<i class="bi bi-box-seam-fill"></i> <span class="ms-2">Courier</span>
+						<i class="bi bi-box-seam-fill"></i> <span class="ms-2">Vouchers</span>
 					</button>
 				</div>
 			</div>
@@ -81,21 +81,6 @@ templ OrderTable(projectId string) {
 						<i class="bi bi-plus-circle"></i> <span class="ms-2">Bulk Action</span>
 					</button>
 					<div class="dropdown-menu" :class="{ 'show': showDropdown }" aria-labelledby="dropdownMenuButton2">
-						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
-							<div class="text-lg">
-								<input
-									class="form-check-input"
-									type="radio"
-									name="statusOption"
-									id="statusBacklog"
-									value="asc_courier"
-									x-model="selectedStatus"
-								/>
-							</div>
-							<div class="ms-3 me-5">
-								<label for="statusBacklog">Send to Couries and update to completed</label>
-							</div>
-						</div>
 						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
 							<div class="text-lg">
 								<input
@@ -185,7 +170,7 @@ templ OrderTable(projectId string) {
 				</div>
 			</div>
 			<div class="table-responsive">
-				<table class="table table-hover table-nowrap">
+				<table class="table table-hover table-striped table-sm table-nowrap">
 					<thead>
 						<tr>
 							<th>
@@ -204,23 +189,26 @@ templ OrderTable(projectId string) {
 								Order ID
 								<i :class="getSortIcon('orderId')"></i>
 							</th>
-							<th @click="sortTable('timestamp')">
-								Date
-								<i :class="getSortIcon('timestamp')"></i>
+							<th @click="sortTable('order_created')">
+								Order Created
+								<i :class="getSortIcon('order_created')"></i>
 							</th>
 							<th @click="sortTable('total_amount')">
 								Total Amount
 								<i :class="getSortIcon('total_amount')"></i>
 							</th>
 							<th>Status</th>
+							<th>Action</th>
 						</tr>
 					</thead>
 					<tbody>
+						<!-- Display this row if no orders are found -->
 						<template x-if="!loading && totalItems === 0">
 							<tr>
-								<td colspan="5">No orders found.</td>
+								<td colspan="6">No orders found.</td>
 							</tr>
 						</template>
+						<!-- Loop through paginated orders -->
 						<template x-for="order in paginatedOrders" :key="order.id">
 							<tr>
 								<td>
@@ -233,203 +221,288 @@ templ OrderTable(projectId string) {
 										/>
 									</div>
 								</td>
-								<td x-text="order.orderId"></td>
-								<td x-text="new Date(order.timestamp).toLocaleString()"></td>
-								<td x-text="order.total_amount"></td>
+								<td x-text="'#' + order.orderId"></td>
+								<td x-text="new Date(order.order_created).toLocaleString()"></td>
+								<td x-text="order.total_amount + ' ' + order.currency_symbol"></td>
 								<td>
 									<span :class="badgeClass(order.status)" x-text="order.status"></span>
 								</td>
+								<td>
+									<button type="button" class="btn btn-sm btn-neutral" @click="loadModalData(order)">
+										<i class="bi bi-eye"></i>
+									</button>
+								</td>
 							</tr>
 						</template>
-						<!-- Fill remaining rows if less than 10 -->
 						<template x-for="i in 10 - paginatedOrders.length" :key="'empty' + i">
 							<tr>
-								<td colspan="5" class="py-7"></td>
+								<td colspan="5" class="py-5"></td>
 							</tr>
 						</template>
 					</tbody>
 				</table>
 			</div>
+			@OrderModal()
 			@p.PaginationControl()
 		</div>
 	</div>
 	<script>
+
+
 	function orderTable(projectId) {
-		return {
-			projectID: projectId,
-			currentTab: 'all',
-			orders: [],
-			selectedOrders: [],
-			selectAllCheckbox: false,
-			sortKey: 'orderId',
-			sortAsc: false,
-			currentPage: 1,
-			itemsPerPage: 10,
-			totalItems: 0,
-			totalPages: 0,
-			loading: false,
-			selectedStatus: '',
-			errorMessage: '',
+    return {
+        projectID: projectId,
+        currentTab: 'all',
+        orders: [],
+        selectedOrders: [],
+        selectAllCheckbox: false,
+        sortKey: 'orderId',
+        sortAsc: false,
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 0,
+        totalPages: 0,
+        loading: false,
+        selectedStatus: '',
+        errorMessage: '',
+        showDropdown: false, // Initialize showDropdown
+        modalOrder: {
+            billing: {
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                city: '',
+                postcode: '',
+                email: '',
+                phone: '',
+            },
+            shipping: {
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                city: '',
+                postcode: '',
+            },
+            products: [],
+            payment_method: '',
+			customer_note:''
+        },
+        showModal: false,
 
-			async init() {
-				await this.fetchOrders(this.currentPage);
-			},
+        async init() {
+            await this.fetchOrders(this.currentPage);
+        },
 
-			async fetchOrders(page = 1) {
-				this.loading = true;
-				try {
-					const url = this.getUrlForTab(this.currentTab, page);
-					const response = await fetch(url);
-					const result = await response.json();
-					if (response.ok) {
-						this.orders = result.data || [];
-						this.totalItems = result.meta.totalItems || 0;
-						this.currentPage = result.meta.currentPage || 1;
-						this.itemsPerPage = result.meta.itemsPerPage || 10;
-						this.totalPages = result.meta.totalPages || 0;
-					} else {
-						console.error('Error fetching data:', result.message);
-					}
-				} catch (error) {
-					console.error('Error fetching data:', error);
-				} finally {
-					this.loading = false;
-				}
-			},
+        async fetchOrders(page = 1) {
+            this.loading = true;
+            try {
+                const url = this.getUrlForTab(this.currentTab, page);
+                const response = await fetch(url);
+                const result = await response.json();
+                if (response.ok) {
+                    this.orders = result.data || [];
+                    this.totalItems = result.meta.totalItems || 0;
+                    this.currentPage = result.meta.currentPage || 1;
+                    this.itemsPerPage = result.meta.itemsPerPage || 10;
+                    this.totalPages = result.meta.totalPages || 0;
+                } else {
+                    console.error('Error fetching data:', result.message);
+					this.errorMessage = result.message || 'An error occurred while fetching data.';
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                this.loading = false;
+            }
+        },
 
-			getUrlForTab(tab, page) {
-				const baseUrl = `${window.location.origin}/order/table/${this.projectID}`;
-				const sortDirection = this.sortAsc ? 'asc' : 'desc'; // Determine sort direction
-				switch (tab) {
-					case 'all':
-						return `${baseUrl}/all/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-					case 'completed':
-						return `${baseUrl}/completed/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-					case 'processing':
-						return `${baseUrl}/processing/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-					case 'pending':
-						return `${baseUrl}/pending/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-					case 'cancelled':
-						return `${baseUrl}/cancelled/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-					default:
-						return `${baseUrl}/completed/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-				}
-			},
+        getUrlForTab(tab, page) {
+            const baseUrl = `${window.location.origin}/order/table/${this.projectID}`;
+            const sortDirection = this.sortAsc ? 'asc' : 'desc'; 
+            switch (tab) {
+                case 'all':
+                    return `${baseUrl}/all/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'completed':
+                    return `${baseUrl}/completed/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'processing':
+                    return `${baseUrl}/processing/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'pending':
+                    return `${baseUrl}/pending/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'cancelled':
+                    return `${baseUrl}/cancelled/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                default:
+                    return `${baseUrl}/completed/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+            }
+        },
 
-			selectTab(tab) {
-				this.currentTab = tab;
-				this.currentPage = 1; // Reset to first page
-				this.fetchOrders(this.currentPage);
-			},
+        selectTab(tab) {
+            this.currentTab = tab;
+            this.currentPage = 1;
+            this.fetchOrders(this.currentPage);
+        },
 
-			selectAll() {
-				this.selectedOrders = this.selectAllCheckbox ? this.orders.map(order => order.orderId) : [];
-			},
+        selectAll() {
+            this.selectedOrders = this.selectAllCheckbox ? this.orders.map(order => order.orderId) : [];
+        },
 
-			sortTable(key) {
-				if (this.sortKey === key) {
-					this.sortAsc = !this.sortAsc; // Toggle sort direction if the same column is clicked
-				} else {
-					this.sortKey = key; // Set new sort key
-					this.sortAsc = true; // Default to ascending if a new column is selected
-				}
-				this.fetchOrders(this.currentPage); // Fetch sorted data
-			},
-			getSortIcon(key) {
-				if (this.sortKey !== key) return '';
-				return this.sortAsc ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
-			},
+        sortTable(key) {
+            if (this.sortKey === key) {
+                this.sortAsc = !this.sortAsc;
+            } else {
+                this.sortKey = key;
+                this.sortAsc = true;
+            }
+            this.fetchOrders(this.currentPage);
+        },
 
-			changePage(page) {
-				if (page < 1 || page > this.totalPages) return;
-				this.fetchOrders(page);
-			},
+        getSortIcon(key) {
+            if (this.sortKey !== key) return '';
+            return this.sortAsc ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
+        },
 
-			get paginatedOrders() {
-				return this.orders;
-			},
+        changePage(page) {
+            if (page < 1 || page > this.totalPages) return;
+            this.fetchOrders(page);
+        },
 
-			get currentPageStart() {
-				return (this.currentPage - 1) * this.itemsPerPage + 1;
-			},
+        get paginatedOrders() {
+            return this.orders;
+        },
 
-			get currentPageEnd() {
-				return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
-			},
-			get pageNumbers() {
-				const range = 2; // Number of pages to show around the current page
-				let start = Math.max(1, this.currentPage - range);
-				let end = Math.min(this.totalPages, this.currentPage + range);
+        get currentPageStart() {
+            return (this.currentPage - 1) * this.itemsPerPage + 1;
+        },
 
-				// Adjust range if there are not enough pages on one side
-				if (this.totalPages - end < range) {
-					end = this.totalPages;
-					start = Math.max(1, end - 2 * range);
-				} else if (start <= range) {
-					start = 1;
-					end = Math.min(this.totalPages, start + 2 * range);
-				}
+        get currentPageEnd() {
+            return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
+        },
 
-				return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-			},
-			badgeClass(status) {
-				const baseClass = 'badge bg-body-secondary badge-custom'; // Add badge-custom class
-				switch (status) {
-					case 'pending':
-						return `${baseClass} text-warning`;
-					case 'completed':
-						return `${baseClass} text-success`;
-					case 'cancelled':
-						return `${baseClass} text-danger`;
-					case 'processing':
-						return `${baseClass} text-warning`;
-					default:
-						return baseClass;
-				}
-			},
-			async applyAction() {
-				this.loading = true;
-				this.errorMessage = ""; // Clear previous error message
-				this.showDropdown = true; // Close dropdown on action
+        get pageNumbers() {
+            const range = 2;
+            let start = Math.max(1, this.currentPage - range);
+            let end = Math.min(this.totalPages, this.currentPage + range);
 
-				const selectedOrderIds = this.selectedOrders.join(',');
-				if (!selectedOrderIds || !this.selectedStatus) {
-					this.errorMessage = 'Please select at least one order and a status.';
-					this.loading = false;
-					this.showDropdown = true;
-					return;
-				}
+            if (this.totalPages - end < range) {
+                end = this.totalPages;
+                start = Math.max(1, end - 2 * range);
+            } else if (start <= range) {
+                start = 1;
+                end = Math.min(this.totalPages, start + 2 * range);
+            }
 
-				try {
-					const response = await fetch(`/order/bulk-action/${this.projectID}`, {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({
-							status: this.selectedStatus,
-							orders: selectedOrderIds.split(','),
-						}),
-					});
-					const result = await response.json();
+            return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+        },
 
-					if (response.ok) {
-						// Handle success (e.g., show a success message or refresh the table)
-						this.fetchOrders(this.currentPage);
-						console.log('Bulk action successful:', result);
-						this.showDropdown = false;
-					} else {
-						this.errorMessage = result.message || 'An error occurred while processing the request.';
-					}
-				} catch (error) {
-					console.error('Error during bulk action:', error);
-					this.errorMessage = 'An error occurred while processing the request.';
-					this.showDropdown = true;
-				} finally {
-					this.loading = false;
+        badgeClass(status) {
+            const baseClass = 'badge bg-body-secondary badge-custom';
+            switch (status) {
+                case 'pending':
+                    return `${baseClass} text-warning`;
+                case 'completed':
+                    return `${baseClass} text-success`;
+                case 'cancelled':
+                    return `${baseClass} text-danger`;
+                case 'processing':
+                    return `${baseClass} text-warning`;
+                default:
+                    return baseClass;
+            }
+        },
 
-				}
-			},
+        async applyAction() {
+            this.loading = true;
+            this.errorMessage = ""; 
+            this.showDropdown = false; 
 
-		};
-	}
+            const selectedOrderIds = this.selectedOrders.join(',');
+            if (!selectedOrderIds || !this.selectedStatus) {
+                this.errorMessage = 'Please select at least one order and a status.';
+                this.loading = false;
+                this.showDropdown = true;
+                return;
+            }
+
+            try {
+                const response = await fetch(`/order/bulk-action/${this.projectID}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        status: this.selectedStatus,
+                        orders: selectedOrderIds.split(','),
+                    }),
+                });
+                const result = await response.json();
+
+                if (response.ok) {
+                    this.fetchOrders(this.currentPage);
+                    console.log('Bulk action successful:', result);
+                } else {
+                    this.errorMessage = result.message || 'An error occurred while processing the request.';
+                }
+            } catch (error) {
+                console.error('Error during bulk action:', error);
+                this.errorMessage = 'An error occurred while processing the request.';
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        loadModalData(order) {
+            this.modalOrder = {
+                ...this.modalOrder,
+                ...order,
+                billing: { ...this.modalOrder.billing, ...order.billing },
+                shipping: { ...this.modalOrder.shipping, ...order.shipping }
+            };
+            this.showModal = true;
+        },
+
+        closeModal() {
+            this.showModal = false;
+			  this.errorMessage ='';
+            this.modalOrder = {
+                billing: { ...this.modalOrder.billing },
+                shipping: { ...this.modalOrder.shipping },
+                products: [],
+                payment_method: '',
+				customer_note:''
+            };
+        },
+		 async saveChanges() {
+            this.loading = true;
+            try {
+                const response = await fetch(`/order/update/${this.modalOrder.orderId}/${this.projectID}`, {
+                    method: 'PUT', // Or 'PUT' based on your API
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        billing: this.modalOrder.billing,
+                        shipping: this.modalOrder.shipping,
+                        products: this.modalOrder.products,
+                        payment_method: this.modalOrder.payment_method,
+                        customer_note: this.modalOrder.customer_note,
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Successfully saved, close the modal and refresh the order list
+                    this.closeModal();
+                    this.fetchOrders(this.currentPage);  // Refresh orders list
+                    console.log('Order updated successfully:', result);
+                } else {
+					 this.errorMessage =  'An error occurred while updating data.';
+                    console.error('Error saving changes:', result.message);
+                }
+            } catch (error) {
+                console.error('Error saving changes:', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+    };
+}
 </script>
 }

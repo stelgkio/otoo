@@ -33,16 +33,19 @@ func (ex *ExtensionRepository) CreateExtension(ctx echo.Context, c *domain.Exten
 }
 
 // GetAllExtensions gets all Extensions
-func (ex *ExtensionRepository) GetAllExtensions(ctx echo.Context) ([]*domain.Extension, error) {
+func (ex *ExtensionRepository) GetAllExtensions(c echo.Context) ([]*domain.Extension, error) {
 	collection := ex.mongo.Database("otoo").Collection("extensions")
-	cursor, err := collection.Find(ctx.Request().Context(), bson.M{"is_active": true})
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	cursor, err := collection.Find(ctx, bson.M{"is_active": true})
+
+	defer cancel()
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(ctx.Request().Context())
+	defer cursor.Close(ctx)
 
 	var Extensions []*domain.Extension
-	for cursor.Next(ctx.Request().Context()) {
+	for cursor.Next(ctx) {
 		var Extension domain.Extension
 		if err := cursor.Decode(&Extension); err != nil {
 			return nil, err
@@ -57,9 +60,10 @@ func (ex *ExtensionRepository) GetAllExtensions(ctx echo.Context) ([]*domain.Ext
 }
 
 // GetExtensionByID gets a Extension by ID
-func (ex *ExtensionRepository) GetExtensionByID(ctx echo.Context, extensionID string) (*domain.Extension, error) {
+func (ex *ExtensionRepository) GetExtensionByID(c echo.Context, extensionID string) (*domain.Extension, error) {
 	collection := ex.mongo.Database("otoo").Collection("extensions")
-
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	// Convert the extensionID from string to ObjectID
 	id, err := primitive.ObjectIDFromHex(extensionID)
 	if err != nil {
@@ -76,7 +80,7 @@ func (ex *ExtensionRepository) GetExtensionByID(ctx echo.Context, extensionID st
 	var Extension domain.Extension
 
 	// Execute the query with the filter
-	err = collection.FindOne(ctx.Request().Context(), filter).Decode(&Extension)
+	err = collection.FindOne(ctx, filter).Decode(&Extension)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, errors.New("Extension not found")
@@ -89,9 +93,10 @@ func (ex *ExtensionRepository) GetExtensionByID(ctx echo.Context, extensionID st
 }
 
 // GetExtensionByCode gets a Extension by code
-func (ex *ExtensionRepository) GetExtensionByCode(ctx echo.Context, code string) (*domain.Extension, error) {
+func (ex *ExtensionRepository) GetExtensionByCode(c echo.Context, code string) (*domain.Extension, error) {
 	collection := ex.mongo.Database("otoo").Collection("extensions")
-
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	// Create the filter to match both the extension ID and IsActive
 	filter := bson.M{
 		"code":      code,
@@ -102,7 +107,7 @@ func (ex *ExtensionRepository) GetExtensionByCode(ctx echo.Context, code string)
 	var Extension domain.Extension
 
 	// Execute the query with the filter
-	err := collection.FindOne(ctx.Request().Context(), filter).Decode(&Extension)
+	err := collection.FindOne(ctx, filter).Decode(&Extension)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, errors.New("Extension not found")
@@ -116,15 +121,17 @@ func (ex *ExtensionRepository) GetExtensionByCode(ctx echo.Context, code string)
 }
 
 // DeleteExtension deletes a Extension by ID
-func (ex *ExtensionRepository) DeleteExtension(ctx echo.Context, extensionID string) error {
+func (ex *ExtensionRepository) DeleteExtension(c echo.Context, extensionID string) error {
 	collection := ex.mongo.Database("otoo").Collection("Extensions")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	id, err := primitive.ObjectIDFromHex(extensionID)
 	if err != nil {
 		return err
 	}
 
 	_, err = collection.UpdateOne(
-		ctx.Request().Context(),
+		ctx,
 		bson.M{"_id": id},
 		bson.M{
 			"$set": bson.M{
@@ -143,18 +150,21 @@ func (ex *ExtensionRepository) DeleteExtension(ctx echo.Context, extensionID str
 //////////////////PROJECT ExtensionS/////////////////////////
 
 // CreateProjectExtension creates a new ProjectExtension
-func (ex *ExtensionRepository) CreateProjectExtension(ctx echo.Context, projectID string, e *domain.Extension) error {
+func (ex *ExtensionRepository) CreateProjectExtension(c echo.Context, projectID string, e *domain.Extension, days int, subId string) error {
 	collection := ex.mongo.Database("otoo").Collection("project_extensions")
-
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	projectExtension := &domain.ProjectExtension{
-		ID:          primitive.NewObjectID(),
-		Title:       e.Title,
-		Description: e.Description,
-		Code:        e.Code,
-		ProjectID:   projectID,
-		ExtensionID: e.ID.Hex(),
-		CreatedAt:   time.Now().UTC(),
-		IsActive:    true,
+		ID:                 primitive.NewObjectID(),
+		Title:              e.Title,
+		Description:        e.Description,
+		Code:               e.Code,
+		ProjectID:          projectID,
+		ExtensionID:        e.ID.Hex(),
+		CreatedAt:          time.Now().UTC(),
+		IsActive:           true,
+		SubscriptionPeriod: days,
+		SubscriptionID:     subId,
 	}
 	filter := bson.M{"extension_id": e.ID.Hex(), "is_active": true, "project_id": projectID}
 	update := bson.M{"$set": projectExtension}
@@ -163,7 +173,7 @@ func (ex *ExtensionRepository) CreateProjectExtension(ctx echo.Context, projectI
 	opt := options.Update().SetUpsert(true)
 
 	// Perform the upsert operation
-	_, err := collection.UpdateOne(context.TODO(), filter, update, opt)
+	_, err := collection.UpdateOne(ctx, filter, update, opt)
 	if err != nil {
 		return err
 	}
@@ -171,25 +181,26 @@ func (ex *ExtensionRepository) CreateProjectExtension(ctx echo.Context, projectI
 }
 
 // GetAllProjectExtensions gets all ProjectExtensions
-func (ex *ExtensionRepository) GetAllProjectExtensions(ctx echo.Context, projectID string) ([]*domain.ProjectExtension, error) {
+func (ex *ExtensionRepository) GetAllProjectExtensions(c echo.Context, projectID string) ([]*domain.ProjectExtension, error) {
 	collection := ex.mongo.Database("otoo").Collection("project_extensions")
-
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	filter := bson.M{
 		"project_id": projectID,
 		"is_active":  true,
 	}
 
-	cursor, err := collection.Find(ctx.Request().Context(), filter)
+	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
 		}
 		return nil, err
 	}
-	defer cursor.Close(ctx.Request().Context())
+	defer cursor.Close(ctx)
 
 	var projectExtensions []*domain.ProjectExtension
-	for cursor.Next(ctx.Request().Context()) {
+	for cursor.Next(ctx) {
 		var projectExtension domain.ProjectExtension
 		if err := cursor.Decode(&projectExtension); err != nil {
 			return nil, err
@@ -204,22 +215,18 @@ func (ex *ExtensionRepository) GetAllProjectExtensions(ctx echo.Context, project
 }
 
 // GetProjectExtensionByID gets a ProjectExtension by ID
-func (ex *ExtensionRepository) GetProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.ProjectExtension, error) {
+func (ex *ExtensionRepository) GetProjectExtensionByID(c echo.Context, extensionID, projectID string) (*domain.ProjectExtension, error) {
 	collection := ex.mongo.Database("otoo").Collection("project_extensions")
-
-	extID, err := primitive.ObjectIDFromHex(extensionID)
-	if err != nil {
-		return nil, errors.New("Invalid extension ID format")
-	}
-
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	filter := bson.M{
-		"_id":        extID,
-		"project_id": projectID,
-		"is_active":  true,
+		"extension_id": extensionID,
+		"project_id":   projectID,
+		"is_active":    true,
 	}
 
 	var projectExtension domain.ProjectExtension
-	err = collection.FindOne(ctx.Request().Context(), filter).Decode(&projectExtension)
+	err := collection.FindOne(ctx, filter).Decode(&projectExtension)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
@@ -231,43 +238,40 @@ func (ex *ExtensionRepository) GetProjectExtensionByID(ctx echo.Context, extensi
 }
 
 // DeleteProjectExtension deletes a ProjectExtension by ID
-func (ex *ExtensionRepository) DeleteProjectExtension(ctx echo.Context, extensionID, projectID string) error {
+func (ex *ExtensionRepository) DeleteProjectExtension(c echo.Context, extensionID, projectID string) error {
 	collection := ex.mongo.Database("otoo").Collection("project_extensions")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	filter := bson.M{"extension_id": extensionID, "project_id": projectID, "is_active": true}
+	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now().UTC()}}
 
-	extID, err := primitive.ObjectIDFromHex(extensionID)
+	_, err := collection.UpdateOne(ctx, filter, update)
+	return err
+}
+
+// DeleteProjectExtensionByID deletes a ProjectExtension by ID
+func (ex *ExtensionRepository) DeleteProjectExtensionByID(c echo.Context, ID string) error {
+	collection := ex.mongo.Database("otoo").Collection("project_extensions")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	extID, err := primitive.ObjectIDFromHex(ID)
 	if err != nil {
 		return errors.New("Invalid extension ID format")
 	}
+	filter := bson.M{"_id": extID, "is_active": true}
+	update := bson.M{"$set": bson.M{"is_active": false, "deleted_at": time.Now().UTC()}}
 
-	filter := bson.M{
-		"_id":        extID,
-		"project_id": projectID,
-	}
-
-	update := bson.M{
-		"$set": bson.M{
-			"deleted_at": time.Now(),
-			"is_active":  false,
-		},
-	}
-
-	result, err := collection.UpdateOne(ctx.Request().Context(), filter, update)
-	if err != nil {
-		return err
-	}
-	if result.MatchedCount == 0 {
-		return errors.New("ProjectExtension not found")
-	}
-
-	return nil
+	_, err = collection.UpdateOne(ctx, filter, update)
+	return err
 }
 
 //////////////////  ACS Extension  /////////////////////////
 
 // CreateACSProjectExtension creates a new ProjectExtension
-func (ex *ExtensionRepository) CreateACSProjectExtension(ctx echo.Context, projectID string, e *domain.AcsCourierExtension) error {
+func (ex *ExtensionRepository) CreateACSProjectExtension(c echo.Context, projectID string, e *domain.AcsCourierExtension) error {
 	collection := ex.mongo.Database("otoo").Collection("acs_project_extensions")
-
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	filter := bson.M{"extension_id": e.ExtensionID, "is_active": true, "project_id": projectID}
 	update := bson.M{"$set": e}
 
@@ -275,7 +279,7 @@ func (ex *ExtensionRepository) CreateACSProjectExtension(ctx echo.Context, proje
 	opt := options.Update().SetUpsert(true)
 
 	// Perform the upsert operation
-	_, err := collection.UpdateOne(context.TODO(), filter, update, opt)
+	_, err := collection.UpdateOne(ctx, filter, update, opt)
 	if err != nil {
 		return err
 	}
@@ -283,25 +287,26 @@ func (ex *ExtensionRepository) CreateACSProjectExtension(ctx echo.Context, proje
 }
 
 // GetAllACSProjectExtensions gets all ProjectExtensions
-func (ex *ExtensionRepository) GetAllACSProjectExtensions(ctx echo.Context, projectID string) ([]*domain.AcsCourierExtension, error) {
+func (ex *ExtensionRepository) GetAllACSProjectExtensions(c echo.Context, projectID string) ([]*domain.AcsCourierExtension, error) {
 	collection := ex.mongo.Database("otoo").Collection("acs_project_extensions")
-
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	filter := bson.M{
 		"project_id": projectID,
 		"is_active":  true,
 	}
 
-	cursor, err := collection.Find(ctx.Request().Context(), filter)
+	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
 		}
 		return nil, err
 	}
-	defer cursor.Close(ctx.Request().Context())
+	defer cursor.Close(ctx)
 
 	var projectExtensions []*domain.AcsCourierExtension
-	for cursor.Next(ctx.Request().Context()) {
+	for cursor.Next(ctx) {
 		var projectExtension domain.AcsCourierExtension
 		if err := cursor.Decode(&projectExtension); err != nil {
 			return nil, err
@@ -316,9 +321,10 @@ func (ex *ExtensionRepository) GetAllACSProjectExtensions(ctx echo.Context, proj
 }
 
 // GetACSProjectExtensionByID gets a ProjectExtension by ID
-func (ex *ExtensionRepository) GetACSProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.AcsCourierExtension, error) {
+func (ex *ExtensionRepository) GetACSProjectExtensionByID(c echo.Context, extensionID, projectID string) (*domain.AcsCourierExtension, error) {
 	collection := ex.mongo.Database("otoo").Collection("acs_project_extensions")
-
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	filter := bson.M{
 		"project_id":   projectID,
 		"extension_id": extensionID,
@@ -326,7 +332,7 @@ func (ex *ExtensionRepository) GetACSProjectExtensionByID(ctx echo.Context, exte
 	}
 
 	var projectExtension domain.AcsCourierExtension
-	err := collection.FindOne(ctx.Request().Context(), filter).Decode(&projectExtension)
+	err := collection.FindOne(ctx, filter).Decode(&projectExtension)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
@@ -338,9 +344,10 @@ func (ex *ExtensionRepository) GetACSProjectExtensionByID(ctx echo.Context, exte
 }
 
 // DeleteACSProjectExtension deletes a ProjectExtension by ID
-func (ex *ExtensionRepository) DeleteACSProjectExtension(ctx echo.Context, extensionID, projectID string) error {
+func (ex *ExtensionRepository) DeleteACSProjectExtension(c echo.Context, extensionID, projectID string) error {
 	collection := ex.mongo.Database("otoo").Collection("acs_project_extensions")
-
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	extID, err := primitive.ObjectIDFromHex(extensionID)
 	if err != nil {
 		return errors.New("Invalid extension ID format")
@@ -359,7 +366,7 @@ func (ex *ExtensionRepository) DeleteACSProjectExtension(ctx echo.Context, exten
 		},
 	}
 
-	result, err := collection.UpdateOne(ctx.Request().Context(), filter, update)
+	result, err := collection.UpdateOne(ctx, filter, update)
 	if err != nil {
 		return err
 	}
@@ -374,9 +381,10 @@ func (ex *ExtensionRepository) DeleteACSProjectExtension(ctx echo.Context, exten
 
 // CreateSynchronizerProjectExtension creates a new ProjectExtension
 // CreateSynchronizerProjectExtension creates a new ProjectExtension
-func (ex *ExtensionRepository) CreateSynchronizerProjectExtension(ctx echo.Context, projectID string, e *domain.DataSynchronizerExtension) error {
+func (ex *ExtensionRepository) CreateSynchronizerProjectExtension(c echo.Context, projectID string, e *domain.DataSynchronizerExtension) error {
 	collection := ex.mongo.Database("otoo").Collection("synchronizer_project_extensions")
-
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	// Check for existing processing extensions
 	processingFilter := bson.M{
 		"is_active":  true,
@@ -385,7 +393,7 @@ func (ex *ExtensionRepository) CreateSynchronizerProjectExtension(ctx echo.Conte
 	}
 
 	// Count the number of processing extensions
-	processingCount, err := collection.CountDocuments(context.TODO(), processingFilter)
+	processingCount, err := collection.CountDocuments(ctx, processingFilter)
 	if err != nil {
 		return err
 	}
@@ -408,9 +416,10 @@ func (ex *ExtensionRepository) CreateSynchronizerProjectExtension(ctx echo.Conte
 }
 
 // UpdateSynchronizerCustomerRecievedExtension updates the "customer_received" field and checks if the status should be set to "completed"
-func (ex *ExtensionRepository) UpdateSynchronizerCustomerRecievedExtension(ctx echo.Context, projectID string, customerReceived int) error {
+func (ex *ExtensionRepository) UpdateSynchronizerCustomerRecievedExtension(c echo.Context, projectID string, customerReceived int) error {
 	collection := ex.mongo.Database("otoo").Collection("synchronizer_project_extensions")
-
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	// Define the filter to find the active project with the given project ID
 	filter := bson.M{
 		"is_active":  true,
@@ -420,7 +429,7 @@ func (ex *ExtensionRepository) UpdateSynchronizerCustomerRecievedExtension(ctx e
 
 	// First, retrieve the current document to get the totals and the current state of the "received" fields
 	var currentDoc domain.DataSynchronizerExtension
-	err := collection.FindOne(context.TODO(), filter).Decode(&currentDoc)
+	err := collection.FindOne(ctx, filter).Decode(&currentDoc)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return fmt.Errorf("no active synchronizer project found for projectID: %s", projectID)
@@ -467,9 +476,10 @@ func (ex *ExtensionRepository) UpdateSynchronizerCustomerRecievedExtension(ctx e
 }
 
 // UpdateSynchronizerOrderReceivedExtension updates the "order_received" field in the "synchronizer_project_extensions" collection
-func (ex *ExtensionRepository) UpdateSynchronizerOrderReceivedExtension(ctx echo.Context, projectID string, orderReceived int) error {
+func (ex *ExtensionRepository) UpdateSynchronizerOrderReceivedExtension(c echo.Context, projectID string, orderReceived int) error {
 	collection := ex.mongo.Database("otoo").Collection("synchronizer_project_extensions")
-
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	filter := bson.M{
 		"is_active":  true,
 		"project_id": projectID,
@@ -477,7 +487,7 @@ func (ex *ExtensionRepository) UpdateSynchronizerOrderReceivedExtension(ctx echo
 	}
 
 	var currentDoc domain.DataSynchronizerExtension
-	err := collection.FindOne(context.TODO(), filter).Decode(&currentDoc)
+	err := collection.FindOne(ctx, filter).Decode(&currentDoc)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return fmt.Errorf("no active synchronizer project found for projectID: %s", projectID)
@@ -494,7 +504,7 @@ func (ex *ExtensionRepository) UpdateSynchronizerOrderReceivedExtension(ctx echo
 		},
 	}
 
-	_, err = collection.UpdateOne(context.TODO(), filter, update, options.Update().SetUpsert(true))
+	_, err = collection.UpdateOne(ctx, filter, update, options.Update().SetUpsert(true))
 	if err != nil {
 		return err
 	}
@@ -511,7 +521,7 @@ func (ex *ExtensionRepository) UpdateSynchronizerOrderReceivedExtension(ctx echo
 			},
 		}
 
-		_, err = collection.UpdateOne(context.TODO(), filter, statusUpdate)
+		_, err = collection.UpdateOne(ctx, filter, statusUpdate)
 		if err != nil {
 			return err
 		}
@@ -521,10 +531,11 @@ func (ex *ExtensionRepository) UpdateSynchronizerOrderReceivedExtension(ctx echo
 }
 
 // UpdateSynchronizerProductReceivedExtension updates the "product_received" field in the "synchronizer_project_extensions" collection
-func (ex *ExtensionRepository) UpdateSynchronizerProductReceivedExtension(ctx echo.Context, projectID string, productReceived int) error {
+func (ex *ExtensionRepository) UpdateSynchronizerProductReceivedExtension(c echo.Context, projectID string, productReceived int) error {
 	// Get the collection from the MongoDB database
 	collection := ex.mongo.Database("otoo").Collection("synchronizer_project_extensions")
-
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	// Define the filter to find the active project with the given project ID
 	filter := bson.M{
 		"is_active":  true,
@@ -534,7 +545,7 @@ func (ex *ExtensionRepository) UpdateSynchronizerProductReceivedExtension(ctx ec
 
 	// First, retrieve the current document to get the totals and the current state of the "received" fields
 	var currentDoc domain.DataSynchronizerExtension
-	err := collection.FindOne(context.TODO(), filter).Decode(&currentDoc)
+	err := collection.FindOne(ctx, filter).Decode(&currentDoc)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return fmt.Errorf("no active synchronizer project found for projectID: %s", projectID)
@@ -553,7 +564,7 @@ func (ex *ExtensionRepository) UpdateSynchronizerProductReceivedExtension(ctx ec
 	}
 
 	// Perform the update operation
-	_, err = collection.UpdateOne(context.TODO(), filter, update, options.Update().SetUpsert(true))
+	_, err = collection.UpdateOne(ctx, filter, update, options.Update().SetUpsert(true))
 	if err != nil {
 		return err
 	}
@@ -571,7 +582,7 @@ func (ex *ExtensionRepository) UpdateSynchronizerProductReceivedExtension(ctx ec
 			},
 		}
 
-		_, err = collection.UpdateOne(context.TODO(), filter, statusUpdate)
+		_, err = collection.UpdateOne(ctx, filter, statusUpdate)
 		if err != nil {
 			return err
 		}
@@ -582,25 +593,26 @@ func (ex *ExtensionRepository) UpdateSynchronizerProductReceivedExtension(ctx ec
 }
 
 // GetAllSynchronizerProjectExtensions gets all ProjectExtensions
-func (ex *ExtensionRepository) GetAllSynchronizerProjectExtensions(ctx echo.Context, projectID string) ([]*domain.DataSynchronizerExtension, error) {
+func (ex *ExtensionRepository) GetAllSynchronizerProjectExtensions(c echo.Context, projectID string) ([]*domain.DataSynchronizerExtension, error) {
 	collection := ex.mongo.Database("otoo").Collection("synchronizer_project_extensions")
-
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	filter := bson.M{
 		"project_id": projectID,
 		"is_active":  true,
 	}
 
-	cursor, err := collection.Find(ctx.Request().Context(), filter)
+	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
 		}
 		return nil, err
 	}
-	defer cursor.Close(ctx.Request().Context())
+	defer cursor.Close(ctx)
 
 	var projectExtensions []*domain.DataSynchronizerExtension
-	for cursor.Next(ctx.Request().Context()) {
+	for cursor.Next(ctx) {
 		var projectExtension domain.DataSynchronizerExtension
 		if err := cursor.Decode(&projectExtension); err != nil {
 			return nil, err
@@ -615,9 +627,10 @@ func (ex *ExtensionRepository) GetAllSynchronizerProjectExtensions(ctx echo.Cont
 }
 
 // GetSynchronizerProjectExtensionByID gets a ProjectExtension by ID
-func (ex *ExtensionRepository) GetSynchronizerProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.DataSynchronizerExtension, error) {
+func (ex *ExtensionRepository) GetSynchronizerProjectExtensionByID(c echo.Context, extensionID, projectID string) (*domain.DataSynchronizerExtension, error) {
 	collection := ex.mongo.Database("otoo").Collection("synchronizer_project_extensions")
-
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	filter := bson.M{
 		"project_id": projectID,
 		"is_active":  true,
@@ -625,7 +638,7 @@ func (ex *ExtensionRepository) GetSynchronizerProjectExtensionByID(ctx echo.Cont
 	}
 
 	var projectExtension domain.DataSynchronizerExtension
-	err := collection.FindOne(ctx.Request().Context(), filter).Decode(&projectExtension)
+	err := collection.FindOne(ctx, filter).Decode(&projectExtension)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
@@ -637,9 +650,10 @@ func (ex *ExtensionRepository) GetSynchronizerProjectExtensionByID(ctx echo.Cont
 }
 
 // DeleteSynchronizerProjectExtension deletes a ProjectExtension by ID
-func (ex *ExtensionRepository) DeleteSynchronizerProjectExtension(ctx echo.Context, extensionID, projectID string) error {
+func (ex *ExtensionRepository) DeleteSynchronizerProjectExtension(c echo.Context, extensionID, projectID string) error {
 	collection := ex.mongo.Database("otoo").Collection("synchronizer_project_extensions")
-
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 	extID, err := primitive.ObjectIDFromHex(extensionID)
 	if err != nil {
 		return errors.New("Invalid extension ID format")
@@ -658,7 +672,119 @@ func (ex *ExtensionRepository) DeleteSynchronizerProjectExtension(ctx echo.Conte
 		},
 	}
 
-	result, err := collection.UpdateOne(ctx.Request().Context(), filter, update)
+	result, err := collection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return err
+	}
+	if result.MatchedCount == 0 {
+		return errors.New("ProjectExtension not found")
+	}
+
+	return nil
+}
+
+//////////////////  Courier4u Extension  /////////////////////////
+
+// CreateCourier4uProjectExtension creates a new ProjectExtension
+func (ex *ExtensionRepository) CreateCourier4uProjectExtension(c echo.Context, projectID string, e *domain.Courier4uExtension) error {
+	collection := ex.mongo.Database("otoo").Collection("courier4u_project_extensions")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	filter := bson.M{"extension_id": e.ExtensionID, "is_active": true, "project_id": projectID}
+	update := bson.M{"$set": e}
+
+	// Set upsert option to true
+	opt := options.Update().SetUpsert(true)
+
+	// Perform the upsert operation
+	_, err := collection.UpdateOne(ctx, filter, update, opt)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// GetAllCourier4uProjectExtensions gets all ProjectExtensions
+func (ex *ExtensionRepository) GetAllCourier4uProjectExtensions(c echo.Context, projectID string) ([]*domain.Courier4uExtension, error) {
+	collection := ex.mongo.Database("otoo").Collection("courier4u_project_extensions")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	filter := bson.M{
+		"project_id": projectID,
+		"is_active":  true,
+	}
+
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var projectExtensions []*domain.Courier4uExtension
+	for cursor.Next(ctx) {
+		var projectExtension domain.Courier4uExtension
+		if err := cursor.Decode(&projectExtension); err != nil {
+			return nil, err
+		}
+		projectExtensions = append(projectExtensions, &projectExtension)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return projectExtensions, nil
+}
+
+// GetCourier4uProjectExtensionByID gets a ProjectExtension by ID
+func (ex *ExtensionRepository) GetCourier4uProjectExtensionByID(c echo.Context, extensionID, projectID string) (*domain.Courier4uExtension, error) {
+	collection := ex.mongo.Database("otoo").Collection("courier4u_project_extensions")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	filter := bson.M{
+		"project_id":   projectID,
+		"extension_id": extensionID,
+		"is_active":    true,
+	}
+
+	var projectExtension domain.Courier4uExtension
+	err := collection.FindOne(ctx, filter).Decode(&projectExtension)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &projectExtension, nil
+}
+
+// DeleteCourier4uProjectExtension deletes a ProjectExtension by ID
+func (ex *ExtensionRepository) DeleteCourier4uProjectExtension(c echo.Context, extensionID, projectID string) error {
+	collection := ex.mongo.Database("otoo").Collection("courier4u_project_extensions")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	extID, err := primitive.ObjectIDFromHex(extensionID)
+	if err != nil {
+		return errors.New("Invalid extension ID format")
+	}
+
+	filter := bson.M{
+		"_id":          extID,
+		"project_id":   projectID,
+		"extension_id": extensionID,
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"deleted_at": time.Now(),
+			"is_active":  false,
+		},
+	}
+
+	result, err := collection.UpdateOne(ctx, filter, update)
 	if err != nil {
 		return err
 	}

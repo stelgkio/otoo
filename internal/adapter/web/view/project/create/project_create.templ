@@ -1,0 +1,319 @@
+package views
+
+import "github.com/stelgkio/otoo/internal/core/domain"
+
+var projectPoperHandle = templ.NewOnceHandle()
+
+templ ProjectCreateForm(invalid bool, errors map[string](string), values *domain.ProjectRequest) {
+	<div
+		id="dashboard-content"
+		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
+	>
+		<main class="container-fluid px-6 pb-10">
+			<form autocomplete="off">
+				<header class="py-4 border-bottom">
+					<div class="row align-items-center">
+						<div class="col">
+							<div class="d-flex align-items-center gap-4">
+								<div>
+									<button
+										type="button"
+										class="btn-close text-xs"
+										aria-label="Close"
+										hx-get="/project/list"
+										hx-push-url="true"
+										hx-target="#dashboard-content"
+									></button>
+								</div>
+								<div class="vr opacity-20 my-1"></div>
+								<h1 class="h4 ls-tight">Add a new project</h1>
+							</div>
+						</div>
+					</div>
+				</header>
+				<div class="row align-items-center g-3 mt-6">
+					<div class="col-md-2">
+						<label class="form-label mb-0">Project name</label>
+					</div>
+					<div class="col-md-8 col-xl-5" hx-target="this" hx-swap="outerHTML">
+						if errors["name"] != "" {
+							<input
+								name="name"
+								type="text"
+								hx-post="/project/validation/name"
+								class="form-control is-invalid"
+								placeholder="Project name"
+								value={ values.Name }
+							/>
+							<div class="invalid-feedback" style="display: block;">
+								{ errors["name"] }
+							</div>
+						} else {
+							<input
+								name="name"
+								type="text"
+								hx-post="/project/validation/name"
+								class="form-control"
+								placeholder="Project name"
+								value={ values.Name }
+							/>
+						}
+					</div>
+				</div>
+				<hr class="my-6"/>
+				<div class="row align-items-center g-3">
+					<div class="col-md-2">
+						<h6 class="fw-semibold">Description</h6>
+					</div>
+					<div class="col-md-8 col-xl-5">
+						if errors["description"] != "" {
+							<label class="visually-hidden">Description</label>
+							<input
+								name="description"
+								type="text"
+								class="form-control is-invalid"
+								placeholder="Project description ..."
+							/>
+							<div class="invalid-feedback" style="display: block;">
+								{ errors["description"] }
+							</div>
+						} else {
+							<label class="visually-hidden">Description</label>
+							<input
+								name="description"
+								class="form-control"
+								type="text"
+								placeholder="Project description ..."
+								value={ values.Description }
+							/>
+						}
+					</div>
+				</div>
+				<hr class="my-6"/>
+				<div class="row align-items-center g-3">
+					<div class="col-md-2"><label class="form-label mb-0">Select type</label></div>
+					<div class="col-md-8 col-xl-5">
+						<div class="d-flex gap-3 scrollable-x">
+							<div class="form-item-checkable">
+								<input
+									class="form-item-check"
+									type="radio"
+									name="project_type"
+									id="projecttypewoo"
+									checked="checked"
+									value="Woocommerce"
+								/>
+								<label class="form-item cursor-pointer" for="projecttypewoo">
+									<span
+										class="form-item-click d-inline-flex flex-column gap-3 align-items-center justify-content-center form-control w-rem-24 h-rem-24 text-center text-muted"
+									>
+										<img
+											src="/assets/img/marketing/WooCommerce_logo.svg.png"
+											class="w-rem-5 flex-none "
+											alt="..."
+										/>
+										// <i // class="bi bi-currency-bitcoin text-xl" / /></i>
+										<span class="fw-semibold text-xs">WooCommerce</span>
+									</span>
+								</label>
+							</div>
+							<div class="form-item-checkable">
+								<input
+									class="form-control form-item-check"
+									type="radio"
+									name="project_type"
+									id="projecttypeshopy"
+									value="Shopify"
+									disabled
+								/>
+								<label class="form-item cursor-pointer" for="projecttypeshopy">
+									<span
+										class="form-item-click d-inline-flex flex-column gap-3 align-items-center justify-content-center form-control w-rem-24 h-rem-24 text-center text-muted"
+									>
+										<img
+											src="/assets/img/marketing/shopify-logo.svg"
+											class="w-rem-5 flex-none "
+											alt="..."
+										/>
+										<span class="fw-semibold text-xs">Shopify</span>
+									</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr class="my-6"/>
+				<div id="shopify-fields">
+					<div class="row align-items-center g-3 mt-6">
+						<div class="d-flex align-items-end justify-content-between">
+							<div>
+								<p class="text-sm text-muted">
+									The domain url schema should be https for example https://example.com
+								</p>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<label class="form-label mb-0">Domain</label>
+						</div>
+						<div id="domain-validation" class="col-md-8 col-xl-5">
+							<div class="input-group position-relative">
+								if errors["domain"] != "" {
+									<input
+										name="domain"
+										type="text"
+										class="form-control is-invalid"
+										placeholder="Domain url"
+										aria-label="domain url"
+										hx-post="/project/validation/domain"
+										hx-target="#domain-validation"
+										value={ values.Domain }
+									/>
+								} else {
+									<input
+										name="domain"
+										type="text"
+										class="form-control"
+										placeholder="Domain url"
+										aria-label="domain url"
+										hx-post="/project/validation/domain"
+										hx-target="#domain-validation"
+										value={ values.Domain }
+									/>
+								}
+							</div>
+							if errors["domain"] != "" {
+								<div class="invalid-feedback" style="display: block;">
+									{ errors["domain"] }
+								</div>
+							}
+						</div>
+					</div>
+					<hr class="my-6"/>
+					<div id="key-validation">
+						<div class="row align-items-center g-3 mt-6">
+							<div class="col-md-2">
+								<label class="form-label mb-0">Consumer key</label>
+							</div>
+							<div class="col-md-8 col-xl-5">
+								if errors["consumer_key"] != "" {
+									<input
+										name="consumer_key"
+										type="password"
+										class="form-control is-invalid"
+										placeholder="Consumer key"
+										autocomplete="off"
+										value={ values.ConsumerKey }
+										hx-post="/project/validation/key"
+										hx-target="#key-validation"
+									/>
+									<div class="invalid-feedback" style="display: block;">
+										{ errors["consumer_key"] }
+									</div>
+								} else {
+									<input
+										name="consumer_key"
+										type="password"
+										class="form-control"
+										placeholder="Consumer key"
+										autocomplete="off"
+										value={ values.ConsumerKey }
+										hx-post="/project/validation/key"
+										hx-target="#key-validation"
+									/>
+								}
+							</div>
+							<div class="col-md-2">
+								<a
+									href="https://woocommerce.com/document/woocommerce-rest-api/"
+									target="_blank"
+									class="tooltip-container"
+								>
+									<i class="bi bi-info-circle"></i>
+									<span class="tooltip-text"></span>
+								</a>
+							</div>
+						</div>
+						<hr class="my-6"/>
+						<div class="row align-items-center g-3 mt-6">
+							<div class="col-md-2">
+								<label class="form-label mb-0">Consumer secret</label>
+							</div>
+							<div class="col-md-8 col-xl-5">
+								if errors["consumer_secret"] != "" {
+									<input
+										name="consumer_secret"
+										type="password"
+										class="form-control is-invalid"
+										placeholder="Consumer secret"
+										autocomplete="off"
+										value={ values.ConsumerSecret }
+										hx-post="/project/validation/key"
+										hx-target="#key-validation"
+									/>
+									<div class="invalid-feedback" style="display: block;">
+										{ errors["consumer_secret"] }
+									</div>
+								} else {
+									<input
+										name="consumer_secret"
+										type="password"
+										class="form-control"
+										placeholder="Consumer secret"
+										autocomplete="off"
+										value={ values.ConsumerSecret }
+										hx-post="/project/validation/key"
+										hx-target="#key-validation"
+									/>
+								}
+							</div>
+							<div class="col-md-2">
+								<a
+									href="https://woocommerce.com/document/woocommerce-rest-api/"
+									target="_blank"
+									class="tooltip-container"
+								>
+									<i class="bi bi-info-circle"></i>
+									<span class="tooltip-text"></span>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr class="my-6 "/>
+				<div class="d-flex justify-content-end gap-2">
+					<button
+						type="button"
+						class="btn btn-sm btn-neutral"
+						hx-get="/project/list"
+						hx-target="#dashboard-content"
+					>Cancel</button>
+					<button
+						type="submit"
+						hx-post="/project/create"
+						hx-indicator="#spinner"
+						class="btn btn-sm btn-primary"
+						hx-target="#dashboard-content"
+					>
+						<span
+							id="spinner"
+							class="htmx-indicator spinner-border spinner-border-sm"
+							role="status"
+							aria-hidden="true"
+						></span>
+						Submit
+					</button>
+				</div>
+				<hr class="my-6 "/>
+				<div class="row justify-content-md-center"></div>
+			</form>
+		</main>
+		@projectPoperHandle.Once() {
+			<script>
+		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+			return new bootstrap.Tooltip(tooltipTriggerEl)
+		})
+	</script>
+		}
+	</div>
+}

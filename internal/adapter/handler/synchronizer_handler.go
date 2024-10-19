@@ -8,7 +8,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 	synpage "github.com/stelgkio/otoo/internal/adapter/web/view/component/data_synchronizer/synchronize"
-	syn "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/progress/synchronize"
+	syntmp "github.com/stelgkio/otoo/internal/adapter/web/view/component/data_synchronizer/synchronize/template"
+	syn "github.com/stelgkio/otoo/internal/adapter/web/view/project/progress/synchronize"
 	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
@@ -197,7 +198,7 @@ func (ph *ProjectHandler) ProjectSynchronizeDone(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	_, err = ph.svc.GetProjectByID(ctx, projectID)
+	project, err := ph.svc.GetProjectByID(ctx, projectID)
 	if err != nil {
 		return err
 	}
@@ -279,10 +280,12 @@ func (ph *ProjectHandler) ProjectSynchronizeDone(ctx echo.Context) error {
 	for count := range customerResults {
 		customerCount = count
 	}
-
+	users, err := ph.userSvc.FindUsersByProjectId(nil, project.Id)
 	if productCount == productTotal && orderCount == orderTotal && (customerCount > customerTotal || customerCount == customerTotal) {
 		ctx.Response().Header().Set("HX-Trigger", "done")
 		go ph.bestSellerSvc.RunAProductBestSellerInitializerJob(projectID)
+		go ph.orderAnalyticsSvc.RunOrderWeeklyBalanceInitializeJob(project, users)
+		go ph.orderAnalyticsSvc.RunOrderMonthlyCountInitializeJob(project, users)
 		return r.Render(ctx, syn.ProjectSynchronizerDone(user, projectID, customerTotal, productTotal, orderTotal, 100.0, 100.0, 100.0))
 	}
 	customerPercentage := (float64(customerCount) / float64(customerTotal)) * 100.0
@@ -329,7 +332,7 @@ func (ph *ProjectHandler) ProjectSynchronizePage(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	_, err = ph.svc.GetProjectByID(ctx, projectID)
+	project, err := ph.svc.GetProjectByID(ctx, projectID)
 	if err != nil {
 		return err
 	}
@@ -411,8 +414,11 @@ func (ph *ProjectHandler) ProjectSynchronizePage(ctx echo.Context) error {
 			return fmt.Errorf(" error: %v", err)
 		}
 	}
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, synpage.ProjectSynchronizerPage(user, projectID, customerTotal, productTotal, orderTotal))
+	}
 
-	return r.Render(ctx, synpage.ProjectSynchronizerPage(user, projectID, customerTotal, productTotal, orderTotal))
+	return r.Render(ctx, syntmp.ProjectSynchonizerTemplate(user, project.Name, projectID, customerTotal, productTotal, orderTotal))
 }
 
 // ProjectSynchronizeStartPage POST /project/synchronize/:projectId
@@ -496,7 +502,7 @@ func (ph *ProjectHandler) ProjectSynchronizeDonePage(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	_, err = ph.svc.GetProjectByID(ctx, projectID)
+	project, err := ph.svc.GetProjectByID(ctx, projectID)
 	if err != nil {
 		return err
 	}
@@ -515,8 +521,11 @@ func (ph *ProjectHandler) ProjectSynchronizeDonePage(ctx echo.Context) error {
 
 		return r.Render(ctx, synpage.ProjectSynchronizerStartPage(user, projectID, int64(syncro.CustomerRecieved), int64(syncro.ProductReceived), int64(syncro.OrderReceived), customerPercentage, productPercentage, orderPercentage))
 	}
+	users, err := ph.userSvc.FindUsersByProjectId(nil, project.Id)
 	ctx.Response().Header().Set("HX-Trigger", "done")
 	go ph.bestSellerSvc.RunAProductBestSellerInitializerJob(projectID)
+	go ph.orderAnalyticsSvc.RunOrderWeeklyBalanceInitializeJob(project, users)
+	go ph.orderAnalyticsSvc.RunOrderMonthlyCountInitializeJob(project, users)
 	return r.Render(ctx, synpage.ProjectSynchronizerDonePage(user, projectID, customerTotal, productTotal, orderTotal, 100.0, 100.0, 100.0))
 
 }

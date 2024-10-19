@@ -2,12 +2,38 @@ package views
 
 import (
 	t "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/template"
+	ex "github.com/stelgkio/otoo/internal/adapter/web/view/extension"
 	ac "github.com/stelgkio/otoo/internal/adapter/web/view/extension/acs_courier"
+	cu "github.com/stelgkio/otoo/internal/adapter/web/view/extension/courier4u"
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
 templ ExtentionAcsSubscriptionSuccessTemplate(user *domain.User, projectName, projectId, extensionId string) {
 	@t.DashboardTemplate(user, projectName, projectId) {
 		@ac.ASC_Courier_Subscription_Success(projectId, extensionId)
+	}
+}
+
+templ ExtentionCourier4uSubscriptionSuccessTemplate(user *domain.User, projectName, projectId, extensionId string) {
+	@t.DashboardTemplate(user, projectName, projectId) {
+		@cu.Courier4uSubscriptionSuccess(projectId, extensionId)
+	}
+}
+
+templ ExtensionTemplate(user *domain.User, projectName string, projectId string, extensions []*domain.Extension, projectExtensions []*domain.ProjectExtension) {
+	@t.DashboardTemplate(user, projectName, projectId) {
+		@ex.Extensions(projectId, extensions, projectExtensions)
+	}
+}
+
+templ ExtentionAcsSubscriptionFailTemplate(user *domain.User, projectName, projectId, extensionId string) {
+	@t.DashboardTemplate(user, projectName, projectId) {
+		@ac.ASC_Courier_Subscription_Fail(projectId, extensionId)
+	}
+}
+
+templ ExtentionCourier4uSubscriptionFailTemplate(user *domain.User, projectName, projectId, extensionId string) {
+	@t.DashboardTemplate(user, projectName, projectId) {
+		@cu.Courier4uSubscriptionFail(projectId, extensionId)
 	}
 }

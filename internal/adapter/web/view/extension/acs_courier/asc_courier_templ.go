@@ -368,14 +368,14 @@ func ASC_Courier(projectId, extensionId string, errors map[string](string), valu
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\">Cancel</button> <button type=\"submit\" hx-post=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\">Cancel</button> <button type=\"submit\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var21 string
 		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/extension/asc-courier/%s", projectId))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/extension/acs_courier/asc_courier.templ`, Line: 232, Col: 69}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/extension/acs_courier/asc_courier.templ`, Line: 233, Col: 69}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 		if templ_7745c5c3_Err != nil {

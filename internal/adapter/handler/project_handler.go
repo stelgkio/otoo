@@ -2,15 +2,16 @@ package handler
 
 import (
 	"log/slog"
+	"net/http"
 	"strings"
 
 	"github.com/labstack/echo/v4"
 	er "github.com/stelgkio/otoo/internal/adapter/web/view/component/error"
-	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/create"
-	l "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/list"
-	wp "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/progress/webhooks"
-	v "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/validation"
-	d "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/view"
+	p "github.com/stelgkio/otoo/internal/adapter/web/view/project/create"
+	l "github.com/stelgkio/otoo/internal/adapter/web/view/project/list"
+	wp "github.com/stelgkio/otoo/internal/adapter/web/view/project/progress/webhooks"
+	v "github.com/stelgkio/otoo/internal/adapter/web/view/project/validation"
+	d "github.com/stelgkio/otoo/internal/adapter/web/view/project/view"
 	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stelgkio/otoo/internal/core/port"
@@ -19,20 +20,32 @@ import (
 
 // ProjectHandler represents the HTTP handler for user-related requests
 type ProjectHandler struct {
-	svc             port.ProjectService
-	userSvc         port.UserService
-	reportSvc       port.ReportService
-	productSvc      port.ProductService
-	customerSvc     port.CustomerService
-	orderSvc        port.OrderService
-	bestSellerSvc   port.ProductBestSellers
-	notificationSvc port.NotificationService
-	extensionSvc    port.ExtensionService
-	webhookSvc      port.WoocommerceWebhookService
+	svc               port.ProjectService
+	userSvc           port.UserService
+	reportSvc         port.ReportService
+	productSvc        port.ProductService
+	customerSvc       port.CustomerService
+	orderSvc          port.OrderService
+	bestSellerSvc     port.ProductBestSellers
+	notificationSvc   port.NotificationService
+	extensionSvc      port.ExtensionService
+	webhookSvc        port.WoocommerceWebhookService
+	orderAnalyticsSvc port.OrderAnalyticsCron
 }
 
 // NewProjectHandler creates a new ProjectHandler instance
-func NewProjectHandler(svc port.ProjectService, userSvc port.UserService, reportSvc port.ReportService, productSvc port.ProductService, customerSvc port.CustomerService, orderSvc port.OrderService, bestSellerSvc port.ProductBestSellers, notificationSvc port.NotificationService, extensionSvc port.ExtensionService, webhookSvc port.WoocommerceWebhookService) *ProjectHandler {
+func NewProjectHandler(
+	svc port.ProjectService,
+	userSvc port.UserService,
+	reportSvc port.ReportService,
+	productSvc port.ProductService,
+	customerSvc port.CustomerService,
+	orderSvc port.OrderService,
+	bestSellerSvc port.ProductBestSellers,
+	notificationSvc port.NotificationService,
+	extensionSvc port.ExtensionService,
+	webhookSvc port.WoocommerceWebhookService,
+	orderAnalyticsSvc port.OrderAnalyticsCron) *ProjectHandler {
 	return &ProjectHandler{
 		svc,
 		userSvc,
@@ -44,6 +57,7 @@ func NewProjectHandler(svc port.ProjectService, userSvc port.UserService, report
 		notificationSvc,
 		extensionSvc,
 		webhookSvc,
+		orderAnalyticsSvc,
 	}
 }
 
@@ -67,13 +81,13 @@ func (ph *ProjectHandler) CreateProject(ctx echo.Context) error {
 
 	}
 	if err != nil {
-		slog.Error("Create project error", "error", err)
+		slog.Error("Create project error Validate", "error", err)
 		return r.Render(ctx, p.ProjectCreateForm(true, nil, new(domain.ProjectRequest)))
 	}
 
 	_, err = ph.reportSvc.GetCustomerTotalCountTestCredential(ctx, req.ConsumerKey, req.ConsumerSecret, req.Domain)
 	if err != nil {
-		slog.Error("Create project error", "error", err)
+		slog.Error("Create project error GetCustomerTotalCountTestCredential", "error", err)
 		validationErrors["consumer_key"] = "Consumer Key is invalid"
 		validationErrors["consumer_secret"] = "Consumer Secret is invalid "
 		validationErrors["domain"] = "Domain is not available"
@@ -82,7 +96,7 @@ func (ph *ProjectHandler) CreateProject(ctx echo.Context) error {
 
 	dom, err := ph.svc.CreateProject(ctx, req)
 	if err != nil {
-		slog.Error("Create project error", "error", err)
+		slog.Error("Create project error CreateProject", "error", err)
 		return r.Render(ctx, p.ProjectCreateForm(true, nil, new(domain.ProjectRequest)))
 	}
 
@@ -105,14 +119,6 @@ func (ph *ProjectHandler) ProjectCreateForm(ctx echo.Context) error {
 
 // ProjectListPage  GET /project/list
 func (ph *ProjectHandler) ProjectListPage(ctx echo.Context) error {
-
-	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{}, 1, 10)
-	if err != nil {
-		return err
-	}
-	if ctx.Request().Header.Get("HX-Request") == "true" {
-		return r.Render(ctx, l.ProjectListPage(projects))
-	}
 	userID, err := auth.GetUserID(ctx)
 	if err != nil {
 		return err
@@ -121,6 +127,14 @@ func (ph *ProjectHandler) ProjectListPage(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
+	projects, err := ph.userSvc.FindProjectsByUserId(ctx, userID)
+	if err != nil {
+		return err
+	}
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, l.ProjectListPage(projects, user))
+	}
+
 	return r.Render(ctx, d.ProjectDashboard(projects, user))
 
 }
@@ -128,15 +142,15 @@ func (ph *ProjectHandler) ProjectListPage(ctx echo.Context) error {
 // GetProjectDashboardPage GET /dashboard
 func (ph *ProjectHandler) GetProjectDashboardPage(ctx echo.Context) error {
 
-	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{}, 1, 10)
-	if err != nil {
-		return err
-	}
 	userID, err := auth.GetUserID(ctx)
 	if err != nil {
 		return err
 	}
 	user, err := ph.userSvc.GetUserById(ctx, userID)
+	if err != nil {
+		return err
+	}
+	projects, err := ph.userSvc.FindProjectsByUserId(ctx, userID)
 	if err != nil {
 		return err
 	}
@@ -150,6 +164,7 @@ func (ph *ProjectHandler) ProjectNameValidation(ctx echo.Context) error {
 	if err := ctx.Bind(req); err != nil {
 		slog.Error("Error binding request", "error", err)
 	}
+
 	projects, err := ph.svc.FindProjects(ctx, &domain.FindProjectRequest{Name: req.Name}, 1, 10)
 	if err != nil {
 		return err
@@ -188,6 +203,33 @@ func (ph *ProjectHandler) ProjectDomainValidation(ctx echo.Context) error {
 	}
 
 	return r.Render(ctx, v.DomainUrlValidation(valid, req.Domain, errors))
+}
+
+// FindProjectByDomain  GET /project/validation/domain
+func (ph *ProjectHandler) FindProjectByDomain(ctx echo.Context) error {
+	domainq := ctx.QueryParam("domain")
+	domainq = "https://" + domainq
+	trimmedDomain := strings.TrimRight(domainq, "/")
+
+	// Call the service to find projects by domain
+	projects, err := ph.svc.SearchByDomain(ctx, &domain.FindProjectRequest{Domain: trimmedDomain}, 1, 10)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
+	// Create a response slice to hold the formatted projects
+	var response []map[string]interface{}
+
+	// Iterate over the projects and format them
+	for _, project := range projects {
+		response = append(response, map[string]interface{}{
+			"id":     project.Id,                        // Assuming project has an ID field
+			"domain": project.WoocommerceProject.Domain, // Assuming project has a Domain field
+		})
+	}
+
+	// Return the response as JSON
+	return ctx.JSON(http.StatusOK, response)
 }
 
 // ProjectKeyValidation POST /project/validation/key

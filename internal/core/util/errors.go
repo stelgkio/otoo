@@ -2,6 +2,7 @@ package util
 
 import (
 	"errors"
+	"strings"
 )
 
 var (
@@ -42,3 +43,16 @@ var (
 	// ErrSynchronizerInProgress is an error for when the request is invalid
 	ErrSynchronizerInProgress = errors.New("synchronizer is already in progress")
 )
+
+// Function to concatenate error messages
+func ConcatenateErrors(errors map[string]string) string {
+	var errorMessages []string
+
+	// Iterate through the map and collect the error messages
+	for _, msg := range errors {
+		errorMessages = append(errorMessages, msg)
+	}
+
+	// Join the messages with a newline (or any other separator)
+	return strings.Join(errorMessages, "\n")
+}

@@ -1,0 +1,209 @@
+package views
+
+templ AddExtensionForm() {
+	<!DOCTYPE html>
+	<html lang="en" data-theme="light">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+			<meta name="color-scheme" content="dark light"/>
+			<title>KonektorX: Streamline Your E-commerce Data Integration Effortlessly</title>
+			<link rel="preload" href="/assets/css/DAGGERSQUARE.otf" as="font" type="font/otf" crossorigin/>
+			<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+			<link rel="stylesheet" type="text/css" href="/assets/css/utility.css"/>
+			<link rel="stylesheet" type="text/css" href="/assets/css/form.css"/>
+			<!-- External styles (these will be loaded async as they are less critical) -->
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" media="print" onload="this.media='all'"/>
+			<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"/></noscript>
+			<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f=satoshi@900,700,500,300,401,400&display=swap" media="print" onload="this.media='all'"/>
+			<noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f=satoshi@900,700,500,300,401,400&display=swap"/></noscript>
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" media="print" onload="this.media='all'"/>
+			<noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/></noscript>
+			<!-- Favicon -->
+			<link rel="icon" type="image/png" href="/assets/img/favicon1.png"/>
+			<!-- Defer JS Scripts to improve initial load performance -->
+			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+			<script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
+			<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+			<script src="https://js.stripe.com/v3/"></script>
+			<script src="https://unpkg.com/i18next@21.8.14/i18next.min.js"></script>
+			<script src="https://unpkg.com/i18next-http-backend@1.5.19/i18nextHttpBackend.min.js"></script>
+			<script src="https://unpkg.com/i18next-browser-languagedetector@6.1.4/i18nextBrowserLanguageDetector.min.js"></script>
+			//<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+			<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet"/>
+			<style>
+        /* Style Select2 dropdown */
+        .select2-container--default .select2-selection--single {
+            background-color: #fff;  /* White background for the select field */
+            border: 1px solid #ced4da;  /* Bootstrap border style */
+        }
+        /* Style the search input inside the Select2 dropdown */
+        .select2-container--default .select2-search--dropdown .select2-search__field {
+            background-color: #fff;  /* White background for input */
+            color: #000;  /* Black text for input */
+        }
+    </style>
+		</head>
+		<body>
+			<div class="row g-0 justify-content-center gradient-bottom-right start-purple middle-indigo end-pink">
+				<div class="col-12 col-md-12 col-lg-12 d-flex  justify-content-center bg-body ">
+					<div class="w-md-50 mx-auto px-10 px-md-0 py-10">
+						<div class="mb-10">
+							<a class="d-inline-block mb-10 d-flex justify-content-center" href="/">
+								<h1 class="ls-tight fw-bolder mylogo">KonektorX</h1>
+							</a>
+							<h1 class="ls-tight fw-bolder h3">Add manualy extension to existing project</h1>
+						</div>
+						<form>
+							<div id="selectedValueDisplay"></div>
+							<br/>
+							<br/>
+							<div class="row g-5">
+								<div class=" mt-5">
+									<label for="exampleSelect" class="form-label">Search project by domain</label>
+									<!-- Select2 field -->
+									<select
+										class="form-select"
+										name="project"
+										id="exampleSelect"
+										style="width: 100%;"
+										hx-get="/extension/table"
+										hx-target="#table_extension"
+										hx-trigger="select2-change"
+									>
+										<!-- Options will be dynamically loaded via JavaScript (mock data) -->
+									</select>
+								</div>
+								<div
+									class="col-sm-12"
+									hx-trigger="load"
+									hx-get="/extension/all"
+									hx-target="#projectextension"
+								>
+									<div
+										class="col-sm-12"
+										id="projectextension"
+									></div>
+								</div>
+								<div class="col-sm-12 pb-5">
+									<label class="form-label" for="last_name"></label>
+									<select class="form-select" name="period" aria-label="Default select example">
+										<option selected>Extension period</option>
+										<option value="30">One Month</option>
+										<option value="60">Two Month</option>
+										<option value="90">Three Month</option>
+										<option value="182">Six Month</option>
+										<option value="365">One Year</option>
+									</select>
+								</div>
+								<div class="col-sm-12 ">
+									<input
+										type="submit"
+										class="btn btn-dark w-100 "
+										value="Add extension"
+										type="submit"
+										hx-post="/extension/project_extension"
+										hx-indicator="#spinner"
+										class="btn btn-sm btn-primary"
+										hx-target="#table_extension"
+									/>
+								</div>
+							</div>
+						</form>
+						<div class=" pt-10" id="table_extension"></div>
+					</div>
+				</div>
+			</div>
+			<!-- Bootstrap Toast (hidden by default) -->
+			<div class="toast-container position-fixed bottom-0 end-0 p-3">
+				<div id="error-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+					<div class="toast-header">
+						<strong class="me-auto text-danger">Error</strong>
+						<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+					</div>
+					<div class="toast-body" id="toast-body">
+						<!-- Error message will be inserted here -->
+					</div>
+				</div>
+			</div>
+			<!-- Bootstrap 5 JS -->
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+			<!-- jQuery (required for Select2) -->
+			<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+			<!-- Select2 JS -->
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+			<script>
+    $(document).ready(function() {
+        $('#exampleSelect').select2({
+            placeholder: 'Search for a project...',
+            ajax: {
+                url: '/project/findbydomain', // Replace with your actual URL
+                dataType: 'json',
+                delay: 250,  // Delay in ms for better performance
+                data: function(params) {
+                    return {
+                        domain: params.term // The search term
+                    };
+                },
+                processResults: function(data) {
+                    // Assuming your API returns a JSON array like: [{ id: 1, text: "Apple" }, ...]
+                    return {
+                        results: data // Return the results in the expected format
+                    };
+                },
+                cache: true  // Cache the results to avoid repeated requests
+            },
+            minimumInputLength: 1,  // Minimum characters before search triggers
+            // Custom template for displaying the value and text
+            templateResult: function(data) {
+                if (!data.id) { return data.domain; }  // If there's no ID, just return the text
+                return $('<span>Value: ' + data.id + ' - ' + data.domain + '</span>');
+            },
+            // Custom template for showing the selected option in the input
+            templateSelection: function(data) {
+                return 'Value: ' + data.id + ' - ' + data.domain;
+            }
+        }).on('select2:select', function(e) {
+			// Get the selected data
+                var selectedData = e.params.data;
+
+                // Update a text element with the selected value
+                $('#selectedValueDisplay').text('ProjectId : ' + selectedData.id + ' - Domain: ' + selectedData.domain);
+                
+            // Trigger the custom event for HTMX
+            var selectElement = document.getElementById('exampleSelect');
+            var customEvent = new CustomEvent('select2-change');  // Custom event
+            selectElement.dispatchEvent(customEvent);  // Dispatch the event
+        });
+    });
+
+	
+
+document.body.addEventListener('htmx:responseError', function (event) {
+    // Get the error message from the response
+    const response = event.detail.xhr.responseText;
+    let errorMsg = 'An unexpected error occurred.';
+
+    try {
+        // Try to parse the response as JSON (in case the error is in JSON format)
+        const errorData = JSON.parse(response);
+        if (errorData.error) {
+            errorMsg = errorData.error;
+        }
+    } catch (e) {
+        // If not JSON, assume the response is plain text
+        errorMsg = response;
+    }
+
+    // Set the error message in the toast body
+    document.getElementById('toast-body').innerText = errorMsg;
+
+    // Show the toast
+    const toastElement = document.getElementById('error-toast');
+    const toast = new bootstrap.Toast(toastElement);
+    toast.show();
+});
+</script>
+		</body>
+	</html>
+}

@@ -1,6 +1,8 @@
 package service
 
 import (
+	"time"
+
 	"github.com/labstack/echo/v4"
 	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/port"
@@ -39,6 +41,11 @@ func (as *AuthService) Login(ctx echo.Context, email, password string) (string, 
 	err = auth.GenerateTokensAndSetCookies(user, ctx)
 	if err != nil {
 		return "", e.ErrTokenCreation
+	}
+	user.LastLogin = time.Now().UTC()
+	_, err = as.repo.UpdateUser(ctx, user)
+	if err != nil {
+		return "", e.ErrInternal
 	}
 
 	return "", nil
@@ -83,4 +90,20 @@ func (as *AuthService) ForgotPassword(ctx echo.Context, email string) error {
 // ResetPassword resets the user's password
 func (as *AuthService) ResetPassword(ctx echo.Context) error {
 	return nil
+}
+
+func (as AuthService) ValidateCurrentPassword(ctx echo.Context, password, email string) (bool, error) {
+	user, err := as.repo.GetUserByEmail(ctx, email)
+	if err != nil {
+		if err == e.ErrDataNotFound {
+			return false, e.ErrInvalidCredentials
+		}
+		return false, e.ErrInternal
+	}
+
+	err = e.ComparePassword(password, user.Password)
+	if err != nil {
+		return false, e.ErrInvalidCredentials
+	}
+	return true, nil
 }

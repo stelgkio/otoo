@@ -46,8 +46,8 @@ func (ex *ExtensionService) DeleteExtension(ctx echo.Context, extensionID string
 //////////////////PROJECT Extension/////////////////////////
 
 // CreateProjectExtension creates a new ProjectExtension
-func (ex *ExtensionService) CreateProjectExtension(ctx echo.Context, projectID string, e *domain.Extension) error {
-	return ex.repo.CreateProjectExtension(ctx, projectID, e)
+func (ex *ExtensionService) CreateProjectExtension(ctx echo.Context, projectID string, e *domain.Extension, days int, subId string) error {
+	return ex.repo.CreateProjectExtension(ctx, projectID, e, days, subId)
 }
 
 // GetAllProjectExtensions gets all ProjectExtensions
@@ -63,6 +63,11 @@ func (ex *ExtensionService) GetProjectExtensionByID(ctx echo.Context, extensionI
 // DeleteProjectExtension deletes a ProjectExtension by ID
 func (ex *ExtensionService) DeleteProjectExtension(ctx echo.Context, extensionID, projectID string) error {
 	return ex.repo.DeleteProjectExtension(ctx, extensionID, projectID)
+}
+
+// DeleteProjectExtensionByID deletes a ProjectExtension by ID
+func (ex *ExtensionService) DeleteProjectExtensionByID(ctx echo.Context, projectExtensionID string) error {
+	return ex.repo.DeleteProjectExtensionByID(ctx, projectExtensionID)
 }
 
 ////////////////// ACS Extension/////////////////////////
@@ -86,6 +91,29 @@ func (ex *ExtensionService) GetACSProjectExtensionByID(ctx echo.Context, extensi
 // DeleteACSProjectExtension deletes a ProjectExtension by ID
 func (ex *ExtensionService) DeleteACSProjectExtension(ctx echo.Context, extensionID, projectID string) error {
 	return ex.repo.DeleteACSProjectExtension(ctx, extensionID, projectID)
+}
+
+////////////////// Courier4u Extension/////////////////////////
+
+// CreateCourier4uProjectExtension creates a new ProjectExtension
+func (ex *ExtensionService) CreateCourier4uProjectExtension(ctx echo.Context, projectID string, e *domain.Courier4uExtension) error {
+
+	return ex.repo.CreateCourier4uProjectExtension(ctx, projectID, e)
+}
+
+// GetAllCourier4uProjectExtensions gets all ProjectExtensions
+func (ex *ExtensionService) GetAllCourier4uProjectExtensions(ctx echo.Context, projectID string) ([]*domain.Courier4uExtension, error) {
+	return ex.repo.GetAllCourier4uProjectExtensions(ctx, projectID)
+}
+
+// GetCourier4uProjectExtensionByID gets a ProjectExtension by ID
+func (ex *ExtensionService) GetCourier4uProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.Courier4uExtension, error) {
+	return ex.repo.GetCourier4uProjectExtensionByID(ctx, extensionID, projectID)
+}
+
+// DeleteCourier4uProjectExtension deletes a ProjectExtension by ID
+func (ex *ExtensionService) DeleteCourier4uProjectExtension(ctx echo.Context, extensionID, projectID string) error {
+	return ex.repo.DeleteCourier4uProjectExtension(ctx, extensionID, projectID)
 }
 
 ////////////////// Data Synchronizer Extension/////////////////////////

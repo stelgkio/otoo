@@ -15,17 +15,23 @@ type ExtensionRepository interface {
 
 	//////////////////PROJECT ExtensionS/////////////////////////
 
-	CreateProjectExtension(ctx echo.Context, projectID string, ex *domain.Extension) error
+	CreateProjectExtension(ctx echo.Context, projectID string, ex *domain.Extension, days int, subID string) error
 	GetAllProjectExtensions(ctx echo.Context, projectID string) ([]*domain.ProjectExtension, error)
 	GetProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.ProjectExtension, error)
 	DeleteProjectExtension(ctx echo.Context, extensionID, projectID string) error
-
+	DeleteProjectExtensionByID(ctx echo.Context, projectExtensionID string) error
 	////////////////// ACS Extension/////////////////////////
 
 	CreateACSProjectExtension(ctx echo.Context, projectID string, ex *domain.AcsCourierExtension) error
 	GetAllACSProjectExtensions(ctx echo.Context, projectID string) ([]*domain.AcsCourierExtension, error)
 	GetACSProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.AcsCourierExtension, error)
 	DeleteACSProjectExtension(ctx echo.Context, extensionID, projectID string) error
+
+	////////////////// Courier4u Extension/////////////////////////
+	CreateCourier4uProjectExtension(ctx echo.Context, projectID string, e *domain.Courier4uExtension) error
+	GetAllCourier4uProjectExtensions(ctx echo.Context, projectID string) ([]*domain.Courier4uExtension, error)
+	GetCourier4uProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.Courier4uExtension, error)
+	DeleteCourier4uProjectExtension(ctx echo.Context, extensionID, projectID string) error
 
 	////////////////// Data Synchronizer Extension/////////////////////////
 
@@ -48,17 +54,23 @@ type ExtensionService interface {
 
 	//////////////////PROJECT ExtensionS/////////////////////////
 
-	CreateProjectExtension(ctx echo.Context, projectID string, e *domain.Extension) error
+	CreateProjectExtension(ctx echo.Context, projectID string, e *domain.Extension, days int, subID string) error
 	GetAllProjectExtensions(ctx echo.Context, projectID string) ([]*domain.ProjectExtension, error)
 	GetProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.ProjectExtension, error)
 	DeleteProjectExtension(ctx echo.Context, extensionID, projectID string) error
+	DeleteProjectExtensionByID(ctx echo.Context, projectExtensionID string) error
 
 	////////////////// ACS Extension/////////////////////////
-
 	CreateACSProjectExtension(ctx echo.Context, projectID string, e *domain.AcsCourierExtension) error
 	GetAllACSProjectExtensions(ctx echo.Context, projectID string) ([]*domain.AcsCourierExtension, error)
 	GetACSProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.AcsCourierExtension, error)
 	DeleteACSProjectExtension(ctx echo.Context, extensionID, projectID string) error
+
+	////////////////// Courier4u Extension/////////////////////////
+	CreateCourier4uProjectExtension(ctx echo.Context, projectID string, e *domain.Courier4uExtension) error
+	GetAllCourier4uProjectExtensions(ctx echo.Context, projectID string) ([]*domain.Courier4uExtension, error)
+	GetCourier4uProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.Courier4uExtension, error)
+	DeleteCourier4uProjectExtension(ctx echo.Context, extensionID, projectID string) error
 
 	////////////////// Data Synchronizer Extension/////////////////////////
 

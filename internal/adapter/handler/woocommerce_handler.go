@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
-	wp "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/progress/webhooks"
-	pw "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/webhooks"
+	wp "github.com/stelgkio/otoo/internal/adapter/web/view/project/progress/webhooks"
+	pw "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/webhooks"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/port"
@@ -83,15 +83,17 @@ func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
 		return err
 	}
 
+	_, orcderCreate, _ := woo.ConvertDateString(req.DateCreatedGmt)
 	// Create an order record
 	orderRecord := &woo.OrderRecord{
-		ProjectID: project.Id.String(),
-		Event:     "order.created",
-		OrderID:   req.ID,
-		Order:     *req,
-		IsActive:  true,
-		CreatedAt: time.Now().UTC(),
-		Timestamp: time.Now().UTC(),
+		ProjectID:    project.Id.String(),
+		Event:        "order.created",
+		OrderID:      req.ID,
+		Order:        *req,
+		IsActive:     true,
+		CreatedAt:    time.Now().UTC(),
+		Timestamp:    time.Now().UTC(),
+		OrderCreated: orcderCreate,
 	}
 
 	// Convert order status from string to domain status
@@ -102,7 +104,7 @@ func (w WooCommerceHandler) OrderCreatedWebHook(ctx echo.Context) error {
 	}
 
 	// Save the order to the database
-	err = w.p.OrderCreate(orderRecord)
+	err = w.p.OrderUpdate(orderRecord, req.ID)
 	if err != nil {
 		return ctx.String(http.StatusBadRequest, "bad request")
 	}
@@ -136,16 +138,17 @@ func (w WooCommerceHandler) OrderUpdatesWebHook(ctx echo.Context) error {
 		slog.Error("Error validating order_updated webhook", "error", err)
 		return err
 	}
-
+	_, orcderCreate, _ := woo.ConvertDateString(req.DateCreatedGmt)
 	// Create an updated order record
 	updateOrderRecord := &woo.OrderRecord{
-		ProjectID: project.Id.String(),
-		Event:     "order.updated",
-		OrderID:   req.ID,
-		Order:     *req,
-		IsActive:  true,
-		UpdatedAt: time.Now().UTC(),
-		Timestamp: time.Now().UTC(),
+		ProjectID:    project.Id.String(),
+		Event:        "order.updated",
+		OrderID:      req.ID,
+		Order:        *req,
+		IsActive:     true,
+		UpdatedAt:    time.Now().UTC(),
+		Timestamp:    time.Now().UTC(),
+		OrderCreated: orcderCreate,
 	}
 
 	// Convert the status
@@ -700,7 +703,7 @@ func (w WooCommerceHandler) DeleteAllWebhooks(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions))
+	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions, nil))
 }
 
 // WebhookBulkAction handles bulk actions for webhooks
@@ -711,6 +714,7 @@ func (w WooCommerceHandler) WebhookBulkAction(ctx echo.Context) error {
 // WebhookCreateAll handles the creation of all webhooks
 func (w WooCommerceHandler) WebhookCreateAll(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
+
 	project, err := w.s.GetProjectByID(ctx, projectID)
 	if err != nil {
 		return err
@@ -721,6 +725,6 @@ func (w WooCommerceHandler) WebhookCreateAll(ctx echo.Context) error {
 		return err
 	}
 
-	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions))
+	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions, nil))
 
 }

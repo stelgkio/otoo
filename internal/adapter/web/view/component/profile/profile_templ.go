@@ -65,20 +65,35 @@ func Profile(user *domain.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div></div></div><hr class=\"my-6\"><div class=\"row align-items-center\"><div class=\"col-md-2\"><label class=\"form-label\" for=\"email\">Email</label></div><div class=\"col-md-8 col-xl-5\"><div class=\"\"><input type=\"email\" class=\"form-control\" name=\"email\" value=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div></div></div><hr class=\"my-6\"><div class=\"row align-items-center\"><div class=\"col-md-2\"><label class=\"form-label\" for=\"email\">Email</label></div><div class=\"col-md-8 col-xl-5\"><div class=\"\"><input type=\"email\" class=\"form-control\" name=\"email\" disabled value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(user.Email)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/profile/profile.templ`, Line: 56, Col: 79}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/profile/profile.templ`, Line: 58, Col: 88}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div></div></div><hr class=\"my-6 d-md-none\"><div class=\"d-flex d-md-none justify-content-end gap-2 mb-6\"><button type=\"submit\" hx-indicator=\"#spinner\" hx-post=\"/profile/user/update\" hx-target=\"#dashboard-content\" class=\"btn btn-sm btn-primary \"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Update</button></div></form><hr class=\"my-6\"><div class=\"d-flex align-items-end justify-content-between\"><div><h4 class=\"fw-semibold mb-1\">Delete Account</h4><p class=\"text-sm text-muted\">By deleting this account you are lossing all of your data!</p></div><div class=\"d-md-flex gap-2\"><button data-bs-target=\"#deleteAccountModal\" data-bs-toggle=\"modal\" class=\"btn btn-sm btn-danger\">Delete </button></div></div></main><div class=\"modal fade\" id=\"deleteAccountModal\" tabindex=\"-1\" aria-labelledby=\"deleteAccountModalLabel\" aria-hidden=\"true\"><div class=\"modal-dialog modal-dialog-centered\"><div class=\"modal-content overflow-hidden\"><div class=\"modal-header pb-0 border-0\"><h1 class=\"modal-title h4\" id=\"deleteAccountModalLabel\">Delete Account</h1><button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button></div><div class=\"modal-body p-0\"><div class=\"px-6 py-5 border-bottom\"><h3 class=\"modal-title h4\" id=\"deleteAccountModalLabel\">Are you sure you want to delete this account?</h3></div><div class=\"px-6 py-5 bg-body-secondary d-flex justify-content-center\"><button type=\"submit\" hx-post=\"/profile/user/delete\" class=\"btn btn-sm btn-danger\">Delete </button></div></div></div></div></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div></div><div class=\"col-md-2\"><span class=\"text-muted text-opacity-60 text-opacity-100-hover\" tabindex=\"0\" data-bs-toggle=\"popover\" data-bs-trigger=\"hover focus\" data-bs-placement=\"right\" data-bs-html=\"true\" data-bs-content=\"Contact our support team to change your email.\" role=\"button\"><i class=\"bi bi-info-circle\"></i></span></div></div><hr class=\"my-6\"><div class=\"row align-items-center pl-5\"><div class=\"col-md-2\"><div class=\"form-check\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if user.ReseveNotification {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"form-check-input\" type=\"checkbox\" value=\"false\" name=\"receive_notification\" id=\"flexCheckCheckedDisabled\" checked> ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"form-check-input\" type=\"checkbox\" value=\"true\" name=\"receive_notification\" id=\"flexCheckCheckedDisabled\"> ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<label class=\"form-check-label\" for=\"flexCheckCheckedDisabled\">Receive Notification</label></div></div></div><hr class=\"my-6 d-md-none\"><div class=\"d-flex d-md-none justify-content-end gap-2 mb-6\"><button type=\"submit\" hx-indicator=\"#spinner\" hx-post=\"/profile/user/update\" hx-target=\"#dashboard-content\" class=\"btn btn-sm btn-primary \"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Update</button></div></form><hr class=\"my-6\"><div class=\"d-flex align-items-end justify-content-between\"><div><h4 class=\"fw-semibold mb-1\">Delete Account</h4><p class=\"text-sm text-muted\">By deleting this account you are lossing all of your data!<br><strong>Make sure you have deactivate all of your extensions!</strong></p></div><div class=\"d-md-flex gap-2\"><button data-bs-target=\"#deleteAccountModal\" data-bs-toggle=\"modal\" class=\"btn btn-sm btn-danger\">Delete </button></div></div></main><div class=\"modal fade\" id=\"deleteAccountModal\" tabindex=\"-1\" aria-labelledby=\"deleteAccountModalLabel\" aria-hidden=\"true\"><div class=\"modal-dialog modal-dialog-centered\"><div class=\"modal-content overflow-hidden\"><div class=\"modal-header pb-0 border-0\"><h1 class=\"modal-title h4\" id=\"deleteAccountModalLabel\">Delete Account</h1><button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button></div><div class=\"modal-body p-0\"><div class=\"px-6 py-5 border-bottom\"><h3 class=\"modal-title h4\" id=\"deleteAccountModalLabel\">Are you sure you want to delete this account?</h3></div><div class=\"px-6 py-5 bg-body-secondary d-flex justify-content-center\"><button type=\"submit\" hx-post=\"/profile/user/delete\" class=\"btn btn-sm btn-danger\">Delete </button></div></div></div></div></div><script>\n\tvar popoverTriggerList2 = document.querySelectorAll('[data-bs-toggle=\"popover\"]')\n\tvar popoverList2 = [...popoverTriggerList2].map(popoverTriggerEl2 => new bootstrap.Popover(popoverTriggerEl2))\n\t</script></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

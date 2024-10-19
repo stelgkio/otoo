@@ -6,8 +6,9 @@ import (
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 )
 
-templ DeafultTemplate(user *domain.User, projectName string, projectId string,counts map[string]string,orders []*woo.OrderRecord, bestSeller []*woo.ProductBestSellerRecord) {
-	@t.DashboardTemplate(user,projectName,projectId) {
-		@DeafultDashboard(projectId,counts,orders,bestSeller)
+templ DeafultTemplate(user *domain.User, projectName string,
+	projectId string, counts map[string]string, orders []*woo.OrderRecord, bestSeller []*woo.ProductBestSellerRecord, weeklyBalance *woo.WeeklyAnalytics) {
+	@t.DashboardTemplate(user, projectName, projectId) {
+		@DeafultDashboard(projectId, counts, orders, bestSeller, weeklyBalance)
 	}
 }

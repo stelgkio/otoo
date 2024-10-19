@@ -1,0 +1,43 @@
+package views
+
+import (
+	"fmt"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ ExtensionTable(projectextensions []*domain.ProjectExtension, projectId string) {
+	<style>
+    tr.htmx-swapping td {
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}</style>
+	<table class="table delete-row-example">
+		<thead>
+			<tr>
+				<th>Extension Name</th>
+				<th>Expire Days</th>
+				<th>ProjectId</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML swap:1s">
+			for _, extension := range projectextensions {
+				<tr>
+					<td>{ extension.Title }</td>
+					<td>{ fmt.Sprintf("%d",domain.CalculateDaysUntilExpiration(extension)) } </td>
+					<td>{ extension.ProjectID }</td>
+					<td>
+						<button
+							class="btn danger"
+							hx-delete={ fmt.Sprintf("/extension/project_extension/%s", extension.ID.Hex()) }
+							hx-target="closest tr"
+							hx-swap="outerHTML swap:1s"
+						>
+							Delete
+						</button>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}

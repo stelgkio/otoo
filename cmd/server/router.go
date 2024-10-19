@@ -45,25 +45,34 @@ func NewRouter(
 		return r.Render(c, con.ContantComponent())
 	})
 
-	e.GET("/RunAnalyticsJob", func(c echo.Context) error {
-		err := orderAnalyticsCron.RunAnalyticsJob()
+	e.POST("/webhook", dashboardHandler.PaymentEvent)
+
+	e.GET("/RunOrderWeeklyBalanceJob", func(c echo.Context) error {
+		err := orderAnalyticsCron.RunOrderWeeklyBalanceJob()
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, err)
 		}
 
 		return c.JSON(http.StatusAccepted, "OK")
 	})
+	e.GET("/RunOrderMonthlyCountJob", func(c echo.Context) error {
+		err := orderAnalyticsCron.RunOrderMonthlyCountJob()
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+
+		return c.JSON(http.StatusAccepted, "OK")
+	})
+
 	e.GET("/RunAProductBestSellerDailyJob", func(c echo.Context) error {
-		return c.JSON(http.StatusAccepted, "OK")
-	})
-	e.GET("/RunAProductBestSellerInitializerJob", func(c echo.Context) error {
-		err := productBestSellerCron.RunAProductBestSellerInitializerJob("e915c34b-33c5-49e8-9e2c-227c650398fa")
+		err := productBestSellerCron.RunAProductBestSellerDailyJob()
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, err)
 		}
 
 		return c.JSON(http.StatusAccepted, "OK")
 	})
+
 	e.GET("/RunCustomerBestBuyerJob", func(c echo.Context) error {
 		return c.JSON(http.StatusAccepted, "OK")
 	})
@@ -80,10 +89,22 @@ func NewRouter(
 	//e.GET("projectlist", homeHandler.ProjectList)
 	e.GET("register", authHandler.RegisterForm)
 	e.POST("register", authHandler.Register)
+
 	e.GET("", func(c echo.Context) error {
 		return c.Redirect(http.StatusMovedPermanently, c.Echo().Reverse("index"))
 	})
 
+	//user
+
+	usergroup := e.Group("/user")
+	{
+		usergroup.Use(configureJWT())
+		usergroup.Use(auth.TokenRefresherMiddleware)
+		usergroup.GET("/list/:projectId", authHandler.UserList)
+		usergroup.GET("/createMember/:projectId", authHandler.CreateMemberModal)
+		usergroup.POST("/addmember/:projectId", authHandler.AddMember)
+		usergroup.DELETE("/delete/:userId/:projectId", authHandler.RemoveMember)
+	}
 	//Dashboard
 	dashboardgroup := e.Group("/dashboard")
 	{
@@ -140,19 +161,30 @@ func NewRouter(
 
 		extensiongroup.GET("/asc-courier/:projectId", dashboardHandler.AcsCourier)
 		extensiongroup.POST("/asc-courier/:projectId", dashboardHandler.AcsCourierFormPost)
+		extensiongroup.POST("/asc-courier/deactivate/:projectId", dashboardHandler.AcsCourierDeActivate)
+
+		extensiongroup.GET("/courier4u/:projectId", dashboardHandler.Courier4u)
+		extensiongroup.POST("/courier4u/:projectId", dashboardHandler.Courier4uFormPost)
+		extensiongroup.POST("/courier4u/deactivate/:projectId", dashboardHandler.Courier4uDeActivate)
 
 		extensiongroup.GET("/wallet-expences/:projectId", dashboardHandler.WalletExpenses)
 
 		extensiongroup.GET("/data-synchronizer/:projectId", dashboardHandler.DataSynchronizer)
 
-		extensiongroup.GET("/page/asc-courier/:projectId", dashboardHandler.AcsCourierPage)
+		extensiongroup.GET("/page/asc-courier/:projectId", dashboardHandler.CourierTable)
+		extensiongroup.GET("/page/courier4u/:projectId", dashboardHandler.CourierTable)
+		extensiongroup.GET("/page/redcourier/:projectId", dashboardHandler.CourierTable)
 		extensiongroup.GET("/page/wallet-expences/:projectId", dashboardHandler.WalletExpensesPage)
 		extensiongroup.GET("/page/data-synchronizer/:projectId", projectHandler.ProjectSynchronizePage)
 
 		extensiongroup.GET("/project_extensions/:projectId", dashboardHandler.ProjectExtensionsList)
-	}
+		extensiongroup.DELETE("/project_extension/:Id", dashboardHandler.DeleteProjectExtension)
+		extensiongroup.POST("/project_extension", dashboardHandler.AddProjectExtension)
 
-	e.POST("/payment/event", dashboardHandler.PaymentEvent)
+		extensiongroup.GET("/addextensionForm/:key", dashboardHandler.AddManualExtensionForm)
+		extensiongroup.GET("/all", dashboardHandler.GetAllAvailableExtensios)
+		extensiongroup.GET("/table", dashboardHandler.ExtensionTable)
+	}
 	//Payment group
 	paymentgroup := e.Group("/payment")
 	{
@@ -161,6 +193,7 @@ func NewRouter(
 		//Attach jwt token refresher.
 		paymentgroup.Use(auth.TokenRefresherMiddleware)
 		paymentgroup.POST("", dashboardHandler.Payment)
+		paymentgroup.GET("/table/:projectId/:page", dashboardHandler.PaymentTable)
 
 	}
 	//Project group
@@ -184,6 +217,8 @@ func NewRouter(
 		projectgroup.POST("/validation/domain", projectHandler.ProjectDomainValidation)
 		projectgroup.POST("/validation/key", projectHandler.ProjectKeyValidation)
 
+		projectgroup.GET("/findbydomain", projectHandler.FindProjectByDomain)
+
 		projectgroup.GET("/webhooks/:projectId", projectHandler.CheckWebHooks)
 		projectgroup.GET("/:projectId", projectHandler.CheckWebHooks)
 
@@ -198,6 +233,12 @@ func NewRouter(
 			settingsroup.POST("/secrets/update/:projectId", projectHandler.ProjectSecretsUpdate)
 			settingsroup.DELETE("/webhook/delete/:projectId", WooCommerceHandler.DeleteAllWebhooks)
 			settingsroup.GET("/webhook/createall/:projectId", WooCommerceHandler.WebhookCreateAll)
+			settingsroup.GET("/team/:projectId", projectHandler.ProjectSettingsTeam)
+
+			settingsroup.GET("/asc-courier/:projectId", projectHandler.ProjectSettingsAcsCourier)
+			settingsroup.GET("/courier4u/:projectId", projectHandler.ProjectSettingsCourier4u)
+
+			settingsroup.GET("/payment/:projectId", projectHandler.ProjectSettingsPayment)
 		}
 	}
 	//woocommerce group
@@ -255,10 +296,11 @@ func NewRouter(
 		ordergroupB.Use(auth.TokenRefresherMiddleware)
 		ordergroupB.GET("/table/:projectId/:status/:page", dashboardHandler.OrderTable)
 		ordergroupB.GET("/chart/:projectId", dashboardHandler.OrderCharts)
+		ordergroupB.GET("/monthy/chart/:projectId", dashboardHandler.OrderMonthlyCharts)
 		ordergroupB.GET("/tablehtml/:projectId", dashboardHandler.OrderTableHTML)
 
 		ordergroupB.POST("/bulk-action/:projectId", dashboardHandler.OrderBulkAction)
-
+		ordergroupB.PUT("/update/:orderId/:projectId", dashboardHandler.OrderUpdate)
 	}
 	productgroupB := e.Group("/product")
 	{
@@ -276,8 +318,24 @@ func NewRouter(
 		profilegroup.Use(auth.TokenRefresherMiddleware)
 		profilegroup.GET("", profileHandler.Profile).Name = "profile"
 		profilegroup.GET("/password", profileHandler.ProfilePassword)
+		profilegroup.POST("/password/update", profileHandler.UpdatePassword)
+		profilegroup.POST("/validation/currentpassword", profileHandler.ValidateCurrentPassword)
+		profilegroup.POST("/validation/newpassword", profileHandler.ValidateNewPassword)
 		profilegroup.POST("/user/update", profileHandler.ProfileUpdate)
 		profilegroup.POST("/user/delete", profileHandler.ProfileDelete)
+	}
+
+	//Courier
+	couriergroup := e.Group("/voucher")
+	{
+		couriergroup.Use(configureJWT())
+		couriergroup.Use(auth.TokenRefresherMiddleware)
+		couriergroup.GET("/table/view/:projectId", dashboardHandler.CourierTable)
+		couriergroup.GET("/table/html/:projectId", dashboardHandler.VoucherTableHTML)
+		couriergroup.GET("/table/:projectId/:status/:page", dashboardHandler.VoucherTable)
+		couriergroup.GET("/modal/:Id", dashboardHandler.VoucherDetailModal)
+		couriergroup.GET("/openOffcanvas/:Id", dashboardHandler.CreateVoucher)
+
 	}
 
 	return &Router{e}, nil

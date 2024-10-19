@@ -7,7 +7,7 @@ import (
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 )
 
-templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo.OrderRecord, bestSeller []*woo.ProductBestSellerRecord) {
+templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo.OrderRecord, bestSeller []*woo.ProductBestSellerRecord, weeklyBalance *woo.WeeklyAnalytics) {
 	<div
 		id="dashboard-content"
 		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
@@ -16,7 +16,7 @@ templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo
 			<div class="mb-6 mb-xl-10">
 				<div class="row g-3 align-items-center">
 					<div class="col">
-						<h1 class="ls-tight">Dashboard</h1>
+						<h1 class="ls-tight" data-i18n="Dashboard"></h1>
 					</div>
 					<div class="col">
 						<div class="hstack gap-2 justify-content-end">
@@ -47,6 +47,7 @@ templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo
 												hx-get={ fmt.Sprintf("/dashboard/order/%s", projectId) }
 												hx-target="#dashboard-content"
 												class="h6 stretched-link"
+												hx-push-url="true"
 											>
 												Orders
 											</a>
@@ -69,6 +70,7 @@ templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo
 												hx-get={ fmt.Sprintf("/dashboard/customer/%s", projectId) }
 												hx-target="#dashboard-content"
 												class="h6 stretched-link"
+												hx-push-url="true"
 											>Customers</a>
 										</div>
 										<div class="text-sm fw-semibold mt-3">{ counts["customer_count"] } </div>
@@ -89,6 +91,7 @@ templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo
 												hx-get={ fmt.Sprintf("/dashboard/product/%s", projectId) }
 												hx-target="#dashboard-content"
 												class="h6 stretched-link"
+												hx-push-url="true"
 											>Products</a>
 										</div>
 										<div class="text-sm fw-semibold mt-3">{ counts["product_count"] } </div>
@@ -107,39 +110,7 @@ templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo
                                         </div>
                                     </div> -->
 						</div>
-						<div class="card">
-							<div class="card-body pb-0">
-								<div class="d-flex justify-content-between align-items-center">
-									<div>
-										<h5>Orders</h5>
-									</div>
-									<div class="hstack align-items-center">
-										<a href="#" class="text-muted">
-											<i
-												class="bi bi-arrow-repeat"
-											></i>
-										</a>
-									</div>
-								</div>
-								<div class="mx-n4">
-									<div id="chart-users" data-height="270"></div>
-								</div>
-							</div>
-						</div>
-						<!-- <div class="card">
-                                    <div class="card-body pb-0">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <h5>Order Payment Status</h5>
-                                            </div>
-                                            <div class="hstack align-items-center"><a href="#" class="text-muted"><i
-                                                        class="bi bi-arrow-repeat"></i></a></div>
-                                        </div>
-                                        <div class="mx-n4">
-                                            <div id="chart" data-height="200"></div>
-                                        </div>
-                                    </div>
-                                </div> -->
+						@MonthlyChart(projectId)
 						@o.LatestOrderHistory(orders)
 					</div>
 				</div>
@@ -169,16 +140,26 @@ templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo
 												<h5>Weekly Balance</h5>
 											</div>
 											<div>
-												<span class="text-heading fw-bold">
-													<i
-														class="bi bi-arrow-up me-2"
-													></i>7.8%
-												</span>
+												if (weeklyBalance != nil) {
+													<span class="text-heading fw-bold">
+														{ fmt.Sprintf("%2.f", weeklyBalance.AnalyticsBase.ActiveOrderRate) } %
+													</span>
+												} else {
+													<span class="text-heading fw-bold">
+														0%
+													</span>
+												}
 											</div>
 										</div>
-										<div class="text-2xl fw-bolder text-heading ls-tight">
-											€23.863,21
-										</div>
+										if (weeklyBalance != nil) {
+											<div class="text-2xl fw-bolder text-heading ls-tight">
+												{ fmt.Sprintf("€%.2f", weeklyBalance.AnalyticsBase.TotalRevenue) }
+											</div>
+										} else {
+											<div class="text-2xl fw-bolder text-heading ls-tight">
+												€ 0
+											</div>
+										}
 										<div class="d-flex align-items-center justify-content-between mt-8">
 											<!-- <div class="">
                                                         <div class="d-flex gap-3 align-items-center">
@@ -212,120 +193,138 @@ templ DeafultDashboard(projectId string, counts map[string]string, orders []*woo
 			</div>
 		</main>
 	</div>
+}
+
+templ MonthlyChart(projectId string) {
+	<div x-data={ fmt.Sprintf("chartComponent('%s')", projectId) } x-init="init()">
+		<div class="card">
+			<div class="card-body pb-0">
+				<div class="d-flex justify-content-between align-items-center">
+					<div>
+						<h5>Orders</h5>
+					</div>
+					<div class="hstack align-items-center">
+						<a href="#" class="text-muted" @click="refreshChart">
+							<i class="bi bi-arrow-repeat"></i>
+						</a>
+					</div>
+				</div>
+				<div class="mx-n4">
+					<div id="chart-users" data-height="270"></div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<script>
-	    var chartElement2= document.querySelector("#chart-users");
-   
-        var options2= {
-            chart: {
-                type: "bar",
-                stacked: true,
-                zoom: {
-                    enabled: false
-                },
-                toolbar: {
-                    show: false
-                },
-                shadow: {
-                    enabled: false
-                },
-                offsetX: 0,
-                animations: {
-                    enabled: false,
-                    easing: "easeinout",
-                    speed: 800,
-                    animateGradually: {
-                        enabled: true,
-                        delay: 150
+  		 function chartComponent(projectId) {
+    return {
+            projectID: projectId,  // Store project ID
+            chartData: {
+                months: [],  // Categories (Months)
+                orders: []  // Data for the chart
+            },
+        	chartInstance: null,  // Store the ApexCharts instance
+ 			
+            // Initialize and fetch data
+            async init() {
+                await this.fetchChartData();  // Fetch data first
+            },
+
+            // Fetch data from the server
+            async fetchChartData() {
+                try {
+                    const response = await fetch(`${window.location.origin}/order/monthy/chart/${this.projectID}`);
+                    const data = await response.json();                   
+
+                    // Assuming the API returns "months" and "orders" arrays
+                    this.chartData.months = data.months || [];
+                    this.chartData.orders = data.orders || [];
+
+                    // Render or update the chart after data is fetched
+                    this.renderChart();
+                } catch (error) {
+                    console.error('Error fetching chart data:', error);
+                }
+            },
+
+            // Render the chart using ApexCharts
+            renderChart() {
+                const chartElement = document.querySelector("#chart-users");
+
+                const options = {
+                    chart: {
+                        type: "bar",
+                        stacked: true,
+                        zoom: { enabled: true },
+                        toolbar: { show: true },
+                        height: 390,
+                        animations: {
+                            enabled: true,
+                            speed: 800,
+                        },
                     },
-                    dynamicAnimation: {
-                        enabled: true,
-                        speed: 350
-                    }
-                },
-                fontFamily: "#333",
-				height: 390,
-            },
-            colors: [ '#8957ff', '#ffc107', '#dc3545'],
-            plotOptions: {
-                bar: {
-                    columnWidth: "23px",
-                    borderRadius: 2
-                }
-            },
-            stroke: {
-                width: 4,
-                curve: "smooth"
-            },
-            series: [{
-                name: "Revenue",
-                data: [30, 10, 20, 10, 17, 12, 8, 20]
-            }],
-            markers: {
-                size: 0
-            },
-            xaxis: {
-				  axisBorder: {
-                    show: false
-                },
-                axisTicks: {
-                    show: false
-                },
-                categories: ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                labels: {
-                    style: {
-                         colors: "#e3dede",
-                        fontSize: "13px"
-                    }
-                }
-            },
-            yaxis: {
-                labels: {
-                    style: {
-                        colors: "#e3dede",
-                        fontSize: "13px"
-                    }
-                }
-            },
-            legend: {
-                show: false
-            },
-            grid: {
-                borderColor: "#999",
-                strokeDashArray: 3
-            },
-            dataLabels: {
-                enabled: false
-            },
-            tooltip: {
-                shared: true,
-                intersect: false,
-                y: {
-                    formatter: function (val) {
-                        return val.toFixed(0) + " orders";
-                    }
-                }
-            },
-            responsive: [{
-                breakpoint: 364,
-                options: {
+                    colors: ['#8957ff', '#ffc107', '#dc3545'],
                     plotOptions: {
                         bar: {
-                            columnWidth: "30px",
+                            columnWidth: "23px",
                             borderRadius: 2
                         }
+                    },
+                    series: [{
+                        name: "Orders",
+                        data: this.chartData.orders  // Fetched orders data
+                    }],
+                    xaxis: {
+                        categories: this.chartData.months,  // Fetched months (categories)
+                        labels: {
+                            style: {
+                                colors: "#a1a1a1",
+                                fontSize: "13px"
+                            }
+                        }
+                    },
+                    yaxis: {
+                        labels: {
+                            style: {
+                                colors: "#a1a1a1",
+                                fontSize: "13px"
+                            }
+                        }
+                    },
+                    grid: {
+                        borderColor: "#999",
+                        strokeDashArray: 3
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    tooltip: {
+                        shared: true,
+                        intersect: false,
+                        y: {
+                            formatter: function (val) {
+                                return val.toFixed(0) + " orders";
+                            }
+                        }
                     }
+                };
+
+                // Initialize chart only once
+                if (!this.chartInstance) {
+                    this.chartInstance = new ApexCharts(chartElement, options);
+                    this.chartInstance.render();
+                } else {
+                    this.chartInstance.updateOptions(options);  // Update chart if it already exists
                 }
-            }]
-		}
-        
+            },
 
-     
-
-       var barChart = new ApexCharts(chartElement2, options2);
-        barChart.render();
-
- 
-
-
-	</script>
+            // Method to refresh the chart (if needed)
+            refreshChart() {
+                this.fetchChartData();  // Fetch new data and re-render chart
+            }
+			// Display progress message if current month is in progress
+       
+       
+    }};
+</script>
 }

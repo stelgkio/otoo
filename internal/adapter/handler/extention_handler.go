@@ -1,18 +1,25 @@
 package handler
 
 import (
+	"fmt"
+	"log"
 	"log/slog"
+	"net/http"
 	"os"
 	"time"
 
 	"github.com/labstack/echo/v4"
 	e "github.com/stelgkio/otoo/internal/adapter/web/view/extension"
 	ac "github.com/stelgkio/otoo/internal/adapter/web/view/extension/acs_courier"
+	cu "github.com/stelgkio/otoo/internal/adapter/web/view/extension/courier4u"
+	page "github.com/stelgkio/otoo/internal/adapter/web/view/extension/page"
 	nv "github.com/stelgkio/otoo/internal/adapter/web/view/extension/side_nav_list"
 	et "github.com/stelgkio/otoo/internal/adapter/web/view/extension/template"
 	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stelgkio/otoo/internal/core/util"
+	"github.com/stripe/stripe-go/v72"
+	"github.com/stripe/stripe-go/v72/sub"
 )
 
 // Extention get extention
@@ -25,7 +32,12 @@ func (dh *DashboardHandler) Extention(ctx echo.Context) error {
 	}
 
 	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
-	return util.Render(ctx, e.Extensions(projectID, extensions, projectExtensions))
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return util.Render(ctx, e.Extensions(projectID, extensions, projectExtensions))
+	}
+	project, user, projectID, err := GetProjectAndUser(ctx, dh)
+	return util.Render(ctx, et.ExtensionTemplate(user, project.Name, projectID, extensions, projectExtensions))
+
 }
 
 // StripeSuccesRedirect  the redirect handler for Stripe success
@@ -48,9 +60,19 @@ func (dh *DashboardHandler) StripeSuccesRedirect(ctx echo.Context) error {
 		return err
 	}
 	if extension.Code == "asc-courier" {
-		dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension)
+		dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, "")
 
 		return util.Render(ctx, et.ExtentionAcsSubscriptionSuccessTemplate(user, project.Name, projectID, extensionID))
+	}
+	if extension.Code == "courier4u" {
+		dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, "")
+		return util.Render(ctx, et.ExtentionCourier4uSubscriptionSuccessTemplate(user, project.Name, projectID, extensionID))
+	}
+	if extension.Code == "wallet-expences" {
+		//dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, "")
+	}
+	if extension.Code == "team-member" {
+		//dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, "")
 	}
 	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
 	return util.Render(ctx, e.Extensions(projectID, nil, projectExtensions))
@@ -59,13 +81,39 @@ func (dh *DashboardHandler) StripeSuccesRedirect(ctx echo.Context) error {
 // StripeFailRedirect the redirect handler for Stripe fail
 func (dh *DashboardHandler) StripeFailRedirect(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
+	extensionID := ctx.Param("extensionId")
 
-	extensions, err := dh.extensionSvc.GetAllExtensions(ctx)
+	extension, err := dh.extensionSvc.GetExtensionByID(ctx, extensionID)
 	if err != nil {
 		return err
 	}
+
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := dh.userSvc.GetUserById(ctx, userID)
+	project, err := dh.projectSvc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	if extension.Code == "asc-courier" {
+		dh.extensionSvc.DeleteProjectExtension(ctx, extensionID, projectID)
+
+		return util.Render(ctx, et.ExtentionAcsSubscriptionFailTemplate(user, project.Name, projectID, extensionID))
+	}
+	if extension.Code == "courier4u" {
+		dh.extensionSvc.DeleteProjectExtension(ctx, extensionID, projectID)
+		return util.Render(ctx, et.ExtentionCourier4uSubscriptionFailTemplate(user, project.Name, projectID, extensionID))
+	}
+	if extension.Code == "wallet-expences" {
+		dh.extensionSvc.DeleteProjectExtension(ctx, extensionID, projectID)
+	}
+	if extension.Code == "team-member" {
+		dh.extensionSvc.DeleteProjectExtension(ctx, extensionID, projectID)
+	}
 	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
-	return util.Render(ctx, e.Extensions(projectID, extensions, projectExtensions))
+	return util.Render(ctx, e.Extensions(projectID, nil, projectExtensions))
 }
 
 // AcsCourier get extention courier page
@@ -112,6 +160,112 @@ func (dh *DashboardHandler) AcsCourierFormPost(ctx echo.Context) error {
 	dh.extensionSvc.CreateACSProjectExtension(ctx, projectID, req)
 
 	return util.Render(ctx, ac.ASC_Courier_Subscription(os.Getenv("STRIPE_PUBLICK_KEY"), projectID, extension.ID.Hex()))
+}
+
+// AcsCourierDeActivate post form with acs courier data
+func (dh *DashboardHandler) AcsCourierDeActivate(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	extension, err := dh.extensionSvc.GetExtensionByCode(ctx, "asc-courier")
+	if err != nil {
+		return err
+	}
+	projectExtensions, err := dh.extensionSvc.GetProjectExtensionByID(ctx, extension.ID.Hex(), projectID)
+	if err != nil {
+		return err
+	}
+	subscriptionID := projectExtensions.SubscriptionID
+	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
+	params := &stripe.SubscriptionCancelParams{}
+	_, err = sub.Cancel(subscriptionID, params)
+	if err != nil {
+		log.Printf("Error canceling subscription: %v", err)
+
+	}
+	log.Printf("Subscription %s canceled successfully", subscriptionID)
+
+	err = dh.extensionSvc.DeleteProjectExtension(ctx, extension.ID.Hex(), projectID)
+	if err != nil {
+		return err
+	}
+
+	ctx.Response().Header().Set("HX-Redirect", fmt.Sprintf("/extension/%s", projectID))
+	return ctx.String(http.StatusOK, "Redirecting...")
+
+}
+
+// Courier4u get extention courier page
+func (dh *DashboardHandler) Courier4u(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	extension, err := dh.extensionSvc.GetExtensionByCode(ctx, "courier4u")
+	if err != nil {
+		return err
+	}
+	//TODO:  by projectID and extensionID find AcsCourierExtension
+	acs, err := dh.extensionSvc.GetCourier4uProjectExtensionByID(ctx, extension.ID.Hex(), projectID)
+	if err != nil {
+		return err
+	}
+	if acs == nil {
+		acs = new(domain.Courier4uExtension)
+	}
+
+	return util.Render(ctx, cu.Courier4u(projectID, extension.ID.Hex(), nil, acs))
+}
+
+// Courier4uFormPost post form with acs courier data
+func (dh *DashboardHandler) Courier4uFormPost(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	extension, err := dh.extensionSvc.GetExtensionByCode(ctx, "courier4u")
+	if err != nil {
+		return err
+	}
+	req := new(domain.Courier4uExtension)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("Create project binding error", "error", err)
+		return util.Render(ctx, cu.Courier4u(projectID, extension.ID.Hex(), nil, req))
+	}
+	validationErrors := req.Validate()
+	if len(validationErrors) > 0 {
+		return util.Render(ctx, cu.Courier4u(projectID, extension.ID.Hex(), validationErrors, req))
+	}
+
+	req.ProjectID = projectID
+	req.ExtensionID = extension.ID.Hex()
+	req.CreatedAt = time.Now().UTC()
+	req.IsActive = true
+
+	dh.extensionSvc.CreateCourier4uProjectExtension(ctx, projectID, req)
+
+	return util.Render(ctx, cu.Courier4uSubscriptio(os.Getenv("STRIPE_PUBLICK_KEY"), projectID, extension.ID.Hex()))
+}
+
+// Courier4uDeActivate post form with acs courier data
+func (dh *DashboardHandler) Courier4uDeActivate(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	extension, err := dh.extensionSvc.GetExtensionByCode(ctx, "courier4u")
+	if err != nil {
+		return err
+	}
+	projectExtensions, err := dh.extensionSvc.GetProjectExtensionByID(ctx, extension.ID.Hex(), projectID)
+	if err != nil {
+		return err
+	}
+	subscriptionID := projectExtensions.SubscriptionID
+	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
+	params := &stripe.SubscriptionCancelParams{}
+	_, err = sub.Cancel(subscriptionID, params)
+	if err != nil {
+		log.Printf("Error canceling subscription: %v", err)
+	}
+	log.Printf("Subscription %s canceled successfully", subscriptionID)
+
+	err = dh.extensionSvc.DeleteProjectExtension(ctx, extension.ID.Hex(), projectID)
+	if err != nil {
+		return err
+	}
+
+	ctx.Response().Header().Set("HX-Redirect", fmt.Sprintf("/extension/%s", projectID))
+	return ctx.String(http.StatusOK, "Redirecting...")
 }
 
 // WalletExpenses get extention
@@ -165,7 +319,7 @@ func (dh *DashboardHandler) DataSynchronizerPage(ctx echo.Context) error {
 	return util.Render(ctx, e.DataSynchronizer(os.Getenv("STRIPE_PUBLICK_KEY"), projectID, extension.ID.Hex()))
 }
 
-// DataSynchronizerPage get extention
+// ProjectExtensionsList get extention
 func (dh *DashboardHandler) ProjectExtensionsList(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
@@ -176,4 +330,68 @@ func (dh *DashboardHandler) ProjectExtensionsList(ctx echo.Context) error {
 		return util.Render(ctx, nv.SideNavList(projectID, "", nil))
 	}
 	return util.Render(ctx, nv.SideNavList(projectID, projectExtensions[0].ExtensionID, projectExtensions))
+}
+
+// AddManualExtensionForm get extention
+func (dh *DashboardHandler) AddManualExtensionForm(ctx echo.Context) error {
+	key := ctx.Param("key")
+	if key == os.Getenv("EXTENSION_KEY") {
+		return util.Render(ctx, page.AddExtensionForm())
+	}
+	return ctx.JSON(http.StatusBadRequest, "Invalid key")
+}
+
+// AddManualExtensionForm get extention
+func (dh *DashboardHandler) GetAllAvailableExtensios(ctx echo.Context) error {
+	extension, err := dh.extensionSvc.GetAllExtensions(ctx)
+	if err != nil {
+		return err
+	}
+	return util.Render(ctx, page.AvailableExtension(extension))
+
+}
+
+// AddManualExtensionForm get extention
+func (dh *DashboardHandler) ExtensionTable(ctx echo.Context) error {
+	projectId := ctx.QueryParam("project")
+	extension, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectId)
+	if err != nil {
+		return err
+	}
+	return util.Render(ctx, page.ExtensionTable(extension, projectId))
+
+}
+
+func (dh *DashboardHandler) DeleteProjectExtension(ctx echo.Context) error {
+	projectextensionID := ctx.Param("Id")
+
+	err := dh.extensionSvc.DeleteProjectExtensionByID(ctx, projectextensionID)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+	return ctx.NoContent(http.StatusOK)
+}
+
+func (dh *DashboardHandler) AddProjectExtension(ctx echo.Context) error {
+
+	type extension struct {
+		ProjectID   string `form:"project"`
+		ExtensionID string `form:"extension"`
+		Period      int    `form:"period"`
+	}
+	req := new(extension)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("Create project binding error", "error", err)
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+	ext, err := dh.extensionSvc.GetExtensionByID(ctx, req.ExtensionID)
+	err = dh.extensionSvc.CreateProjectExtension(ctx, req.ProjectID, ext, req.Period, domain.CustomSubsctiption)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+	projExtension, err := dh.extensionSvc.GetAllProjectExtensions(ctx, req.ProjectID)
+	if err != nil {
+		return err
+	}
+	return util.Render(ctx, page.ExtensionTable(projExtension, req.ProjectID))
 }

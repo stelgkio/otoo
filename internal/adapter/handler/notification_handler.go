@@ -3,7 +3,7 @@ package handler
 import (
 	"github.com/labstack/echo/v4"
 	t "github.com/stelgkio/otoo/internal/adapter/web/view/component/navigation/notification"
-	pn "github.com/stelgkio/otoo/internal/adapter/web/view/component/project/settings/notification"
+	pn "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/notification"
 	"github.com/stelgkio/otoo/internal/core/util"
 )
 
@@ -57,7 +57,7 @@ func (dh *DashboardHandler) DeleteAllNotification(ctx echo.Context) error {
 	return util.Render(ctx, t.NotificationIcon(notifications2, projectID))
 }
 
-// DeleteNotification  delete a  notification by Id
+// DeleteNotificationSettings  delete a  notification by Id
 func (dh *DashboardHandler) DeleteNotificationSettings(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 	notificationID := ctx.Param("notifiactionId")
@@ -65,7 +65,7 @@ func (dh *DashboardHandler) DeleteNotificationSettings(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	project, _, _, err := GetProjectAndUser(ctx, dh)
+	project, user, _, err := GetProjectAndUser(ctx, dh)
 	if err != nil {
 		return err
 	}
@@ -78,5 +78,5 @@ func (dh *DashboardHandler) DeleteNotificationSettings(ctx echo.Context) error {
 		return err
 	}
 
-	return util.Render(ctx, pn.SettingsNotifications(project, notifications, projectExtensions))
+	return util.Render(ctx, pn.SettingsNotifications(project, notifications, projectExtensions, user))
 }

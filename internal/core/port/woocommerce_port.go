@@ -19,8 +19,10 @@ type WoocommerceRepository interface {
 	OrderDelete(orderID int64, projectID string) error
 	GetOrderByID(projectID string, orderID int64) (*w.OrderRecord, error)
 	OrderFindByProjectID(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string) ([]*w.OrderRecord, error)
+	OrderFindByProjectIDWithTimePedio(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string, timeperiod time.Time) ([]*w.OrderRecord, error)
 	GetOrderCount(projectID string, orderStatus w.OrderStatus, timeRange string) (int64, error)
 	GetOrdersCountBetweenOrEquals(projectID string, timeperiod time.Time, orderStatus w.OrderStatus) (int64, error)
+	CountOrdersByMonth(projectID string) (map[string]int, error)
 
 	CustomerCreate(data *w.CustomerRecord, email string) error
 	CustomerUpdate(data *w.CustomerRecord, email string) error
@@ -79,15 +81,19 @@ type ProductService interface {
 
 // OrderService defines the methods for interacting with the Order service
 type OrderService interface {
-	Get10LatestOrders(ctx echo.Context, projectID string, orderStatus w.OrderStatus, results chan<- []*domain.OrderRecord, errors chan<- error)
+	Get10LatestOrders(ctx echo.Context, projectID string, orderStatus w.OrderStatus, sort string, results chan<- []*domain.OrderRecord, errors chan<- error)
 	GetOrderCountAsync(ctx echo.Context, projectID string, orderStatus w.OrderStatus, timeRange string, results chan<- int64, errors chan<- error)
 	GetOrdersCountBetweenOrEquals(projectID string, timePeriod time.Time, orderStatus w.OrderStatus) (int64, error)
 	GetOrderCount(projectID string, orderStatus w.OrderStatus, timeRange string) (int64, error)
 	GetOrderByID(projectID string, orderID int64) (*domain.OrderRecord, error)
 	FindOrderByProjectIDAsync(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string, results chan<- []*domain.OrderRecord, errors chan<- error)
+	FindOrderByProjectIDWithTimePeriodAsync(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string, timePeriod time.Time, results chan<- []*domain.OrderRecord, errors chan<- error)
 	GetAllOrdersFromWoocommerce(customerKey string, customerSecret string, domainURL string, projectID string, totalProduct int64) error
 	UpdateOrderStatusByID(projectID string, orderID int64, status string, project *d.Project) (*domain.OrderRecord, error)
 	BatchUpdateOrdersStatus(projectID string, orders []int64, status string, proj *d.Project) ([]*domain.OrderRecord, error)
+	UpdateOrder(projectID string, orderID int64, orderTable *domain.OrderTableList, proj *d.Project) (*domain.OrderRecord, error)
+	GetLatestOrderWeeklyBalance(ctx echo.Context, projectID string, results chan<- *domain.WeeklyAnalytics, errors chan<- error)
+	CountOrdersByMonth(projectID string) (map[string]int, error)
 }
 
 // ReportService defines the methods for interacting with the Report service

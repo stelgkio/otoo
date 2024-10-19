@@ -24,7 +24,7 @@ func NewVoucherService(repo port.VoucherRepository) *VoucherService {
 
 // CreateVoucher inserts a new Voucher into the database
 func (vs *VoucherService) CreateVoucher(ctx echo.Context, OrderRecord *o.OrderRecord, projectID string) (*domain.Voucher, error) {
-	voucher := domain.NewVoucher(projectID, OrderRecord.Order.ShippingTotal, OrderRecord.Order.CustomerNote, OrderRecord.Order.Shipping, OrderRecord.Order.ID)
+	voucher := domain.NewVoucher(projectID, OrderRecord.Order.ShippingTotal, OrderRecord.Order.CustomerNote, OrderRecord.Order.Shipping, OrderRecord.Order.Billing, OrderRecord.Order.ID, OrderRecord.Order.LineItems)
 
 	return vs.repo.CreateVoucher(ctx, voucher, projectID)
 }
@@ -75,7 +75,7 @@ func (vs *VoucherService) UpdateVoucher(ctx echo.Context, order *o.OrderRecord, 
 	default:
 	}
 
-	voucher.UpdateVoucher(order.Order.ShippingTotal, order.Order.CustomerNote, order.Order.Shipping)
+	voucher.UpdateVoucher(order.Order.ShippingTotal, order.Order.CustomerNote, order.Order.Shipping, order.Order.Billing, order.Order.LineItems)
 
 	return vs.repo.UpdateVoucher(ctx, voucher, projectID, voucher.VoucherID, order.OrderID)
 }

@@ -288,7 +288,11 @@ func (s *WoocommerceWebhookService) DeleteAllWebhooksByProjectID(projectID strin
 			Force: true,
 		})
 		if err != nil {
-			return err
+			slog.Error("Error deleting webhook", "error", err)
+			if err.Error() != "Invalid ID." {
+				return err
+			}
+
 		}
 		s.p.WebhookDelete(projectID, webhook.WebhookID)
 	}

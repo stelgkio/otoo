@@ -1,0 +1,13 @@
+package views
+
+import (
+	ex "github.com/stelgkio/otoo/internal/adapter/web/view/component/data_synchronizer/synchronize"
+	t "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/template"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ ProjectSynchonizerTemplate(user *domain.User, projectName string, projectId string, customerTotal, productTotal, orderTotal int) {
+	@t.DashboardTemplate(user, projectName, projectId) {
+		@ex.ProjectSynchronizerPage(user, projectId, customerTotal, productTotal, orderTotal)
+	}
+}

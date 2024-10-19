@@ -23,15 +23,15 @@ const (
 
 // Project represents a project
 type Project struct {
+	tableName struct{} `pg:"project,alias:project"`
 	Base
 	Name        string      `json:"name" pg:"name,notnull"`
 	Description string      `json:"description" pg:"description,notnull"`
 	ProjectType ProjectType `json:"project_type" pg:"project_type,notnull"`
 	WoocommerceProject
 	ShopifyProject
-	UserId      uuid.UUID `pg:"fk:user_id,type:uuid"`
-	User        *User     `pg:"rel:has-one"`
 	ValidatedAt types.NullTime
+	Users       []*User `pg:"many2many:user_projects"`
 }
 
 // NewProject creates a instance of user with hashed password
@@ -104,6 +104,9 @@ func (p *ProjectRequest) Validate() map[string](string) {
 	if p.Name == "" {
 		errors["name"] = "Name is required"
 	}
+	if p.Description == "" {
+		errors["description"] = "Description is required"
+	}
 	if p.Domain == "" {
 		errors["domain"] = "Domain is required"
 	} else if !isValidHttpsURL(p.Domain) {
@@ -135,4 +138,9 @@ type FindProjectRequest struct {
 func isValidHttpsURL(url string) bool {
 	re := regexp.MustCompile(`^https:\/\/[a-zA-Z0-9\-._~:\/?#@!$&'()*+,;=%]+$`)
 	return re.MatchString(url)
+}
+
+// AddUser to user
+func (u *Project) AddUser(userID uuid.UUID) {
+
 }

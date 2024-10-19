@@ -3,7 +3,7 @@ package domain
 import (
 	"time"
 
-	"github.com/go-pg/pg/types"
+	"github.com/google/uuid"
 	"github.com/stelgkio/otoo/internal/core/util"
 )
 
@@ -12,23 +12,28 @@ type UserRole string
 
 // UserRole enum values
 const (
-	Admin  UserRole = "admin"
-	Client UserRole = "client"
+	Admin      UserRole = "admin"
+	Client     UserRole = "client"
+	ClientUser UserRole = "client_user"
 )
 
+// User ...
 type User struct {
+	tableName struct{} `pg:"user,alias:user"`
 	Base
-	Name        string `json:"name" pg:"name,notnull"`
-	Email       string `json:"email" pg:"email,unique,notnull"`
-	Password    string `json:"password" pg:"password,notnull"`
-	Role        UserRole
-	ValidatedAt types.NullTime
-	LastLogin   types.NullTime
-	LastName    string `json:"last_name" pg:"last_name,notnull"`
+	Name               string `json:"name" pg:"name,notnull"`
+	Email              string `json:"email" pg:"email,unique,notnull"`
+	Password           string `json:"password" pg:"password,notnull"`
+	Role               UserRole
+	ValidatedAt        time.Time
+	LastLogin          time.Time
+	LastName           string     `json:"last_name" pg:"last_name,notnull"`
+	Projects           []*Project `pg:"many2many:user_projects"`
+	ReseveNotification bool       `json:"reseve_notification" pg:"reseve_notification"`
 }
 
 // NewUser creates a instance of user with hashed password
-func NewUser(email string, password string, name string, last_name string) (*User, error) {
+func NewUser(email string, password string, name string, lastName string) (*User, error) {
 	var err error
 	u := new(User)
 	var hash util.Hash
@@ -43,13 +48,85 @@ func NewUser(email string, password string, name string, last_name string) (*Use
 	u.CreatedAt = now
 	u.UpdatedAt = now
 	u.Name = name
-	u.LastName = last_name
+	u.LastName = lastName
 	u.IsActive = true
+	u.ReseveNotification = true
 	return u, nil
 }
 
-// Validate validates user's email and password
+// NewClientUser creates a instance of user with hashed password
+func NewClientUser(email string, password string, name string, lastName string, role UserRole, reseveNotification bool) (*User, error) {
+	var err error
+	u := new(User)
+	var hash util.Hash
+	u.Password, err = hash.Generate(password)
+	if err != nil {
+		return u, err
+	}
+
+	now := time.Now().UTC()
+	u.Role = role
+	u.Email = email
+	u.CreatedAt = now
+	u.UpdatedAt = now
+	u.Name = name
+	u.LastName = lastName
+	u.IsActive = true
+	u.ReseveNotification = reseveNotification
+	return u, nil
+}
+
+// ValidateEmail validates user's email and password
 func (u *User) ValidateEmail(email string) error {
 
 	return nil
+}
+
+// AddProject to user
+func (u *User) AddProject(projectID uuid.UUID) {
+
+}
+func (pt UserRole) String() string {
+	return string(pt)
+}
+
+// ContainsUserID Function to check if any ProjectExtension contains the given ExtensionID
+func ContainsUserID(users []*User, userID uuid.UUID) bool {
+	for _, user := range users {
+		if user.Id == userID {
+			return true // Found a matching ExtensionID
+		}
+	}
+	return false // No matching ExtensionID found
+}
+
+// UpdatePasswordRequest represents the request body for updating a user's password.
+type UpdatePasswordRequest struct {
+	CurrentPassword      string `form:"current-password" validate:"required"`
+	Password             string `form:"password" validate:"required"`
+	ConfirmationPassword string `form:"confirmation-password" validate:"required"`
+}
+
+// Validate validates the request body
+func (p *UpdatePasswordRequest) Validate() map[string](string) {
+
+	errors := make(map[string]string)
+
+	if p.CurrentPassword == "" {
+		errors["currentPassword"] = "CurrentPassword is required"
+	}
+	if p.Password == "" {
+		errors["password"] = "Password is required"
+	}
+	if p.ConfirmationPassword == "" {
+		errors["confirmationPassword"] = "ConfirmationPassword is required"
+	}
+	if p.Password != "" && p.ConfirmationPassword != "" {
+
+		if p.Password != p.ConfirmationPassword {
+			errors["password"] = "Password is not matching"
+			errors["confirmationPassword"] = "Password is not matching"
+		}
+	}
+	return errors
 }

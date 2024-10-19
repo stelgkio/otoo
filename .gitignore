@@ -38,3 +38,5 @@ go.work
 .DS_Store
 
 build_and_push.sh
+/internal/adapter/web/view/**/*.txt
+/internal/adapter/web/view/**/*.go

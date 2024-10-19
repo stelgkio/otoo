@@ -8,75 +8,86 @@ import (
 
 type AnalyticsBase struct {
 	ID              primitive.ObjectID `bson:"_id,omitempty"`
-	ProjectID       string             `bson:"projectId"`
-	Timestamp       time.Time          `bson:"timestamp,omitempty"`
-	TotalOrders     int64              `json:"total_orders"`
-	TotalRevenue    float64            `json:"total_revenue"`
-	ActiveOrders    int64              `json:"active_orders"`
-	ActiveOrderRate float64            `json:"active_order_rate"`
+	TotalOrders     int64              `json:"total_orders" bson:"total_orders"`
+	TotalRevenue    float64            `json:"total_revenue" bson:"total_revenue"`
+	ActiveOrders    int64              `json:"active_orders" bson:"active_orders"`
+	ActiveOrderRate float64            `json:"order_rate" bson:"order_rate"`
 }
 
 // WeeklyAnalytics represents the analytics data for the last week.
 type WeeklyAnalytics struct {
 	AnalyticsBase
-	StartDate time.Time `json:"start_date"`
-	EndDate   time.Time `json:"end_date"`
+	ComparisonResult
+	ProjectID string    `bson:"projectId" json:"project_id"`
+	Timestamp time.Time `bson:"timestamp,omitempty" json:"timestamp"`
+	StartDate time.Time `json:"start_date" bson:"start_date"`
+	EndDate   time.Time `json:"end_date" bson:"end_date"`
 }
 
-func NewWeeklyAnalytics(projectID string, totalOrders, activeOrders int64, totalRevenue float64, startDate, endDate time.Time) WeeklyAnalytics {
-	return WeeklyAnalytics{
+func NewWeeklyAnalytics(projectID string, totalOrders, activeOrders int64, totalRevenue float64, startDate, endDate time.Time) *WeeklyAnalytics {
+	return &WeeklyAnalytics{
 		AnalyticsBase: AnalyticsBase{
-			ProjectID:    projectID,
+
 			TotalOrders:  totalOrders,
 			TotalRevenue: totalRevenue,
 			ActiveOrders: activeOrders,
 		},
+		ProjectID: projectID,
+		Timestamp: time.Now().UTC(),
 		StartDate: startDate,
 		EndDate:   endDate,
 	}
 }
 
-// MonthlyAnalytics represents the analytics data for the last month.
-type MonthlyAnalytics struct {
-	AnalyticsBase
-	StartDate time.Time `json:"start_date"`
-	EndDate   time.Time `json:"end_date"`
+// AddComparisonResult add
+func (w *WeeklyAnalytics) AddComparisonResult(result ComparisonResult) {
+	w.ComparisonResult = result
 }
 
-func NewMonthlyAnalytics(projectID string, totalOrders, activeOrders int64, totalRevenue float64, startDate, endDate time.Time) MonthlyAnalytics {
-	return MonthlyAnalytics{
-		AnalyticsBase: AnalyticsBase{
-			ProjectID:    projectID,
-			TotalOrders:  totalOrders,
-			TotalRevenue: totalRevenue,
-			ActiveOrders: activeOrders,
-		},
-		StartDate: startDate,
-		EndDate:   endDate,
+// MonthlyOrderCountAnalytics represents the analytics data for the last month.
+type MonthlyOrderCountAnalytics struct {
+	MonthyData map[string]int `bson:"monthlydata" json:"monthlydata"`
+	ProjectID  string         `bson:"projectId" json:"project_id"`
+	Timestamp  time.Time      `bson:"timestamp,omitempty" json:"timestamp"`
+	StartDate  time.Time      `json:"start_date"`
+	EndDate    time.Time      `json:"end_date"`
+}
+
+// NewMonthlyAnalytics creates
+func NewMonthlyAnalytics(projectID string, monthyData map[string]int, startDate, endDate time.Time) MonthlyOrderCountAnalytics {
+	return MonthlyOrderCountAnalytics{
+		MonthyData: monthyData,
+		ProjectID:  projectID,
+		StartDate:  startDate,
+		EndDate:    endDate,
 	}
 }
 
 // YearlyAnalytics represents the analytics data for the last year.
 type YearlyAnalytics struct {
 	AnalyticsBase
+	ProjectID string    `bson:"projectId" json:"project_id"`
+	Timestamp time.Time `bson:"timestamp,omitempty" json:"timestamp"`
 	StartDate time.Time `json:"start_date"`
 	EndDate   time.Time `json:"end_date"`
 }
 
+// NewYearlyAnalytics new
 func NewYearlyAnalytics(projectID string, totalOrders, activeOrders int64, totalRevenue float64, startDate, endDate time.Time) YearlyAnalytics {
 	return YearlyAnalytics{
 		AnalyticsBase: AnalyticsBase{
-			ProjectID:    projectID,
+
 			TotalOrders:  totalOrders,
 			TotalRevenue: totalRevenue,
 			ActiveOrders: activeOrders,
 		},
+		ProjectID: projectID,
 		StartDate: startDate,
 		EndDate:   endDate,
 	}
 }
 
-// calculatePercentages calculates and updates the percentage fields in AnalyticsBase.
+// CalculatePercentages calculates and updates the percentage fields in AnalyticsBase.
 func (a *AnalyticsBase) CalculatePercentages() {
 	if a.TotalOrders > 0 {
 		a.ActiveOrderRate = (float64(a.ActiveOrders) / float64(a.TotalOrders)) * 100
@@ -93,7 +104,7 @@ type ComparisonResult struct {
 	ActiveOrderRateChange float64 `json:"active_order_rate_change"`
 }
 
-// compareAnalytics compares the metrics between two WeeklyAnalytics periods.
+// CompareAnalytics compares the metrics between two WeeklyAnalytics periods.
 func CompareAnalytics(current, previous AnalyticsBase) ComparisonResult {
 	return ComparisonResult{
 		TotalOrdersChange:     PercentageOrdersChange(current.TotalOrders, previous.TotalOrders),
@@ -103,7 +114,7 @@ func CompareAnalytics(current, previous AnalyticsBase) ComparisonResult {
 	}
 }
 
-// percentageChange calculates the percentage change between two values.
+// PercentageBalanceChange calculates the percentage change between two values.
 func PercentageBalanceChange(current, previous float64) float64 {
 	if previous == 0 {
 		if current == 0 {
@@ -114,7 +125,7 @@ func PercentageBalanceChange(current, previous float64) float64 {
 	return ((current - previous) / previous) * 100
 }
 
-// percentageChange calculates the percentage change between two values.
+// PercentageOrdersChange calculates the percentage change between two values.
 func PercentageOrdersChange(current, previous int64) int64 {
 	if previous == 0 {
 		if current == 0 {

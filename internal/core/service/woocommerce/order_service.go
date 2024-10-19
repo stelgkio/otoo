@@ -3,6 +3,7 @@ package woocommerce
 import (
 	"log"
 	"log/slog"
+	"math"
 	"sync"
 	"time"
 
@@ -17,17 +18,21 @@ import (
 
 // OrderService represents the service for managing orders
 type OrderService struct {
-	p            port.WoocommerceRepository
-	s            port.ProjectRepository
-	extensionSrv port.ExtensionService
+	p             port.WoocommerceRepository
+	s             port.ProjectRepository
+	extensionSrv  port.ExtensionService
+	voucherSvc    port.VoucherService
+	analyticsRepo port.AnalyticsRepository
 }
 
 // NewOrderService creates a new instance of OrderService
-func NewOrderService(woorepo port.WoocommerceRepository, projrepo port.ProjectRepository, extensionSrv port.ExtensionService) *OrderService {
+func NewOrderService(woorepo port.WoocommerceRepository, projrepo port.ProjectRepository, extensionSrv port.ExtensionService, voucherSvc port.VoucherService, analyticsRepo port.AnalyticsRepository) *OrderService {
 	return &OrderService{
-		p:            woorepo,
-		s:            projrepo,
-		extensionSrv: extensionSrv,
+		p:             woorepo,
+		s:             projrepo,
+		extensionSrv:  extensionSrv,
+		voucherSvc:    voucherSvc,
+		analyticsRepo: analyticsRepo,
 	}
 }
 
@@ -51,8 +56,8 @@ func (os *OrderService) GetOrderCount(projectID string, orderStatus w.OrderStatu
 }
 
 // Get10LatestOrders retrieves the latest 10 orders for a given project ID
-func (os *OrderService) Get10LatestOrders(ctx echo.Context, projectID string, orderStatus w.OrderStatus, results chan<- []*domain.OrderRecord, errors chan<- error) {
-	orders, err := os.p.OrderFindByProjectID(projectID, 10, 1, orderStatus, "", "")
+func (os *OrderService) Get10LatestOrders(ctx echo.Context, projectID string, orderStatus w.OrderStatus, sort string, results chan<- []*domain.OrderRecord, errors chan<- error) {
+	orders, err := os.p.OrderFindByProjectID(projectID, 10, 1, orderStatus, sort, "")
 	if err != nil {
 		errors <- err
 	} else {
@@ -62,7 +67,7 @@ func (os *OrderService) Get10LatestOrders(ctx echo.Context, projectID string, or
 
 // GetOrdersCountBetweenOrEquals retrieves the count of orders between or equal to a given date for a given project ID
 func (os *OrderService) GetOrdersCountBetweenOrEquals(projectID string, timePeriod time.Time, orderStatus w.OrderStatus) (int64, error) {
-	orderCount, err := os.p.GetOrdersCountBetweenOrEquals(projectID, timePeriod, w.OrderStatusCompleted)
+	orderCount, err := os.p.GetOrdersCountBetweenOrEquals(projectID, timePeriod, orderStatus)
 	if err != nil {
 		return 0, err
 	}
@@ -73,6 +78,16 @@ func (os *OrderService) GetOrdersCountBetweenOrEquals(projectID string, timePeri
 // FindOrderByProjectIDAsync retrieves orders for a given project ID
 func (os *OrderService) FindOrderByProjectIDAsync(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string, results chan<- []*domain.OrderRecord, errors chan<- error) {
 	orderCount, err := os.p.OrderFindByProjectID(projectID, size, page, orderStatus, sort, direction)
+	if err != nil {
+		errors <- err
+	} else {
+		results <- orderCount
+	}
+}
+
+// FindOrderByProjectIDWithTimePeriodAsync retrieves orders for a given project ID
+func (os *OrderService) FindOrderByProjectIDWithTimePeriodAsync(projectID string, size, page int, orderStatus w.OrderStatus, sort, direction string, timePeriod time.Time, results chan<- []*domain.OrderRecord, errors chan<- error) {
+	orderCount, err := os.p.OrderFindByProjectIDWithTimePedio(projectID, size, page, orderStatus, sort, direction, timePeriod)
 	if err != nil {
 		errors <- err
 	} else {
@@ -159,12 +174,77 @@ func (os *OrderService) BatchUpdateOrdersStatus(projectID string, orders []int64
 	return ordersToUpdate, nil
 }
 
+// UpdateOrder updates an order
+func (os *OrderService) UpdateOrder(projectID string, orderID int64, orderTable *domain.OrderTableList, proj *d.Project) (*domain.OrderRecord, error) {
+	client := InitClient(proj.WoocommerceProject.ConsumerKey, proj.WoocommerceProject.ConsumerSecret, proj.WoocommerceProject.Domain)
+
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+	errChan := make(chan error, 1)
+	ordersToUpdate := make([]*domain.OrderRecord, 1)
+
+	updateOrder := func(orderID int64) {
+		defer wg.Done()
+		order, err := os.p.GetOrderByID(projectID, orderID)
+		if err != nil {
+			errChan <- err
+			return
+		}
+		if order == nil {
+			return
+		}
+
+		order.Order.Shipping = &orderTable.Shipping
+		order.Order.CustomerNote = orderTable.CustomerNote
+		order.Order.Billing = &orderTable.Billing
+		order.Timestamp = time.Now().UTC()
+		order.UpdatedAt = time.Now().UTC()
+		err = os.p.OrderUpdate(order, orderID)
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		_, err = os.voucherSvc.UpdateVoucher(nil, order, projectID)
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		mu.Lock()
+		ordersToUpdate[0] = order
+		mu.Unlock()
+
+		_, err = client.Order.Update(&order.Order)
+		if err != nil {
+			errChan <- err
+			return
+		}
+	}
+
+	wg.Add(1)
+	go updateOrder(orderID)
+
+	go func() {
+		wg.Wait()
+		close(errChan)
+	}()
+
+	for err := range errChan {
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return ordersToUpdate[0], nil
+}
+
 // GetAllOrdersFromWoocommerce retrieves all orders from WooCommerce and saves them to MongoDB
-func (os *OrderService) GetAllOrdersFromWoocommerce(customerKey string, customerSecret string, domainURL string, projectID string, totalProduct int64) error {
+func (os *OrderService) GetAllOrdersFromWoocommerce(customerKey string, customerSecret string, domainURL string, projectID string, totalOrder int64) error {
 	client := InitClient(customerKey, customerSecret, domainURL)
 
 	// Create all webhooks
-	err := os.createAndSaveAllCustomers(client, projectID, totalProduct)
+	err := os.createAndSaveAllOrders(client, projectID, totalOrder)
 	if err != nil {
 		slog.Error("get all order error", "error", err)
 		return errors.Wrap(err, "create all order error")
@@ -175,14 +255,20 @@ func (os *OrderService) GetAllOrdersFromWoocommerce(customerKey string, customer
 }
 
 // createAndSaveAllWebhooks creates WooCommerce products and saves results to MongoDB concurrently
-func (os *OrderService) createAndSaveAllCustomers(client *commerce.Client, projectID string, totalOrder int64) error {
+func (os *OrderService) createAndSaveAllOrders(client *commerce.Client, projectID string, totalOrder int64) error {
 
 	var wg sync.WaitGroup
-	orderCh := make(chan *w.OrderRecord, totalOrder) // Channel to distribute order to workers
+	orderCh := make(chan *w.OrderRecord, totalOrder) // Channel to distribute orders to workers
 	errorCh := make(chan *w.OrderRecord, 1)          // Buffered channel for error results
 
-	// Worker pool to process products
-	for i := 0; i < workerCount; i++ {
+	// Number of worker goroutines for processing orders
+	workers := int(math.Ceil(float64(totalOrder) / 100))
+	if workers == 0 {
+		workers = 1
+	}
+
+	// Worker pool to process orders
+	for i := 0; i < workers; i++ {
 		wg.Add(1)
 		go func(projectID string) {
 			defer wg.Done()
@@ -190,7 +276,7 @@ func (os *OrderService) createAndSaveAllCustomers(client *commerce.Client, proje
 				err := os.saveOrderResult(order, order.OrderID)
 				if err != nil {
 					log.Printf("Failed to save order result: %v", err)
-					// Handle or log the error accordingly
+					errorCh <- order // Send the error order to the error channel
 				}
 			}
 		}(projectID)
@@ -201,73 +287,129 @@ func (os *OrderService) createAndSaveAllCustomers(client *commerce.Client, proje
 		for result := range errorCh {
 			err := os.saveOrderResult(result, result.OrderID)
 			if err != nil {
-				log.Printf("Failed to save order result: %v", err)
-				// Handle or log the error accordingly
+				log.Printf("Failed to save order error result: %v", err)
 			}
 		}
 	}(projectID)
 
-	// Main processing goroutine
-	page := 1
-	for {
-		options := commerce.OrderListOption{
-			ListOptions: commerce.ListOptions{
-				Context: "view",
-				Order:   "desc",
-				Orderby: "id",
-				Page:    page,
-				PerPage: batchSize,
-			},
-		}
-		resp, err := client.Order.List(options)
-		if err != nil {
-			errorCh <- &w.OrderRecord{
-				ProjectID: projectID,
-				Event:     "order.List",
-				Error:     err.Error(),
-				CreatedAt: time.Now().UTC(),
-				OrderID:   0,
-				Order:     commerce.Order{}, // Assuming empty product
-				IsActive:  false,
+	// Create a semaphore to limit the number of concurrent fetches
+	maxConcurrentFetches := 5
+	sem := make(chan struct{}, maxConcurrentFetches) // Semaphore to limit concurrent requests
+
+	// Concurrent fetching of orders
+	go func() {
+		var fetchWg sync.WaitGroup
+		page := 1
+
+		for {
+			sem <- struct{}{} // Acquire a token before launching a new fetch goroutine
+			fetchWg.Add(1)
+
+			go func(page int) {
+				defer fetchWg.Done()
+				defer func() { <-sem }() // Release the semaphore token when done
+
+				options := commerce.OrderListOption{
+					ListOptions: commerce.ListOptions{
+						Context: "view",
+						Order:   "desc",
+						Orderby: "id",
+						Page:    page,
+						PerPage: batchSize,
+					},
+				}
+
+				// Fetch orders from the API
+				resp, err := client.Order.List(options)
+				if err != nil {
+					errorCh <- &w.OrderRecord{
+						ProjectID: projectID,
+						Event:     "order.List",
+						Error:     err.Error(),
+						CreatedAt: time.Now().UTC(),
+						OrderID:   0,
+						Order:     commerce.Order{}, // Assuming empty order
+						IsActive:  false,
+					}
+					return
+				}
+
+				if len(resp) == 0 {
+					// No more orders, stop the fetching
+					return
+				}
+
+				// Notify about the number of orders received
+				os.extensionSrv.UpdateSynchronizerOrderReceivedExtension(nil, projectID, len(resp))
+
+				// Send fetched orders to the worker pool
+				for _, item := range resp {
+					Status, _ := domain.StringToOrderStatus(item.Status)
+					_, orderCreated, _ := domain.ConvertDateString(item.DateCreatedGmt)
+
+					orderCh <- &w.OrderRecord{
+						ProjectID:    projectID,
+						Event:        "order.created",
+						Error:        "",
+						CreatedAt:    time.Now().UTC(),
+						Timestamp:    time.Now().UTC(),
+						OrderID:      item.ID,
+						Order:        item,
+						IsActive:     true,
+						Status:       Status,
+						OrderCreated: orderCreated,
+					}
+				}
+			}(page)
+
+			page++
+
+			// Define the exit condition to stop fetching orders
+			if page > int(math.Ceil(float64(totalOrder)/100)) {
+				break
 			}
-			break // Exit the loop on error
 		}
-		if len(resp) == 0 {
-			break // Exit the loop if no more products are returned
-		}
-		os.extensionSrv.UpdateSynchronizerOrderReceivedExtension(nil, projectID, len(resp))
-		for _, item := range resp {
-			Status, _ := domain.StringToOrderStatus(item.Status)
-			orderCh <- &w.OrderRecord{
-				ProjectID: projectID,
-				Event:     "order.created",
-				Error:     "",
-				CreatedAt: time.Now().UTC(),
-				Timestamp: time.Now().UTC(),
-				OrderID:   item.ID,
-				Order:     item,
-				IsActive:  true,
-				Status:    Status,
-			}
 
-		}
-		page++
-	}
+		// Wait for all fetch goroutines to complete
+		fetchWg.Wait()
 
-	close(orderCh) // Close the order channel after processing is complete
-	close(errorCh) // Close the error channel after processing is complete
+		// Close the order channel after all fetching is done
+		close(orderCh)
+	}()
 
-	wg.Wait() // Wait for all worker goroutines to finish
+	// Wait for all worker goroutines to finish processing orders
+	wg.Wait()
+
+	// Close the error channel after all error processing is done
+	close(errorCh)
 
 	return nil
 }
 
 // saveWebhookResult saves webhook creation result to MongoDB
 func (os *OrderService) saveOrderResult(data *w.OrderRecord, orderID int64) error {
-
+	if data.Status == "processing" {
+		go os.voucherSvc.CreateVoucher(nil, data, data.ProjectID)
+	}
 	err := os.p.OrderUpdate(data, orderID)
 	if err != nil {
 		return errors.Wrap(err, "failed to insert order result into MongoDB")
 	}
 	return nil
+}
+
+// GetLatestOrderWeeklyBalance retrieves the latest order weekly balance for a given project ID
+func (os *OrderService) GetLatestOrderWeeklyBalance(ctx echo.Context, projectID string, results chan<- *domain.WeeklyAnalytics, errors chan<- error) {
+	orderCount, err := os.analyticsRepo.FindLatestWeeklyBalance(projectID)
+	if err != nil {
+		errors <- err
+	} else {
+		results <- orderCount
+	}
+
+}
+
+// CountOrdersByMonth retrieves the latest order monthly balance for a given project ID
+func (os *OrderService) CountOrdersByMonth(projectID string) (map[string]int, error) {
+	return os.p.CountOrdersByMonth(projectID)
 }

@@ -1,0 +1,12 @@
+package views
+
+import (
+	t "github.com/stelgkio/otoo/internal/adapter/web/view/project/template"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ CreateProjectTemplate(user *domain.User, invalid bool, errors map[string](string), values *domain.ProjectRequest) {
+	@t.ProjectTemplate(user) {
+		@ProjectCreateForm(invalid, errors, values)
+	}
+}

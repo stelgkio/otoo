@@ -9,8 +9,10 @@ import (
 // CreateSchema creates database schema for User and Story models.
 func CreateSchema(db *pg.DB) error {
 	models := []interface{}{
+		(*domain.UserProject)(nil),
 		(*domain.User)(nil),
 		(*domain.Project)(nil),
+
 		// (*domain.WooCommerce_Topic)(nil),
 		// (*domain.Shopify_Topic)(nil),
 	}

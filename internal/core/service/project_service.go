@@ -12,19 +12,23 @@ import (
 )
 
 type ProjectService struct {
-	repo         port.ProjectRepository
-	wp           port.WoocommerceWebhookService
-	wc           port.ProductService
-	extensionSrv port.ExtensionService
+	repo           port.ProjectRepository
+	wp             port.WoocommerceWebhookService
+	wc             port.ProductService
+	extensionSrv   port.ExtensionService
+	userSvc        port.UserService
+	userprojectSvc port.UserProjectService
 }
 
 // NewProjectService creates a new user service instance
-func NewProjectService(repo port.ProjectRepository, wp port.WoocommerceWebhookService, wc port.ProductService, extensionSrv port.ExtensionService) *ProjectService {
+func NewProjectService(repo port.ProjectRepository, wp port.WoocommerceWebhookService, wc port.ProductService, extensionSrv port.ExtensionService, userSvc port.UserService, userprojectSvc port.UserProjectService) *ProjectService {
 	return &ProjectService{
 		repo,
 		wp,
 		wc,
 		extensionSrv,
+		userSvc,
+		userprojectSvc,
 	}
 }
 
@@ -59,19 +63,28 @@ func (ps *ProjectService) CreateProject(ctx echo.Context, req *domain.ProjectReq
 		project.ShopifyProject = shop
 		project.WoocommerceProject = domain.WoocommerceProject{}
 	}
-	project.UserId = userID
+
 	project.IsActive = true
 
 	pr, err := ps.repo.CreateProject(ctx, project)
 	if err != nil {
 		return nil, errors.New("project is not created")
 	}
+	//TODO: get user and add projectId
+
+	ps.userprojectSvc.AddUserToProject(ctx, userID, pr.Id)
 
 	extension, err := ps.extensionSrv.GetExtensionByCode(ctx, domain.DataSynchronizerCode)
 	if err != nil {
 		return nil, err
 	}
-	ps.extensionSrv.CreateProjectExtension(ctx, project.Id.String(), extension)
+	ps.extensionSrv.CreateProjectExtension(ctx, project.Id.String(), extension, 370, "")
+
+	extension2, err := ps.extensionSrv.GetExtensionByCode(ctx, domain.TeamMember)
+	if err != nil {
+		return nil, err
+	}
+	ps.extensionSrv.CreateProjectExtension(ctx, project.Id.String(), extension2, 370, "")
 
 	go ps.wp.WoocommerceCreateAllWebHookAsync(req.ConsumerKey, req.ConsumerSecret, req.Domain, pr.Id.String())
 	return pr, nil
@@ -80,6 +93,11 @@ func (ps *ProjectService) CreateProject(ctx echo.Context, req *domain.ProjectReq
 // FindProjects finds projects in the database
 func (ps *ProjectService) FindProjects(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error) {
 	return ps.repo.FindProjects(ctx, filters, skip, limit)
+}
+
+// SearchByDomain finds projects by domain
+func (ps *ProjectService) SearchByDomain(ctx echo.Context, filters *domain.FindProjectRequest, skip, limit int) ([]*domain.Project, error) {
+	return ps.repo.SearchByDomain(ctx, filters, skip, limit)
 }
 
 // SoftDeleteProjects is doing a soft delete to this projects

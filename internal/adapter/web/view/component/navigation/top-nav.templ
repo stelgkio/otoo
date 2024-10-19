@@ -50,6 +50,26 @@ templ TopBar(user *domain.User, projectName, projectId string) {
 					>Dark</button>
 				</div>
 			</div>
+			<div class="dropdown">
+				<a
+					href="#"
+					class="nav-link"
+					data-bs-toggle="dropdown"
+					aria-expanded="false"
+				><i class="bi bi-translate"></i></a>
+				<div class="dropdown-menu">
+					<button
+						type="button"
+						class="dropdown-item d-flex align-items-center"
+						onclick="changeLanguage('en')"
+					>English</button>
+					<button
+						type="button"
+						class="dropdown-item d-flex align-items-center"
+						onclick="changeLanguage('el')"
+					>Ελληνικά</button>
+				</div>
+			</div>
 			<div class="dropdown" id="notification-list">
 				<a
 					href="javascript:void(0)"
@@ -97,18 +117,16 @@ templ TopBar(user *domain.User, projectName, projectId string) {
 				</a>
 				<div class="dropdown-menu dropdown-menu-end">
 					<div class="dropdown-header">
-						// <span class="d-block text-sm text-muted mb-1">
-						// 	Signed in
-						// 	as
-						// </span>
-						<span class="d-block text-heading fw-semibold">{ user.Name }{ user.LastName }</span>
+						<a
+							href="javascript:void(0)"
+							class="dropdown-item"
+							hx-get="/profile"
+							hx-target="#dashboard-content"
+						>
+							{ user.Name }{ user.LastName }
+						</a>
 					</div>
 					<div class="dropdown-divider"></div>
-					// <a class="dropdown-item" href="#">
-					// 	<i
-					// 		class="bi bi-house me-3"
-					// 	></i>Home 
-					// </a>
 					<a
 						class="dropdown-item"
 						href="/dashboard"
@@ -118,11 +136,6 @@ templ TopBar(user *domain.User, projectName, projectId string) {
 						></i>Projects 
 					</a>
 					<div class="dropdown-divider"></div>
-					// <a class="dropdown-item" href="#">
-					// 	<i
-					// 		class="bi bi-gear me-3"
-					// 	></i>Settings 
-					// </a>
 					<div class="dropdown-divider"></div>
 					<a class="dropdown-item" hx-get="/dashboard/logout">
 						<i

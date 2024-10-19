@@ -4,6 +4,7 @@ go 1.22.0
 
 require (
 	github.com/golang-jwt/jwt/v5 v5.0.0
+	github.com/stelgkio/woocommerce v1.0.9
 	go.uber.org/zap v1.27.0
 )
 
@@ -21,7 +22,6 @@ require (
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
-	github.com/stelgkio/woocommerce v1.0.9 // indirect
 	github.com/tmthrgd/go-hex v0.0.0-20190904060850-447a3041c3bc // indirect
 	github.com/vmihailenco/bufpool v0.1.11 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.4 // indirect
@@ -59,6 +59,7 @@ require (
 	go.mongodb.org/mongo-driver v1.16.1
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.26.0
+	golang.org/x/exp v0.0.0-20241004190924-225e2abe05e6
 	golang.org/x/net v0.28.0 // indirect
 	golang.org/x/sys v0.23.0 // indirect
 	golang.org/x/text v0.17.0 // indirect

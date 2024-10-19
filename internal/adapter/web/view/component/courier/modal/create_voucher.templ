@@ -1,0 +1,564 @@
+package views
+
+import ()
+
+templ CreateVoucher() {
+	<style>
+        /* Offcanvas structure */
+        .offcanvas-body {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .offcanvas-content-wrapper {
+            display: flex;
+            transition: transform 0.3s ease-in-out;
+            width: 200%;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .offcanvas-view {
+            width: 50%;
+            flex-shrink: 0;
+        }
+
+        .view-content {
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .offcanvas-footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        /* Stepper styles */
+        .stepper-wrapper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .stepper-item {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .stepper-item::before,
+        .stepper-item::after {
+            position: absolute;
+            content: "";
+            border-bottom: 2px solid #ccc;
+            width: 100%;
+            top: 20px;
+            z-index: 2;
+        }
+
+        .stepper-item::before {
+            left: -50%;
+        }
+
+        .stepper-item::after {
+            left: 50%;
+        }
+
+        .stepper-item .step-counter {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ccc;
+            margin-bottom: 6px;
+        }
+
+        .stepper-item.active {
+            font-weight: bold;
+        }
+
+        .stepper-item.active .step-counter {
+            background-color: #4285F4;
+            color: #fff;
+        }
+
+        .stepper-item.active::after {
+            border-bottom-color: #4285F4;
+        }
+
+        .step-name {
+            font-size: 14px;
+        }
+
+        /* Form and button styles */
+        .accordion-button:not(.collapsed) {
+            background-color: #e7f1ff;
+            color: #0c63e4;
+        }
+
+        .form-select,
+        .form-control,
+        .btn-outline-primary,
+        .btn-outline-secondary {
+            border-radius: 0.375rem;
+        }
+
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+        }
+
+        /* indicator*/
+        .field-changed {
+            border-color: #ffc107;
+            box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+        }
+    </style>
+	<!-- Offcanvas for Courier Information -->
+	<!-- Offcanvas for Courier Information -->
+	<div
+		class="offcanvas offcanvas-end"
+		tabindex="-1"
+		id="orderProcessingOffcanvas"
+		aria-labelledby="orderProcessingOffcanvasLabel"
+	>
+		<div class="offcanvas-header">
+			<h5 class="offcanvas-title" id="orderProcessingOffcanvasLabel">
+				Επεξεργασία Παραγγελίας
+				#<span id="offcanvas-order-id"></span>
+			</h5>
+			<button
+				type="button"
+				class="btn-close"
+				data-bs-dismiss="offcanvas"
+				aria-label="Close"
+			></button>
+		</div>
+		<div class="offcanvas-body d-flex flex-column p-0">
+			<!-- Stepper -->
+			<div class="stepper-wrapper p-3">
+				<div class="stepper-item active" data-step="1">
+					<div class="step-counter">1</div>
+					<div class="step-name">Μεταφορική Εταιρεία</div>
+				</div>
+				<div class="stepper-item" data-step="2">
+					<div class="step-counter">2</div>
+					<div class="step-name">Λεπτομέρειες Παραγγελίας</div>
+				</div>
+			</div>
+			<div class="offcanvas-content-wrapper flex-grow-1">
+				<!-- First View -->
+				<div class="offcanvas-view" id="firstView">
+					<!-- ... (first view content) ... -->
+					<div class="view-content p-3">
+						<div class="accordion" id="orderProcessingAccordion">
+							<!-- Shipping Company Section -->
+							<div class="accordion-item">
+								<h2 class="accordion-header">
+									<button
+										class="accordion-button"
+										type="button"
+										data-bs-toggle="collapse"
+										data-bs-target="#shippingCompanyCollapse"
+									>
+										Εταιρεία Αποστολής
+									</button>
+								</h2>
+								<div
+									id="shippingCompanyCollapse"
+									class="accordion-collapse collapse show"
+									data-bs-parent="#orderProcessingAccordion"
+								>
+									<div class="accordion-body">
+										<select class="form-select mb-3" id="shippingCompany">
+											<option value="">Επιλέξτε εταιρεία...</option>
+											<option value="acs">ACS Courier</option>
+											<option value="dhl">DHL</option>
+											<option value="fedex">FedEx</option>
+										</select>
+										<select class="form-select" id="shippingMethod">
+											<option value="">Επιλέξτε μέθοδο...</option>
+											<option value="standard">Standard</option>
+											<option value="express">Επείγουσα Παράδοση</option>
+											<option value="express">Παράδοση - Παραλαβή</option>
+											<option value="express">Αυθημερόν</option>
+											<option value="express">
+												Παραλαβή από το κατάστημα
+											</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<!-- Order Info Section -->
+							<div class="accordion-item">
+								<h2 class="accordion-header">
+									<button
+										class="accordion-button collapsed"
+										type="button"
+										data-bs-toggle="collapse"
+										data-bs-target="#orderInfoCollapse"
+									>
+										Πληροφορίες Παραγγελίας
+									</button>
+								</h2>
+								<div
+									id="orderInfoCollapse"
+									class="accordion-collapse collapse"
+									data-bs-parent="#orderProcessingAccordion"
+								>
+									<div class="accordion-body">
+										<div class="mb-3">
+											<label class="form-label">Ποσό Αντικαταβολής</label>
+											<div class="input-group">
+												<span class="input-group-text">€</span>
+												<input
+													type="number"
+													class="form-control"
+													id="codAmount"
+													value="72.50"
+												/>
+											</div>
+										</div>
+										<div class="mb-3">
+											<label class="form-label">Βάρος Δέματος (kg)</label>
+											<input
+												type="number"
+												class="form-control"
+												id="packageWeight"
+												step="0.1"
+												value="0.5"
+											/>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Special Instructions Section -->
+							<div class="accordion-item">
+								<h2 class="accordion-header">
+									<button
+										class="accordion-button collapsed"
+										type="button"
+										data-bs-toggle="collapse"
+										data-bs-target="#specialInstructionsCollapse"
+									>
+										Ειδικές Οδηγίες
+									</button>
+								</h2>
+								<div
+									id="specialInstructionsCollapse"
+									class="accordion-collapse collapse"
+									data-bs-parent="#additionalInfoAccordion"
+								>
+									<div class="accordion-body">
+										<textarea
+											class="form-control"
+											id="specialInstructions"
+											rows="3"
+											placeholder="Προσθέστε ειδικές οδηγίες προς την εταιρεία αποστολής..."
+										></textarea>
+									</div>
+								</div>
+							</div>
+							<!-- Delivery Instructions Section -->
+							<div class="accordion-item">
+								<h2 class="accordion-header">
+									<button
+										class="accordion-button collapsed"
+										type="button"
+										data-bs-toggle="collapse"
+										data-bs-target="#recieptInstructionsCollapse"
+									>
+										Εντολή Παράδοσης
+									</button>
+								</h2>
+								<div
+									id="recieptInstructionsCollapse"
+									class="accordion-collapse collapse"
+									data-bs-parent="#additionalInfoAccordion"
+								>
+									<div class="accordion-body">
+										<select class="form-select mb-3" id="recieptMethod">
+											<option value="">Επιλογή Οχήματος</option>
+											<option value="standard">Μηχανή</option>
+											<option value="express">Αυτοκίνητο</option>
+										</select>
+										<textarea
+											class="form-control"
+											id="recieptInstructions"
+											rows="2"
+											placeholder="Γράψτε οδηγίες για τον διανομέα πχ όροφος ή το τι θα παραλάβουμε.."
+										></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Second View -->
+				<div class="offcanvas-view" id="secondView">
+					<div class="view-content p-3">
+						<div class="accordion" id="detailsAccordion">
+							<!-- Shipping Information -->
+							<div class="accordion-item">
+								<h2 class="accordion-header">
+									<button
+										class="accordion-button"
+										type="button"
+										data-bs-toggle="collapse"
+										data-bs-target="#shippingInfo"
+									>
+										Shipping Information
+									</button>
+								</h2>
+								<div
+									id="shippingInfo"
+									class="accordion-collapse collapse show"
+									data-bs-parent="#detailsAccordion"
+								>
+									<div class="accordion-body">
+										<div class="row g-3">
+											<div class="col-md-6">
+												<label class="form-label">First Name</label>
+												<input
+													type="text"
+													class="form-control editable-field"
+													x-model="modalOrder.shipping.first_name"
+												/>
+											</div>
+											<div class="col-md-6">
+												<label class="form-label">Last Name</label>
+												<input
+													type="text"
+													class="form-control editable-field"
+													x-model="modalOrder.shipping.last_name"
+												/>
+											</div>
+											<div class="col-12">
+												<label class="form-label">Address</label>
+												<input
+													type="text"
+													class="form-control editable-field"
+													x-model="modalOrder.shipping.address_1"
+												/>
+											</div>
+											<div class="col-md-6">
+												<label class="form-label">City</label>
+												<input
+													type="text"
+													class="form-control editable-field"
+													x-model="modalOrder.shipping.city"
+												/>
+											</div>
+											<div class="col-md-6">
+												<label class="form-label">Postcode</label>
+												<input
+													type="text"
+													class="form-control editable-field"
+													x-model="modalOrder.shipping.postcode"
+												/>
+											</div>
+											<div class="col-md-6">
+												<label class="form-label">Country</label>
+												<input
+													type="text"
+													class="form-control editable-field"
+													x-model="modalOrder.shipping.country"
+												/>
+											</div>
+											<div class="col-md-6">
+												<label class="form-label">Phone</label>
+												<input
+													type="tel"
+													class="form-control editable-field"
+													x-model="modalOrder.shipping.phone"
+												/>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Payment Information -->
+							<div class="accordion-item">
+								<h2 class="accordion-header">
+									<button
+										class="accordion-button collapsed"
+										type="button"
+										data-bs-toggle="collapse"
+										data-bs-target="#paymentInfo"
+									>
+										Payment Information
+									</button>
+								</h2>
+								<div
+									id="paymentInfo"
+									class="accordion-collapse collapse"
+									data-bs-parent="#detailsAccordion"
+								>
+									<div class="accordion-body">
+										<div class="row g-3">
+											<div class="col-md-6">
+												<label class="form-label">Payment Method</label>
+												<input
+													type="text"
+													class="form-control editable-field"
+													x-model="modalOrder.payment_method"
+													readonly
+												/>
+											</div>
+											<div class="col-md-6">
+												<label class="form-label">Total Amount</label>
+												<div class="input-group">
+													<span class="input-group-text">€</span>
+													<input
+														type="number"
+														class="form-control editable-field"
+														x-model="modalOrder.total"
+														step="0.01"
+														readonly
+													/>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Customer Notes -->
+							<div class="accordion-item">
+								<h2 class="accordion-header">
+									<button
+										class="accordion-button collapsed"
+										type="button"
+										data-bs-toggle="collapse"
+										data-bs-target="#customerNotes"
+									>
+										Customer Notes
+									</button>
+								</h2>
+								<div
+									id="customerNotes"
+									class="accordion-collapse collapse"
+									data-bs-parent="#detailsAccordion"
+								>
+									<div class="accordion-body">
+										<div class="mb-3">
+											<label class="form-label">Notes</label>
+											<textarea
+												class="form-control editable-field"
+												rows="3"
+												x-model="modalOrder.customer_note"
+												placeholder="Enter any additional notes or instructions..."
+											></textarea>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="offcanvas-footer p-3">
+			<div class="d-flex justify-content-between align-items-center">
+				<button
+					type="button"
+					class="btn btn-outline-secondary"
+					id="prevViewBtn"
+					style="visibility: hidden;"
+				>
+					<i class="bi bi-arrow-left me-2"></i>ΠΙΣΩ
+				</button>
+				<button type="button" class="btn btn-outline-primary" id="nextViewBtn">
+					ΕΠΟΜΕΝΟ<i class="bi bi-arrow-right ms-2"></i>
+				</button>
+			</div>
+			<button type="button" class="btn btn-primary w-100 mt-3" @click="saveChanges">
+				Αποθήκευση
+				Αλλαγών
+			</button>
+		</div>
+	</div>
+	<!-- Toast Container -->
+	<div class="toast-container"></div>
+	// Demo Scripts //
+	<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const wrapper = document.querySelector('.offcanvas-content-wrapper');
+            const nextBtn = document.getElementById('nextViewBtn');
+            const prevBtn = document.getElementById('prevViewBtn');
+            const stepperItems = document.querySelectorAll('.stepper-item');
+            let currentView = 0;
+
+            function updateStepperAndButtons() {
+                stepperItems.forEach((item, index) => {
+                    if (index === currentView) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+
+                prevBtn.style.visibility = currentView === 0 ? 'hidden' : 'visible';
+                nextBtn.style.visibility = currentView === 1 ? 'hidden' : 'visible';
+            }
+
+            nextBtn.addEventListener('click', function () {
+                if (currentView < 1) {
+                    currentView++;
+                    wrapper.style.transform = `translateX(-${currentView * 50}%)`;
+                    updateStepperAndButtons();
+                }
+            });
+
+            prevBtn.addEventListener('click', function () {
+                if (currentView > 0) {
+                    currentView--;
+                    wrapper.style.transform = `translateX(-${currentView * 50}%)`;
+                    updateStepperAndButtons();
+                }
+            });
+
+            updateStepperAndButtons(); // Initialize the stepper
+        });
+
+	// Function for toast 
+
+	  // Function to show toast notifications
+        function showToast(message, type) {
+            const toastContainer = document.querySelector('.toast-container');
+            const toastElement = document.createElement('div');
+            toastElement.className = `toast align-items-center text-white bg-${type} border-0`;
+            toastElement.setAttribute('role', 'alert');
+            toastElement.setAttribute('aria-live', 'assertive');
+            toastElement.setAttribute('aria-atomic', 'true');
+
+            toastElement.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">${message}</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        `;
+
+            toastContainer.appendChild(toastElement);
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+
+            toastElement.addEventListener('hidden.bs.toast', () => {
+                toastContainer.removeChild(toastElement);
+            });
+        }
+
+
+</script>
+}

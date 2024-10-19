@@ -1,0 +1,610 @@
+package views
+
+import (
+	"fmt"
+	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/pagination"
+)
+
+templ VoucherTable(projectId string) {
+	<div id="dashboard-voucher">
+		<div id="dashboard-voucher-table" x-data={ fmt.Sprintf("voucherTable('%s')", projectId) } x-init="init()">
+			<div class="px-6 px-lg-7 pt-1 border-bottom">
+				<ul class="nav nav-tabs nav-tabs-flush gap-8 overflow-x border-0 mt-4">
+					<li class="nav-item">
+						<a
+							href="#"
+							:class="{'nav-link': true, 'active': currentTab === 'new'}"
+							@click.prevent="selectTab('new')"
+						>New</a>
+					</li>
+					<li class="nav-item">
+						<a
+							href="#"
+							:class="{'nav-link': true, 'active': currentTab === 'completed'}"
+							@click.prevent="selectTab('completed')"
+						>Completed</a>
+					</li>
+					<li class="nav-item">
+						<a
+							href="#"
+							:class="{'nav-link': true, 'active': currentTab === 'processing'}"
+							@click.prevent="selectTab('processing')"
+						>Processing</a>
+					</li>
+					<li class="nav-item">
+						<a
+							href="#"
+							:class="{'nav-link': true, 'active': currentTab === 'cancelled'}"
+							@click.prevent="selectTab('cancelled')"
+						>Canceled</a>
+					</li>
+					<li class="nav-item">
+						<a
+							href="#"
+							:class="{'nav-link': true, 'active': currentTab === 'all'}"
+							@click.prevent="selectTab('all')"
+						>All</a>
+					</li>
+				</ul>
+			</div>
+			<div class="d-flex gap-2 scrollable-x py-3 px-7 border-bottom">
+				<div class="align-items-center ms-auto text-sm text-muted text-primary-hover fw-semibold d-none d-md-flex" role="button">
+					<div class="hstack gap-2 ms-auto">
+						<button type="button" class="btn btn-sm btn-neutral d-none d-lg-inline-flex">
+							<i class="bi bi-arrow-90deg-right me-2"></i> Export
+						</button>
+						<a class="btn btn-sm btn-primary">
+							<i class="bi bi-plus-lg me-2"></i> New Voucher
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-hover table-nowrap">
+					<thead>
+						<tr>
+							<th>
+								<div class="text-base">
+									<div class="form-check">
+										<input
+											class="form-check-input"
+											type="checkbox"
+											@change="selectAll()"
+											x-model="selectAllCheckbox"
+										/>
+									</div>
+								</div>
+							</th>
+							<template x-if="!isNewTab">
+								<th @click="sortTable('Id')">
+									Voucher ID
+									<i :class="getSortIcon('Id')"></i>
+								</th>
+							</template>
+							<th @click="sortTable('orderId')">
+								Order ID
+								<i :class="getSortIcon('orderId')"></i>
+							</th>
+							<th @click="sortTable('updated_at')">
+								Date
+								<i :class="getSortIcon('updated_at')"></i>
+							</th>
+							<th @click="sortTable('cod')">
+								COD
+								<i :class="getSortIcon('cod')"></i>
+							</th>
+							<th>Status</th>
+							<template x-if="isPrinted">
+								<th @click="sortTable('is_printed')">
+									Printed
+									<i :class="getSortIcon('is_printed')"></i>
+								</th>
+							</template>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<template x-if="!loading && totalItems === 0">
+							<tr>
+								<td colspan="8">No vouchers found.</td>
+							</tr>
+						</template>
+						<template x-for="voucher in paginatedVouchers" :key="voucher.Id">
+							<tr @click="openOffcanvas(voucher)">
+								<td>
+									<div class="form-check">
+										<input
+											class="form-check-input"
+											type="checkbox"
+											:value="voucher.Id"
+											x-model="selectedVouchers"
+											@click.stop
+										/>
+									</div>
+								</td>
+								<template x-if="!isNewTab">
+									<td x-text="voucher.Id"></td>
+								</template>
+								<td x-text="'#' + voucher.orderId"></td>
+								<td x-text="new Date(voucher.updated_at).toLocaleString()"></td>
+								<td x-text="voucher.cod"></td>
+								<td>
+									<span :class="badgeClass(voucher.status)" x-text="voucher.status"></span>
+								</td>
+								<template x-if="isPrinted">
+									<td>
+										<template x-if="voucher.is_printed">
+											<span x-text="'Yes'"></span>
+										</template>
+										<template x-if="!voucher.is_printed">
+											<span x-text="'No'"></span>
+										</template>
+									</td>
+								</template>
+								<td>
+									<button type="button" class="btn btn-sm btn-neutral" @click="openOffcanvas(voucher)">
+										<i class="bi bi-plus-circle me-2"></i>Create Voucher
+									</button>
+									<button type="button" class="btn btn-sm btn-neutral" @click.stop="downloadVoucher(voucher.Id)">
+										<i
+											class="fas fa-download ml-1"
+											style="cursor: pointer;"
+											title="Download Voucher"
+										></i>
+									</button>
+								</td>
+							</tr>
+						</template>
+						<template x-for="i in 10 - paginatedVouchers.length" :key="'empty' + i">
+							<tr>
+								<td colspan="8" class="py-8"></td>
+							</tr>
+						</template>
+					</tbody>
+				</table>
+			</div>
+			/* Start Off canvas */
+			<div class="offcanvas offcanvas-end w-50" data-bs-backdrop="true" tabindex="-1" id="orderProcessingOffcanvas" aria-labelledby="orderProcessingOffcanvasLabel" :class="{ 'show': showOffcanvas }" :style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }">
+				<div class="offcanvas-header">
+					<h5 class="offcanvas-title" id="orderProcessingOffcanvasLabel">
+						<i class="bi bi-pencil-square"></i> Edit Order #<span x-text="modalOrder.orderId"></span>
+					</h5>
+					<button type="button" class="btn-close" @click="closeOffcanvas()"></button>
+				</div>
+				<div class="offcanvas-body d-flex flex-column">
+					<!-- Tabs -->
+					<ul class="nav nav-tabs" id="orderTabs" role="tablist">
+						<li class="nav-item" role="presentation">
+							<button class="nav-link active" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer-info" type="button" role="tab" aria-controls="customer-info" aria-selected="true">
+								<i class="bi bi-person"></i> Customer
+							</button>
+						</li>
+						<li class="nav-item" role="presentation">
+							<button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping-info" type="button" role="tab" aria-controls="shipping-info" aria-selected="false">
+								<i class="bi bi-truck"></i> Shipping
+							</button>
+						</li>
+					</ul>
+					<!-- Tab Content -->
+					<div class="tab-content flex-grow-1 overflow-auto" id="orderTabContent">
+						<!-- Customer Information Tab -->
+						<div class="tab-pane fade show active" id="customer-info" role="tabpanel" aria-labelledby="customer-tab">
+							<div class="p-3">
+								<!-- Section for Customer Details -->
+								<div class="card mb-3 shadow-sm">
+									<div class="card-header">
+										<h6 class="mb-0">
+											<i class="bi bi-person"></i> Customer Information
+										</h6>
+									</div>
+									<div class="card-body">
+										<div class="row g-2">
+											<div class="col-md-6">
+												<label for="customerName" class="form-label small">First Name</label>
+												<input type="text" class="form-control form-control-sm" id="customerName" x-model="modalOrder.billing.first_name" required/>
+											</div>
+											<div class="col-md-6">
+												<label for="customerSurname" class="form-label small">Last Name</label>
+												<input type="text" class="form-control form-control-sm" id="customerSurname" x-model="modalOrder.billing.last_name" required/>
+											</div>
+											<div class="col-md-6">
+												<label for="customerEmail" class="form-label small">Email</label>
+												<input type="email" class="form-control form-control-sm" id="customerEmail" x-model="modalOrder.billing.email" required/>
+											</div>
+											<div class="col-md-6">
+												<label for="customerPhone" class="form-label small">Phone</label>
+												<input type="tel" class="form-control form-control-sm" id="customerPhone" x-model="modalOrder.billing.phone" required/>
+											</div>
+											<div class="col-12">
+												<label for="customerAddress" class="form-label small">Address</label>
+												<div class="input-group input-group-sm">
+													<span class="input-group-text">
+														<i class="bi bi-geo-alt"></i>
+													</span>
+													<input type="text" class="form-control form-control-sm" id="customerAddress" x-model="modalOrder.billing.address_1" required/>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<label for="customerCity" class="form-label small">City</label>
+												<input type="text" class="form-control form-control-sm" id="customerCity" x-model="modalOrder.billing.city" required/>
+											</div>
+											<div class="col-md-6">
+												<label for="customerPostalCode" class="form-label small">Postal Code</label>
+												<input type="text" class="form-control form-control-sm" id="customerPostalCode" x-model="modalOrder.billing.postcode" required/>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- Section for Products -->
+								<div class="card mb-3 shadow-sm">
+									<div class="card-header">
+										<h6 class="mb-0">
+											<i class="bi bi-box-seam"></i> Products
+										</h6>
+									</div>
+									<div class="card-body">
+										<div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+											<table class="table table-sm">
+												<thead>
+													<tr>
+														<th>Product</th>
+														<th>Quantity</th>
+														<th>Price</th>
+													</tr>
+												</thead>
+												<tbody>
+													<template x-for="product in modalOrder.products" :key="product.id">
+														<tr>
+															<td x-text="product.name"></td>
+															<td x-text="product.quantity"></td>
+															<td x-text="product.price"></td>
+														</tr>
+													</template>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<!-- Section for Delivery Instructions -->
+								<div class="card mb-3 shadow-sm">
+									<div class="card-header">
+										<h6 class="mb-0">
+											<i class="bi bi-chat-right-text"></i> Delivery Instructions
+										</h6>
+									</div>
+									<div class="card-body">
+										<textarea class="form-control form-control-sm" id="deliveryInstructions" rows="2" placeholder="Add special instructions..."></textarea>
+									</div>
+								</div>
+								<div class="col-12">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" id="storePickup"/>
+										<label class="form-check-label" for="storePickup">Store Pickup</label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Shipping Information Tab -->
+						<div class="tab-pane fade" id="shipping-info" role="tabpanel" aria-labelledby="shipping-tab">
+							<div class="p-3">
+								<!-- Section for Shipping Information -->
+								<div class="card mb-3 shadow-sm">
+									<div class="card-header">
+										<h6 class="mb-0">
+											<i class="bi bi-truck"></i> Shipping Information
+										</h6>
+									</div>
+									<div class="card-body">
+										<div class="mb-3">
+											<label for="shippingCompany" class="form-label small">Shipping Company</label>
+											<select class="form-select form-select-sm" id="shippingCompany" required>
+												<option value="">Select company...</option>
+												<option value="acs" selected>ACS Courier</option>
+												<option value="dhl">DHL</option>
+												<option value="fedex">FedEx</option>
+											</select>
+										</div>
+										<div class="mb-3">
+											<label for="orderId" class="form-label small">Order Number</label>
+											<div class="input-group input-group-sm">
+												<span class="input-group-text">
+													<i class="bi bi-upc-scan"></i>
+												</span>
+												<input type="text" class="form-control form-control-sm" id="orderId" x-model="modalOrder.orderId" required readonly/>
+											</div>
+										</div>
+										<div class="mb-3">
+											<label for="parcelWeight" class="form-label small">Parcel Weight (kg)</label>
+											<div class="input-group input-group-sm">
+												<span class="input-group-text">
+													<i class="bi bi-body-text"></i>
+												</span>
+												<input type="number" class="form-control form-control-sm" id="parcelWeight" placeholder="0.5" step="0.5" required/>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- Section for Delivery Options -->
+								<div class="card mb-3 shadow-sm">
+									<div class="card-header">
+										<h6 class="mb-0">
+											<i class="bi bi-box-arrow-in-down"></i> Delivery Options
+										</h6>
+									</div>
+									<div class="card-body">
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="deliveryOption" id="standardDelivery" checked/>
+											<label class="form-check-label" for="standardDelivery">Standard Delivery</label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="deliveryOption" id="saturdayDelivery"/>
+											<label class="form-check-label" for="saturdayDelivery">Saturday Delivery</label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="deliveryOption" id="urgentDelivery"/>
+											<label class="form-check-label" for="urgentDelivery">Urgent Delivery</label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="deliveryOption" id="pickupDelivery"/>
+											<label class="form-check-label" for="pickupDelivery">Pickup</label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="deliveryOption" id="sameDayDelivery"/>
+											<label class="form-check-label" for="sameDayDelivery">Same Day</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- Save Button -->
+					<div class="mt-auto p-3 border-top">
+						<button type="button" class="btn btn-primary w-100" id="saveBtn">Save Changes</button>
+					</div>
+				</div>
+			</div>
+			@p.PaginationControl()
+		</div>
+	</div>
+	<script>
+function voucherTable(projectId) {
+    return {
+        projectID: projectId,
+        currentTab: 'new',
+        vouchers: [],
+        selectedVouchers: [],
+        selectAllCheckbox: false,
+        sortKey: 'created_at',
+        sortAsc: false,
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 0,
+        totalPages: 0,
+        loading: false,
+        selectedStatus: '',
+        errorMessage: '',
+		isNewTab: true, 
+		isPrinted: false,
+        showOffcanvas: false,
+		 modalOrder: {
+            billing: {
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                city: '',
+                postcode: '',
+                email: '',
+                phone: '',
+            },
+            shipping: {
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                city: '',
+                postcode: '',
+            },
+            products: [],
+            payment_method: ''
+        },
+
+        async init() {
+            await this.fetchVouchers(this.currentPage);
+        },
+
+        async fetchVouchers(page = 1) {
+            this.loading = true;
+            try {
+                const url = this.getUrlForTab(this.currentTab, page);
+                const response = await fetch(url);
+                const result = await response.json();
+                if (response.ok) {
+                    this.vouchers = result.data || [];
+                    this.totalItems = result.meta.totalItems || 0;
+                    this.currentPage = result.meta.currentPage || 1;
+                    this.itemsPerPage = result.meta.itemsPerPage || 10;
+                    this.totalPages = result.meta.totalPages || 0;
+                } else {
+                    console.error('Error fetching data:', result.message);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        getUrlForTab(tab, page) {
+            const baseUrl = `${window.location.origin}/voucher/table/${this.projectID}`;
+            const sortDirection = this.sortAsc ? 'asc' : 'desc';
+            switch (tab) {
+                case 'all':
+                    return `${baseUrl}/all/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'pending':
+                    return `${baseUrl}/pending/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'completed':
+                    return `${baseUrl}/completed/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'processing':
+                    return `${baseUrl}/processing/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                case 'cancelled':
+                    return `${baseUrl}/cancelled/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+				case 'new':
+                    return `${baseUrl}/new/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+                default:
+                    return `${baseUrl}/all/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
+            }
+        },
+
+        selectTab(tab) {
+			if (tab != 'new') {
+				this.isNewTab = false;
+				this.isPrinted = true;
+			}else {
+				this.isNewTab = true;
+				this.isPrinted = false;
+			}
+            this.currentTab = tab;
+            this.currentPage = 1; 
+            this.fetchVouchers(this.currentPage);
+        },
+
+        selectAll() {
+            this.selectedVouchers = this.selectAllCheckbox ? this.vouchers.map(voucher => voucher.Id) : [];
+        },
+
+        sortTable(key) {
+            if (this.sortKey === key) {
+                this.sortAsc = !this.sortAsc;
+            } else {
+                this.sortKey = key;
+                this.sortAsc = true;
+            }
+            this.fetchVouchers(this.currentPage);
+        },
+        getSortIcon(key) {
+            if (this.sortKey !== key) return '';
+            return this.sortAsc ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
+        },
+
+        changePage(page) {
+            if (page < 1 || page > this.totalPages) return;
+            this.fetchVouchers(page);
+        },
+		 downloadVoucher(voucherId) {
+        
+       	 console.log(`Downloading voucher with ID: ${voucherId}`);
+        
+    	},
+
+        get paginatedVouchers() {
+            return this.vouchers;
+        },
+		get currentPageStart() {
+			return (this.currentPage - 1) * this.itemsPerPage + 1;
+		},
+
+		get currentPageEnd() {
+			return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
+		},
+		get pageNumbers() {
+			const range = 2; // Number of pages to show around the current page
+			let start = Math.max(1, this.currentPage - range);
+			let end = Math.min(this.totalPages, this.currentPage + range);
+
+			// Adjust range if there are not enough pages on one side
+			if (this.totalPages - end < range) {
+				end = this.totalPages;
+				start = Math.max(1, end - 2 * range);
+			} else if (start <= range) {
+				start = 1;
+				end = Math.min(this.totalPages, start + 2 * range);
+			}
+
+			return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+		},
+
+        badgeClass(status) {
+            const baseClass = 'badge bg-body-secondary badge-custom';
+            switch (status) {
+                case 'pending':
+                    return `${baseClass} text-info`;
+				 case 'new':
+                    return `${baseClass} text-primary`;	
+                case 'completed':
+                    return `${baseClass} text-success`;
+                case 'cancelled':
+                    return `${baseClass} text-danger`;
+                case 'processing':
+                    return `${baseClass} text-warning`;
+                default:
+                    return baseClass;
+            }
+        },
+
+        async applyAction() {
+            if (!this.selectedStatus || !this.selectedVouchers.length) {
+                this.errorMessage = 'Please select a status and at least one voucher.';
+                return;
+            }
+            this.loading = true;
+            try {
+                const response = await fetch('/voucher/bulk-action', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        voucherIds: this.selectedVouchers,
+                        status: this.selectedStatus,
+                    }),
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    this.selectedVouchers = [];
+                    this.selectedStatus = '';
+                    this.selectAllCheckbox = false;
+                    this.fetchVouchers(this.currentPage);
+                } else {
+                    this.errorMessage = result.message;
+                }
+            } catch (error) {
+                this.errorMessage = 'An error occurred while processing the request.';
+            } finally {
+                this.loading = false;
+            }
+        },
+		 openOffcanvas(voucher) {
+			// Check if products exists and is an array
+			if (!Array.isArray(voucher.products)) {			
+				// Set products to an empty array if it's not valid
+				voucher.products = []; 
+				
+    		}
+		 this.modalOrder = {
+                   ...this.modalOrder,
+                ...voucher,
+                billing: { ...this.modalOrder.billing, ...voucher.billing },
+                shipping: { ...this.modalOrder.shipping, ...voucher.shipping },
+                products: [...voucher.products],
+                payment_method: voucher.payment_method
+            };
+			
+            this.showOffcanvas = true;
+			  console.log('Opening offcanvas:', this.showOffcanvas);
+			
+        },
+        closeOffcanvas() {
+            this.showOffcanvas = false;
+            this.modalOrder = {
+                billing: { ...this.modalOrder.billing },
+                shipping: { ...this.modalOrder.shipping },
+                products: [],
+                payment_method: ''
+            };
+			 console.log('Closing offcanvas:', this.showOffcanvas);
+        },
+    };
+}
+
+</script>
+	<!-- End Tab Content -->
+}

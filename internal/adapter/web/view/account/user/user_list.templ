@@ -1,0 +1,57 @@
+package views
+
+import (
+	"fmt"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ UserList(users []*domain.User, projectId string) {
+	<style>
+.fade-me-out.htmx-swapping {
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+</style>
+	for _, user := range users {
+		<div class="list-group-item d-flex align-items-center">
+			<div class="me-4"></div>
+			<div class="flex-fill">
+				<a href="#" class="d-block text-sm text-heading text-primary-hover fw-semibold">{ user.Name } { user.LastName }</a>
+				<span class="d-block text-xs text-muted">{ user.Email }</span>
+			</div>
+			<div class="ms-auto d-flex gap-4 align-items-center">
+				<div>
+					if ConvertUserRole(user.Role) == "admin" {
+						<span class="badge bg-primary-subtle text-primary rounded-pill">{ ConvertUserRole(user.Role) }</span>
+					} else {
+						<span class=" badge bg-warning-subtle text-warning rounded-pill">{ ConvertUserRole(user.Role) }</span>
+					}
+				</div>
+				<div class="dropdown">
+					<a class="text-muted" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="bi bi-three-dots-vertical"></i>
+					</a>
+					<div class="dropdown-menu">
+						// <a href="#!" class="dropdown-item">Update User </a>
+						<a
+							href="javascript:void(0)"
+							class="dropdown-item text-danger "
+							class="fade-me-out"
+							hx-delete={ fmt.Sprintf("/user/delete/%s/%s", user.Id.String(), projectId) }
+							hx-swap="outerHTML swap:1s"
+							hx-target="#dashboard-content"
+						>Delete User</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}
+
+func ConvertUserRole(role domain.UserRole) string {
+	if role == "client" {
+		return "admin"
+	} else {
+		return "user"
+	}
+}

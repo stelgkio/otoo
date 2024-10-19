@@ -1,0 +1,215 @@
+package views
+
+import (
+	"fmt"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ SettingsHeader(headerTitle string, active int, projectId string, projectExtensions []*domain.ProjectExtension, user *domain.User) {
+	<header class="border-bottom mb-10">
+		<div class="row align-items-center">
+			<div class="col-sm-6 col-12">
+				<h1 class="ls-tight">{ headerTitle }</h1>
+			</div>
+		</div>
+		<ul class="nav nav-tabs nav-tabs-flush gap-6 overflow-x border-0 mt-4">
+			if (active==1) {
+				<li class="nav-item">
+					<a
+						href="javascript:void(0)"
+						hx-get={ fmt.Sprintf("/project/settings/%s", projectId) }
+						hx-target="#dashboard-content"
+						hx-push-url="true"
+						class="nav-link active"
+					>General</a>
+				</li>
+			} else {
+				<li class="nav-item">
+					<a
+						href="javascript:void(0)"
+						hx-get={ fmt.Sprintf("/project/settings/%s", projectId) }
+						hx-target="#dashboard-content"
+						hx-push-url="true"
+						class="nav-link"
+					>General</a>
+				</li>
+			}
+			//<li class="nav-item"> <a href="/pages/account-billing.html" class="nav-link active">Billing</a></li>
+			if (active==2) {
+				<li class="nav-item ">
+					<a
+						href="javascript:void(0)"
+						hx-get={ fmt.Sprintf("/project/settings/secret/%s", projectId) }
+						hx-target="#dashboard-content"
+						class="nav-link active"
+					>Secrets</a>
+				</li>
+			} else {
+				<li class="nav-item">
+					<a
+						href="javascript:void(0)"
+						hx-get={ fmt.Sprintf("/project/settings/secret/%s", projectId) }
+						hx-target="#dashboard-content"
+						class="nav-link"
+					>Secrets</a>
+				</li>
+			}
+			if (active==3) {
+				<li class="nav-item ">
+					<a
+						href="javascript:void(0)"
+						hx-get={ fmt.Sprintf("/project/settings/webhook/%s", projectId) }
+						hx-target="#dashboard-content"
+						class="nav-link active"
+					>Webhooks</a>
+				</li>
+			} else {
+				<li class="nav-item">
+					<a
+						href="javascript:void(0)"
+						hx-get={ fmt.Sprintf("/project/settings/webhook/%s", projectId) }
+						hx-target="#dashboard-content"
+						class="nav-link"
+					>Webhooks</a>
+				</li>
+			}
+			if (active==4) {
+				<li class="nav-item ">
+					<a
+						href="javascript:void(0)"
+						hx-get={ fmt.Sprintf("/project/settings/notification/%s", projectId) }
+						hx-target="#dashboard-content"
+						class="nav-link active"
+					>Notifications</a>
+				</li>
+			} else {
+				<li class="nav-item">
+					<a
+						href="javascript:void(0)"
+						hx-get={ fmt.Sprintf("/project/settings/notification/%s", projectId) }
+						hx-target="#dashboard-content"
+						class="nav-link"
+					>Notifications</a>
+				</li>
+			}
+			if ConvertUserRole(user.Role) == "admin" {
+				if (active==5) {
+					<li class="nav-item ">
+						<a
+							href="javascript:void(0)"
+							hx-get={ fmt.Sprintf("/project/settings/payment/%s", projectId) }
+							hx-target="#dashboard-content"
+							class="nav-link active"
+						>Payment & Subscription</a>
+					</li>
+				} else {
+					<li class="nav-item">
+						<a
+							href="javascript:void(0)"
+							hx-get={ fmt.Sprintf("/project/settings/payment/%s", projectId) }
+							hx-target="#dashboard-content"
+							class="nav-link"
+						>Payment & Subscription</a>
+					</li>
+				}
+			}
+			if (active==6) {
+				<li class="nav-item ">
+					<a
+						href="javascript:void(0)"
+						hx-get={ fmt.Sprintf("/project/settings/team/%s", projectId) }
+						hx-target="#dashboard-content"
+						hx-push-url="true"
+						class="nav-link active"
+					>Team</a>
+				</li>
+			} else {
+				<li class="nav-item">
+					<a
+						href="javascript:void(0)"
+						hx-get={ fmt.Sprintf("/project/settings/team/%s", projectId) }
+						hx-target="#dashboard-content"
+						hx-push-url="true"
+						class="nav-link"
+					>Team</a>
+				</li>
+			}
+			if ConvertUserRole(user.Role) == "admin" {
+				for _, extension := range projectExtensions {
+					if (extension.Code == "asc-courier") {
+						if (active==7) {
+							<li class="nav-item ">
+								<a
+									href="javascript:void(0)"
+									hx-get={ fmt.Sprintf("/project/settings/asc-courier/%s", projectId) }
+									hx-target="#dashboard-content"
+									class="nav-link active"
+								>{ extension.Title }</a>
+							</li>
+						} else {
+							<li class="nav-item">
+								<a
+									href="javascript:void(0)"
+									hx-get={ fmt.Sprintf("/project/settings/asc-courier/%s", projectId) }
+									hx-target="#dashboard-content"
+									class="nav-link"
+								>{ extension.Title }</a>
+							</li>
+						}
+					}
+					if (extension.Code == "wallet-expences") {
+						if (active==8) {
+							<li class="nav-item ">
+								<a
+									href="javascript:void(0)"
+									hx-get={ fmt.Sprintf("/project/settings/wallet-expences/%s", projectId) }
+									hx-target="#dashboard-content"
+									class="nav-link active"
+								>{ extension.Title }</a>
+							</li>
+						} else {
+							<li class="nav-item">
+								<a
+									href="javascript:void(0)"
+									hx-get={ fmt.Sprintf("/project/settings/wallet-expences/%s", projectId) }
+									hx-target="#dashboard-content"
+									class="nav-link"
+								>{ extension.Title }</a>
+							</li>
+						}
+					}
+					if (extension.Code == "courier4u") {
+						if (active==9) {
+							<li class="nav-item ">
+								<a
+									href="javascript:void(0)"
+									hx-get={ fmt.Sprintf("/project/settings/courier4u/%s", projectId) }
+									hx-target="#dashboard-content"
+									class="nav-link active"
+								>{ extension.Title }</a>
+							</li>
+						} else {
+							<li class="nav-item">
+								<a
+									href="javascript:void(0)"
+									hx-get={ fmt.Sprintf("/project/settings/courier4u/%s", projectId) }
+									hx-target="#dashboard-content"
+									class="nav-link"
+								>{ extension.Title }</a>
+							</li>
+						}
+					}
+				}
+			}
+			//<li class="nav-item"><a href="/pages/account-team.html" class="nav-link">Team</a></li>
+		</ul>
+	</header>
+}
+
+func ConvertUserRole(role domain.UserRole) string {
+	if role == "client" {
+		return "admin"
+	} else {
+		return "user"
+	}
+}

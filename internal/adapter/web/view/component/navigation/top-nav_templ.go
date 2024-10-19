@@ -44,27 +44,27 @@ func TopBar(user *domain.User, projectName, projectId string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button><div class=\"dropdown\"><a href=\"#\" class=\"nav-link\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><i class=\"bi bi-sun-fill\"></i></a><div class=\"dropdown-menu\"><button type=\"button\" class=\"dropdown-item d-flex align-items-center\" data-bs-theme-value=\"light\">Light</button> <button type=\"button\" class=\"dropdown-item d-flex align-items-center\" data-bs-theme-value=\"dark\">Dark</button></div></div><div class=\"dropdown\" id=\"notification-list\"><a href=\"javascript:void(0)\" class=\"nav-link\" id=\"dropdown-notifications\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\" hx-trigger=\"load\" hx-get=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button><div class=\"dropdown\"><a href=\"#\" class=\"nav-link\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><i class=\"bi bi-sun-fill\"></i></a><div class=\"dropdown-menu\"><button type=\"button\" class=\"dropdown-item d-flex align-items-center\" data-bs-theme-value=\"light\">Light</button> <button type=\"button\" class=\"dropdown-item d-flex align-items-center\" data-bs-theme-value=\"dark\">Dark</button></div></div><div class=\"dropdown\"><a href=\"#\" class=\"nav-link\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><i class=\"bi bi-translate\"></i></a><div class=\"dropdown-menu\"><button type=\"button\" class=\"dropdown-item d-flex align-items-center\" onclick=\"changeLanguage(&#39;en&#39;)\">English</button> <button type=\"button\" class=\"dropdown-item d-flex align-items-center\" onclick=\"changeLanguage(&#39;el&#39;)\">Ελληνικά</button></div></div><div class=\"dropdown\" id=\"notification-list\"><a href=\"javascript:void(0)\" class=\"nav-link\" id=\"dropdown-notifications\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\" hx-trigger=\"load\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/dashboard/notifiaction/%s", projectId))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/top-nav.templ`, Line: 61, Col: 66}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/top-nav.templ`, Line: 81, Col: 66}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#notification-list\"><i class=\"bi bi-bell\"></i> <span class=\"position-absolute top-0 start-100 translate-middle bg-danger rounded-circle\" style=\"width: 8px; height: 8px; padding: 0; border-radius: 50%;\"></span></a><div class=\"dropdown-menu dropdown-menu-end px-2\" aria-labelledby=\"dropdown-notifications\"><div class=\"dropdown-item d-flex align-items-center\"><h6 class=\"dropdown-header px-0\">Notifications</h6><a href=\"javascript:void(0)\" class=\"text-sm fw-semibold ms-auto\">Clear all</a></div><div class=\"dropdown-divider\"></div><div class=\"dropdown-item py-2 text-center\"><a href=\"javascript:void(0)\" class=\"fw-semibold text-muted text-primary-hover\">View all</a></div></div></div><div class=\"dropdown\"><a class=\"avatar avatar-sm rounded-circle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-haspopup=\"false\" aria-expanded=\"false\"><i class=\"bi bi-person-circle h5\"></i></a><div class=\"dropdown-menu dropdown-menu-end\"><div class=\"dropdown-header\"><span class=\"d-block text-heading fw-semibold\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#notification-list\"><i class=\"bi bi-bell\"></i> <span class=\"position-absolute top-0 start-100 translate-middle bg-danger rounded-circle\" style=\"width: 8px; height: 8px; padding: 0; border-radius: 50%;\"></span></a><div class=\"dropdown-menu dropdown-menu-end px-2\" aria-labelledby=\"dropdown-notifications\"><div class=\"dropdown-item d-flex align-items-center\"><h6 class=\"dropdown-header px-0\">Notifications</h6><a href=\"javascript:void(0)\" class=\"text-sm fw-semibold ms-auto\">Clear all</a></div><div class=\"dropdown-divider\"></div><div class=\"dropdown-item py-2 text-center\"><a href=\"javascript:void(0)\" class=\"fw-semibold text-muted text-primary-hover\">View all</a></div></div></div><div class=\"dropdown\"><a class=\"avatar avatar-sm rounded-circle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-haspopup=\"false\" aria-expanded=\"false\"><i class=\"bi bi-person-circle h5\"></i></a><div class=\"dropdown-menu dropdown-menu-end\"><div class=\"dropdown-header\"><a href=\"javascript:void(0)\" class=\"dropdown-item\" hx-get=\"/profile\" hx-target=\"#dashboard-content\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(user.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/top-nav.templ`, Line: 104, Col: 64}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/top-nav.templ`, Line: 126, Col: 18}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -73,13 +73,13 @@ func TopBar(user *domain.User, projectName, projectId string) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(user.LastName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/top-nav.templ`, Line: 104, Col: 81}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/top-nav.templ`, Line: 126, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></div><div class=\"dropdown-divider\"></div><a class=\"dropdown-item\" href=\"/dashboard\"><i class=\"bi bi-house me-3\"></i>Projects </a><div class=\"dropdown-divider\"></div><div class=\"dropdown-divider\"></div><a class=\"dropdown-item\" hx-get=\"/dashboard/logout\"><i class=\"bi bi-person me-3\"></i>Logout</a></div></div></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div><div class=\"dropdown-divider\"></div><a class=\"dropdown-item\" href=\"/dashboard\"><i class=\"bi bi-house me-3\"></i>Projects </a><div class=\"dropdown-divider\"></div><div class=\"dropdown-divider\"></div><a class=\"dropdown-item\" hx-get=\"/dashboard/logout\"><i class=\"bi bi-person me-3\"></i>Logout</a></div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

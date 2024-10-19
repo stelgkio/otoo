@@ -240,11 +240,11 @@ func (os *OrderService) UpdateOrder(projectID string, orderID int64, orderTable 
 }
 
 // GetAllOrdersFromWoocommerce retrieves all orders from WooCommerce and saves them to MongoDB
-func (os *OrderService) GetAllOrdersFromWoocommerce(customerKey string, customerSecret string, domainURL string, projectID string, totalProduct int64) error {
+func (os *OrderService) GetAllOrdersFromWoocommerce(customerKey string, customerSecret string, domainURL string, projectID string, totalOrder int64) error {
 	client := InitClient(customerKey, customerSecret, domainURL)
 
 	// Create all webhooks
-	err := os.createAndSaveAllCustomers(client, projectID, totalProduct)
+	err := os.createAndSaveAllOrders(client, projectID, totalOrder)
 	if err != nil {
 		slog.Error("get all order error", "error", err)
 		return errors.Wrap(err, "create all order error")
@@ -255,16 +255,19 @@ func (os *OrderService) GetAllOrdersFromWoocommerce(customerKey string, customer
 }
 
 // createAndSaveAllWebhooks creates WooCommerce products and saves results to MongoDB concurrently
-func (os *OrderService) createAndSaveAllCustomers(client *commerce.Client, projectID string, totalOrder int64) error {
+func (os *OrderService) createAndSaveAllOrders(client *commerce.Client, projectID string, totalOrder int64) error {
 
 	var wg sync.WaitGroup
-	orderCh := make(chan *w.OrderRecord, totalOrder) // Channel to distribute order to workers
+	orderCh := make(chan *w.OrderRecord, totalOrder) // Channel to distribute orders to workers
 	errorCh := make(chan *w.OrderRecord, 1)          // Buffered channel for error results
+
+	// Number of worker goroutines for processing orders
 	workers := int(math.Ceil(float64(totalOrder) / 100))
 	if workers == 0 {
 		workers = 1
 	}
-	// Worker pool to process products
+
+	// Worker pool to process orders
 	for i := 0; i < workers; i++ {
 		wg.Add(1)
 		go func(projectID string) {
@@ -273,7 +276,7 @@ func (os *OrderService) createAndSaveAllCustomers(client *commerce.Client, proje
 				err := os.saveOrderResult(order, order.OrderID)
 				if err != nil {
 					log.Printf("Failed to save order result: %v", err)
-					// Handle or log the error accordingly
+					errorCh <- order // Send the error order to the error channel
 				}
 			}
 		}(projectID)
@@ -284,65 +287,101 @@ func (os *OrderService) createAndSaveAllCustomers(client *commerce.Client, proje
 		for result := range errorCh {
 			err := os.saveOrderResult(result, result.OrderID)
 			if err != nil {
-				log.Printf("Failed to save order result: %v", err)
-				// Handle or log the error accordingly
+				log.Printf("Failed to save order error result: %v", err)
 			}
 		}
 	}(projectID)
 
-	// Main processing goroutine
-	page := 1
-	for {
-		options := commerce.OrderListOption{
-			ListOptions: commerce.ListOptions{
-				Context: "view",
-				Order:   "desc",
-				Orderby: "id",
-				Page:    page,
-				PerPage: batchSize,
-			},
-		}
-		resp, err := client.Order.List(options)
-		if err != nil {
-			errorCh <- &w.OrderRecord{
-				ProjectID: projectID,
-				Event:     "order.List",
-				Error:     err.Error(),
-				CreatedAt: time.Now().UTC(),
-				OrderID:   0,
-				Order:     commerce.Order{}, // Assuming empty product
-				IsActive:  false,
+	// Create a semaphore to limit the number of concurrent fetches
+	maxConcurrentFetches := 5
+	sem := make(chan struct{}, maxConcurrentFetches) // Semaphore to limit concurrent requests
+
+	// Concurrent fetching of orders
+	go func() {
+		var fetchWg sync.WaitGroup
+		page := 1
+
+		for {
+			sem <- struct{}{} // Acquire a token before launching a new fetch goroutine
+			fetchWg.Add(1)
+
+			go func(page int) {
+				defer fetchWg.Done()
+				defer func() { <-sem }() // Release the semaphore token when done
+
+				options := commerce.OrderListOption{
+					ListOptions: commerce.ListOptions{
+						Context: "view",
+						Order:   "desc",
+						Orderby: "id",
+						Page:    page,
+						PerPage: batchSize,
+					},
+				}
+
+				// Fetch orders from the API
+				resp, err := client.Order.List(options)
+				if err != nil {
+					errorCh <- &w.OrderRecord{
+						ProjectID: projectID,
+						Event:     "order.List",
+						Error:     err.Error(),
+						CreatedAt: time.Now().UTC(),
+						OrderID:   0,
+						Order:     commerce.Order{}, // Assuming empty order
+						IsActive:  false,
+					}
+					return
+				}
+
+				if len(resp) == 0 {
+					// No more orders, stop the fetching
+					return
+				}
+
+				// Notify about the number of orders received
+				os.extensionSrv.UpdateSynchronizerOrderReceivedExtension(nil, projectID, len(resp))
+
+				// Send fetched orders to the worker pool
+				for _, item := range resp {
+					Status, _ := domain.StringToOrderStatus(item.Status)
+					_, orderCreated, _ := domain.ConvertDateString(item.DateCreatedGmt)
+
+					orderCh <- &w.OrderRecord{
+						ProjectID:    projectID,
+						Event:        "order.created",
+						Error:        "",
+						CreatedAt:    time.Now().UTC(),
+						Timestamp:    time.Now().UTC(),
+						OrderID:      item.ID,
+						Order:        item,
+						IsActive:     true,
+						Status:       Status,
+						OrderCreated: orderCreated,
+					}
+				}
+			}(page)
+
+			page++
+
+			// Define the exit condition to stop fetching orders
+			if page > int(math.Ceil(float64(totalOrder)/100)) {
+				break
 			}
-			break // Exit the loop on error
 		}
-		if len(resp) == 0 {
-			break // Exit the loop if no more products are returned
-		}
-		os.extensionSrv.UpdateSynchronizerOrderReceivedExtension(nil, projectID, len(resp))
-		for _, item := range resp {
-			Status, _ := domain.StringToOrderStatus(item.Status)
-			_, orcderCreate, _ := domain.ConvertDateString(item.DateCreatedGmt)
-			orderCh <- &w.OrderRecord{
-				ProjectID:    projectID,
-				Event:        "order.created",
-				Error:        "",
-				CreatedAt:    time.Now().UTC(),
-				Timestamp:    time.Now().UTC(),
-				OrderID:      item.ID,
-				Order:        item,
-				IsActive:     true,
-				Status:       Status,
-				OrderCreated: orcderCreate,
-			}
 
-		}
-		page++
-	}
+		// Wait for all fetch goroutines to complete
+		fetchWg.Wait()
 
-	close(orderCh) // Close the order channel after processing is complete
-	close(errorCh) // Close the error channel after processing is complete
+		// Close the order channel after all fetching is done
+		close(orderCh)
+	}()
 
-	wg.Wait() // Wait for all worker goroutines to finish
+	// Wait for all worker goroutines to finish processing orders
+	wg.Wait()
+
+	// Close the error channel after all error processing is done
+	close(errorCh)
 
 	return nil
 }

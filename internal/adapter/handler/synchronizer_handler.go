@@ -280,7 +280,7 @@ func (ph *ProjectHandler) ProjectSynchronizeDone(ctx echo.Context) error {
 	for count := range customerResults {
 		customerCount = count
 	}
-	users, err := ph.userSvc.GetAdminUserByProjectId(nil, project.Id)
+	users, err := ph.userSvc.FindUsersByProjectId(nil, project.Id)
 	if productCount == productTotal && orderCount == orderTotal && (customerCount > customerTotal || customerCount == customerTotal) {
 		ctx.Response().Header().Set("HX-Trigger", "done")
 		go ph.bestSellerSvc.RunAProductBestSellerInitializerJob(projectID)
@@ -521,7 +521,7 @@ func (ph *ProjectHandler) ProjectSynchronizeDonePage(ctx echo.Context) error {
 
 		return r.Render(ctx, synpage.ProjectSynchronizerStartPage(user, projectID, int64(syncro.CustomerRecieved), int64(syncro.ProductReceived), int64(syncro.OrderReceived), customerPercentage, productPercentage, orderPercentage))
 	}
-	users, err := ph.userSvc.GetAdminUserByProjectId(nil, project.Id)
+	users, err := ph.userSvc.FindUsersByProjectId(nil, project.Id)
 	ctx.Response().Header().Set("HX-Trigger", "done")
 	go ph.bestSellerSvc.RunAProductBestSellerInitializerJob(projectID)
 	go ph.orderAnalyticsSvc.RunOrderWeeklyBalanceInitializeJob(project, users)

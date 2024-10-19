@@ -53,14 +53,15 @@ func (s *ProductService) GetAllProductFromWoocommerce(customerKey string, custom
 
 // createAndSaveAllWebhooks creates WooCommerce products and saves results to MongoDB concurrently
 func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectID string, totalProduct int64) error {
-
 	var wg sync.WaitGroup
 	productCh := make(chan *w.ProductRecord, totalProduct) // Channel to distribute products to workers
 	errorCh := make(chan *w.ProductRecord, 1)              // Buffered channel for error results
+
 	workers := int(math.Ceil(float64(totalProduct) / 100))
 	if workers == 0 {
 		workers = 1
 	}
+
 	// Worker pool to process products
 	for i := 0; i < workers; i++ {
 		wg.Add(1)
@@ -69,97 +70,135 @@ func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectID 
 			for product := range productCh {
 				err := s.saveProductResult(product, projectID)
 				if err != nil {
-					log.Printf("Failed to save webhook result: %v", err)
-					// Handle or log the error accordingly
+					log.Printf("Failed to save product result: %v", err)
+					errorCh <- product
 				}
 			}
 		}(projectID)
 	}
 
-	// Goroutine to save error results
+	// Goroutine to process error results
 	go func(projectID string) {
 		for result := range errorCh {
 			err := s.saveProductResult(result, projectID)
 			if err != nil {
-				log.Printf("Failed to save webhook result: %v", err)
-				// Handle or log the error accordingly
+				log.Printf("Failed to save error result: %v", err)
 			}
 		}
 	}(projectID)
 
-	// Main processing goroutine
-	page := 1
-	for {
-		options := woo.ProductListOptions{
-			ListOptions: woo.ListOptions{
-				Context: "view",
-				Order:   "desc",
-				Orderby: "date",
-				Page:    page,
-				PerPage: batchSize,
-			},
-			Status: "publish",
-		}
-		resp, err := client.Product.List(options)
-		if err != nil {
-			errorCh <- &w.ProductRecord{
-				ProjectID: projectID,
-				Event:     "product.List",
-				Error:     err.Error(),
-				CreatedAt: time.Now().UTC(),
-				ProductID: 0,
-				Product:   woo.Product{}, // Assuming empty product
-				IsActive:  false,
-			}
-			break // Exit the loop on error
-		}
-		if len(resp) == 0 {
-			break // Exit the loop if no more products are returned
-		}
-		s.extensionSrv.UpdateSynchronizerProductReceivedExtension(nil, projectID, len(resp))
-		for _, item := range resp {
-			productCh <- &w.ProductRecord{
-				ProjectID: projectID,
-				Event:     "product.created",
-				Error:     "",
-				CreatedAt: time.Now().UTC(),
-				Timestamp: time.Now().UTC(),
-				ProductID: item.ID,
-				Product:   item,
-				IsActive:  true,
-			}
-			if item.Type == domain.Variable.String() {
-				for _, variationID := range item.Variations {
-					variation, err := client.ProductVariation.Get(item.ID, variationID, nil)
-					if err != nil {
-						return err
-					}
+	// Create a semaphore to limit the number of concurrent fetches
+	maxConcurrentFetches := 5
+	sem := make(chan struct{}, maxConcurrentFetches) // Semaphore with a limit
 
-					variationRecord := &domain.ProductRecord{
-						ProjectID: projectID,
-						Error:     "",
-						Event:     "product.created",
-						ProductID: variation.ID,
-						Product:   *variation,
-						IsActive:  true,
-						CreatedAt: time.Now().UTC(),
-						Timestamp: time.Now().UTC(),
-						ParentId:  item.ID,
-					}
+	// Fetch products concurrently by page
+	go func() {
+		var fetchWg sync.WaitGroup
+		page := 1
 
-					err = s.p.ProductUpdate(variationRecord, variation.ID, projectID)
+		for {
+			sem <- struct{}{} // Acquire a token before launching a new goroutine
+			fetchWg.Add(1)
+
+			go func(page int) {
+				defer fetchWg.Done()
+				defer func() { <-sem }() // Release the token when done
+
+				options := woo.ProductListOptions{
+					ListOptions: woo.ListOptions{
+						Context: "view",
+						Order:   "desc",
+						Orderby: "date",
+						Page:    page,
+						PerPage: batchSize,
+					},
+					Status: "publish",
 				}
 
+				resp, err := client.Product.List(options)
+				if err != nil {
+					errorCh <- &w.ProductRecord{
+						ProjectID: projectID,
+						Event:     "product.List",
+						Error:     err.Error(),
+						CreatedAt: time.Now().UTC(),
+						ProductID: 0,
+						Product:   woo.Product{}, // Assuming empty product
+						IsActive:  false,
+					}
+					return
+				}
+
+				if len(resp) == 0 {
+					// No more products, break the loop
+					return
+				}
+
+				s.extensionSrv.UpdateSynchronizerProductReceivedExtension(nil, projectID, len(resp))
+
+				for _, item := range resp {
+					productCh <- &w.ProductRecord{
+						ProjectID: projectID,
+						Event:     "product.created",
+						Error:     "",
+						CreatedAt: time.Now().UTC(),
+						Timestamp: time.Now().UTC(),
+						ProductID: item.ID,
+						Product:   item,
+						IsActive:  true,
+					}
+
+					// If the product is variable, process its variations
+					if item.Type == domain.Variable.String() {
+						for _, variationID := range item.Variations {
+							variation, err := client.ProductVariation.Get(item.ID, variationID, nil)
+							if err != nil {
+								errorCh <- &w.ProductRecord{
+									ProjectID: projectID,
+									Event:     "product.variation.Get",
+									Error:     err.Error(),
+									CreatedAt: time.Now().UTC(),
+									ProductID: variationID,
+									IsActive:  false,
+								}
+								continue
+							}
+
+							variationRecord := &domain.ProductRecord{
+								ProjectID: projectID,
+								Error:     "",
+								Event:     "product.created",
+								ProductID: variation.ID,
+								Product:   *variation,
+								IsActive:  true,
+								CreatedAt: time.Now().UTC(),
+								Timestamp: time.Now().UTC(),
+								ParentId:  item.ID,
+							}
+
+							err = s.p.ProductUpdate(variationRecord, variation.ID, projectID)
+						}
+					}
+				}
+			}(page)
+
+			page++
+
+			// Check if all pages are processed
+			if page > int(math.Ceil(float64(totalProduct)/100)) {
+				break
 			}
-
 		}
-		page++
-	}
 
-	close(productCh) // Close the product channel after processing is complete
-	close(errorCh)   // Close the error channel after processing is complete
+		// Wait for all fetch goroutines to finish
+		fetchWg.Wait()
+		close(productCh) // Close product channel after all fetching is done
+	}()
 
-	wg.Wait() // Wait for all worker goroutines to finish
+	// Wait for all worker goroutines to finish processing products
+	wg.Wait()
+
+	close(errorCh) // Close error channel after all errors are processed
 
 	return nil
 }

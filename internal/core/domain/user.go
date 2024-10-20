@@ -22,7 +22,7 @@ type User struct {
 	tableName struct{} `pg:"user,alias:user"`
 	Base
 	Name               string `json:"name" pg:"name,notnull"`
-	Email              string `json:"email" pg:"email,unique,notnull"`
+	Email              string `json:"email" pg:"email,notnull"`
 	Password           string `json:"password" pg:"password,notnull"`
 	Role               UserRole
 	ValidatedAt        time.Time

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"log/slog"
@@ -15,9 +16,14 @@ import (
 	page "github.com/stelgkio/otoo/internal/adapter/web/view/extension/page"
 	nv "github.com/stelgkio/otoo/internal/adapter/web/view/extension/side_nav_list"
 	et "github.com/stelgkio/otoo/internal/adapter/web/view/extension/template"
+	acscourier "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/acs-courier"
+	scu "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/courier4u"
+	stm "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/template"
+
 	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	"github.com/stelgkio/otoo/internal/core/util"
+	r "github.com/stelgkio/otoo/internal/core/util"
 	"github.com/stripe/stripe-go/v72"
 	"github.com/stripe/stripe-go/v72/sub"
 )
@@ -138,6 +144,7 @@ func (dh *DashboardHandler) AcsCourier(ctx echo.Context) error {
 // AcsCourierFormPost post form with acs courier data
 func (dh *DashboardHandler) AcsCourierFormPost(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
+
 	extension, err := dh.extensionSvc.GetExtensionByCode(ctx, "asc-courier")
 	if err != nil {
 		return err
@@ -160,6 +167,59 @@ func (dh *DashboardHandler) AcsCourierFormPost(ctx echo.Context) error {
 	dh.extensionSvc.CreateACSProjectExtension(ctx, projectID, req)
 
 	return util.Render(ctx, ac.ASC_Courier_Subscription(os.Getenv("STRIPE_PUBLICK_KEY"), projectID, extension.ID.Hex()))
+}
+
+// AcsCourierSettingsFormPost post form with acs courier data
+func (dh *DashboardHandler) AcsCourierSettingsFormPost(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := dh.userSvc.GetUserById(ctx, userID)
+	if err != nil {
+		return err
+	}
+	project, err := dh.projectSvc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	extension, err := dh.extensionSvc.GetExtensionByCode(ctx, "asc-courier")
+	if err != nil {
+		return err
+	}
+	req := new(domain.AcsCourierExtension)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("Create project binding error", "error", err)
+		return ctx.JSON(http.StatusBadRequest, map[string]string{
+			"error": errors.New("Invalid request").Error(),
+		})
+	}
+	validationErrors := req.Validate()
+	if len(validationErrors) > 0 {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{
+			"error": util.ConcatenateErrors(validationErrors),
+		})
+	}
+
+	req.ProjectID = projectID
+	req.ExtensionID = extension.ID.Hex()
+	req.CreatedAt = time.Now().UTC()
+	req.IsActive = true
+
+	err = dh.extensionSvc.CreateACSProjectExtension(ctx, projectID, req)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
+
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, acscourier.SettingsACSCourier(projectID, projectExtensions, user, make(map[string]string), req))
+	}
+	return r.Render(ctx, stm.AcsCourierTemplate(user, project.Name, projectID, project, projectExtensions, make(map[string]string), req))
 }
 
 // AcsCourierDeActivate post form with acs courier data
@@ -237,6 +297,59 @@ func (dh *DashboardHandler) Courier4uFormPost(ctx echo.Context) error {
 	dh.extensionSvc.CreateCourier4uProjectExtension(ctx, projectID, req)
 
 	return util.Render(ctx, cu.Courier4uSubscriptio(os.Getenv("STRIPE_PUBLICK_KEY"), projectID, extension.ID.Hex()))
+}
+
+// Courier4uFormPost post form with acs courier data
+func (dh *DashboardHandler) Courier4uSettingsFormPost(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := dh.userSvc.GetUserById(ctx, userID)
+	if err != nil {
+		return err
+	}
+	project, err := dh.projectSvc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	extension, err := dh.extensionSvc.GetExtensionByCode(ctx, "courier4u")
+	if err != nil {
+		return err
+	}
+	req := new(domain.Courier4uExtension)
+	if err := ctx.Bind(req); err != nil {
+		slog.Error("Create project binding error", "error", err)
+		return ctx.JSON(http.StatusBadRequest, map[string]string{
+			"error": errors.New("Invalid request").Error(),
+		})
+	}
+	validationErrors := req.Validate()
+	if len(validationErrors) > 0 {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{
+			"error": util.ConcatenateErrors(validationErrors),
+		})
+	}
+
+	req.ProjectID = projectID
+	req.ExtensionID = extension.ID.Hex()
+	req.CreatedAt = time.Now().UTC()
+	req.IsActive = true
+
+	err = dh.extensionSvc.CreateCourier4uProjectExtension(ctx, projectID, req)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
+
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, scu.SettingsCourier4u(projectID, projectExtensions, user, make(map[string]string), req))
+	}
+	return r.Render(ctx, stm.Courier4uTemplate(user, project.Name, projectID, project, projectExtensions, make(map[string]string), req))
 }
 
 // Courier4uDeActivate post form with acs courier data

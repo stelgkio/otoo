@@ -104,6 +104,7 @@ func NewRouter(
 		usergroup.GET("/createMember/:projectId", authHandler.CreateMemberModal)
 		usergroup.POST("/addmember/:projectId", authHandler.AddMember)
 		usergroup.DELETE("/delete/:userId/:projectId", authHandler.RemoveMember)
+		usergroup.POST("/check-email", authHandler.CheckEmail)
 	}
 	//Dashboard
 	dashboardgroup := e.Group("/dashboard")
@@ -161,10 +162,12 @@ func NewRouter(
 
 		extensiongroup.GET("/asc-courier/:projectId", dashboardHandler.AcsCourier)
 		extensiongroup.POST("/asc-courier/:projectId", dashboardHandler.AcsCourierFormPost)
+		extensiongroup.POST("/asc-courier/settings/:projectId", dashboardHandler.AcsCourierSettingsFormPost)
 		extensiongroup.POST("/asc-courier/deactivate/:projectId", dashboardHandler.AcsCourierDeActivate)
 
 		extensiongroup.GET("/courier4u/:projectId", dashboardHandler.Courier4u)
 		extensiongroup.POST("/courier4u/:projectId", dashboardHandler.Courier4uFormPost)
+		extensiongroup.POST("/courier4u/settings/:projectId", dashboardHandler.Courier4uSettingsFormPost)
 		extensiongroup.POST("/courier4u/deactivate/:projectId", dashboardHandler.Courier4uDeActivate)
 
 		extensiongroup.GET("/wallet-expences/:projectId", dashboardHandler.WalletExpenses)

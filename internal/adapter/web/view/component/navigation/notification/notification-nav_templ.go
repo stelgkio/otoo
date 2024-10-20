@@ -31,17 +31,17 @@ func NotificationIcon(notifiactions []*domain.Notification, projectId string) te
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"dropdown\" id=\"notification-list\"><a href=\"javascript:void(0)\" class=\"nav-link\" id=\"dropdown-notifications\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><i class=\"bi bi-bell\"></i> ")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if len(notifiactions) > 0 {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<span class=\"position-absolute top-0 start-100 translate-middle bg-danger rounded-circle\" style=\"width: 8px; height: 8px; padding: 0; border-radius: 50%;\"></span>")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a><div class=\"dropdown-menu dropdown-menu-end px-2\" aria-labelledby=\"dropdown-notifications\"><div class=\"dropdown-item d-flex align-items-center\"><h6 class=\"dropdown-header px-0\">Notifications</h6><a href=\"javascript:void(0)\" class=\"text-sm fw-semibold ms-auto\" hx-delete=\"")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -55,18 +55,18 @@ func NotificationIcon(notifiactions []*domain.Notification, projectId string) te
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#notification-list\">Clear all</a></div>")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if len(notifiactions) == 0 {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"dropdown-item py-3 d-flex\"><div class=\"flex-fill ms-3\"><div class=\"text-sm lg-snug w-rem-64 text-wrap\"><a href=\"javascript:void(0)\" class=\"fw-semibold text-heading text-primary-hover\">Empty notifiaction </a></div></div></div>")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
 			for _, item := range notifiactions {
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"dropdown-item py-3 d-flex\"><div class=\"flex-fill ms-3\"><div class=\"text-sm lg-snug w-rem-64 text-wrap\"><a href=\"javascript:void(0)\" class=\"fw-semibold text-heading text-primary-hover\">")
+				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 6)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -79,7 +79,7 @@ func NotificationIcon(notifiactions []*domain.Notification, projectId string) te
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div></div><div><a id=\"delete-notification-btn\" class=\"delete-notification\" href=\"javascript:void(0)\" hx-delete=\"")
+				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 7)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -93,13 +93,13 @@ func NotificationIcon(notifiactions []*domain.Notification, projectId string) te
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#notification-list\" hx-swap=\"outerHTML\" hx-on::after-request=\"alert(&#39;Done making a request!&#39;)\" class=\"fw-semibold text-heading text-primary-hover delete-notification\"><i class=\"bi bi-trash-fill\"></i></a></div></div>")
+				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 8)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"dropdown-divider\"></div><div class=\"dropdown-item py-2 text-center\"><a href=\"javascript:void(0)\" hx-get=\"")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 9)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -112,7 +112,7 @@ func NotificationIcon(notifiactions []*domain.Notification, projectId string) te
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\" hx-push-url=\"true\" hx-target=\"#dashboard-content\" class=\"fw-semibold text-muted text-primary-hover\">View all</a></div></div></div>")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 10)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

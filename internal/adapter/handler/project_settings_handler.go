@@ -15,6 +15,8 @@ import (
 	st "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/template"
 	pw "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/webhooks"
 	"github.com/stelgkio/otoo/internal/core/auth"
+	"github.com/stelgkio/otoo/internal/core/domain"
+	"github.com/stelgkio/otoo/internal/core/util"
 	r "github.com/stelgkio/otoo/internal/core/util"
 )
 
@@ -278,10 +280,26 @@ func (ph *ProjectHandler) ProjectSettingsAcsCourier(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	if ctx.Request().Header.Get("HX-Request") == "true" {
-		return r.Render(ctx, ac.SettingsCourier4u(projectID, projectExtensions, user))
+	extension := util.Filter(projectExtensions, func(e *domain.ProjectExtension) bool {
+		return e.Code == domain.AcsCode
+	})
+	acs := new(domain.AcsCourierExtension)
+	if len(extension) > 0 {
+
+		acs, err = ph.extensionSvc.GetACSProjectExtensionByID(ctx, extension[0].ExtensionID, projectID)
+		if err != nil {
+			return err
+		}
+		if acs == nil {
+			acs = new(domain.AcsCourierExtension)
+		}
+
 	}
-	return r.Render(ctx, st.TeamTemplate(user, project.Name, projectID, project, projectExtensions))
+
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, ac.SettingsACSCourier(projectID, projectExtensions, user, make(map[string]string), acs))
+	}
+	return r.Render(ctx, st.AcsCourierTemplate(user, project.Name, projectID, project, projectExtensions, make(map[string]string), acs))
 }
 
 // ProjectSettingsCourier4u GET /project/settings/team/:projectId
@@ -303,8 +321,24 @@ func (ph *ProjectHandler) ProjectSettingsCourier4u(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	if ctx.Request().Header.Get("HX-Request") == "true" {
-		return r.Render(ctx, cu.SettingsCourier4u(projectID, projectExtensions, user))
+	extension := util.Filter(projectExtensions, func(e *domain.ProjectExtension) bool {
+		return e.Code == domain.Courier4u
+	})
+	courier4u := new(domain.Courier4uExtension)
+	if len(extension) > 0 {
+
+		courier4u, err = ph.extensionSvc.GetCourier4uProjectExtensionByID(ctx, extension[0].ExtensionID, projectID)
+		if err != nil {
+			return err
+		}
+		if courier4u == nil {
+			courier4u = new(domain.Courier4uExtension)
+		}
+
 	}
-	return r.Render(ctx, st.TeamTemplate(user, project.Name, projectID, project, projectExtensions))
+
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, cu.SettingsCourier4u(projectID, projectExtensions, user, make(map[string]string), courier4u))
+	}
+	return r.Render(ctx, st.Courier4uTemplate(user, project.Name, projectID, project, projectExtensions, make(map[string]string), courier4u))
 }

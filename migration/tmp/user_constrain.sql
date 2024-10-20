@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX unique_active_email ON "user"(email) WHERE is_active = TRUE;

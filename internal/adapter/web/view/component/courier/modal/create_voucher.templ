@@ -126,7 +126,7 @@ templ CreateVoucher() {
             box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
         }
     </style>
-	<div class="offcanvas offcanvas-end w-50" data-bs-backdrop="true" tabindex="-1" id="orderProcessingOffcanvas" aria-labelledby="orderProcessingOffcanvasLabel" :class="{ 'show': showOffcanvas }" :style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }">
+	<div class="offcanvas offcanvas-end w-50" data-bs-backdrop="true" tabindex="-1" id="orderProcessingOffcanvas" aria-labelledby="orderProcessingOffcanvasLabel" :class="{ 'show': showOffcanvas }" :style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }" x-data="{ open: false }">
 		<div class="offcanvas-header">
 			<h5 class="offcanvas-title" id="orderProcessingOffcanvasLabel">
 				<i class="bi bi-pencil-square"></i> Edit Order #<span x-text="modalOrder.orderId"></span>
@@ -328,73 +328,61 @@ templ CreateVoucher() {
 	<!-- Toast Container -->
 	<div class="toast-container"></div>
 	// Demo Scripts //
-	<script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const wrapper = document.querySelector('.offcanvas-content-wrapper');
-            const nextBtn = document.getElementById('nextViewBtn');
-            const prevBtn = document.getElementById('prevViewBtn');
-            const stepperItems = document.querySelectorAll('.stepper-item');
-            let currentView = 0;
-
-            function updateStepperAndButtons() {
-                stepperItems.forEach((item, index) => {
-                    if (index === currentView) {
-                        item.classList.add('active');
-                    } else {
-                        item.classList.remove('active');
-                    }
-                });
-
-                prevBtn.style.visibility = currentView === 0 ? 'hidden' : 'visible';
-                nextBtn.style.visibility = currentView === 1 ? 'hidden' : 'visible';
-            }
-
-            nextBtn.addEventListener('click', function () {
-                if (currentView < 1) {
-                    currentView++;
-                    wrapper.style.transform = `translateX(-${currentView * 50}%)`;
-                    updateStepperAndButtons();
-                }
-            });
-
-            prevBtn.addEventListener('click', function () {
-                if (currentView > 0) {
-                    currentView--;
-                    wrapper.style.transform = `translateX(-${currentView * 50}%)`;
-                    updateStepperAndButtons();
-                }
-            });
-
-            updateStepperAndButtons(); // Initialize the stepper
-        });
-
-	// Function for toast 
-
-	  // Function to show toast notifications
-        function showToast(message, type) {
-            const toastContainer = document.querySelector('.toast-container');
-            const toastElement = document.createElement('div');
-            toastElement.className = `toast align-items-center text-white bg-${type} border-0`;
-            toastElement.setAttribute('role', 'alert');
-            toastElement.setAttribute('aria-live', 'assertive');
-            toastElement.setAttribute('aria-atomic', 'true');
-
-            toastElement.innerHTML = `
-            <div class="d-flex">
-                <div class="toast-body">${message}</div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        `;
-
-            toastContainer.appendChild(toastElement);
-            const toast = new bootstrap.Toast(toastElement);
-            toast.show();
-
-            toastElement.addEventListener('hidden.bs.toast', () => {
-                toastContainer.removeChild(toastElement);
-            });
-        }
-
-
-</script>
+	// 	<script>
+	//         document.addEventListener('DOMContentLoaded', function () {
+	//             const wrapper = document.querySelector('.offcanvas-content-wrapper');
+	//             const nextBtn = document.getElementById('nextViewBtn');
+	//             const prevBtn = document.getElementById('prevViewBtn');
+	//             const stepperItems = document.querySelectorAll('.stepper-item');
+	//             let currentView = 0;
+	//             function updateStepperAndButtons() {
+	//                 stepperItems.forEach((item, index) => {
+	//                     if (index === currentView) {
+	//                         item.classList.add('active');
+	//                     } else {
+	//                         item.classList.remove('active');
+	//                     }
+	//                 });
+	//                 prevBtn.style.visibility = currentView === 0 ? 'hidden' : 'visible';
+	//                 nextBtn.style.visibility = currentView === 1 ? 'hidden' : 'visible';
+	//             }
+	//             nextBtn.addEventListener('click', function () {
+	//                 if (currentView < 1) {
+	//                     currentView++;
+	//                     wrapper.style.transform = `translateX(-${currentView * 50}%)`;
+	//                     updateStepperAndButtons();
+	//                 }
+	//             });
+	//             prevBtn.addEventListener('click', function () {
+	//                 if (currentView > 0) {
+	//                     currentView--;
+	//                     wrapper.style.transform = `translateX(-${currentView * 50}%)`;
+	//                     updateStepperAndButtons();
+	//                 }
+	//             });
+	//             updateStepperAndButtons(); // Initialize the stepper
+	//         });
+	// 	// Function for toast 
+	// 	  // Function to show toast notifications
+	//         function showToast(message, type) {
+	//             const toastContainer = document.querySelector('.toast-container');
+	//             const toastElement = document.createElement('div');
+	//             toastElement.className = `toast align-items-center text-white bg-${type} border-0`;
+	//             toastElement.setAttribute('role', 'alert');
+	//             toastElement.setAttribute('aria-live', 'assertive');
+	//             toastElement.setAttribute('aria-atomic', 'true');
+	//             toastElement.innerHTML = `
+	//             <div class="d-flex">
+	//                 <div class="toast-body">${message}</div>
+	//                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+	//             </div>
+	//         `;
+	//             toastContainer.appendChild(toastElement);
+	//             const toast = new bootstrap.Toast(toastElement);
+	//             toast.show();
+	//             toastElement.addEventListener('hidden.bs.toast', () => {
+	//                 toastContainer.removeChild(toastElement);
+	//             });
+	//         }
+	// </script>
 }

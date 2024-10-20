@@ -27,7 +27,7 @@ func CurrentPasswordValidation(currentPassword string, errors map[string](string
 		}
 		ctx = templ.ClearChildren(ctx)
 		if errors["currentPassword"] != "" {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"password-container\"><input type=\"password\" class=\"form-control is-invalid\" id=\"current-password\" hx-post=\"/profile/validation/currentpassword\" name=\"current-password\" hx-target=\"#current-password-validation\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -40,7 +40,7 @@ func CurrentPasswordValidation(currentPassword string, errors map[string](string
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <i class=\"fas fa-eye toggle-password\" onclick=\"togglePassword(&#39;current-password&#39;, this)\"></i></div><div class=\"invalid-feedback\" style=\"display: block;\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -53,12 +53,12 @@ func CurrentPasswordValidation(currentPassword string, errors map[string](string
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"password-container\"><input type=\"password\" class=\"form-control\" id=\"current-password\" name=\"current-password\" hx-post=\"/profile/validation/currentpassword\" hx-target=\"#current-password-validation\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -71,7 +71,7 @@ func CurrentPasswordValidation(currentPassword string, errors map[string](string
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <i class=\"fas fa-eye toggle-password\" onclick=\"togglePassword(&#39;current-password&#39;, this)\"></i></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

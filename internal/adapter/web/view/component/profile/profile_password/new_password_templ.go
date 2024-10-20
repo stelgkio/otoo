@@ -26,12 +26,12 @@ func NewPasswordValidation(Password, ConfirmationPassword string, errors map[str
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"row align-items-center g-3 pb-5\"><div class=\"col-md-2\"><label class=\"form-label\">New password</label></div><div class=\"col-md-6 \">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if errors["password"] != "" {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"password-container\"><input type=\"password\" class=\"form-control is-invalid\" id=\"new-password\" hx-post=\"/profile/validation/newpassword\" name=\"password\" hx-target=\"#new-password-validation\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -44,7 +44,7 @@ func NewPasswordValidation(Password, ConfirmationPassword string, errors map[str
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <i class=\"fas fa-eye toggle-password\" onclick=\"togglePassword(&#39;new-password&#39;, this)\"></i></div><div class=\"invalid-feedback\" style=\"display: block;\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -57,12 +57,12 @@ func NewPasswordValidation(Password, ConfirmationPassword string, errors map[str
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"password-container\"><input type=\"password\" class=\"form-control\" id=\"new-password\" hx-post=\"/profile/validation/newpassword\" name=\"password\" hx-target=\"#new-password-validation\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -75,17 +75,17 @@ func NewPasswordValidation(Password, ConfirmationPassword string, errors map[str
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 6)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <i class=\"fas fa-eye toggle-password\" onclick=\"togglePassword(&#39;new-password&#39;, this)\"></i></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 7)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div class=\"row align-items-center g-3\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">Confirm password</label></div><div class=\"col-md-6\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if errors["confirmationPassword"] != "" {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 8)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"password-container\"><input type=\"password\" class=\"form-control is-invalid\" id=\"confirm-password\" hx-post=\"/profile/validation/newpassword\" hx-target=\"#new-password-validation\" name=\"confirmation-password\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -98,7 +98,7 @@ func NewPasswordValidation(Password, ConfirmationPassword string, errors map[str
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 9)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <i class=\"fas fa-eye toggle-password\" onclick=\"togglePassword(&#39;confirm-password&#39;, this)\"></i></div><div class=\"invalid-feedback\" style=\"display: block;\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -111,12 +111,12 @@ func NewPasswordValidation(Password, ConfirmationPassword string, errors map[str
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 10)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 11)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"password-container\"><input type=\"password\" class=\"form-control\" id=\"confirm-password\" hx-post=\"/profile/validation/newpassword\" hx-target=\"#new-password-validation\" name=\"confirmation-password\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -129,12 +129,12 @@ func NewPasswordValidation(Password, ConfirmationPassword string, errors map[str
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 12)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <i class=\"fas fa-eye toggle-password\" onclick=\"togglePassword(&#39;confirm-password&#39;, this)\"></i></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 13)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

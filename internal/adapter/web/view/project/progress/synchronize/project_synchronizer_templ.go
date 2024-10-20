@@ -31,7 +31,7 @@ func ProjectSynchronizer(user *domain.User, projectId string, customerTotal, pro
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"dashboard-content\" class=\"flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2\"><main class=\"container-fluid px-3 py-5 p-lg-6 p-xxl-8\"><form><header class=\"border-bottom mb-10\"><div class=\"row align-items-center\"><div class=\"col-sm-6 col-12\"><h1 class=\"ls-tight\">Data Synchronization</h1></div></div></header><div class=\"d-flex align-items-end justify-content-between\"><div><h4 class=\"fw-semibold mb-1\">Select Your Data to Sync</h4><p class=\"text-sm text-muted\">Customize your experience by choosing the data you want to synchronize with our platform.</p></div><div class=\"d-none d-md-flex gap-2\"><a type=\"button\" class=\"btn btn-sm btn-neutral\" href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -40,7 +40,7 @@ func ProjectSynchronizer(user *domain.User, projectId string, customerTotal, pro
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">Skip for Now </a> <button type=\"submit\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -53,22 +53,22 @@ func ProjectSynchronizer(user *domain.User, projectId string, customerTotal, pro
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-indicator=\"#spinner\" class=\"btn btn-sm btn-primary\" hx-target=\"#dashboard-content\" id=\"submit-button\" disabled><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Sync Now</button></div></div><hr class=\"my-6\"><div class=\"row g-3\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">Customer Data</label></div><div class=\"col-md-5\"><div class=\"d-flex mb-5\"><div class=\"me-3\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if customerTotal == 0 {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"form-check-input\" type=\"checkbox\" name=\"check_customer\" id=\"check_customer\" disabled>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"form-check-input\" type=\"checkbox\" name=\"check_customer\" id=\"check_customer\" onchange=\"toggleSubmitButton()\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 6)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div><label class=\"form-label mb-0\" for=\"check_customer\">Total Customers</label><p class=\"text-sm text-muted\">Stay informed with updates about your customers.</p><p class=\"text-sm text-muted\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -81,22 +81,22 @@ func ProjectSynchronizer(user *domain.User, projectId string, customerTotal, pro
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 7)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" customers available to sync</p></div></div></div></div><hr class=\"my-6\"><div class=\"row g-3\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">Product Data</label></div><div class=\"col-md-5\"><div class=\"d-flex mb-5\"><div class=\"me-3\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if productTotal == 0 {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 8)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"form-check-input\" type=\"checkbox\" name=\"check_products\" id=\"check_products\" disabled>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 9)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"form-check-input\" type=\"checkbox\" name=\"check_products\" id=\"check_products\" onchange=\"toggleSubmitButton()\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 10)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div><label class=\"form-label mb-0\" for=\"check_products\">Products in Store</label><p class=\"text-sm text-muted\">Ensure your product catalog is up to date.</p><p class=\"text-sm text-muted\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -109,22 +109,22 @@ func ProjectSynchronizer(user *domain.User, projectId string, customerTotal, pro
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 11)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" products available to sync</p></div></div></div></div><hr class=\"my-6\"><div class=\"row g-3\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">Order Data</label></div><div class=\"col-md-5\"><div class=\"d-flex mb-5\"><div class=\"me-3\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if orderTotal == 0 {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 12)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"form-check-input\" type=\"checkbox\" name=\"check_orders\" id=\"check_orders\" disabled>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 13)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"form-check-input\" type=\"checkbox\" name=\"check_orders\" id=\"check_orders\" onchange=\"toggleSubmitButton()\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 14)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div><label class=\"form-label mb-0\" for=\"check_orders\">Order History</label><p class=\"text-sm text-muted\">Keep track of all your orders with the latest updates.</p><p class=\"text-sm text-muted\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -137,7 +137,7 @@ func ProjectSynchronizer(user *domain.User, projectId string, customerTotal, pro
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 15)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" orders available to sync</p></div></div></div></div><hr class=\"my-6 d-md-none\"><div class=\"d-flex d-md-none justify-content-end gap-2 mb-6\"><button type=\"button\" class=\"btn btn-sm btn-neutral\">Skip for Now</button> <button type=\"submit\" hx-indicator=\"#spinner\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -150,7 +150,7 @@ func ProjectSynchronizer(user *domain.User, projectId string, customerTotal, pro
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 16)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"btn btn-sm btn-primary\" hx-target=\"#dashboard-content\" id=\"submit-button-mobile\" disabled><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Sync Now</button></div></form></main></div><script>\n\tfunction toggleSubmitButton() {\n\t\tconst checkboxes = document.querySelectorAll('input[type=\"checkbox\"]');\n\t\tconst submitButton = document.getElementById('submit-button');\n\t\tconst submitButtonMobile = document.getElementById('submit-button-mobile');\n\n\t\tlet isChecked = false;\n\n\t\tcheckboxes.forEach((checkbox) => {\n\t\t\tif (checkbox.checked) {\n\t\t\t\tisChecked = true;\n\t\t\t}\n\t\t});\n\n\t\tif (isChecked) {\n\t\t\tsubmitButton.disabled = false;\n\t\t\tif (submitButtonMobile) {\n\t\t\t\tsubmitButtonMobile.disabled = false;\n\t\t\t}\n\t\t} else {\n\t\t\tsubmitButton.disabled = true;\n\t\t\tif (submitButtonMobile) {\n\t\t\t\tsubmitButtonMobile.disabled = true;\n\t\t\t}\n\t\t}\n\t}\n</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

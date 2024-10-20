@@ -27,12 +27,12 @@ func UserExist(userExist bool) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if userExist {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"user-exist\"><input class=\"form-check-input\" type=\"checkbox\" name=\"user_exist\" value=\"true\" checked style=\"display: none;\"></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div><label class=\"form-label\">Password</label><div class=\"password-container\"><input type=\"password\" class=\"form-control\" name=\"password\" required placeholder=\"Password\" id=\"password\"> <i class=\"fas fa-eye toggle-password\" onclick=\"togglePassword(&#39;password&#39;, this)\"></i></div></div><div><label class=\"form-label\">Confirmation Password</label><div class=\"password-container\"><input type=\"password\" class=\"form-control\" name=\"confirmationpassword\" required placeholder=\"Confirmation Password\" id=\"confirm-password\"> <i class=\"fas fa-eye toggle-password\" onclick=\"togglePassword(&#39;confirm-password&#39;, this)\"></i></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

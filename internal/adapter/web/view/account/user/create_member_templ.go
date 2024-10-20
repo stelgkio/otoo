@@ -28,12 +28,12 @@ func CreateMeember(projectId string, errors map[string](string)) templ.Component
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"modals-here\" class=\"modal modal-blur show\" tabindex=\"-1\" style=\"display: block;\" aria-modal=\"true\" role=\"dialog\"><div class=\"modal-dialog modal-dialog-centered\"><div class=\"modal-content shadow-3\"><form autocomplete=\"off\" class=\"needs-validation\" novalidate><div class=\"modal-header justify-content-start\"><div class=\"icon icon-shape rounded-3 bg-primary-subtle text-primary text-lg me-4\"><i class=\"bi bi-microsoft-teams\"></i></div><div><h5 class=\"mb-1\">Add team member</h5></div><!-- Close Button in Header --><button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\" onclick=\"closeModal()\"></button></div><div class=\"modal-body\"><div><label class=\"form-label\">Name</label> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if errors["name"] != "" {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"form-control is-invalid\" name=\"name\" placeholder=\"Name\" required type=\"text\"><div class=\"invalid-feedback\" style=\"display: block;\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -46,22 +46,22 @@ func CreateMeember(projectId string, errors map[string](string)) templ.Component
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"form-control\" name=\"name\" placeholder=\"Name\" required type=\"text\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div><label class=\"form-label\">Last Name</label> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if errors["lastname"] != "" {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 6)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"form-control is-invalid\" name=\"last_name\" placeholder=\"Last Name\" required type=\"text\"><div class=\"invalid-feedback\" style=\"display: block;\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -74,22 +74,22 @@ func CreateMeember(projectId string, errors map[string](string)) templ.Component
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 7)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 8)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"form-control\" name=\"last_name\" placeholder=\"Last Name\" required type=\"text\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 9)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div><label class=\"form-label\">Email </label> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if errors["email"] != "" {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 10)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"form-control is-invalid\" name=\"email\" placeholder=\"Email address\" required type=\"email\"><div class=\"invalid-feedback\" style=\"display: block;\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -102,22 +102,22 @@ func CreateMeember(projectId string, errors map[string](string)) templ.Component
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 11)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 12)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"form-control\" name=\"email\" placeholder=\"Email address\" required type=\"email\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 13)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div><label class=\"form-label\">Password</label> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if errors["password"] != "" {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 14)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"password-container\"><input type=\"password\" class=\"form-control is-invalid\" name=\"password\" required placeholder=\"Password\" id=\"password\"> <i class=\"fas fa-eye toggle-password\" onclick=\"togglePassword(&#39;password&#39;, this)\"></i></div><div class=\"invalid-feedback\" style=\"display: block;\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -130,22 +130,22 @@ func CreateMeember(projectId string, errors map[string](string)) templ.Component
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 15)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 16)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"password-container\"><input type=\"password\" class=\"form-control\" name=\"password\" required placeholder=\"Password\" id=\"password\"> <i class=\"fas fa-eye toggle-password\" onclick=\"togglePassword(&#39;password&#39;, this)\"></i></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 17)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div><label class=\"form-label\">Confirmation Password</label> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if errors["confirmation_password"] != "" {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 18)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"password-container\"><input type=\"password\" class=\"form-control is-invalid\" name=\"confirmationpassword\" required placeholder=\"Confirmation Password\" id=\"confirm-password\"> <i class=\"fas fa-eye toggle-password\" onclick=\"togglePassword(&#39;confirm-password&#39;, this)\"></i></div><div class=\"invalid-feedback\" style=\"display: block;\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -158,17 +158,17 @@ func CreateMeember(projectId string, errors map[string](string)) templ.Component
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 19)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 20)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"password-container\"><input type=\"password\" class=\"form-control\" name=\"confirmationpassword\" required placeholder=\"Confirmation Password\" id=\"confirm-password\"> <i class=\"fas fa-eye toggle-password\" onclick=\"togglePassword(&#39;confirm-password&#39;, this)\"></i></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 21)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div><div class=\"form-check form-switch pt-5\"><label class=\"form-check-label\" for=\"flexSwitchCheckChecked\">Receive Notification</label> <input type=\"hidden\" name=\"receive_notification\" value=\"false\"> <input class=\"form-check-input\" type=\"checkbox\" name=\"receive_notification\" value=\"true\" checked></div></div></div><div class=\"modal-footer\"><div class=\"me-auto\"></div><button type=\"button\" class=\"btn btn-sm btn-neutral\" data-bs-dismiss=\"modal\" aria-label=\"Close\" onclick=\"closeModal()\">Close</button> <button type=\"submit\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -181,7 +181,7 @@ func CreateMeember(projectId string, errors map[string](string)) templ.Component
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 22)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"btn btn-sm btn-primary\" data-bs-dismiss=\"modal\" hx-indicator=\"#spinner\" hx-target=\"#modals-here\" hx-swap=\"innerHTML\"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\" hx-boost=\"validate\"></span>Add Member</button></div></form></div></div><script>\n        \t// Function to close the modal\nfunction closeModal() {\n\tconsole.log(\"Closing modal...\");\n   var modalElement = document.getElementById('modals-here');\n    var modal = bootstrap.Modal.getInstance(modalElement);\n\n    if (modal) {\n        modal.hide();\n    } else {\n        var newModal = new bootstrap.Modal(modalElement);\n        newModal.hide();\n    }\n}\n</script></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

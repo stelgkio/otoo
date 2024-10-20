@@ -31,12 +31,12 @@ func Courier4u(projectId, extensionId string, errors map[string](string), values
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"dashboard-content\" class=\"flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2\"><main class=\"container-fluid px-6 pb-10\"><div class=\"row mt-2 \"><div class=\"col-12 \"><form autocomplete=\"off\"><div class=\"row  g-2 mt-6\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">APIKey</label></div><div class=\"col-md-8 col-xl-5\" hx-target=\"this\" hx-swap=\"outerHTML\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if errors["courier_api_key"] != "" {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input name=\"courier_api_key\" type=\"text\" class=\"form-control is-invalid\" placeholder=\"APIKey\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -49,7 +49,7 @@ func Courier4u(projectId, extensionId string, errors map[string](string), values
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div class=\"invalid-feedback\" style=\"display: block;\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -62,12 +62,12 @@ func Courier4u(projectId, extensionId string, errors map[string](string), values
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input name=\"courier_api_key\" type=\"text\" class=\"form-control\" placeholder=\"APIKey\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -80,12 +80,12 @@ func Courier4u(projectId, extensionId string, errors map[string](string), values
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 6)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 7)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><hr class=\"my-6\"><div class=\"row align-items-center g-3\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">Select Printer Type</label></div><div class=\"col-md-8 col-xl-5\"><div class=\"d-flex gap-3 scrollable-x\"><div class=\"form-item-checkable\"><input class=\"form-item-check\" type=\"radio\" name=\"printer_type\" id=\"projecttypewoo\" checked=\"checked\" value=\"lazer\"> <label class=\"form-item cursor-pointer\" for=\"projecttypewoo\"><span class=\"form-item-click d-inline-flex flex-column gap-3 align-items-center justify-content-center form-control w-rem-24 h-rem-24 text-center text-muted\"><span class=\"fw-semibold text-xs\">Laser</span></span></label></div><div class=\"form-item-checkable\"><input class=\"form-control form-item-check\" type=\"radio\" name=\"printer_type\" id=\"projecttypeshopy\" value=\"thermal\"> <label class=\"form-item cursor-pointer\" for=\"projecttypeshopy\"><span class=\"form-item-click d-inline-flex flex-column gap-3 align-items-center justify-content-center form-control w-rem-24 h-rem-24 text-center text-muted\"><span class=\"fw-semibold text-xs\">Thermal</span></span></label></div></div></div></div><hr class=\"my-6 \"><div class=\"d-flex justify-content-end gap-2\"><button type=\"button\" class=\"btn btn-sm btn-neutral\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -98,7 +98,7 @@ func Courier4u(projectId, extensionId string, errors map[string](string), values
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 8)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\">Cancel</button> <button type=\"submit\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -111,7 +111,7 @@ func Courier4u(projectId, extensionId string, errors map[string](string), values
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 9)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-indicator=\"#spinner\" class=\"btn btn-sm btn-primary\" hx-target=\"#dashboard-content\"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Submit</button></div><hr class=\"my-6 \"><div class=\"row justify-content-md-center\"></div></form></div></div></main></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

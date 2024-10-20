@@ -31,7 +31,7 @@ func Register(BadRequest int, verr validator.ValidationErrors, err error) templ.
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html lang=\"en\" data-theme=\"light\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -39,12 +39,12 @@ func Register(BadRequest int, verr validator.ValidationErrors, err error) templ.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<body><div class=\"row g-0 justify-content-center gradient-bottom-right start-purple middle-indigo end-pink\"><div class=\"col-md-6 col-lg-5 col-xl-5 position-fixed start-0 top-0 vh-100 overflow-y-hidden d-none d-lg-flex flex-lg-column\"><div class=\"p-12 py-xl-10 px-xl-20\"><a class=\"d-block\" href=\"/index\"><h1 class=\"display-9 mylogo text-white fw-bolder lh-tight px-sm-1\">KonektorX </h1></a><div class=\"mt-16\"><h1 class=\"ls-tight fw-bolder display-6 text-white mb-5\">All in one Solution, Integration & Dashboard Analytics Faster than Ever.</h1></div></div><div class=\"mt-auto ps-16 ps-xl-20\"></div></div><div class=\"col-12 col-md-12 col-lg-7 offset-lg-5 min-vh-100 overflow-y-auto d-flex flex-column justify-content-center position-relative bg-body rounded-top-start-lg-4 border-start-lg shadow-soft-5\"><div class=\"w-md-50 mx-auto px-10 px-md-0 py-10\"><div class=\"mb-10\"><a class=\"d-inline-block d-lg-none mb-10 d-flex justify-content-center\" href=\"/\"><h1 class=\"ls-tight fw-bolder mylogo\">KonektorX</h1></a><h1 class=\"ls-tight fw-bolder h3\">Get started. It&#39;s free</h1><div class=\"mt-3 text-sm text-muted\"><span>Already have an account?</span> <a href=\"/login\" class=\"fw-semibold\">Sign in</a> to your account.</div></div><form action=\"/register\" method=\"post\" class=\"needs-validation\"><div class=\"row g-5\"><div class=\"col-sm-6\"><label class=\"form-label\" for=\"first_name\">First name</label> <input name=\"name\" id=\"name\" type=\"text\" class=\"form-control\" required><div class=\"invalid-feedback\">Please enter first name.</div></div><div class=\"col-sm-6\"><label class=\"form-label\" for=\"last_name\">Last name</label> <input name=\"last_name\" id=\"last_name\" type=\"text\" class=\"form-control\" required><div class=\"invalid-feedback\">Please enter last name.</div></div><div class=\"col-sm-12\"><label class=\"form-label\">Email address</label> <input name=\"email\" id=\"email\" type=\"email\" class=\"form-control\" required autocomplete=\"off\"><div class=\"invalid-feedback\">Please enter email.</div></div><div class=\"col-sm-12\"><label class=\"form-label\">Password</label> <input id=\"password\" name=\"password\" type=\"password\" class=\"form-control\" required min=\"8\" onkeyup=\"validatePassword()\" autocomplete=\"off\"><div id=\"PasswordMessage\" class=\"invalid-feedback\">Please enter password.</div></div><div class=\"col-sm-12\"><label class=\"form-label\">Confirmation Password</label> <input id=\"ConfirmationPassword\" name=\"ConfirmationPassword\" type=\"password\" class=\"form-control\" required min=\"8\" oninput=\"validateConfirmationPassword()\"><div id=\"confirmMessage\" class=\"invalid-feedback\">Please enter confirmation password.</div></div><div id=\"lengthMessage\" class=\"invalid-feedback\">Please Enter Password.</div><div class=\"col-sm-12\"><input type=\"submit\" class=\"btn btn-dark w-100\" value=\"Sign up \"></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if BadRequest != 0 {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"d-flex justify-content-center\" style=\"color:#f36\">Something went wrong, please try again later</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -52,27 +52,27 @@ func Register(BadRequest int, verr validator.ValidationErrors, err error) templ.
 		if verr != nil {
 			for _, e := range verr {
 				if e.Field() == "Password" {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"d-flex justify-content-center\" style=\"color:#f36\">Invalid password. Password length must be 8 characters or more.</div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				if e.Field() == "Confirmation" {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 6)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"d-flex justify-content-center\" style=\"color:#f36\">Invalid confirmation password</div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 7)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				if e.Field() == "Email" {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 8)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"d-flex justify-content-center\" style=\"color:#f36\">Invalid email</div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -80,7 +80,7 @@ func Register(BadRequest int, verr validator.ValidationErrors, err error) templ.
 			}
 		}
 		if err != nil {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 9)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"d-flex justify-content-center\" style=\"color:#f36\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -93,12 +93,12 @@ func Register(BadRequest int, verr validator.ValidationErrors, err error) templ.
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 10)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 11)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></form></div></div></div><script src=\"./assets/js/main.js\"></script><script>\n            // Example starter JavaScript for disabling form submissions if there are invalid fields\n(function () {\n  'use strict'\n\n  // Fetch all the forms we want to apply custom Bootstrap validation styles to\n  var forms = document.querySelectorAll('.needs-validation')\n\n  // Loop over them and prevent submission\n  Array.prototype.slice.call(forms)\n    .forEach(function (form) {\n      form.addEventListener('submit', function (event) {\n        if (!form.checkValidity()) {\n          event.preventDefault()\n          event.stopPropagation()\n        }\n       if( !submitConfirmationPassword()){\n          event.preventDefault()\n          event.stopPropagation()\n       }\n\n        form.classList.add('was-validated')\n      }, false)\n    })\n    //   // Add event listener to password field for validation\n    //     var passwordField = document.getElementById(\"password\");\n    //     passwordField.addEventListener(\"onchange\", validatePassword);\n})()\n\n            // Function to validate confirmation password when leaving password field\n    function validateConfirmationPassword() {\n        console.log(\"validateConfirmationPassword\");\n        var password = document.getElementById(\"password\").value;\n        var confirm_password = document.getElementById(\"ConfirmationPassword\");\n        var message = document.getElementById(\"confirmMessage\");\n\n\n         if (confirm_password.value.length < 8) {\n            confirm_password.classList.add(\"is-invalid\");\n            message.style.display = \"block\";\n        } else {\n             confirm_password.classList.remove(\"is-invalid\");\n            message.style.display = \"none\";\n        }\n        if (password !== confirm_password.value) {\n            confirm_password.classList.add(\"is-invalid\");\n            message.style.display = \"block\";\n        } else {\n            confirm_password.classList.remove(\"is-invalid\");\n            message.style.display = \"none\";\n        }\n       \n  \n        var result=password.value !== \"\" && password.value === confirm_password.value;\n        return result;\n    }\n    \n\n    function validatePassword() {\n    console.log(\"validatePassword\");\n    var password = document.getElementById(\"password\");\n    var confirm_password = document.getElementById(\"ConfirmationPassword\");\n    var message = document.getElementById(\"confirmMessage\");\n    var passwordMessage = document.getElementById(\"PasswordMessage\");\n    \n    // Check if password and confirmation password match\n    if (confirm_password.value !== \"\" && password.value !== confirm_password.value) {\n        confirm_password.classList.add(\"is-invalid\");\n        message.innerText = \"Passwords do not match.\";\n        message.style.display = \"block\";\n    } else {\n        confirm_password.classList.remove(\"is-invalid\");\n        message.style.display = \"none\";\n    }\n    \n    // Check if password is at least 8 characters long\n    if (password.value.length < 8) {\n        password.classList.add(\"is-invalid\");\n        passwordMessage.innerText = \"Password must be at least 8 characters long.\";\n        passwordMessage.style.display = \"block\";\n    } else {\n        password.classList.remove(\"is-invalid\");\n        passwordMessage.style.display = \"none\";\n    }\n}\n     function submitConfirmationPassword() {\n        console.log(\"validateConfirmationPassword\");\n        var password = document.getElementById(\"password\");\n        var confirm_password = document.getElementById(\"ConfirmationPassword\");\n         if(password.value.length >= 8) {\n            if(password.value === confirm_password.value){\n                return true;\n            }else {\n                return false;\n            }\n        }\n\n     }\n</script></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

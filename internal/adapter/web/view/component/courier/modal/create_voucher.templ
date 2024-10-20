@@ -247,7 +247,7 @@ templ CreateVoucher() {
 					</div>
 				</div>
 				<!-- Shipping Information Tab -->
-				<div class="tab-pane fade" id="shipping-info" role="tabpanel" aria-labelledby="shipping-tab">
+				<div class="tab-pane fade" id="shipping-info" role="tabpanel" aria-labelledby="shipping-tab" x-data="{ selectedCourier: 'acs' }">
 					<div class="p-3">
 						<!-- Section for Shipping Information -->
 						<div class="card mb-3 shadow-sm">
@@ -259,11 +259,10 @@ templ CreateVoucher() {
 							<div class="card-body">
 								<div class="mb-3">
 									<label for="shippingCompany" class="form-label small">Shipping Company</label>
-									<select class="form-select form-select-sm" id="shippingCompany" required>
+									<select class="form-select form-select-sm" id="shippingCompany" x-model="selectedCourier" required>
 										<option value="">Select company...</option>
-										<option value="acs" selected>ACS Courier</option>
-										<option value="dhl">DHL</option>
-										<option value="fedex">FedEx</option>
+										<option value="acs">ACS Courier</option>
+										<option value="courier4u">Courier4U</option>
 									</select>
 								</div>
 								<div class="mb-3">
@@ -286,11 +285,11 @@ templ CreateVoucher() {
 								</div>
 							</div>
 						</div>
-						<!-- Section for Delivery Options -->
-						<div class="card mb-3 shadow-sm">
+						<!-- Section for ACS Courier Options (Conditional) -->
+						<div class="card mb-3 shadow-sm" x-show="selectedCourier === 'acs'">
 							<div class="card-header">
 								<h6 class="mb-0">
-									<i class="bi bi-box-arrow-in-down"></i> Delivery Options
+									<i class="bi bi-box-arrow-in-down"></i> Delivery Options (ACS)
 								</h6>
 							</div>
 							<div class="card-body">
@@ -306,6 +305,16 @@ templ CreateVoucher() {
 									<input class="form-check-input" type="radio" name="deliveryOption" id="urgentDelivery"/>
 									<label class="form-check-label" for="urgentDelivery">Urgent Delivery</label>
 								</div>
+							</div>
+						</div>
+						<!-- Section for Courier4U Options (Conditional) -->
+						<div class="card mb-3 shadow-sm" x-show="selectedCourier === 'courier4u'">
+							<div class="card-header">
+								<h6 class="mb-0">
+									<i class="bi bi-box-arrow-in-down"></i> Delivery Options (Courier4U)
+								</h6>
+							</div>
+							<div class="card-body">
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="deliveryOption" id="pickupDelivery"/>
 									<label class="form-check-label" for="pickupDelivery">Pickup</label>
@@ -325,64 +334,4 @@ templ CreateVoucher() {
 			</div>
 		</div>
 	</div>
-	<!-- Toast Container -->
-	<div class="toast-container"></div>
-	// Demo Scripts //
-	// 	<script>
-	//         document.addEventListener('DOMContentLoaded', function () {
-	//             const wrapper = document.querySelector('.offcanvas-content-wrapper');
-	//             const nextBtn = document.getElementById('nextViewBtn');
-	//             const prevBtn = document.getElementById('prevViewBtn');
-	//             const stepperItems = document.querySelectorAll('.stepper-item');
-	//             let currentView = 0;
-	//             function updateStepperAndButtons() {
-	//                 stepperItems.forEach((item, index) => {
-	//                     if (index === currentView) {
-	//                         item.classList.add('active');
-	//                     } else {
-	//                         item.classList.remove('active');
-	//                     }
-	//                 });
-	//                 prevBtn.style.visibility = currentView === 0 ? 'hidden' : 'visible';
-	//                 nextBtn.style.visibility = currentView === 1 ? 'hidden' : 'visible';
-	//             }
-	//             nextBtn.addEventListener('click', function () {
-	//                 if (currentView < 1) {
-	//                     currentView++;
-	//                     wrapper.style.transform = `translateX(-${currentView * 50}%)`;
-	//                     updateStepperAndButtons();
-	//                 }
-	//             });
-	//             prevBtn.addEventListener('click', function () {
-	//                 if (currentView > 0) {
-	//                     currentView--;
-	//                     wrapper.style.transform = `translateX(-${currentView * 50}%)`;
-	//                     updateStepperAndButtons();
-	//                 }
-	//             });
-	//             updateStepperAndButtons(); // Initialize the stepper
-	//         });
-	// 	// Function for toast 
-	// 	  // Function to show toast notifications
-	//         function showToast(message, type) {
-	//             const toastContainer = document.querySelector('.toast-container');
-	//             const toastElement = document.createElement('div');
-	//             toastElement.className = `toast align-items-center text-white bg-${type} border-0`;
-	//             toastElement.setAttribute('role', 'alert');
-	//             toastElement.setAttribute('aria-live', 'assertive');
-	//             toastElement.setAttribute('aria-atomic', 'true');
-	//             toastElement.innerHTML = `
-	//             <div class="d-flex">
-	//                 <div class="toast-body">${message}</div>
-	//                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-	//             </div>
-	//         `;
-	//             toastContainer.appendChild(toastElement);
-	//             const toast = new bootstrap.Toast(toastElement);
-	//             toast.show();
-	//             toastElement.addEventListener('hidden.bs.toast', () => {
-	//                 toastContainer.removeChild(toastElement);
-	//             });
-	//         }
-	// </script>
 }

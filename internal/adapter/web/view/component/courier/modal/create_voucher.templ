@@ -126,367 +126,203 @@ templ CreateVoucher() {
             box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
         }
     </style>
-	<!-- Offcanvas for Courier Information -->
-	<!-- Offcanvas for Courier Information -->
-	<div
-		class="offcanvas offcanvas-end"
-		tabindex="-1"
-		id="orderProcessingOffcanvas"
-		aria-labelledby="orderProcessingOffcanvasLabel"
-	>
+	<div class="offcanvas offcanvas-end w-50" data-bs-backdrop="true" tabindex="-1" id="orderProcessingOffcanvas" aria-labelledby="orderProcessingOffcanvasLabel" :class="{ 'show': showOffcanvas }" :style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }">
 		<div class="offcanvas-header">
 			<h5 class="offcanvas-title" id="orderProcessingOffcanvasLabel">
-				Επεξεργασία Παραγγελίας
-				#<span id="offcanvas-order-id"></span>
+				<i class="bi bi-pencil-square"></i> Edit Order #<span x-text="modalOrder.orderId"></span>
 			</h5>
-			<button
-				type="button"
-				class="btn-close"
-				data-bs-dismiss="offcanvas"
-				aria-label="Close"
-			></button>
+			<button type="button" class="btn-close" @click="closeOffcanvas()"></button>
 		</div>
-		<div class="offcanvas-body d-flex flex-column p-0">
-			<!-- Stepper -->
-			<div class="stepper-wrapper p-3">
-				<div class="stepper-item active" data-step="1">
-					<div class="step-counter">1</div>
-					<div class="step-name">Μεταφορική Εταιρεία</div>
-				</div>
-				<div class="stepper-item" data-step="2">
-					<div class="step-counter">2</div>
-					<div class="step-name">Λεπτομέρειες Παραγγελίας</div>
-				</div>
-			</div>
-			<div class="offcanvas-content-wrapper flex-grow-1">
-				<!-- First View -->
-				<div class="offcanvas-view" id="firstView">
-					<!-- ... (first view content) ... -->
-					<div class="view-content p-3">
-						<div class="accordion" id="orderProcessingAccordion">
-							<!-- Shipping Company Section -->
-							<div class="accordion-item">
-								<h2 class="accordion-header">
-									<button
-										class="accordion-button"
-										type="button"
-										data-bs-toggle="collapse"
-										data-bs-target="#shippingCompanyCollapse"
-									>
-										Εταιρεία Αποστολής
-									</button>
-								</h2>
-								<div
-									id="shippingCompanyCollapse"
-									class="accordion-collapse collapse show"
-									data-bs-parent="#orderProcessingAccordion"
-								>
-									<div class="accordion-body">
-										<select class="form-select mb-3" id="shippingCompany">
-											<option value="">Επιλέξτε εταιρεία...</option>
-											<option value="acs">ACS Courier</option>
-											<option value="dhl">DHL</option>
-											<option value="fedex">FedEx</option>
-										</select>
-										<select class="form-select" id="shippingMethod">
-											<option value="">Επιλέξτε μέθοδο...</option>
-											<option value="standard">Standard</option>
-											<option value="express">Επείγουσα Παράδοση</option>
-											<option value="express">Παράδοση - Παραλαβή</option>
-											<option value="express">Αυθημερόν</option>
-											<option value="express">
-												Παραλαβή από το κατάστημα
-											</option>
-										</select>
-									</div>
-								</div>
+		<div class="offcanvas-body d-flex flex-column">
+			<!-- Tabs -->
+			<ul class="nav nav-tabs" id="orderTabs" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button class="nav-link active" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer-info" type="button" role="tab" aria-controls="customer-info" aria-selected="true">
+						<i class="bi bi-person"></i> Customer
+					</button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping-info" type="button" role="tab" aria-controls="shipping-info" aria-selected="false">
+						<i class="bi bi-truck"></i> Shipping
+					</button>
+				</li>
+			</ul>
+			<!-- Tab Content -->
+			<div class="tab-content flex-grow-1 overflow-auto" id="orderTabContent">
+				<!-- Customer Information Tab -->
+				<div class="tab-pane fade show active" id="customer-info" role="tabpanel" aria-labelledby="customer-tab">
+					<div class="p-3">
+						<!-- Section for Customer Details -->
+						<div class="card mb-3 shadow-sm">
+							<div class="card-header">
+								<h6 class="mb-0">
+									<i class="bi bi-person"></i> Customer Information
+								</h6>
 							</div>
-							<!-- Order Info Section -->
-							<div class="accordion-item">
-								<h2 class="accordion-header">
-									<button
-										class="accordion-button collapsed"
-										type="button"
-										data-bs-toggle="collapse"
-										data-bs-target="#orderInfoCollapse"
-									>
-										Πληροφορίες Παραγγελίας
-									</button>
-								</h2>
-								<div
-									id="orderInfoCollapse"
-									class="accordion-collapse collapse"
-									data-bs-parent="#orderProcessingAccordion"
-								>
-									<div class="accordion-body">
-										<div class="mb-3">
-											<label class="form-label">Ποσό Αντικαταβολής</label>
-											<div class="input-group">
-												<span class="input-group-text">€</span>
-												<input
-													type="number"
-													class="form-control"
-													id="codAmount"
-													value="72.50"
-												/>
-											</div>
-										</div>
-										<div class="mb-3">
-											<label class="form-label">Βάρος Δέματος (kg)</label>
-											<input
-												type="number"
-												class="form-control"
-												id="packageWeight"
-												step="0.1"
-												value="0.5"
-											/>
+							<div class="card-body">
+								<div class="row g-2">
+									<div class="col-md-6">
+										<label for="customerName" class="form-label small">First Name</label>
+										<input type="text" class="form-control form-control-sm" id="customerName" x-model="modalOrder.billing.first_name" required/>
+									</div>
+									<div class="col-md-6">
+										<label for="customerSurname" class="form-label small">Last Name</label>
+										<input type="text" class="form-control form-control-sm" id="customerSurname" x-model="modalOrder.billing.last_name" required/>
+									</div>
+									<div class="col-md-6">
+										<label for="customerEmail" class="form-label small">Email</label>
+										<input type="email" class="form-control form-control-sm" id="customerEmail" x-model="modalOrder.billing.email" required/>
+									</div>
+									<div class="col-md-6">
+										<label for="customerPhone" class="form-label small">Phone</label>
+										<input type="tel" class="form-control form-control-sm" id="customerPhone" x-model="modalOrder.billing.phone" required/>
+									</div>
+									<div class="col-12">
+										<label for="customerAddress" class="form-label small">Address</label>
+										<div class="input-group input-group-sm">
+											<span class="input-group-text">
+												<i class="bi bi-geo-alt"></i>
+											</span>
+											<input type="text" class="form-control form-control-sm" id="customerAddress" x-model="modalOrder.billing.address_1" required/>
 										</div>
 									</div>
-								</div>
-							</div>
-							<!-- Special Instructions Section -->
-							<div class="accordion-item">
-								<h2 class="accordion-header">
-									<button
-										class="accordion-button collapsed"
-										type="button"
-										data-bs-toggle="collapse"
-										data-bs-target="#specialInstructionsCollapse"
-									>
-										Ειδικές Οδηγίες
-									</button>
-								</h2>
-								<div
-									id="specialInstructionsCollapse"
-									class="accordion-collapse collapse"
-									data-bs-parent="#additionalInfoAccordion"
-								>
-									<div class="accordion-body">
-										<textarea
-											class="form-control"
-											id="specialInstructions"
-											rows="3"
-											placeholder="Προσθέστε ειδικές οδηγίες προς την εταιρεία αποστολής..."
-										></textarea>
+									<div class="col-md-6">
+										<label for="customerCity" class="form-label small">City</label>
+										<input type="text" class="form-control form-control-sm" id="customerCity" x-model="modalOrder.billing.city" required/>
 									</div>
-								</div>
-							</div>
-							<!-- Delivery Instructions Section -->
-							<div class="accordion-item">
-								<h2 class="accordion-header">
-									<button
-										class="accordion-button collapsed"
-										type="button"
-										data-bs-toggle="collapse"
-										data-bs-target="#recieptInstructionsCollapse"
-									>
-										Εντολή Παράδοσης
-									</button>
-								</h2>
-								<div
-									id="recieptInstructionsCollapse"
-									class="accordion-collapse collapse"
-									data-bs-parent="#additionalInfoAccordion"
-								>
-									<div class="accordion-body">
-										<select class="form-select mb-3" id="recieptMethod">
-											<option value="">Επιλογή Οχήματος</option>
-											<option value="standard">Μηχανή</option>
-											<option value="express">Αυτοκίνητο</option>
-										</select>
-										<textarea
-											class="form-control"
-											id="recieptInstructions"
-											rows="2"
-											placeholder="Γράψτε οδηγίες για τον διανομέα πχ όροφος ή το τι θα παραλάβουμε.."
-										></textarea>
+									<div class="col-md-6">
+										<label for="customerPostalCode" class="form-label small">Postal Code</label>
+										<input type="text" class="form-control form-control-sm" id="customerPostalCode" x-model="modalOrder.billing.postcode" required/>
 									</div>
 								</div>
 							</div>
 						</div>
+						<!-- Section for Products -->
+						<div class="card mb-3 shadow-sm">
+							<div class="card-header">
+								<h6 class="mb-0">
+									<i class="bi bi-box-seam"></i> Products
+								</h6>
+							</div>
+							<div class="card-body">
+								<div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+									<table class="table table-sm">
+										<thead>
+											<tr>
+												<th>Product</th>
+												<th>Quantity</th>
+												<th>Price</th>
+											</tr>
+										</thead>
+										<tbody>
+											<template x-for="product in modalOrder.products" :key="product.id">
+												<tr>
+													<td x-text="product.name"></td>
+													<td x-text="product.quantity"></td>
+													<td x-text="product.price"></td>
+												</tr>
+											</template>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<!-- Section for Delivery Instructions -->
+						<div class="card mb-3 shadow-sm">
+							<div class="card-header">
+								<h6 class="mb-0">
+									<i class="bi bi-chat-right-text"></i> Delivery Instructions
+								</h6>
+							</div>
+							<div class="card-body">
+								<textarea class="form-control form-control-sm" id="deliveryInstructions" rows="2" placeholder="Add special instructions..."></textarea>
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" id="storePickup"/>
+								<label class="form-check-label" for="storePickup">Store Pickup</label>
+							</div>
+						</div>
 					</div>
 				</div>
-				<!-- Second View -->
-				<div class="offcanvas-view" id="secondView">
-					<div class="view-content p-3">
-						<div class="accordion" id="detailsAccordion">
-							<!-- Shipping Information -->
-							<div class="accordion-item">
-								<h2 class="accordion-header">
-									<button
-										class="accordion-button"
-										type="button"
-										data-bs-toggle="collapse"
-										data-bs-target="#shippingInfo"
-									>
-										Shipping Information
-									</button>
-								</h2>
-								<div
-									id="shippingInfo"
-									class="accordion-collapse collapse show"
-									data-bs-parent="#detailsAccordion"
-								>
-									<div class="accordion-body">
-										<div class="row g-3">
-											<div class="col-md-6">
-												<label class="form-label">First Name</label>
-												<input
-													type="text"
-													class="form-control editable-field"
-													x-model="modalOrder.shipping.first_name"
-												/>
-											</div>
-											<div class="col-md-6">
-												<label class="form-label">Last Name</label>
-												<input
-													type="text"
-													class="form-control editable-field"
-													x-model="modalOrder.shipping.last_name"
-												/>
-											</div>
-											<div class="col-12">
-												<label class="form-label">Address</label>
-												<input
-													type="text"
-													class="form-control editable-field"
-													x-model="modalOrder.shipping.address_1"
-												/>
-											</div>
-											<div class="col-md-6">
-												<label class="form-label">City</label>
-												<input
-													type="text"
-													class="form-control editable-field"
-													x-model="modalOrder.shipping.city"
-												/>
-											</div>
-											<div class="col-md-6">
-												<label class="form-label">Postcode</label>
-												<input
-													type="text"
-													class="form-control editable-field"
-													x-model="modalOrder.shipping.postcode"
-												/>
-											</div>
-											<div class="col-md-6">
-												<label class="form-label">Country</label>
-												<input
-													type="text"
-													class="form-control editable-field"
-													x-model="modalOrder.shipping.country"
-												/>
-											</div>
-											<div class="col-md-6">
-												<label class="form-label">Phone</label>
-												<input
-													type="tel"
-													class="form-control editable-field"
-													x-model="modalOrder.shipping.phone"
-												/>
-											</div>
-										</div>
+				<!-- Shipping Information Tab -->
+				<div class="tab-pane fade" id="shipping-info" role="tabpanel" aria-labelledby="shipping-tab">
+					<div class="p-3">
+						<!-- Section for Shipping Information -->
+						<div class="card mb-3 shadow-sm">
+							<div class="card-header">
+								<h6 class="mb-0">
+									<i class="bi bi-truck"></i> Shipping Information
+								</h6>
+							</div>
+							<div class="card-body">
+								<div class="mb-3">
+									<label for="shippingCompany" class="form-label small">Shipping Company</label>
+									<select class="form-select form-select-sm" id="shippingCompany" required>
+										<option value="">Select company...</option>
+										<option value="acs" selected>ACS Courier</option>
+										<option value="dhl">DHL</option>
+										<option value="fedex">FedEx</option>
+									</select>
+								</div>
+								<div class="mb-3">
+									<label for="orderId" class="form-label small">Order Number</label>
+									<div class="input-group input-group-sm">
+										<span class="input-group-text">
+											<i class="bi bi-upc-scan"></i>
+										</span>
+										<input type="text" class="form-control form-control-sm" id="orderId" x-model="modalOrder.orderId" required readonly/>
+									</div>
+								</div>
+								<div class="mb-3">
+									<label for="parcelWeight" class="form-label small">Parcel Weight (kg)</label>
+									<div class="input-group input-group-sm">
+										<span class="input-group-text">
+											<i class="bi bi-body-text"></i>
+										</span>
+										<input type="number" class="form-control form-control-sm" id="parcelWeight" placeholder="0.5" step="0.5" required/>
 									</div>
 								</div>
 							</div>
-							<!-- Payment Information -->
-							<div class="accordion-item">
-								<h2 class="accordion-header">
-									<button
-										class="accordion-button collapsed"
-										type="button"
-										data-bs-toggle="collapse"
-										data-bs-target="#paymentInfo"
-									>
-										Payment Information
-									</button>
-								</h2>
-								<div
-									id="paymentInfo"
-									class="accordion-collapse collapse"
-									data-bs-parent="#detailsAccordion"
-								>
-									<div class="accordion-body">
-										<div class="row g-3">
-											<div class="col-md-6">
-												<label class="form-label">Payment Method</label>
-												<input
-													type="text"
-													class="form-control editable-field"
-													x-model="modalOrder.payment_method"
-													readonly
-												/>
-											</div>
-											<div class="col-md-6">
-												<label class="form-label">Total Amount</label>
-												<div class="input-group">
-													<span class="input-group-text">€</span>
-													<input
-														type="number"
-														class="form-control editable-field"
-														x-model="modalOrder.total"
-														step="0.01"
-														readonly
-													/>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
+						</div>
+						<!-- Section for Delivery Options -->
+						<div class="card mb-3 shadow-sm">
+							<div class="card-header">
+								<h6 class="mb-0">
+									<i class="bi bi-box-arrow-in-down"></i> Delivery Options
+								</h6>
 							</div>
-							<!-- Customer Notes -->
-							<div class="accordion-item">
-								<h2 class="accordion-header">
-									<button
-										class="accordion-button collapsed"
-										type="button"
-										data-bs-toggle="collapse"
-										data-bs-target="#customerNotes"
-									>
-										Customer Notes
-									</button>
-								</h2>
-								<div
-									id="customerNotes"
-									class="accordion-collapse collapse"
-									data-bs-parent="#detailsAccordion"
-								>
-									<div class="accordion-body">
-										<div class="mb-3">
-											<label class="form-label">Notes</label>
-											<textarea
-												class="form-control editable-field"
-												rows="3"
-												x-model="modalOrder.customer_note"
-												placeholder="Enter any additional notes or instructions..."
-											></textarea>
-										</div>
-									</div>
+							<div class="card-body">
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="deliveryOption" id="standardDelivery" checked/>
+									<label class="form-check-label" for="standardDelivery">Standard Delivery</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="deliveryOption" id="saturdayDelivery"/>
+									<label class="form-check-label" for="saturdayDelivery">Saturday Delivery</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="deliveryOption" id="urgentDelivery"/>
+									<label class="form-check-label" for="urgentDelivery">Urgent Delivery</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="deliveryOption" id="pickupDelivery"/>
+									<label class="form-check-label" for="pickupDelivery">Pickup</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="deliveryOption" id="sameDayDelivery"/>
+									<label class="form-check-label" for="sameDayDelivery">Same Day</label>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="offcanvas-footer p-3">
-			<div class="d-flex justify-content-between align-items-center">
-				<button
-					type="button"
-					class="btn btn-outline-secondary"
-					id="prevViewBtn"
-					style="visibility: hidden;"
-				>
-					<i class="bi bi-arrow-left me-2"></i>ΠΙΣΩ
-				</button>
-				<button type="button" class="btn btn-outline-primary" id="nextViewBtn">
-					ΕΠΟΜΕΝΟ<i class="bi bi-arrow-right ms-2"></i>
-				</button>
+			<!-- Save Button -->
+			<div class="mt-auto p-3 border-top">
+				<button type="button" class="btn btn-primary w-100" id="saveBtn">Save Changes</button>
 			</div>
-			<button type="button" class="btn btn-primary w-100 mt-3" @click="saveChanges">
-				Αποθήκευση
-				Αλλαγών
-			</button>
 		</div>
 	</div>
 	<!-- Toast Container -->

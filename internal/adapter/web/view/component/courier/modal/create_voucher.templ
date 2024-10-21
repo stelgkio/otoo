@@ -1,8 +1,8 @@
 package views
 
-import ()
+import "github.com/stelgkio/otoo/internal/core/domain"
 
-templ CreateVoucher() {
+templ CreateVoucher(extensions []*domain.ProjectExtension) {
 	<style>
         /* Offcanvas structure */
         .offcanvas-body {
@@ -260,9 +260,10 @@ templ CreateVoucher() {
 								<div class="mb-3">
 									<label for="shippingCompany" class="form-label small">Shipping Company</label>
 									<select class="form-select form-select-sm" id="shippingCompany" x-model="selectedCourier" required>
-										<option value="">Select company...</option>
-										<option value="acs">ACS Courier</option>
-										<option value="courier4u">Courier4U</option>
+										<option selected value="">Select Courier Provider</option>
+										for _, extension := range extensions {
+											<option value={ extension.Code }>{ extension.Title }</option>
+										}
 									</select>
 								</div>
 								<div class="mb-3">
@@ -286,7 +287,7 @@ templ CreateVoucher() {
 							</div>
 						</div>
 						<!-- Section for ACS Courier Options (Conditional) -->
-						<div class="card mb-3 shadow-sm" x-show="selectedCourier === 'acs'">
+						<div class="card mb-3 shadow-sm" x-show="selectedCourier === 'asc-courier'">
 							<div class="card-header">
 								<h6 class="mb-0">
 									<i class="bi bi-box-arrow-in-down"></i> Delivery Options (ACS)

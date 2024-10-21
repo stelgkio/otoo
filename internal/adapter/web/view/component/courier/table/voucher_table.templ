@@ -4,9 +4,10 @@ import (
 	"fmt"
 	c "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/modal"
 	p "github.com/stelgkio/otoo/internal/adapter/web/view/component/pagination"
+	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-templ VoucherTable(projectId string) {
+templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 	<div id="dashboard-voucher">
 		<div id="dashboard-voucher-table" x-data={ fmt.Sprintf("voucherTable('%s')", projectId) } x-init="init()">
 			<div class="px-6 px-lg-7 pt-1 border-bottom">
@@ -165,7 +166,7 @@ templ VoucherTable(projectId string) {
 				</table>
 			</div>
 			/* Start Off canvas */
-			@c.CreateVoucher()
+			@c.CreateVoucher(extensions)
 			@p.PaginationControl()
 		</div>
 	</div>

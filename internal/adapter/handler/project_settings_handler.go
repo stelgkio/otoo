@@ -177,10 +177,6 @@ func (ph *ProjectHandler) ProjectUpdate(ctx echo.Context) error {
 // ProjectDelete POST /project/settings/:projectId
 func (ph *ProjectHandler) ProjectDelete(ctx echo.Context) error {
 
-	userID, err := auth.GetUserID(ctx)
-	if err != nil {
-		return err
-	}
 	projectID := ctx.Param("projectId")
 
 	project, err := ph.svc.GetProjectByID(ctx, projectID)
@@ -189,7 +185,7 @@ func (ph *ProjectHandler) ProjectDelete(ctx echo.Context) error {
 	}
 	ph.webhookSvc.DeleteAllWebhooksByProjectID(projectID, project.WoocommerceProject.ConsumerKey, project.WoocommerceProject.ConsumerSecret, project.WoocommerceProject.Domain)
 
-	err = ph.svc.SoftDeleteProjects(ctx, userID)
+	err = ph.svc.SoftDeleteProjects(ctx, project.Id)
 	if err != nil {
 		return err
 	}

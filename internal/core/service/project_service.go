@@ -101,8 +101,13 @@ func (ps *ProjectService) SearchByDomain(ctx echo.Context, filters *domain.FindP
 }
 
 // SoftDeleteProjects is doing a soft delete to this projects
-func (ps *ProjectService) SoftDeleteProjects(ctx echo.Context, userID uuid.UUID) error {
-	return ps.repo.DeleteProjectsByUserID(ctx, userID)
+func (ps *ProjectService) SoftDeleteProjects(ctx echo.Context, projectID uuid.UUID) error {
+	err := ps.repo.DeleteProjectsByID(ctx, projectID)
+	if err != nil && err != e.ErrDataNotFound {
+		return e.ErrInternal
+	}
+
+	return nil
 }
 
 // GetProjectByID gets a project by its ID

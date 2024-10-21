@@ -87,7 +87,7 @@ func (dh *DashboardHandler) DefaultDashboard(ctx echo.Context) error {
 	// Fetch order count
 	go func() {
 		defer wg.Done()
-		dh.orderSvc.GetOrderCountAsync(ctx, projectID, w.OrderStatusCompleted, "", orderResults, orderErrors)
+		dh.orderSvc.GetOrderCountWithDeleteAsync(ctx, projectID, w.OrderStatusCompleted, "", orderResults, orderErrors)
 	}()
 	// Fetch order count
 	go func() {
@@ -598,19 +598,19 @@ func (dh *DashboardHandler) OrderDashboard(ctx echo.Context) error {
 
 	go func() {
 		defer wg.Done()
-		dh.orderSvc.GetOrderCountAsync(ctx, projectID, "completed", "", totalCountChan, errChan)
+		dh.orderSvc.GetOrderCountWithDeleteAsync(ctx, projectID, w.OrderStatusAll, "", totalCountChan, errChan)
 	}()
 	go func() {
 		defer wg.Done()
-		dh.orderSvc.GetOrderCountAsync(ctx, projectID, "completed", "24h", count24hChan, errChan)
+		dh.orderSvc.GetOrderCountAsync(ctx, projectID, w.OrderStatusCompleted, "24h", count24hChan, errChan)
 	}()
 	go func() {
 		defer wg.Done()
-		dh.orderSvc.GetOrderCountAsync(ctx, projectID, "completed", "7d", count7dChan, errChan)
+		dh.orderSvc.GetOrderCountAsync(ctx, projectID, w.OrderStatusCompleted, "7d", count7dChan, errChan)
 	}()
 	go func() {
 		defer wg.Done()
-		dh.orderSvc.GetOrderCountAsync(ctx, projectID, "completed", "1m", count1mChan, errChan)
+		dh.orderSvc.GetOrderCountAsync(ctx, projectID, w.OrderStatusCompleted, "1m", count1mChan, errChan)
 	}()
 
 	// Wait for all goroutines to finish

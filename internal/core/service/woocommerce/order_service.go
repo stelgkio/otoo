@@ -46,9 +46,28 @@ func (os *OrderService) GetOrderCountAsync(ctx echo.Context, projectID string, o
 	}
 }
 
+// GetOrderCountWithDeleteAsync retrieves the count of orders for a given project ID
+func (os *OrderService) GetOrderCountWithDeleteAsync(ctx echo.Context, projectID string, orderStatus w.OrderStatus, timeRange string, results chan<- int64, errors chan<- error) {
+	orderCount, err := os.p.GetOrderCountWithDelete(projectID, orderStatus, timeRange)
+	if err != nil {
+		errors <- err
+	} else {
+		results <- orderCount
+	}
+}
+
 // GetOrderCount retrieves the count of orders for a given project ID
 func (os *OrderService) GetOrderCount(projectID string, orderStatus w.OrderStatus, timeRange string) (int64, error) {
 	orderCount, err := os.p.GetOrderCount(projectID, orderStatus, timeRange)
+	if err != nil {
+		return 0, err
+	}
+	return orderCount, nil
+}
+
+// GetOrderCountWithDelete retrieves the count of orders for a given project ID
+func (os *OrderService) GetOrderCountWithDelete(projectID string, orderStatus w.OrderStatus, timeRange string) (int64, error) {
+	orderCount, err := os.p.GetOrderCountWithDelete(projectID, orderStatus, timeRange)
 	if err != nil {
 		return 0, err
 	}

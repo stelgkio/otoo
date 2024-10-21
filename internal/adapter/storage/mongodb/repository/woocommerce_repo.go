@@ -217,6 +217,42 @@ func (repo WoocommerceRepository) GetOrderCount(projectID string, orderStatus w.
 	return res, nil
 }
 
+// GetOrderCountWithDelete get number of orders
+func (repo WoocommerceRepository) GetOrderCountWithDelete(projectID string, orderStatus w.OrderStatus, timeRange string) (int64, error) {
+	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	// Calculate the time range based on the current time
+	var startTime time.Time
+	now := time.Now().UTC()
+
+	switch timeRange {
+	case "24h":
+		startTime = now.Add(-24 * time.Hour)
+	case "7d":
+		startTime = now.Add(-7 * 24 * time.Hour)
+	case "1m":
+		startTime = now.AddDate(0, -1, 0)
+	default:
+		startTime = time.Time{} // Default to the epoch time for no filtering
+	}
+
+	filter := bson.M{"projectId": projectID, "status": orderStatus, "order_created": bson.M{"$gte": startTime}}
+	if orderStatus == w.OrderStatusAll {
+		filter = bson.M{"projectId": projectID, "order_created": bson.M{"$gte": startTime}}
+	}
+
+	res, err := coll.CountDocuments(ctx, filter)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return 0, nil
+		}
+		return 0, err
+	}
+	return res, nil
+}
+
 // GetOrdersCountBetweenOrEquals get number of orders between or equals to timeperiod
 func (repo WoocommerceRepository) GetOrdersCountBetweenOrEquals(projectID string, timeperiod time.Time, orderStatus w.OrderStatus) (int64, error) {
 	coll := repo.mongo.Database("otoo").Collection("woocommerce_orders")
@@ -247,6 +283,7 @@ func (repo WoocommerceRepository) CountOrdersByMonth(projectID string) (map[stri
 			{"$match", bson.M{
 				"projectId":     projectID,
 				"order_created": bson.M{"$gte": now.AddDate(0, -11, 0)},
+				"status":        "completed",
 			}},
 		},
 		{

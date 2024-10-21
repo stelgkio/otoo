@@ -93,7 +93,8 @@ type addmemberRequest struct {
 	Name                 string `form:"name" validate:"required"`
 	LastName             string `form:"last_name" validate:"required"`
 	ReceiveNotification  bool   `form:"receive_notification"`
-	UserExist            bool   `form:"user_exists"`
+	UserExist            bool   `form:"user_exist"`
+	Role                 string `form:"role"`
 }
 
 // Validate validates the request body
@@ -111,10 +112,17 @@ func (p *addmemberRequest) Validate() map[string](string) {
 	if p.Email == "" {
 		errors["email"] = "Email is required"
 	}
-	if p.UserExist {
+	if p.UserExist == false {
 		if p.Password == "" {
 			errors["password"] = "Password key is required"
 		}
+		if len(p.Password) < 8 {
+			errors["password"] = "Password must be at least 8 characters long"
+		}
+		if p.Role == "" {
+			errors["role"] = "Role is required"
+		}
+
 		if p.ConfirmationPassword == "" {
 			errors["confirmation_password"] = "Confirmation Password is required"
 		}
@@ -334,6 +342,8 @@ func (ah *AuthHandler) CreateMemberModal(ctx echo.Context) error {
 
 	return r.Render(ctx, us.CreateMeember(projectID, nil))
 }
+
+// AddMember @Router			/projects/{projectId}/members [post]
 func (ah *AuthHandler) AddMember(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 	req := new(addmemberRequest)
@@ -370,7 +380,7 @@ func (ah *AuthHandler) AddMember(ctx echo.Context) error {
 		return err
 	}
 
-	newUser, err := domain.NewClientUser(req.Email, req.Password, req.Name, req.LastName, domain.ClientUser, req.ReceiveNotification)
+	newUser, err := domain.NewClientUser(req.Email, req.Password, req.Name, req.LastName, req.Role, req.ReceiveNotification)
 	if err != nil {
 		slog.Error("error new user:", "StatusBadRequest", err)
 		return ctx.JSON(http.StatusBadRequest, map[string]string{

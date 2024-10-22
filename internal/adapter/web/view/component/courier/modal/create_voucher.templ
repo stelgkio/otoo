@@ -295,8 +295,8 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 							</div>
 							<div class="card-body">
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="deliveryOption" id="standardDelivery" checked/>
-									<label class="form-check-label" for="standardDelivery">Standard Delivery</label>
+									<input class="form-check-input" type="radio" name="deliveryOption" id="standardDelivery"/>
+									<label class="form-check-label" for="standardDelivery" checked>Standard Delivery</label>
 								</div>
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="deliveryOption" id="saturdayDelivery"/>
@@ -305,6 +305,10 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="deliveryOption" id="urgentDelivery"/>
 									<label class="form-check-label" for="urgentDelivery">Urgent Delivery</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="deliveryOption" id="pickupDelivery"/>
+									<label class="form-check-label" for="pickupDelivery">Pickup</label>
 								</div>
 							</div>
 						</div>
@@ -316,6 +320,18 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 								</h6>
 							</div>
 							<div class="card-body">
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="deliveryOption" id="standardDelivery"/>
+									<label class="form-check-label" for="standardDelivery" checked>Standard Delivery</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="deliveryOption" id="saturdayDelivery"/>
+									<label class="form-check-label" for="saturdayDelivery">Saturday Delivery</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="deliveryOption" id="urgentDelivery"/>
+									<label class="form-check-label" for="urgentDelivery">Urgent Delivery</label>
+								</div>
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="deliveryOption" id="pickupDelivery"/>
 									<label class="form-check-label" for="pickupDelivery">Pickup</label>

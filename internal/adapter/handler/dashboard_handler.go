@@ -598,7 +598,7 @@ func (dh *DashboardHandler) OrderDashboard(ctx echo.Context) error {
 
 	go func() {
 		defer wg.Done()
-		dh.orderSvc.GetOrderCountWithDeleteAsync(ctx, projectID, w.OrderStatusAll, "", totalCountChan, errChan)
+		dh.orderSvc.GetOrderCountWithDeleteAsync(ctx, projectID, w.OrderStatusCompleted, "", totalCountChan, errChan)
 	}()
 	go func() {
 		defer wg.Done()

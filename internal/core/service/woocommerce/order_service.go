@@ -1,6 +1,7 @@
 package woocommerce
 
 import (
+	"fmt"
 	"log"
 	"log/slog"
 	"math"
@@ -314,7 +315,8 @@ func (os *OrderService) createAndSaveAllOrders(client *commerce.Client, projectI
 	// Create a semaphore to limit the number of concurrent fetches
 	maxConcurrentFetches := 5
 	sem := make(chan struct{}, maxConcurrentFetches) // Semaphore to limit concurrent requests
-
+	var totalFetched int = 0
+	var mu sync.Mutex
 	// Concurrent fetching of orders
 	go func() {
 		var fetchWg sync.WaitGroup
@@ -328,23 +330,13 @@ func (os *OrderService) createAndSaveAllOrders(client *commerce.Client, projectI
 				defer fetchWg.Done()
 				defer func() { <-sem }() // Release the semaphore token when done
 
-				options := commerce.OrderListOption{
-					ListOptions: commerce.ListOptions{
-						Context: "view",
-						Order:   "desc",
-						Orderby: "id",
-						Page:    page,
-						PerPage: batchSize,
-					},
-				}
-
 				// Fetch orders from the API
-				resp, err := client.Order.List(options)
+				resp, err := os.fetchOrdesWithRetry(client, page)
 				if err != nil {
 					errorCh <- &w.OrderRecord{
 						ProjectID: projectID,
 						Event:     "order.List",
-						Error:     err.Error(),
+						Error:     "Failed to fetch orders",
 						CreatedAt: time.Now().UTC(),
 						OrderID:   0,
 						Order:     commerce.Order{}, // Assuming empty order
@@ -357,9 +349,11 @@ func (os *OrderService) createAndSaveAllOrders(client *commerce.Client, projectI
 					// No more orders, stop the fetching
 					return
 				}
-
+				mu.Lock()
+				totalFetched += len(resp)
+				mu.Unlock()
 				// Notify about the number of orders received
-				os.extensionSrv.UpdateSynchronizerOrderReceivedExtension(nil, projectID, len(resp))
+				os.extensionSrv.UpdateSynchronizerOrderReceivedExtension(nil, projectID, totalFetched)
 
 				// Send fetched orders to the worker pool
 				for _, item := range resp {
@@ -431,4 +425,32 @@ func (os *OrderService) GetLatestOrderWeeklyBalance(ctx echo.Context, projectID 
 // CountOrdersByMonth retrieves the latest order monthly balance for a given project ID
 func (os *OrderService) CountOrdersByMonth(projectID string) (map[string]int, error) {
 	return os.p.CountOrdersByMonth(projectID)
+}
+
+// fetchOrdesWithRetry fetches a page of products with retry logic.
+func (os *OrderService) fetchOrdesWithRetry(client *commerce.Client, page int) ([]commerce.Order, error) {
+	options := commerce.OrderListOption{
+		ListOptions: commerce.ListOptions{
+			Context: "view",
+			Order:   "desc",
+			Orderby: "id",
+			Page:    page,
+			PerPage: batchSize,
+		},
+	}
+
+	var orders []commerce.Order
+	var err error
+
+	for i := 0; i < maxRetries; i++ {
+		orders, err = client.Order.List(options)
+		if err == nil {
+			return orders, nil // Success
+		}
+
+		log.Printf("Failed to fetch orders (attempt %d/%d): %v", i+1, maxRetries, err)
+		time.Sleep(time.Duration(math.Pow(2, float64(i))) * time.Second) // Exponential backoff
+	}
+
+	return nil, fmt.Errorf("failed after %d retries: %v", maxRetries, err)
 }

@@ -12,7 +12,7 @@ type ProductRecord struct {
 	ID        primitive.ObjectID  `bson:"_id,omitempty"`
 	ProjectID string              `bson:"projectId"`
 	Event     string              `bson:"event"`
-	Error     string              `bson:"error,omitempty"`
+	Error     string              `bson:"error"`
 	Timestamp time.Time           `bson:"timestamp,omitempty"`
 	ProductID int64               `bson:"productId,omitempty"`
 	Product   woocommerce.Product `bson:"product,omitempty"`

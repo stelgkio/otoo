@@ -102,17 +102,17 @@ func (p *addmemberRequest) Validate() map[string](string) {
 
 	errors := make(map[string]string)
 
-	if p.Name == "" {
-		errors["name"] = "Name is required"
-	}
-
-	if p.LastName == "" {
-		errors["lastname"] = "LastName is required"
-	}
 	if p.Email == "" {
 		errors["email"] = "Email is required"
 	}
 	if p.UserExist == false {
+		if p.Name == "" {
+			errors["name"] = "Name is required"
+		}
+
+		if p.LastName == "" {
+			errors["lastname"] = "LastName is required"
+		}
 		if p.Password == "" {
 			errors["password"] = "Password key is required"
 		}

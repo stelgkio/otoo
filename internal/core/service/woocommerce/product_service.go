@@ -20,6 +20,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+const (
+	maxRetries = 3
+)
+
 // ProductService represents the service for managing products
 type ProductService struct {
 	p            port.WoocommerceRepository
@@ -90,7 +94,9 @@ func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectID 
 	// Create a semaphore to limit the number of concurrent fetches
 	maxConcurrentFetches := 5
 	sem := make(chan struct{}, maxConcurrentFetches) // Semaphore with a limit
-
+	// Track the total number of products fetched and use mutex for safe concurrent access
+	var totalFetched int = 0
+	var mu sync.Mutex // Mutex to synchronize access to totalFetched
 	// Fetch products concurrently by page
 	go func() {
 		var fetchWg sync.WaitGroup
@@ -104,37 +110,31 @@ func (s *ProductService) createAndSaveAllProducts(client *woo.Client, projectID 
 				defer fetchWg.Done()
 				defer func() { <-sem }() // Release the token when done
 
-				options := woo.ProductListOptions{
-					ListOptions: woo.ListOptions{
-						Context: "view",
-						Order:   "desc",
-						Orderby: "date",
-						Page:    page,
-						PerPage: batchSize,
-					},
-					Status: "publish",
-				}
-
-				resp, err := client.Product.List(options)
+				resp, err := s.fetchProductsWithRetry(client, page)
 				if err != nil {
 					errorCh <- &w.ProductRecord{
 						ProjectID: projectID,
 						Event:     "product.List",
-						Error:     err.Error(),
+						Error:     "Failed to fetch products",
 						CreatedAt: time.Now().UTC(),
 						ProductID: 0,
 						Product:   woo.Product{}, // Assuming empty product
 						IsActive:  false,
 					}
+					slog.Error("Failed to fetch product ", "errpr", err)
 					return
 				}
 
 				if len(resp) == 0 {
 					// No more products, break the loop
+					slog.Info("No more products to fetch", "page", page)
 					return
 				}
 
-				s.extensionSrv.UpdateSynchronizerProductReceivedExtension(nil, projectID, len(resp))
+				mu.Lock()
+				totalFetched += len(resp)
+				mu.Unlock()
+				s.extensionSrv.UpdateSynchronizerProductReceivedExtension(nil, projectID, totalFetched)
 
 				for _, item := range resp {
 					productCh <- &w.ProductRecord{
@@ -373,4 +373,33 @@ func (s *ProductService) FindProductByProjectIDAsync(projectID string, size, pag
 		errors <- err
 	}
 	results <- products
+}
+
+// fetchProductsWithRetry fetches a page of products with retry logic.
+func (s *ProductService) fetchProductsWithRetry(client *woo.Client, page int) ([]woo.Product, error) {
+	options := woo.ProductListOptions{
+		ListOptions: woo.ListOptions{
+			Context: "view",
+			Order:   "desc",
+			Orderby: "date",
+			Page:    page,
+			PerPage: batchSize,
+		},
+		Status: "publish",
+	}
+
+	var products []woo.Product
+	var err error
+
+	for i := 0; i < maxRetries; i++ {
+		products, err = client.Product.List(options)
+		if err == nil {
+			return products, nil // Success
+		}
+
+		log.Printf("Failed to fetch products (attempt %d/%d): %v", i+1, maxRetries, err)
+		time.Sleep(time.Duration(math.Pow(2, float64(i))) * time.Second) // Exponential backoff
+	}
+
+	return nil, fmt.Errorf("failed after %d retries: %v", maxRetries, err)
 }

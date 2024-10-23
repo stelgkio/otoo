@@ -128,8 +128,8 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
     </style>
 	<div class="offcanvas offcanvas-end w-50" data-bs-backdrop="true" tabindex="-1" id="orderProcessingOffcanvas" aria-labelledby="orderProcessingOffcanvasLabel" :class="{ 'show': showOffcanvas }" :style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }" x-data="{ open: false }">
 		<div class="offcanvas-header">
-			<h5 class="offcanvas-title" id="orderProcessingOffcanvasLabel">
-				<i class="bi bi-pencil-square"></i> Edit Order #<span x-text="modalOrder.orderId"></span>
+			<h5 class="offcanvas-title" id="orderProcessingOffcanvasLabel" data-i18n="offcanvas-order_processing">
+				<i class="bi bi-pencil-square"></i>Order Processing #<span x-text="modalOrder.orderId"></span>
 			</h5>
 			<button type="button" class="btn-close" @click="closeOffcanvas()"></button>
 		</div>
@@ -137,12 +137,12 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 			<!-- Tabs -->
 			<ul class="nav nav-tabs" id="orderTabs" role="tablist">
 				<li class="nav-item" role="presentation">
-					<button class="nav-link active" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer-info" type="button" role="tab" aria-controls="customer-info" aria-selected="true">
+					<button class="nav-link active" data-i18n="off-canvas-customer-tab" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer-info" type="button" role="tab" aria-controls="customer-info" aria-selected="true">
 						<i class="bi bi-person"></i> Customer
 					</button>
 				</li>
 				<li class="nav-item" role="presentation">
-					<button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping-info" type="button" role="tab" aria-controls="shipping-info" aria-selected="false">
+					<button class="nav-link" data-i18n="off-canvas-shipping-tab" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping-info" type="button" role="tab" aria-controls="shipping-info" aria-selected="false">
 						<i class="bi bi-truck"></i> Shipping
 					</button>
 				</li>
@@ -155,30 +155,30 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 						<!-- Section for Customer Details -->
 						<div class="card mb-3 shadow-sm">
 							<div class="card-header">
-								<h6 class="mb-0">
-									<i class="bi bi-person"></i> Customer Information
+								<h6 class="mb-0" data-i18n="off-canvas-customer-info-header">
+									<i class="bi bi-person"></i> Customer Info
 								</h6>
 							</div>
 							<div class="card-body">
 								<div class="row g-2">
 									<div class="col-md-6">
-										<label for="customerName" class="form-label small">First Name</label>
+										<label for="customerName" class="form-label small" data-i18n="off-canvas-customer-first_name">First Name</label>
 										<input type="text" class="form-control form-control-sm" id="customerName" x-model="modalOrder.billing.first_name" required/>
 									</div>
 									<div class="col-md-6">
-										<label for="customerSurname" class="form-label small">Last Name</label>
+										<label for="customerSurname" class="form-label small" data-i18n="off-canvas-customer-last_name">Last Name</label>
 										<input type="text" class="form-control form-control-sm" id="customerSurname" x-model="modalOrder.billing.last_name" required/>
 									</div>
 									<div class="col-md-6">
-										<label for="customerEmail" class="form-label small">Email</label>
+										<label for="customerEmail" class="form-label small" data-i18n="off-canvas-customer-email">Email</label>
 										<input type="email" class="form-control form-control-sm" id="customerEmail" x-model="modalOrder.billing.email" required/>
 									</div>
 									<div class="col-md-6">
-										<label for="customerPhone" class="form-label small">Phone</label>
+										<label for="customerPhone" class="form-label small" data-i18n="off-canvas-customer-phone">Phone</label>
 										<input type="tel" class="form-control form-control-sm" id="customerPhone" x-model="modalOrder.billing.phone" required/>
 									</div>
 									<div class="col-12">
-										<label for="customerAddress" class="form-label small">Address</label>
+										<label for="customerAddress" class="form-label small" data-i18n="off-canvas-customer-address">Address</label>
 										<div class="input-group input-group-sm">
 											<span class="input-group-text">
 												<i class="bi bi-geo-alt"></i>
@@ -187,11 +187,11 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 										</div>
 									</div>
 									<div class="col-md-6">
-										<label for="customerCity" class="form-label small">City</label>
+										<label for="customerCity" class="form-label small" data-i18n="off-canvas-customer-city">City</label>
 										<input type="text" class="form-control form-control-sm" id="customerCity" x-model="modalOrder.billing.city" required/>
 									</div>
 									<div class="col-md-6">
-										<label for="customerPostalCode" class="form-label small">Postal Code</label>
+										<label for="customerPostalCode" class="form-label small" data-i18n="off-canvas-customer-postal">Postal Code</label>
 										<input type="text" class="form-control form-control-sm" id="customerPostalCode" x-model="modalOrder.billing.postcode" required/>
 									</div>
 								</div>
@@ -200,7 +200,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 						<!-- Section for Products -->
 						<div class="card mb-3 shadow-sm">
 							<div class="card-header">
-								<h6 class="mb-0">
+								<h6 class="mb-0" data-i18n="off-canvas-customer-products-header">
 									<i class="bi bi-box-seam"></i> Products
 								</h6>
 							</div>
@@ -209,9 +209,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 									<table class="table table-sm">
 										<thead>
 											<tr>
-												<th>Product</th>
-												<th>Quantity</th>
-												<th>Price</th>
+												<th data-i18n="off-canvas-customer-product-name">Product</th>
+												<th data-i18n="off-canvas-customer-product-quantity">Quantity</th>
+												<th data-i18n="off-canvas-customer-product-price">Price</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -230,18 +230,12 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 						<!-- Section for Delivery Instructions -->
 						<div class="card mb-3 shadow-sm">
 							<div class="card-header">
-								<h6 class="mb-0">
-									<i class="bi bi-chat-right-text"></i> Delivery Instructions
+								<h6 class="mb-0" data-i18n="off-canvas-delivery-info">
+									<i class="bi bi-chat-right-text"></i> Delivery Info
 								</h6>
 							</div>
 							<div class="card-body">
-								<textarea class="form-control form-control-sm" id="deliveryInstructions" rows="2" placeholder="Add special instructions..."></textarea>
-							</div>
-						</div>
-						<div class="col-12">
-							<div class="form-check">
-								<input class="form-check-input" type="checkbox" id="storePickup"/>
-								<label class="form-check-label" for="storePickup">Store Pickup</label>
+								<textarea class="form-control form-control-sm" id="deliveryInstructions" rows="2" data-i18n="[placeholder]off-canvas-special-instructions"></textarea>
 							</div>
 						</div>
 					</div>
@@ -252,22 +246,22 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 						<!-- Section for Shipping Information -->
 						<div class="card mb-3 shadow-sm">
 							<div class="card-header">
-								<h6 class="mb-0">
+								<h6 class="mb-0" data-i18n="off-canvas-shipping-information">
 									<i class="bi bi-truck"></i> Shipping Information
 								</h6>
 							</div>
 							<div class="card-body">
 								<div class="mb-3">
-									<label for="shippingCompany" class="form-label small">Shipping Company</label>
+									<label for="shippingCompany" class="form-label small" data-i18n="off-canvas-shipping-company">Shipping Company</label>
 									<select class="form-select form-select-sm" id="shippingCompany" x-model="selectedCourier" required>
-										<option selected value="">Select Courier Provider</option>
+										<option selected value="" data-i18n="off-canvas-shipping-provider">Select Courier Provider</option>
 										for _, extension := range extensions {
 											<option value={ extension.Code }>{ extension.Title }</option>
 										}
 									</select>
 								</div>
 								<div class="mb-3">
-									<label for="orderId" class="form-label small">Order Number</label>
+									<label for="orderId" class="form-label small" data-i18n="off-canvas-shipping-order-number">Order Number</label>
 									<div class="input-group input-group-sm">
 										<span class="input-group-text">
 											<i class="bi bi-upc-scan"></i>
@@ -276,7 +270,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 									</div>
 								</div>
 								<div class="mb-3">
-									<label for="parcelWeight" class="form-label small">Parcel Weight (kg)</label>
+									<label for="parcelWeight" class="form-label small" data-i18n="off-canvas-shipping-parcel-weight">Parcel Weight (kg)</label>
 									<div class="input-group input-group-sm">
 										<span class="input-group-text">
 											<i class="bi bi-body-text"></i>
@@ -289,56 +283,56 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 						<!-- Section for ACS Courier Options (Conditional) -->
 						<div class="card mb-3 shadow-sm" x-show="selectedCourier === 'asc-courier'">
 							<div class="card-header">
-								<h6 class="mb-0">
+								<h6 class="mb-0" data-i18n="off-canvas-delivery-options-acs">
 									<i class="bi bi-box-arrow-in-down"></i> Delivery Options (ACS)
 								</h6>
 							</div>
 							<div class="card-body">
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="deliveryOption" id="standardDelivery"/>
-									<label class="form-check-label" for="standardDelivery" checked>Standard Delivery</label>
+									<label class="form-check-label" for="standardDelivery" data-i18n="off-canvas-acs-standard-delivery" checked>Standard Delivery</label>
 								</div>
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="deliveryOption" id="saturdayDelivery"/>
-									<label class="form-check-label" for="saturdayDelivery">Saturday Delivery</label>
+									<label class="form-check-label" for="saturdayDelivery" data-i18n="off-canvas-acs-saturday-delivery">Saturday Delivery</label>
 								</div>
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="deliveryOption" id="urgentDelivery"/>
-									<label class="form-check-label" for="urgentDelivery">Urgent Delivery</label>
+									<label class="form-check-label" for="urgentDelivery" data-i18n="off-canvas-acs-urgent-delivery">Urgent Delivery</label>
 								</div>
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="deliveryOption" id="pickupDelivery"/>
-									<label class="form-check-label" for="pickupDelivery">Pickup</label>
+									<label class="form-check-label" for="pickupDelivery" data-i18n="off-canvas-acs-pickup-delivery">Pickup</label>
 								</div>
 							</div>
 						</div>
 						<!-- Section for Courier4U Options (Conditional) -->
 						<div class="card mb-3 shadow-sm" x-show="selectedCourier === 'courier4u'">
 							<div class="card-header">
-								<h6 class="mb-0">
+								<h6 class="mb-0" data-i18n="off-canvas-delivery-options-courier4u">
 									<i class="bi bi-box-arrow-in-down"></i> Delivery Options (Courier4U)
 								</h6>
 							</div>
 							<div class="card-body">
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="deliveryOption" id="standardDelivery"/>
-									<label class="form-check-label" for="standardDelivery" checked>Standard Delivery</label>
+									<input class="form-check-input" type="radio" name="deliveryOption" id="standardDelivery" checked/>
+									<label class="form-check-label" for="standardDelivery" data-i18n="off-canvas-delivery-courier4u-standard-delivery">Standard Delivery</label>
 								</div>
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="deliveryOption" id="saturdayDelivery"/>
-									<label class="form-check-label" for="saturdayDelivery">Saturday Delivery</label>
+									<label class="form-check-label" for="saturdayDelivery" data-i18n="off-canvas-delivery-courier4u-saturday-delivery">Saturday Delivery</label>
 								</div>
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="deliveryOption" id="urgentDelivery"/>
-									<label class="form-check-label" for="urgentDelivery">Urgent Delivery</label>
+									<label class="form-check-label" for="urgentDelivery" data-i18n="off-canvas-delivery-courier4u-urgent-delivery">Urgent Delivery</label>
 								</div>
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="deliveryOption" id="pickupDelivery"/>
-									<label class="form-check-label" for="pickupDelivery">Pickup</label>
+									<label class="form-check-label" for="pickupDelivery" data-i18n="off-canvas-delivery-courier4u-pickup-delivery">Pickup</label>
 								</div>
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="deliveryOption" id="sameDayDelivery"/>
-									<label class="form-check-label" for="sameDayDelivery">Same Day</label>
+									<label class="form-check-label" for="sameDayDelivery" data-i18n="off-canvas-delivery-courier4u-sameday-delivery">Same Day</label>
 								</div>
 							</div>
 						</div>
@@ -347,7 +341,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 			</div>
 			<!-- Save Button -->
 			<div class="mt-auto p-3 border-top">
-				<button type="button" class="btn btn-primary w-100" id="saveBtn">Save Changes</button>
+				<button type="button" class="btn btn-primary w-100" id="saveBtn" data-i18n="off-canvas-button-save">Save Changes</button>
 			</div>
 		</div>
 	</div>

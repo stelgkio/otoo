@@ -10,10 +10,10 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	page "github.com/stelgkio/otoo/internal/adapter/web/view/admin/page"
 	e "github.com/stelgkio/otoo/internal/adapter/web/view/extension"
 	ac "github.com/stelgkio/otoo/internal/adapter/web/view/extension/acs_courier"
 	cu "github.com/stelgkio/otoo/internal/adapter/web/view/extension/courier4u"
-	page "github.com/stelgkio/otoo/internal/adapter/web/view/extension/page"
 	nv "github.com/stelgkio/otoo/internal/adapter/web/view/extension/side_nav_list"
 	et "github.com/stelgkio/otoo/internal/adapter/web/view/extension/template"
 	acscourier "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/acs-courier"

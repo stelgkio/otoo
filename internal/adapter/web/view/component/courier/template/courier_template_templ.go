@@ -14,7 +14,7 @@ import (
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-func CourierTemplate(user *domain.User, projectName string, projectId string) templ.Component {
+func CourierTemplate(user *domain.User, projectName string, projectId string, extensions []*domain.ProjectExtension) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -44,7 +44,7 @@ func CourierTemplate(user *domain.User, projectName string, projectId string) te
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = o.VoucherOverview(projectId).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = o.VoucherOverview(projectId, extensions).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -58,7 +58,7 @@ func CourierTemplate(user *domain.User, projectName string, projectId string) te
 	})
 }
 
-func VoucherHtmlTemplate(user *domain.User, projectName string, projectId string) templ.Component {
+func VoucherHtmlTemplate(user *domain.User, projectName string, projectId string, extensions []*domain.ProjectExtension) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -88,7 +88,7 @@ func VoucherHtmlTemplate(user *domain.User, projectName string, projectId string
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = o.VoucherHtml(projectId).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = o.VoucherHtml(projectId, extensions).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -7,7 +7,6 @@ import (
 	"sync"
 
 	"github.com/labstack/echo/v4"
-	m "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/modal"
 	t "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/overview"
 	tmpl "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/template"
 	"github.com/stelgkio/otoo/internal/core/domain"
@@ -33,15 +32,18 @@ func (dh *DashboardHandler) CourierTable(ctx echo.Context) error {
 		ctx.Response().Header().Set("HX-Redirect", fmt.Sprintf("/extension/%s", projectID))
 		return ctx.String(http.StatusOK, "Redirecting...")
 	}
+	extensions := util.Filter(projectExtensions, func(e *domain.ProjectExtension) bool {
+		return e.Code == domain.AcsCode || e.Code == domain.Courier4u
+	})
 	if ctx.Request().Header.Get("HX-Request") == "true" {
-		return util.Render(ctx, t.VoucherOverview(projectID))
+		return util.Render(ctx, t.VoucherOverview(projectID, extensions))
 	}
 
 	project, user, projectID, err := GetProjectAndUser(ctx, dh)
 	if err != nil {
 		return err
 	}
-	return util.Render(ctx, tmpl.CourierTemplate(user, project.Name, projectID))
+	return util.Render(ctx, tmpl.CourierTemplate(user, project.Name, projectID, extensions))
 }
 
 // VoucherTableHTML returns the order dashboard
@@ -65,10 +67,15 @@ func (dh *DashboardHandler) VoucherTableHTML(ctx echo.Context) error {
 		ctx.Response().Header().Set("HX-Redirect", fmt.Sprintf("/extension/%s", projectID))
 		return ctx.String(http.StatusOK, "Redirecting...")
 	}
+	extensions := util.Filter(projectExtensions, func(e *domain.ProjectExtension) bool {
+		return e.Code == domain.AcsCode || e.Code == domain.Courier4u
+	})
+
 	if ctx.Request().Header.Get("HX-Request") == "true" {
-		return util.Render(ctx, t.VoucherHtml(projectID))
+
+		return util.Render(ctx, t.VoucherHtml(projectID, extensions))
 	}
-	return util.Render(ctx, tmpl.VoucherHtmlTemplate(user, project.Name, projectID))
+	return util.Render(ctx, tmpl.VoucherHtmlTemplate(user, project.Name, projectID, extensions))
 }
 
 // VoucherTable returns the order dashboard
@@ -194,12 +201,12 @@ func (dh *DashboardHandler) VoucherDetailModal(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	order, err := dh.orderSvc.GetOrderByID(voucher.ProjectID, voucher.OrderID)
+	_, err = dh.orderSvc.GetOrderByID(voucher.ProjectID, voucher.OrderID)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	return util.Render(ctx, m.VoucherDetails(voucher.ProjectID, voucher, order))
+	return nil
 
 }
 
@@ -217,6 +224,6 @@ func (dh *DashboardHandler) CreateVoucher(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	return util.Render(ctx, m.CreateVoucher())
+	return nil
 
 }

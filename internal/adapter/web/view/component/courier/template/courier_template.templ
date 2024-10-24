@@ -6,14 +6,14 @@ import (
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-templ CourierTemplate(user *domain.User, projectName string, projectId string) {
+templ CourierTemplate(user *domain.User, projectName string, projectId string, extensions []*domain.ProjectExtension) {
 	@t.DashboardTemplate(user, projectName, projectId) {
-		@o.VoucherOverview(projectId)
+		@o.VoucherOverview(projectId, extensions)
 	}
 }
 
-templ VoucherHtmlTemplate(user *domain.User, projectName string, projectId string) {
+templ VoucherHtmlTemplate(user *domain.User, projectName string, projectId string, extensions []*domain.ProjectExtension) {
 	@t.DashboardTemplate(user, projectName, projectId) {
-		@o.VoucherHtml(projectId)
+		@o.VoucherHtml(projectId, extensions)
 	}
 }

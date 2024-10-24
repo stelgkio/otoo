@@ -3,9 +3,10 @@ package views
 import (
 	"fmt"
 	c "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/table"
+	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-templ VoucherHtml(projectId string) {
+templ VoucherHtml(projectId string, extensions []*domain.ProjectExtension) {
 	<div class="mb-1 mb-xl-10">
 		<div class="col">
 			<div class="hstack gap-2 justify-content-start">
@@ -28,5 +29,5 @@ templ VoucherHtml(projectId string) {
 			</div>
 		</div>
 	</div>
-	@c.VoucherTable(projectId)
+	@c.VoucherTable(projectId, extensions)
 }

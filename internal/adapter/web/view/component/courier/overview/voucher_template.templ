@@ -5,8 +5,8 @@ import (
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-templ VoucherTemplate(user *domain.User, projectName string, projectId string) {
+templ VoucherTemplate(user *domain.User, projectName string, projectId string, extensions []*domain.ProjectExtension) {
 	@t.DashboardTemplate(user, projectName, projectId) {
-		@VoucherOverview(projectId)
+		@VoucherOverview(projectId, extensions)
 	}
 }

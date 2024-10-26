@@ -134,70 +134,72 @@ templ SettingsHeader(headerTitle string, active int, projectId string, projectEx
 					>Team</a>
 				</li>
 			}
-			if ConvertUserRole(user.Role) == "admin" {
-				for _, extension := range projectExtensions {
-					if (extension.Code == "asc-courier") {
-						if (active==7) {
-							<li class="nav-item ">
-								<a
-									href="javascript:void(0)"
-									hx-get={ fmt.Sprintf("/project/settings/asc-courier/%s", projectId) }
-									hx-target="#dashboard-content"
-									class="nav-link active"
-								>{ extension.Title }</a>
-							</li>
-						} else {
-							<li class="nav-item">
-								<a
-									href="javascript:void(0)"
-									hx-get={ fmt.Sprintf("/project/settings/asc-courier/%s", projectId) }
-									hx-target="#dashboard-content"
-									class="nav-link"
-								>{ extension.Title }</a>
-							</li>
-						}
+			for _, extension := range projectExtensions {
+				if (extension.Code == "asc-courier") {
+					if (active==7) {
+						<li class="nav-item ">
+							<a
+								href="javascript:void(0)"
+								hx-get={ fmt.Sprintf("/project/settings/asc-courier/%s", projectId) }
+								hx-target="#dashboard-content"
+								hx-push-url="true"
+								class="nav-link active"
+							>{ extension.Title }</a>
+						</li>
+					} else {
+						<li class="nav-item">
+							<a
+								href="javascript:void(0)"
+								hx-get={ fmt.Sprintf("/project/settings/asc-courier/%s", projectId) }
+								hx-target="#dashboard-content"
+								hx-push-url="true"
+								class="nav-link"
+							>{ extension.Title }</a>
+						</li>
 					}
-					if (extension.Code == "wallet-expences") {
-						if (active==8) {
-							<li class="nav-item ">
-								<a
-									href="javascript:void(0)"
-									hx-get={ fmt.Sprintf("/project/settings/wallet-expences/%s", projectId) }
-									hx-target="#dashboard-content"
-									class="nav-link active"
-								>{ extension.Title }</a>
-							</li>
-						} else {
-							<li class="nav-item">
-								<a
-									href="javascript:void(0)"
-									hx-get={ fmt.Sprintf("/project/settings/wallet-expences/%s", projectId) }
-									hx-target="#dashboard-content"
-									class="nav-link"
-								>{ extension.Title }</a>
-							</li>
-						}
+				}
+				if (extension.Code == "wallet-expences") {
+					if (active==8) {
+						<li class="nav-item ">
+							<a
+								href="javascript:void(0)"
+								hx-get={ fmt.Sprintf("/project/settings/wallet-expences/%s", projectId) }
+								hx-target="#dashboard-content"
+								class="nav-link active"
+							>{ extension.Title }</a>
+						</li>
+					} else {
+						<li class="nav-item">
+							<a
+								href="javascript:void(0)"
+								hx-get={ fmt.Sprintf("/project/settings/wallet-expences/%s", projectId) }
+								hx-target="#dashboard-content"
+								class="nav-link"
+							>{ extension.Title }</a>
+						</li>
 					}
-					if (extension.Code == "courier4u") {
-						if (active==9) {
-							<li class="nav-item ">
-								<a
-									href="javascript:void(0)"
-									hx-get={ fmt.Sprintf("/project/settings/courier4u/%s", projectId) }
-									hx-target="#dashboard-content"
-									class="nav-link active"
-								>{ extension.Title }</a>
-							</li>
-						} else {
-							<li class="nav-item">
-								<a
-									href="javascript:void(0)"
-									hx-get={ fmt.Sprintf("/project/settings/courier4u/%s", projectId) }
-									hx-target="#dashboard-content"
-									class="nav-link"
-								>{ extension.Title }</a>
-							</li>
-						}
+				}
+				if (extension.Code == "courier4u") {
+					if (active==9) {
+						<li class="nav-item ">
+							<a
+								href="javascript:void(0)"
+								hx-get={ fmt.Sprintf("/project/settings/courier4u/%s", projectId) }
+								hx-target="#dashboard-content"
+								hx-push-url="true"
+								class="nav-link active"
+							>{ extension.Title }</a>
+						</li>
+					} else {
+						<li class="nav-item">
+							<a
+								href="javascript:void(0)"
+								hx-get={ fmt.Sprintf("/project/settings/courier4u/%s", projectId) }
+								hx-target="#dashboard-content"
+								hx-push-url="true"
+								class="nav-link"
+							>{ extension.Title }</a>
+						</li>
 					}
 				}
 			}

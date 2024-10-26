@@ -34,7 +34,7 @@ type OrderRecord struct {
 	ID           primitive.ObjectID `bson:"_id,omitempty"`
 	ProjectID    string             `bson:"projectId"`
 	Event        string             `bson:"event"`
-	Error        string             `bson:"error,omitempty"`
+	Error        string             `bson:"error"`
 	Timestamp    time.Time          `bson:"timestamp,omitempty"`
 	OrderID      int64              `bson:"orderId,omitempty"`
 	Order        woocommerce.Order  `bson:"order,omitempty"`

@@ -93,6 +93,8 @@ type addmemberRequest struct {
 	Name                 string `form:"name" validate:"required"`
 	LastName             string `form:"last_name" validate:"required"`
 	ReceiveNotification  bool   `form:"receive_notification"`
+	UserExist            bool   `form:"user_exist"`
+	Role                 string `form:"role"`
 }
 
 // Validate validates the request body
@@ -100,25 +102,34 @@ func (p *addmemberRequest) Validate() map[string](string) {
 
 	errors := make(map[string]string)
 
-	if p.Name == "" {
-		errors["name"] = "Name is required"
-	}
-
-	if p.LastName == "" {
-		errors["lastname"] = "LastName is required"
-	}
 	if p.Email == "" {
 		errors["email"] = "Email is required"
 	}
-	if p.Password == "" {
-		errors["password"] = "Password key is required"
-	}
-	if p.ConfirmationPassword == "" {
-		errors["confirmation_password"] = "Confirmation Password is required"
-	}
-	// Check if Password and Confirmation Password match
-	if p.Password != p.ConfirmationPassword {
-		errors["confirmation_password"] = "Passwords do not match"
+	if p.UserExist == false {
+		if p.Name == "" {
+			errors["name"] = "Name is required"
+		}
+
+		if p.LastName == "" {
+			errors["lastname"] = "LastName is required"
+		}
+		if p.Password == "" {
+			errors["password"] = "Password key is required"
+		}
+		if len(p.Password) < 8 {
+			errors["password"] = "Password must be at least 8 characters long"
+		}
+		if p.Role == "" {
+			errors["role"] = "Role is required"
+		}
+
+		if p.ConfirmationPassword == "" {
+			errors["confirmation_password"] = "Confirmation Password is required"
+		}
+		// Check if Password and Confirmation Password match
+		if p.Password != p.ConfirmationPassword {
+			errors["confirmation_password"] = "Passwords do not match"
+		}
 	}
 
 	return errors
@@ -187,6 +198,14 @@ func (ah *AuthHandler) Register(ctx echo.Context) error {
 		// Validation failed, handle the error
 		errors := err.(validator.ValidationErrors)
 		return r.Render(ctx, reg.Register(0, errors, nil))
+	}
+	chechUser, err := ah.urs.GetUserByEmail(ctx, req.Email)
+	if err != nil {
+		slog.Error("error get user by email:", "StatusBadRequest", err)
+		return r.Render(ctx, reg.Register(http.StatusBadRequest, nil, fmt.Errorf("Somethin when wrong try again later")))
+	}
+	if chechUser != nil {
+		return r.Render(ctx, reg.Register(http.StatusBadRequest, nil, nil))
 	}
 
 	user, err := domain.NewUser(req.Email, req.Password, req.Name, req.LastName)
@@ -298,11 +317,33 @@ func (ah *AuthHandler) UserList(ctx echo.Context) error {
 	return r.Render(ctx, us.UserList(users, projectID))
 }
 
+func (ah *AuthHandler) CheckEmail(ctx echo.Context) error {
+	req := new(addmemberRequest)
+	if err := ctx.Bind(req); err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{
+			"error": errors.New("Oups something when wrong").Error(),
+		})
+
+	}
+	users, err := ah.urs.GetUserByEmail(ctx, req.Email)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{
+			"error": errors.New("Oups something when wrong").Error(),
+		})
+	}
+	if users != nil {
+		return r.Render(ctx, us.UserExist(true))
+	}
+	return r.Render(ctx, us.UserExist(false))
+}
+
 func (ah *AuthHandler) CreateMemberModal(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 
 	return r.Render(ctx, us.CreateMeember(projectID, nil))
 }
+
+// AddMember @Router			/projects/{projectId}/members [post]
 func (ah *AuthHandler) AddMember(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 	req := new(addmemberRequest)
@@ -339,7 +380,7 @@ func (ah *AuthHandler) AddMember(ctx echo.Context) error {
 		return err
 	}
 
-	newUser, err := domain.NewClientUser(req.Email, req.Password, req.Name, req.LastName, domain.ClientUser, req.ReceiveNotification)
+	newUser, err := domain.NewClientUser(req.Email, req.Password, req.Name, req.LastName, req.Role, req.ReceiveNotification)
 	if err != nil {
 		slog.Error("error new user:", "StatusBadRequest", err)
 		return ctx.JSON(http.StatusBadRequest, map[string]string{
@@ -365,17 +406,18 @@ func (ah *AuthHandler) AddMember(ctx echo.Context) error {
 		users, _ := ah.urs.FindUsersByProjectId(ctx, project.Id)
 		if !domain.ContainsUserID(users, userExist.Id) {
 			err = ah.protouserSvc.AddUserToProject(ctx, userExist.Id, project.Id)
-		}
+		} else {
 
-		slog.Error("error create new user:", "StatusBadRequest", err)
-		return ctx.JSON(http.StatusBadRequest, map[string]string{
-			"error": errors.New("error creating new user").Error(),
-		})
+			slog.Error("error create new user:", "StatusBadRequest", err)
+			return ctx.JSON(http.StatusBadRequest, map[string]string{
+				"error": errors.New("user already exist to this project").Error(),
+			})
+		}
 
 	}
 
 	if ctx.Request().Header.Get("HX-Request") == "true" {
-		return r.Render(ctx, tm.Team(project, projectExtensions, nil))
+		return r.Render(ctx, tm.Team(project, projectExtensions, user))
 	}
 	return r.Render(ctx, st.TeamTemplate(user, project.Name, projectID, project, projectExtensions))
 }
@@ -426,7 +468,7 @@ func (ah *AuthHandler) RemoveMember(ctx echo.Context) error {
 	}
 
 	if ctx.Request().Header.Get("HX-Request") == "true" {
-		return r.Render(ctx, tm.Team(project, projectExtensions, nil))
+		return r.Render(ctx, tm.Team(project, projectExtensions, user))
 	}
 	return r.Render(ctx, st.TeamTemplate(user, project.Name, projectID, project, projectExtensions))
 }

@@ -74,7 +74,8 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 		woocommerceProductService,
 		woocommerceWebhookService,
 		extensionService,
-		voucherService)
+		voucherService,
+		userService)
 
 	//Project
 	projectService := service.NewProjectService(projectRepo, woocommerceWebhookService, woocommerceProductService, extensionService, userService, usersprojectsService)

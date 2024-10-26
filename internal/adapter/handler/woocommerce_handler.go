@@ -14,6 +14,7 @@ import (
 	"github.com/labstack/echo/v4"
 	wp "github.com/stelgkio/otoo/internal/adapter/web/view/project/progress/webhooks"
 	pw "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/webhooks"
+	"github.com/stelgkio/otoo/internal/core/auth"
 	"github.com/stelgkio/otoo/internal/core/domain"
 	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/port"
@@ -32,11 +33,19 @@ type WooCommerceHandler struct {
 	ws           port.WoocommerceWebhookService
 	extensionSvc port.ExtensionService
 	voucherSvc   port.VoucherService
+	userSvc      port.UserService
 }
 
 // NewWooCommerceHandler creates a new instance of WooCommerceHandler
 // Injects repository, project repo, customer service, and product service
-func NewWooCommerceHandler(repo port.WoocommerceRepository, projrepo port.ProjectRepository, ctm port.CustomerService, proj port.ProductService, ws port.WoocommerceWebhookService, extensionSvc port.ExtensionService, voucherSvc port.VoucherService) *WooCommerceHandler {
+func NewWooCommerceHandler(repo port.WoocommerceRepository,
+	projrepo port.ProjectRepository,
+	ctm port.CustomerService,
+	proj port.ProductService,
+	ws port.WoocommerceWebhookService,
+	extensionSvc port.ExtensionService,
+	voucherSvc port.VoucherService,
+	userSvc port.UserService) *WooCommerceHandler {
 	return &WooCommerceHandler{
 		repo,
 		projrepo,
@@ -45,6 +54,7 @@ func NewWooCommerceHandler(repo port.WoocommerceRepository, projrepo port.Projec
 		ws,
 		extensionSvc,
 		voucherSvc,
+		userSvc,
 	}
 }
 
@@ -703,7 +713,14 @@ func (w WooCommerceHandler) DeleteAllWebhooks(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions, nil))
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := w.userSvc.GetUserById(ctx, userID)
+	if err != nil {
+	}
+	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions, user))
 }
 
 // WebhookBulkAction handles bulk actions for webhooks
@@ -724,7 +741,13 @@ func (w WooCommerceHandler) WebhookCreateAll(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-
-	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions, nil))
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := w.userSvc.GetUserById(ctx, userID)
+	if err != nil {
+	}
+	return r.Render(ctx, pw.SettingsWebhooks(project, projectExtensions, user))
 
 }

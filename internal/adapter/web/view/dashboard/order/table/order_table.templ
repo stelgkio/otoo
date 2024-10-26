@@ -212,13 +212,15 @@ templ OrderTable(projectId string) {
 						<template x-for="order in paginatedOrders" :key="order.id">
 							<tr>
 								<td>
-									<div class="form-check">
-										<input
-											class="form-check-input"
-											type="checkbox"
-											:value="order.orderId"
-											x-model="selectedOrders"
-										/>
+									<div class="text-base">
+										<div class="form-check">
+											<input
+												class="form-check-input"
+												type="checkbox"
+												:value="order.orderId"
+												x-model="selectedOrders"
+											/>
+										</div>
 									</div>
 								</td>
 								<td x-text="'#' + order.orderId"></td>
@@ -236,7 +238,7 @@ templ OrderTable(projectId string) {
 						</template>
 						<template x-for="i in 10 - paginatedOrders.length" :key="'empty' + i">
 							<tr>
-								<td colspan="5" class="py-5"></td>
+								<td colspan="7" class="py-5"></td>
 							</tr>
 						</template>
 					</tbody>

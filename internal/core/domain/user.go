@@ -22,7 +22,7 @@ type User struct {
 	tableName struct{} `pg:"user,alias:user"`
 	Base
 	Name               string `json:"name" pg:"name,notnull"`
-	Email              string `json:"email" pg:"email,unique,notnull"`
+	Email              string `json:"email" pg:"email,notnull"`
 	Password           string `json:"password" pg:"password,notnull"`
 	Role               UserRole
 	ValidatedAt        time.Time
@@ -55,7 +55,7 @@ func NewUser(email string, password string, name string, lastName string) (*User
 }
 
 // NewClientUser creates a instance of user with hashed password
-func NewClientUser(email string, password string, name string, lastName string, role UserRole, reseveNotification bool) (*User, error) {
+func NewClientUser(email string, password string, name string, lastName string, role string, reseveNotification bool) (*User, error) {
 	var err error
 	u := new(User)
 	var hash util.Hash
@@ -65,7 +65,7 @@ func NewClientUser(email string, password string, name string, lastName string, 
 	}
 
 	now := time.Now().UTC()
-	u.Role = role
+	u.Role = ReturnUserRoleFromWeb(role)
 	u.Email = email
 	u.CreatedAt = now
 	u.UpdatedAt = now
@@ -88,6 +88,21 @@ func (u *User) AddProject(projectID uuid.UUID) {
 }
 func (pt UserRole) String() string {
 	return string(pt)
+}
+
+func ReturnUserRoleFromWeb(role string) UserRole {
+	switch role {
+	case "Admin":
+		return Client
+	case "User":
+		return ClientUser
+	case "client":
+		return Client
+	case "client_user":
+		return ClientUser
+	default:
+		return ClientUser
+	}
 }
 
 // ContainsUserID Function to check if any ProjectExtension contains the given ExtensionID

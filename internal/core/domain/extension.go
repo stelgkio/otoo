@@ -96,6 +96,7 @@ type AcsCourierExtension struct {
 	UserPassword    string `json:"user_password" validate:"required" bson:"user_password,omitempty" form:"user_password"`
 	AcsAPIKey       string `json:"acs_api_key" bson:"acs_api_key" form:"acs_api_key"`
 	BillingCode     string `json:"billing_code" bson:"billing_code" form:"billing_code"`
+	PrinterType     string `json:"printer_type" bson:"printer_type" form:"printer_type"`
 }
 
 // Validate validates the request body
@@ -138,6 +139,7 @@ type Courier4uExtension struct {
 	DeletedAt     time.Time `json:"deleted_at"  bson:"deleted_at,omitempty"`
 	IsActive      bool      `json:"is_active" bson:"is_active,omitempty"`
 	CourierAPIKey string    `json:"courier_api_key" bson:"acs_api_key" form:"courier_api_key"`
+	PrinterType   string    `json:"printer_type" bson:"printer_type" form:"printer_type"`
 }
 
 // Validate validates the request body

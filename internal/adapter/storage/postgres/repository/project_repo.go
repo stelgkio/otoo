@@ -88,14 +88,15 @@ func (repo *ProjectRepository) SearchByDomain(ctx echo.Context, filters *domain.
 }
 
 // DeleteProjectsByUserID is doing a soft delete to this projects
-func (repo *ProjectRepository) DeleteProjectsByUserID(ctx echo.Context, userID uuid.UUID) error {
+func (repo *ProjectRepository) DeleteProjectsByID(ctx echo.Context, projectID uuid.UUID) error {
 	project := &domain.Project{}
 	res, err := repo.db.Model(project).
 		Set("is_active = ?", false).
 		Set("deleted_at = ?", time.Now().UTC()).
-		Where("user_id = ?", userID).
+		Where("id = ?", projectID).
 		//Returning("*"). // This ensures the updated project is returned
 		Update()
+
 	if res.RowsAffected() == 0 {
 		return nil
 	}

@@ -17,7 +17,9 @@ templ Team(project *domain.Project, projectExtensions []*domain.ProjectExtension
 				<div class="d-flex align-items-end justify-content-between">
 					<div>
 						<h3 class="fw-semibold mb-1">Your Team</h3>
-						<p class="text-sm text-muted">The new user can not add new extesion to project.</p>
+						<p class="text-sm text-muted">
+							The new user can not add new extesion to project.
+						</p>
 					</div>
 					<div>
 						<button type="button" class="btn btn-neutral btn-sm" data-bs-toggle="modal" data-bs-target="#modalShare">
@@ -59,37 +61,60 @@ templ Team(project *domain.Project, projectExtensions []*domain.ProjectExtension
 							</div>
 							<div class="modal-body">
 								<div>
-									<label class="form-label">Name</label>
-									<input class="form-control" name="name" placeholder="Name" required type="text"/>
-									<div class="invalid-feedback">Please provide a name.</div>
-								</div>
-								<div>
-									<label class="form-label">Last Name</label>
-									<input class="form-control" name="last_name" placeholder="Last Name" required type="text"/>
-									<div class="invalid-feedback">Please provide a last name.</div>
-								</div>
-								<div>
 									<label class="form-label">Email </label>
-									<input class="form-control" name="email" placeholder="Email address" required type="email"/>
+									<input
+										class="form-control"
+										name="email"
+										placeholder="Email address"
+										required
+										type="email"
+										hx-trigger="keyup changed delay:250ms"
+										hx-post="/user/check-email"
+										hx-target="#user-exist"
+									/>
 								</div>
-								<div>
-									<label class="form-label">Password</label>
-									<div class="password-container">
-										<input type="password" class="form-control" name="password" required placeholder="Password" id="password"/>
-										<i class="fas fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
+								<div id="user-exist">
+									<div>
+										<label class="form-label">Name</label>
+										<input class="form-control" name="name" placeholder="Name" required type="text"/>
+										<div class="invalid-feedback">Please provide a name.</div>
 									</div>
-								</div>
-								<div>
-									<label class="form-label">Confirmation Password</label>
-									<div class="password-container">
-										<input type="password" class="form-control" name="confirmationpassword" required placeholder="Confirmation Password" id="confirm-password"/>
-										<i class="fas fa-eye toggle-password" onclick="togglePassword('confirm-password', this)"></i>
+									<div>
+										<label class="form-label">Last Name</label>
+										<input class="form-control" name="last_name" placeholder="Last Name" required type="text"/>
+										<div class="invalid-feedback">Please provide a last name.</div>
+									</div>
+									<input class="form-check-input" type="checkbox" name="user_exist" value="false" checked style="display: none;"/>
+									<div>
+										<label class="form-label">Password</label>
+										<div class="password-container">
+											<input type="password" class="form-control" name="password" required placeholder="Password" id="password"/>
+											<i class="fas fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
+										</div>
+									</div>
+									<div>
+										<label class="form-label">Confirmation Password</label>
+										<div class="password-container">
+											<input type="password" class="form-control" name="confirmationpassword" required placeholder="Confirmation Password" id="confirm-password"/>
+											<i class="fas fa-eye toggle-password" onclick="togglePassword('confirm-password', this)"></i>
+										</div>
+									</div>
+									<div>
+										<div class="col-md-2">
+											<label class="form-label mb-0">Role</label>
+										</div>
+										<div class="col-md-8 col-xl-5">
+											<label class="visually-hidden">Category</label>
+											<select name="role" class="form-select">
+												<option value="client_user">User</option>
+												<option value="client">Admin</option>
+											</select>
+										</div>
 									</div>
 								</div>
 								<div>
 									<div class="form-check form-switch pt-5">
 										<label class="form-check-label" for="flexSwitchCheckChecked">Receive Notification</label>
-										<input type="hidden" name="receive_notification" value="false"/>
 										<input class="form-check-input" type="checkbox" name="receive_notification" value="true" checked/>
 									</div>
 								</div>

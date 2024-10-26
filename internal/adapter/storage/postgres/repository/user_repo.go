@@ -120,11 +120,12 @@ func (repo *UserRepository) FindUsersByProjectId(ctx echo.Context, projectID uui
 		SELECT u.*
 			FROM "user" u 
 			Left JOIN "user_projects" up  ON u.id = up.user_id
-			where up.project_id = ?::uuid;
+			where up.project_id = ?::uuid 
+			AND u.is_active = ?;
 		`
 
 	// Execute the raw SQL query
-	_, err := repo.db.Query(&users, query, projectID)
+	_, err := repo.db.Query(&users, query, projectID, true)
 	if err != nil {
 		return nil, err
 	}

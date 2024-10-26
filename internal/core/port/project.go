@@ -21,7 +21,7 @@ type ProjectRepository interface {
 	UpdateProject(ctx echo.Context, user *domain.Project) (*domain.Project, error)
 	// // DeleteUser deletes a user
 	// DeleteUser(ctx context.Context, id uint64) error
-	DeleteProjectsByUserID(ctx echo.Context, userID uuid.UUID) error
+	DeleteProjectsByID(ctx echo.Context, userID uuid.UUID) error
 	// 	GetAllProjects() ([]*domain.Project, error)
 	GetAllProjects() ([]*domain.Project, error)
 }
@@ -39,7 +39,7 @@ type ProjectService interface {
 	UpdateProject(ctx echo.Context, user *domain.Project) (*domain.Project, error)
 	// // DeleteUser deletes a user
 	// DeleteUser(ctx context.Context, id uint64) error
-	SoftDeleteProjects(ctx echo.Context, userID uuid.UUID) error
+	SoftDeleteProjects(ctx echo.Context, projectID uuid.UUID) error
 	// GetAllProjects returns all projects
 	GetAllProjects() ([]*domain.Project, error)
 }

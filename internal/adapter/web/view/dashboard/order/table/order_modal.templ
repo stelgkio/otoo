@@ -5,8 +5,8 @@ templ OrderModal() {
 		<div class="modal-dialog modal-xl modal-dialog-centered ">
 			<div class="modal-content shadow-lg border-0 rounded-2">
 				<div class="modal-header border-0 pb-0 pt-4 px-4">
-					<h5 class="modal-title text-primary fw-bold" id="orderDetailsLabel">
-						<i class="bi bi-receipt-cutoff me-2"></i>Order Details
+					<h5 class="modal-title  fw-bold" id="orderDetailsLabel">
+						<i class="bi bi-receipt-cutoff me-2"></i>Order
 					</h5>
 					<button type="button" class="btn-close" aria-label="Close" @click="closeModal"></button>
 				</div>
@@ -131,56 +131,64 @@ templ OrderModal() {
 					</div>
 					<!-- Order Details Section -->
 					<div class="mt-4">
-						<h6 class="text-muted fw-bold mb-3">
-							<i class="bi bi-info-circle me-2 text-muted"></i>Order Details
-						</h6>
 						<!-- Applying card style to Order Details -->
-						<div class="card shadow-sm rounded-2 p-3">
-							<div class="row g-3">
-								<div class="col-md-4">
-									<span class="d-block text-muted small">Order ID</span>
-									<strong x-text="modalOrder.orderId"></strong>
-								</div>
-								<div class="col-md-4">
-									<span class="d-block text-muted small">Total Amount</span>
-									<strong x-text="modalOrder.total_amount + ' ' + modalOrder.currency_symbol"></strong>
-								</div>
-								<div class="col-md-4">
-									<span class="d-block text-muted small">Status</span>
-									<span :class="badgeClass(modalOrder.status)" x-text="modalOrder.status"></span>
-								</div>
+						<div class="card shadow-sm rounded-2 ">
+							<div class="card-header">
+								<h6 class="text-muted fw-bold mb-0">
+									<i class="bi bi-truck me-2"></i>Order Details
+								</h6>
 							</div>
-							<div class="mt-3">
-								<span class="d-block text-muted small">Payment Method</span>
-								<strong x-text="modalOrder.payment_method"></strong>
+							<div class="card-body">
+								<div class="row g-3">
+									<div class="col-md-4">
+										<span class="d-block text-muted small">Order ID</span>
+										<strong x-text="modalOrder.orderId"></strong>
+									</div>
+									<div class="col-md-4">
+										<span class="d-block text-muted small">Total Amount</span>
+										<strong x-text="modalOrder.total_amount + ' ' + modalOrder.currency_symbol"></strong>
+									</div>
+									<div class="col-md-4">
+										<span class="d-block text-muted small">Status</span>
+										<span :class="badgeClass(modalOrder.status)" x-text="modalOrder.status"></span>
+									</div>
+								</div>
+								<div class="mt-3">
+									<span class="d-block text-muted small">Payment Method</span>
+									<strong x-text="modalOrder.payment_method"></strong>
+								</div>
 							</div>
 						</div>
 						<!-- Products List -->
 						<div class="mt-4">
-							<h6 class="text-muted fw-bold mb-3">
-								<i class="bi bi-box-seam me-2 text-muted"></i>Products
-							</h6>
 							<!-- Applying card style to Products List -->
-							<div class="card shadow-sm rounded-2 p-3">
-								<div class="table-responsive" style="max-height: 200px;">
-									<table class="table table-sm table-hover align-middle">
-										<thead class="body-secondary">
-											<tr>
-												<th class="text-muted fw-bold small">Product</th>
-												<th class="text-muted fw-bold text-center small">Qty</th>
-												<th class="text-muted fw-bold text-end small">Price</th>
-											</tr>
-										</thead>
-										<tbody>
-											<template x-for="product in modalOrder.products" :key="product.id">
+							<div class="card shadow-sm rounded-2">
+								<div class="card-header">
+									<h6 class="text-muted fw-bold mb-0">
+										<i class="bi bi-truck me-2"></i>Products
+									</h6>
+								</div>
+								<div class="card-body">
+									<div class="table-responsive" style="max-height: 200px;">
+										<table class="table table-sm table-hover align-middle">
+											<thead class="body-secondary">
 												<tr>
-													<td x-text="product.name"></td>
-													<td x-text="product.quantity" class="text-center"></td>
-													<td x-text="product.price + ' ' + modalOrder.currency_symbol" class="text-end"></td>
+													<th class="text-muted fw-bold small">Product</th>
+													<th class="text-muted fw-bold text-center small">Qty</th>
+													<th class="text-muted fw-bold text-end small">Price</th>
 												</tr>
-											</template>
-										</tbody>
-									</table>
+											</thead>
+											<tbody>
+												<template x-for="product in modalOrder.products" :key="product.id">
+													<tr>
+														<td x-text="product.name"></td>
+														<td x-text="product.quantity" class="text-center"></td>
+														<td x-text="product.price + ' ' + modalOrder.currency_symbol" class="text-end"></td>
+													</tr>
+												</template>
+											</tbody>
+										</table>
+									</div>
 								</div>
 							</div>
 						</div>

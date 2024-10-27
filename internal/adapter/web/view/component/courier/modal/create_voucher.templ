@@ -3,7 +3,16 @@ package views
 import "github.com/stelgkio/otoo/internal/core/domain"
 
 templ CreateVoucher(extensions []*domain.ProjectExtension) {
-	<div class="offcanvas offcanvas-end w-100 w-md-75 w-lg-50" data-bs-backdrop="true" tabindex="-1" id="orderProcessingOffcanvas" aria-labelledby="orderProcessingOffcanvasLabel" :class="{ 'show': showOffcanvas }" :style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }" x-data="{ open: false }">
+	<div
+		class="offcanvas offcanvas-end w-100 w-md-75 w-lg-50"
+		data-bs-backdrop="true"
+		tabindex="-1"
+		id="orderProcessingOffcanvas"
+		x-data="initOrderForm()"
+		:class="{ 'show': showOffcanvas }"
+		:style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }"
+		@show-offcanvas.window="openOffcanvas($event.detail.voucher)"
+	>
 		<div class="offcanvas-header">
 			<h5 class="offcanvas-title" id="orderProcessingOffcanvasLabel" data-i18n="offcanvas-order_processing">
 				<i class="bi bi-pencil-square"></i>Order Processing #<span x-text="modalOrder.orderId"></span>
@@ -14,12 +23,28 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 			<!-- Tabs -->
 			<ul class="nav nav-tabs" id="orderTabs" role="tablist">
 				<li class="nav-item" role="presentation">
-					<button class="nav-link active" data-i18n="off-canvas-customer-tab" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer-info" type="button" role="tab" aria-controls="customer-info" aria-selected="true">
+					<button
+						class="nav-link active"
+						id="customer-tab"
+						data-bs-toggle="tab"
+						data-bs-target="#customer-info"
+						type="button"
+						role="tab"
+						@click="setActiveTab('customer')"
+					>
 						<i class="bi bi-person"></i> Customer
 					</button>
 				</li>
 				<li class="nav-item" role="presentation">
-					<button class="nav-link" data-i18n="off-canvas-shipping-tab" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping-info" type="button" role="tab" aria-controls="shipping-info" aria-selected="false">
+					<button
+						class="nav-link"
+						id="shipping-tab"
+						data-bs-toggle="tab"
+						data-bs-target="#shipping-info"
+						type="button"
+						role="tab"
+						@click="setActiveTab('shipping')"
+					>
 						<i class="bi bi-truck"></i> Shipping
 					</button>
 				</li>
@@ -27,9 +52,8 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 			<!-- Tab Content -->
 			<div class="tab-content flex-grow-1 overflow-auto" id="orderTabContent">
 				<!-- Customer Information Tab -->
-				<div class="tab-pane fade show active" id="customer-info" role="tabpanel" aria-labelledby="customer-tab">
+				<div class="tab-pane fade show active" id="customer-info" role="tabpanel">
 					<div class="p-3">
-						<!-- Section for Customer Details -->
 						<div class="card mb-3 shadow-sm">
 							<div class="card-header">
 								<h6 class="mb-0" data-i18n="off-canvas-customer-info-header">
@@ -38,38 +62,101 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 							</div>
 							<div class="card-body">
 								<div class="row g-2">
+									<!-- First Name -->
 									<div class="col-md-6">
-										<label for="customerName" class="form-label small" data-i18n="off-canvas-customer-first_name">First Name</label>
-										<input type="text" class="form-control form-control-sm" id="customerName" x-model="modalOrder.billing.first_name" required/>
+										<label for="customerName" class="form-label small">First Name</label>
+										<input
+											type="text"
+											class="form-control form-control-sm"
+											:class="{ 'is-invalid': errors['billing.first_name'] }"
+											id="customerName"
+											x-model="modalOrder.billing.first_name"
+											@blur="validateField('billing.first_name')"
+										/>
+										<div class="invalid-feedback" x-text="errors['billing.first_name']"></div>
 									</div>
+									<!-- Last Name -->
 									<div class="col-md-6">
-										<label for="customerSurname" class="form-label small" data-i18n="off-canvas-customer-last_name">Last Name</label>
-										<input type="text" class="form-control form-control-sm" id="customerSurname" x-model="modalOrder.billing.last_name" required/>
+										<label for="customerSurname" class="form-label small">Last Name</label>
+										<input
+											type="text"
+											class="form-control form-control-sm"
+											:class="{ 'is-invalid': errors['billing.last_name'] }"
+											id="customerSurname"
+											x-model="modalOrder.billing.last_name"
+											@blur="validateField('billing.last_name')"
+										/>
+										<div class="invalid-feedback" x-text="errors['billing.last_name']"></div>
 									</div>
+									<!-- Email -->
 									<div class="col-md-6">
-										<label for="customerEmail" class="form-label small" data-i18n="off-canvas-customer-email">Email</label>
-										<input type="email" class="form-control form-control-sm" id="customerEmail" x-model="modalOrder.billing.email" required/>
+										<label for="customerEmail" class="form-label small">Email</label>
+										<input
+											type="email"
+											class="form-control form-control-sm"
+											:class="{ 'is-invalid': errors['billing.email'] }"
+											id="customerEmail"
+											x-model="modalOrder.billing.email"
+											@blur="validateField('billing.email')"
+										/>
+										<div class="invalid-feedback" x-text="errors['billing.email']"></div>
 									</div>
+									<!-- Phone -->
 									<div class="col-md-6">
-										<label for="customerPhone" class="form-label small" data-i18n="off-canvas-customer-phone">Phone</label>
-										<input type="tel" class="form-control form-control-sm" id="customerPhone" x-model="modalOrder.billing.phone" required/>
+										<label for="customerPhone" class="form-label small">Phone</label>
+										<input
+											type="tel"
+											class="form-control form-control-sm"
+											:class="{ 'is-invalid': errors['billing.phone'] }"
+											id="customerPhone"
+											x-model="modalOrder.billing.phone"
+											@blur="validateField('billing.phone')"
+										/>
+										<div class="invalid-feedback" x-text="errors['billing.phone']"></div>
 									</div>
+									<!-- Address -->
 									<div class="col-12">
-										<label for="customerAddress" class="form-label small" data-i18n="off-canvas-customer-address">Address</label>
+										<label for="customerAddress" class="form-label small">Address</label>
 										<div class="input-group input-group-sm">
 											<span class="input-group-text">
 												<i class="bi bi-geo-alt"></i>
 											</span>
-											<input type="text" class="form-control form-control-sm" id="customerAddress" x-model="modalOrder.billing.address_1" required/>
+											<input
+												type="text"
+												class="form-control form-control-sm"
+												:class="{ 'is-invalid': errors['billing.address_1'] }"
+												id="customerAddress"
+												x-model="modalOrder.billing.address_1"
+												@blur="validateField('billing.address_1')"
+											/>
+											<div class="invalid-feedback" x-text="errors['billing.address_1']"></div>
 										</div>
 									</div>
+									<!-- City -->
 									<div class="col-md-6">
-										<label for="customerCity" class="form-label small" data-i18n="off-canvas-customer-city">City</label>
-										<input type="text" class="form-control form-control-sm" id="customerCity" x-model="modalOrder.billing.city" required/>
+										<label for="customerCity" class="form-label small">City</label>
+										<input
+											type="text"
+											class="form-control form-control-sm"
+											:class="{ 'is-invalid': errors['billing.city'] }"
+											id="customerCity"
+											x-model="modalOrder.billing.city"
+											@blur="validateField('billing.city')"
+										/>
+										<div class="invalid-feedback" x-text="errors['billing.city']"></div>
 									</div>
+									<!-- Postal Code -->
 									<div class="col-md-6">
-										<label for="customerPostalCode" class="form-label small" data-i18n="off-canvas-customer-postal">Postal Code</label>
-										<input type="text" class="form-control form-control-sm" id="customerPostalCode" x-model="modalOrder.billing.postcode" required/>
+										<label for="customerPostalCode" class="form-label small">Postal Code</label>
+										<input
+											type="text"
+											class="form-control form-control-sm"
+											:class="{ 'is-invalid': errors['billing.postcode'] }"
+											id="customerPostalCode"
+											x-model="modalOrder.billing.postcode"
+											@blur="validateField('billing.postcode')"
+										/>
+										<div class="invalid-feedback" x-text="errors['billing.postcode']"></div>
 									</div>
 								</div>
 							</div>
@@ -118,7 +205,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 					</div>
 				</div>
 				<!-- Shipping Information Tab -->
-				<div class="tab-pane fade" id="shipping-info" role="tabpanel" aria-labelledby="shipping-tab" x-data="{ selectedCourier: 'acs' }">
+				<div class="tab-pane fade" id="shipping-info" role="tabpanel" aria-labelledby="shipping-tab">
 					<div class="p-3">
 						<!-- Section for Shipping Information -->
 						<div class="card mb-3 shadow-sm">
@@ -130,12 +217,20 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 							<div class="card-body">
 								<div class="mb-3">
 									<label for="shippingCompany" class="form-label small" data-i18n="off-canvas-shipping-company">Shipping Company</label>
-									<select class="form-select form-select-sm" id="shippingCompany" x-model="selectedCourier" required>
-										<option selected value="" data-i18n="off-canvas-shipping-provider">Select Courier Provider</option>
+									<select
+										class="form-select form-select-sm"
+										id="shippingCompany"
+										x-model="selectedCourier"
+										:class="{ 'is-invalid': errors['shipping.courier'] }"
+										@change="validateField('shipping.courier')"
+										required
+									>
+										<option value="" data-i18n="off-canvas-shipping-provider">Select Courier Provider</option>
 										for _, extension := range extensions {
 											<option value={ extension.Code }>{ extension.Title }</option>
 										}
 									</select>
+									<div class="invalid-feedback" x-text="errors['shipping.courier']"></div>
 								</div>
 								<div class="mb-3">
 									<label for="orderId" class="form-label small" data-i18n="off-canvas-shipping-order-number">Order Number</label>
@@ -143,7 +238,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 										<span class="input-group-text">
 											<i class="bi bi-upc-scan"></i>
 										</span>
-										<input type="text" class="form-control form-control-sm" id="orderId" x-model="modalOrder.orderId" required readonly/>
+										<input type="text" class="form-control form-control-sm" id="orderId" x-model="modalOrder.orderId" readonly/>
 									</div>
 								</div>
 								<div class="mb-3">
@@ -152,7 +247,18 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 										<span class="input-group-text">
 											<i class="bi bi-body-text"></i>
 										</span>
-										<input type="number" class="form-control form-control-sm" id="parcelWeight" placeholder="0.5" step="0.5" required/>
+										<input
+											type="number"
+											class="form-control form-control-sm"
+											id="parcelWeight"
+											placeholder="0.5"
+											step="0.5"
+											x-model="modalOrder.shipping.weight"
+											:class="{ 'is-invalid': errors['shipping.weight'] }"
+											@blur="validateField('shipping.weight')"
+											required
+										/>
+										<div class="invalid-feedback" x-text="errors['shipping.weight']"></div>
 									</div>
 								</div>
 							</div>
@@ -166,19 +272,47 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 							</div>
 							<div class="card-body">
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="deliveryOption" id="standardDelivery"/>
-									<label class="form-check-label" for="standardDelivery" data-i18n="off-canvas-acs-standard-delivery" checked>Standard Delivery</label>
+									<input
+										class="form-check-input"
+										type="radio"
+										name="deliveryOption"
+										id="standardDeliveryACS"
+										value="standard"
+										x-model="modalOrder.shipping.deliveryOption"
+									/>
+									<label class="form-check-label" for="standardDelivery" data-i18n="off-canvas-acs-standard-delivery">Standard Delivery</label>
 								</div>
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="deliveryOption" id="saturdayDelivery"/>
+									<input
+										class="form-check-input"
+										type="radio"
+										name="deliveryOption"
+										id="saturdayDelivery"
+										value="saturday"
+										x-model="modalOrder.shipping.deliveryOption"
+									/>
 									<label class="form-check-label" for="saturdayDelivery" data-i18n="off-canvas-acs-saturday-delivery">Saturday Delivery</label>
 								</div>
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="deliveryOption" id="urgentDelivery"/>
+									<input
+										class="form-check-input"
+										type="radio"
+										name="deliveryOption"
+										id="urgentDelivery"
+										value="urgent"
+										x-model="modalOrder.shipping.deliveryOption"
+									/>
 									<label class="form-check-label" for="urgentDelivery" data-i18n="off-canvas-acs-urgent-delivery">Urgent Delivery</label>
 								</div>
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="deliveryOption" id="pickupDelivery"/>
+									<input
+										class="form-check-input"
+										type="radio"
+										name="deliveryOption"
+										id="pickupDelivery"
+										value="pickup"
+										x-model="modalOrder.shipping.deliveryOption"
+									/>
 									<label class="form-check-label" for="pickupDelivery" data-i18n="off-canvas-acs-pickup-delivery">Pickup</label>
 								</div>
 							</div>
@@ -192,24 +326,68 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 							</div>
 							<div class="card-body">
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="deliveryOption" id="standardDelivery" checked/>
+									<input
+										class="form-check-input"
+										type="radio"
+										name="deliveryOption"
+										id="standardDeliveryCourier4U"
+										value="standard"
+										x-model="modalOrder.shipping.deliveryOption"
+									/>
 									<label class="form-check-label" for="standardDelivery" data-i18n="off-canvas-delivery-courier4u-standard-delivery">Standard Delivery</label>
 								</div>
+								<!-- Other delivery options... -->
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="deliveryOption" id="saturdayDelivery"/>
-									<label class="form-check-label" for="saturdayDelivery" data-i18n="off-canvas-delivery-courier4u-saturday-delivery">Saturday Delivery</label>
+									<input
+										class="form-check-input"
+										type="radio"
+										name="deliveryOption"
+										id="saturdayDelivery4u"
+										value="saturday"
+										x-model="modalOrder.shipping.deliveryOption"
+									/>
+									<label class="form-check-label" for="saturdayDelivery4u" data-i18n="off-canvas-delivery-courier4u-saturday-delivery">
+										Saturday Delivery
+									</label>
 								</div>
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="deliveryOption" id="urgentDelivery"/>
-									<label class="form-check-label" for="urgentDelivery" data-i18n="off-canvas-delivery-courier4u-urgent-delivery">Urgent Delivery</label>
+									<input
+										class="form-check-input"
+										type="radio"
+										name="deliveryOption"
+										id="urgentDelivery4u"
+										value="urgent"
+										x-model="modalOrder.shipping.deliveryOption"
+									/>
+									<label class="form-check-label" for="urgentDelivery4u" data-i18n="off-canvas-delivery-courier4u-urgent-delivery">
+										Urgent Delivery
+									</label>
 								</div>
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="deliveryOption" id="pickupDelivery"/>
-									<label class="form-check-label" for="pickupDelivery" data-i18n="off-canvas-delivery-courier4u-pickup-delivery">Pickup</label>
+									<input
+										class="form-check-input"
+										type="radio"
+										name="deliveryOption"
+										id="pickupDelivery4u"
+										value="pickup"
+										x-model="modalOrder.shipping.deliveryOption"
+									/>
+									<label class="form-check-label" for="pickupDelivery4u" data-i18n="off-canvas-delivery-courier4u-pickup-delivery">
+										Pickup
+									</label>
 								</div>
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="deliveryOption" id="sameDayDelivery"/>
-									<label class="form-check-label" for="sameDayDelivery" data-i18n="off-canvas-delivery-courier4u-sameday-delivery">Same Day</label>
+									<input
+										class="form-check-input"
+										type="radio"
+										name="deliveryOption"
+										id="sameDayDelivery4u"
+										value="sameday"
+										x-model="modalOrder.shipping.deliveryOption"
+									/>
+									<label class="form-check-label" for="sameDayDelivery4u" data-i18n="off-canvas-delivery-courier4u-sameday-delivery">
+										Same Day
+									</label>
 								</div>
 							</div>
 						</div>
@@ -218,8 +396,372 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 			</div>
 			<!-- Save Button -->
 			<div class="mt-auto p-3 border-top">
-				<button type="button" class="btn btn-primary w-100" id="saveBtn" data-i18n="off-canvas-button-save">Save Changes</button>
+				<button
+					type="button"
+					class="btn btn-primary w-100"
+					id="saveBtn"
+					@click="handleSubmit()"
+					:disabled="!isFormValid() || isSubmitting"
+					data-i18n="off-canvas-button-save"
+				>
+					<template x-if="!isSubmitting">
+						<span>Save Changes</span>
+					</template>
+					<template x-if="isSubmitting">
+						<span class="d-flex align-items-center justify-content-center">
+							<span class="spinner-border spinner-border-sm me-2" role="status"></span>
+							Processing...
+						</span>
+					</template>
+				</button>
+			</div>
+		</div>
+		<!-- Toast for notifications -->
+		<div class="toast-container position-fixed bottom-0 end-0 p-3">
+			<div
+				id="validationToast"
+				class="toast align-items-center text-white border-0"
+				:class="toastType"
+				role="alert"
+				aria-live="assertive"
+				aria-atomic="true"
+			>
+				<div class="d-flex">
+					<div class="toast-body" x-text="toastMessage"></div>
+					<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+				</div>
 			</div>
 		</div>
 	</div>
+	<script>
+// Define the initialization function
+function initOrderForm() {
+    return {
+        showOffcanvas: false,
+        activeTab: 'customer',
+        errors: {},
+        isSubmitting: false,
+        toastMessage: '',
+        toastType: 'bg-success',
+        selectedCourier: '',
+        modalOrder: {
+            orderId: '',
+            billing: {
+                first_name: '',
+                last_name: '',
+                email: '',
+                phone: '',
+                address_1: '',
+                city: '',
+                postcode: ''
+            },
+            shipping: {
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                city: '',
+                postcode: '',
+                weight: '',
+                courier: '',
+                deliveryOption: ''
+            },
+            products: []
+        },
+
+        // Initialize the form
+        init() {
+            console.log('Initializing form');
+            this.setupValidationWatchers();
+            this.initializeBootstrapComponents();
+        },
+
+        // Handle opening the offcanvas
+        openOffcanvas(voucher) {
+            console.log('Opening offcanvas with voucher:', voucher);
+            
+            // Check if products exists and is an array
+            if (!Array.isArray(voucher.products)) {
+                voucher.products = [];
+            }
+
+            // Update modalOrder with voucher data
+            this.modalOrder = {
+                ...this.modalOrder,
+                orderId: voucher.orderId,
+                billing: { ...this.modalOrder.billing, ...voucher.billing },
+                shipping: { ...this.modalOrder.shipping, ...voucher.shipping },
+                products: [...voucher.products]
+            };
+
+            this.selectedCourier = voucher.shipping?.courier || '';
+            this.showOffcanvas = true;
+            this.activeTab = 'customer';
+            this.errors = {};
+
+            // Initialize Bootstrap offcanvas if needed
+            if (!this.offcanvas) {
+                this.initializeBootstrapComponents();
+            }
+
+            // Show the offcanvas
+            if (this.offcanvas) {
+                this.offcanvas.show();
+            }
+        },
+
+        // Initialize Bootstrap components
+        initializeBootstrapComponents() {
+            try {
+                const offcanvasElement = document.getElementById('orderProcessingOffcanvas');
+                if (offcanvasElement && typeof bootstrap !== 'undefined') {
+                    // Only initialize if not already initialized
+                    if (!this.offcanvas) {
+                        this.offcanvas = new bootstrap.Offcanvas(offcanvasElement, {
+                            backdrop: true,
+                            keyboard: true
+                        });
+
+                        // Add event listeners
+                        offcanvasElement.addEventListener('hidden.bs.offcanvas', () => {
+                            this.showOffcanvas = false;
+                            this.resetForm();
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error initializing Bootstrap components:', error);
+            }
+        },
+
+        // Set active tab
+        setActiveTab(tab) {
+            console.log('Setting active tab:', tab);
+            this.activeTab = tab;
+        },
+
+        // Setup validation watchers
+        setupValidationWatchers() {
+            try {
+                // Watch billing fields
+                ['first_name', 'last_name', 'email', 'phone', 'address_1', 'city', 'postcode'].forEach(field => {
+                    this.$watch(`modalOrder.billing.${field}`, (value) => {
+                        this.validateField(`billing.${field}`);
+                    });
+                });
+
+                // Watch shipping fields
+                ['first_name', 'last_name', 'address_1', 'city', 'postcode'].forEach(field => {
+                    this.$watch(`modalOrder.shipping.${field}`, (value) => {
+                        this.validateField(`shipping.${field}`);
+                    });
+                });
+
+                // Watch shipping-specific fields
+                this.$watch('selectedCourier', (value) => {
+                    this.modalOrder.shipping.courier = value;
+                    this.validateField('shipping.courier');
+                });
+
+                // this.$watch('modalOrder.shipping.weight', (value) => {
+                //     this.validateField('shipping.weight');
+                // });
+
+                this.$watch('modalOrder.shipping.deliveryOption', (value) => {
+                    this.validateField('shipping.deliveryOption');
+                });
+            } catch (error) {
+                console.error('Error setting up validation watchers:', error);
+            }
+        },
+
+        // Validation methods
+        validateField(field) {
+            console.log('Validating field:', field);
+            const value = field.includes('.') 
+                ? field.split('.').reduce((obj, key) => obj?.[key], this.modalOrder)
+                : this[field] || '';
+            
+            delete this.errors[field];
+
+            const optionalFields = ['shipping.deliveryOption'];
+            if (!value && optionalFields.includes(field)) {
+                return true;
+            }
+
+            if (!value?.toString().trim()) {
+                this.errors[field] = 'This field is required';
+                return false;
+            }
+
+            switch(true) {
+                case field.endsWith('email'):
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(value)) {
+                        this.errors[field] = 'Please enter a valid email address';
+                        return false;
+                    }
+                    break;
+
+                case field.endsWith('phone'):
+                    const phoneRegex = /^\+?[\d\s-]{10,}$/;
+                    if (!phoneRegex.test(value)) {
+                        this.errors[field] = 'Please enter a valid phone number';
+                        return false;
+                    }
+                    break;
+
+                case field.endsWith('postcode'):
+                    const postcodeRegex = /^[A-Z0-9]{2,10}$/i;
+                    if (!postcodeRegex.test(value)) {
+                        this.errors[field] = 'Please enter a valid postal code';
+                        return false;
+                    }
+                    break;
+
+                // case field === 'shipping.weight':
+                //     const weight = parseFloat(value);
+                //     if (isNaN(weight) || weight <= 0) {
+                //         this.errors[field] = 'Please enter a valid weight greater than 0';
+                //         return false;
+                //     }
+                //     break;
+
+                case field === 'shipping.courier':
+                    if (!value) {
+                        this.errors[field] = 'Please select a courier';
+                        return false;
+                    }
+                    break;
+            }
+
+            return true;
+        },
+
+        validateForm() {
+            let isValid = true;
+            const billingFields = ['first_name', 'last_name', 'email', 'phone', 'address_1', 'city', 'postcode'];
+            
+            billingFields.forEach(field => {
+                if (!this.validateField(`billing.${field}`)) {
+                    isValid = false;
+                }
+            });
+
+            if (this.activeTab === 'shipping') {
+                const shippingFields = ['first_name', 'last_name', 'address_1', 'city', 'postcode'];
+                shippingFields.forEach(field => {
+                    if (!this.validateField(`shipping.${field}`)) {
+                        isValid = false;
+                    }
+                });
+
+                // ['courier', 'weight', 'deliveryOption'].forEach(field => {
+                //     if (!this.validateField(`shipping.${field}`)) {
+                //         isValid = false;
+                //     }
+                // });
+            }
+
+            return isValid;
+        },
+
+        // Form submission
+        async handleSubmit() {
+            if (this.isSubmitting) return;
+
+            if (!this.validateForm()) {
+                this.showToast('Please check the form for errors', 'bg-danger');
+                return;
+            }
+
+            this.isSubmitting = true;
+
+            try {
+                // Your API call would go here
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+                this.showToast('Voucher saved successfully', 'bg-success');
+                this.closeOffcanvas();
+            } catch (error) {
+                console.error('Error saving voucher:', error);
+                this.showToast('Failed to save voucher', 'bg-danger');
+            } finally {
+                this.isSubmitting = false;
+            }
+        },
+
+        // Close the offcanvas
+        closeOffcanvas() {
+            if (this.offcanvas) {
+                this.offcanvas.hide();
+            }
+            this.showOffcanvas = false;
+            this.errors = {};
+            this.resetForm();
+            
+            // Dispatch an event to notify parent component
+            this.$dispatch('offcanvas-closed');
+        },
+
+		//  closeOffcanvas() {
+        //     this.showOffcanvas = false;
+        //     this.modalOrder = {
+        //         billing: { ...this.modalOrder.billing },
+        //         shipping: { ...this.modalOrder.shipping },
+        //         products: [],
+        //         payment_method: ''
+        //     };
+		// 	 console.log('Closing offcanvas:', this.showOffcanvas);
+        // },
+
+        // Reset the form
+        resetForm() {
+            this.modalOrder = {
+                orderId: '',
+                billing: {
+                    first_name: '',
+                    last_name: '',
+                    email: '',
+                    phone: '',
+                    address_1: '',
+                    city: '',
+                    postcode: ''
+                },
+                shipping: {
+                    first_name: '',
+                    last_name: '',
+                    address_1: '',
+                    city: '',
+                    postcode: '',
+                    weight: '',
+                    courier: '',
+                    deliveryOption: ''
+                },
+                products: []
+            };
+            this.selectedCourier = '';
+            this.activeTab = 'customer';
+        },
+
+        // Show toast notification
+        showToast(message, type = 'bg-success') {
+            this.toastMessage = message;
+            this.toastType = type;
+            const toast = new bootstrap.Toast(document.getElementById('validationToast'));
+            toast.show();
+        },
+
+        // Computed property for form validity
+        isFormValid() {
+            return Object.keys(this.errors).length === 0;
+        }
+    }
+}
+
+// Initialize Alpine.js component
+// window.addEventListener('load', () => {
+//     if (window.Alpine) {
+//         window.Alpine.data('initOrderForm', initOrderForm);
+//     }
+// });
+</script>
 }

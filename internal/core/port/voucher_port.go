@@ -20,6 +20,8 @@ type VoucherRepository interface {
 	GetAllVouchers(ctx echo.Context, projectID string) ([]*domain.Voucher, error)
 	// // UpdateVoucher updates a Voucher
 	UpdateVoucher(ctx echo.Context, voucher *domain.Voucher, projectID string, voucherID string, orderID int64) (*domain.Voucher, error)
+	// UpdateVoucherNewDetails updates a Voucher
+	UpdateVoucherNewDetails(ctx echo.Context, voucher *domain.Voucher, projectID string) (*domain.Voucher, error)
 	// DeleteUser(ctx context.Context, id uint64) error
 	DeleteVouchersByID(ctx echo.Context, voucherID string) error
 	// GetVoucherCount retrieves the count of Vouchers for a given project ID
@@ -38,10 +40,13 @@ type VoucherService interface {
 	GetAllVouchers(ctx echo.Context, projectID string) ([]*domain.Voucher, error)
 	// // UpdateVoucher updates a Voucher
 	UpdateVoucher(ctx echo.Context, voucher *o.OrderRecord, projectID string) (*domain.Voucher, error)
+	// UpdateVoucherWithDetails updates a Voucher with details
+	UpdateVoucherNewDetails(ctx echo.Context, voucher *domain.Voucher, projectID string) (*domain.Voucher, error)
 	// // DeleteUser deletes a user
 	// DeleteUser(ctx context.Context, id uint64) error
 	DeleteVouchersByID(ctx echo.Context, voucherID string) error
 	/// GetVoucherCount retrieves the count of Vouchers for a given project ID
 	GetVoucherCountAsync(projectID string, voucherStatus domain.VoucherStatus, results chan<- int64, errors chan<- error)
 	DeleteVouchersByOrderIdandProjectID(ctx echo.Context, projectID string, orderID int64) error
+	GetVoucherByOrderIDAndProjectID(ctx echo.Context, orderID int64, projectID string) (*domain.Voucher, error)
 }

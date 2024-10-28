@@ -34,6 +34,11 @@ func (vs *VoucherService) GetVoucherByVoucherID(ctx echo.Context, voucherID stri
 	return vs.repo.GetVoucherByVoucherID(ctx, voucherID)
 }
 
+// GetVoucherByOrderIDAndProjectID retrieves a Voucher by its ID
+func (vs *VoucherService) GetVoucherByOrderIDAndProjectID(ctx echo.Context, orderID int64, projectID string) (*domain.Voucher, error) {
+	return vs.repo.GetVoucherByOrderIDAndProjectID(ctx, orderID, projectID)
+}
+
 // FindVoucherByProjectID retrieves vouchers by project ID
 func (vs *VoucherService) FindVoucherByProjectID(projectID string, size, page int, sort, direction string, voucherStatus domain.VoucherStatus) ([]*domain.Voucher, error) {
 	return vs.repo.FindVoucherByProjectID(projectID, size, page, sort, direction, voucherStatus)
@@ -127,4 +132,8 @@ func (vs *VoucherService) FindVoucherByProjectIDAsync(projectID string, size, pa
 	} else {
 		results <- vouchers
 	}
+}
+
+func (vs *VoucherService) UpdateVoucherNewDetails(ctx echo.Context, voucher *domain.Voucher, projectID string) (*domain.Voucher, error) {
+	return vs.repo.UpdateVoucherNewDetails(ctx, voucher, projectID)
 }

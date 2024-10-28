@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -15,6 +16,11 @@ import (
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/util"
 )
+
+type PDFResponse struct {
+	Filename string `json:"filename"` // Filename of the PDF
+	Data     string `json:"data"`     // Base64 encoded PDF data
+}
 
 // CourierTable returns the order dashboard
 func (dh *DashboardHandler) CourierTable(ctx echo.Context) error {
@@ -242,6 +248,19 @@ func (dh *DashboardHandler) CreateAndPrintCourier4uVoucher(ctx echo.Context) err
 	if validationErrors != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": validationErrors.Error()})
 	}
+	// Convert string to int64
+	orderID, err := strconv.ParseInt(req.OrderID, 10, 64)
+	if err != nil {
+		// Handle the error
+		fmt.Println("Error converting string to int64:", err)
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Invalid order ID"})
+	}
+
+	voucher, err := dh.voucherSvc.GetVoucherByOrderIDAndProjectID(ctx, orderID, projectID)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
 	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
 	if err != nil {
 		return err
@@ -263,27 +282,33 @@ func (dh *DashboardHandler) CreateAndPrintCourier4uVoucher(ctx echo.Context) err
 		courier4u = new(domain.Courier4uExtension)
 	}
 
-	voucher, err := dh.hermesSvc.CreateVoucher(ctx, courier4u, nil, req, projectID)
+	respVoucher, err := dh.hermesSvc.CreateVoucher(ctx, courier4u, nil, req, projectID)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
-	}
-	var vouchers []string
-	vouchers = append(vouchers, voucher.Voucher)
-	pdfData, err := dh.hermesSvc.PrintVoucher(ctx, courier4u, nil, vouchers, projectID, courier4u.PrinterType)
-	if err != nil {
+		voucher.UpdateVoucherError(err.Error())
+		dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	// Set headers for the PDF response
-	ctx.Response().Header().Set(echo.HeaderContentType, "application/pdf")
-	ctx.Response().Header().Set(echo.HeaderContentDisposition, "attachment; filename=vouchers.pdf")
+	voucher.SetVoucher(respVoucher.Voucher)
 
-	// Write the PDF byte array to the response
-	_, err = ctx.Response().Writer.Write(pdfData)
+	pdfData, err := dh.hermesSvc.PrintVoucher(ctx, courier4u, nil, respVoucher.Voucher, projectID, courier4u.PrinterType)
 	if err != nil {
-		return ctx.String(http.StatusInternalServerError, "Error writing PDF to response")
+		voucher.UpdateVoucherIsPrinted(false)
+		voucher.UpdateVoucherError(err.Error())
+		dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
+	// Create the response with the PDF data and filename
+	pdfResponse := PDFResponse{
+		Filename: "vouchers.pdf",                             // Set your filename here
+		Data:     base64.StdEncoding.EncodeToString(pdfData), // Encode the PDF data to Base64
+	}
+	voucher.UpdateVoucherIsPrinted(true)
+	voucher.UpdateVoucherProvider(domain.Courier4u)
+	voucher.UpdateVoucherHermes(req)
+	voucher.UpdateVoucherStatus(courier_domain.VoucherStatusProcessing)
+	dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
 
-	return nil
+	return ctx.JSON(http.StatusOK, pdfResponse)
 
 }

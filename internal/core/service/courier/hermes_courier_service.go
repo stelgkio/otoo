@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stelgkio/otoo/internal/core/domain"
@@ -98,8 +97,8 @@ func (vs *HermesService) CreateVoucher(ctx echo.Context, courier4u *domain.Couri
 	return voucherResponse, nil
 }
 
-// CreateVoucher inserts a new Voucher into the database
-func (vs *HermesService) PrintVoucher(ctx echo.Context, courier4u *domain.Courier4uExtension, redcourier *domain.RedCourierExtension, vouchers []string, projectID, printType string) ([]byte, error) {
+// PrintVoucher inserts a new Voucher into the database
+func (vs *HermesService) PrintVoucher(ctx echo.Context, courier4u *domain.Courier4uExtension, redcourier *domain.RedCourierExtension, voucherId string, projectID, printType string) ([]byte, error) {
 
 	url := ""
 	token := ""
@@ -120,7 +119,6 @@ func (vs *HermesService) PrintVoucher(ctx echo.Context, courier4u *domain.Courie
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
-	voucherIDs := strings.Join(vouchers, ",")
 
 	print := "a4"
 	if printType == "thermal" {
@@ -135,7 +133,7 @@ func (vs *HermesService) PrintVoucher(ctx echo.Context, courier4u *domain.Courie
 	// Set query parameters
 	q := req.URL.Query()
 	q.Add("type", print)
-	q.Add("vouchers", voucherIDs)
+	q.Add("vouchers", voucherId)
 	req.URL.RawQuery = q.Encode()
 
 	// Initialize HTTP client

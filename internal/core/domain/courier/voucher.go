@@ -29,6 +29,9 @@ type Voucher struct {
 	DeletedAt           *time.Time             `json:"deleted_at"  bson:"deleted_at,omitempty"`
 	IsActive            bool                   `json:"is_active" bson:"is_active,omitempty"`
 	IsPrinted           bool                   `json:"is_printed" bson:"is_printed"`
+	HasError            bool                   `json:"has_error" bson:"has_error"`
+	Error               string                 `json:"error" bson:"error"`
+	CourierProvider     string                 `json:"courier_provider" bson:"courier_provider"`
 }
 
 // NewVoucher creates a new Voucher instance with the provided ProjectID, Cod, Note, and Shipping.
@@ -48,6 +51,8 @@ func NewVoucher(projectID, cod, note string, shipping *woocommerce.Shipping, bil
 		IsPrinted:           false,
 		AcsVoucherRequest:   nil,
 		HermesVoucerRequest: nil,
+		HasError:            false,
+		Error:               "",
 	}
 }
 
@@ -94,6 +99,47 @@ func (pt VoucherStatus) String() string {
 // UpdateVoucherStatus updates the Voucher status and updates the UpdatedAt timestamp.
 func (v *Voucher) UpdateVoucherStatus(status VoucherStatus) *Voucher {
 	v.Status = status
+	v.UpdatedAt = time.Now()
+	return v
+}
+
+// UpdateVoucherIsPrinted updates the Voucher status and updates the UpdatedAt timestamp.
+func (v *Voucher) UpdateVoucherIsPrinted(printed bool) *Voucher {
+	v.IsPrinted = printed
+	v.UpdatedAt = time.Now()
+	return v
+}
+func (v *Voucher) SetVoucher(voucherId string) *Voucher {
+	v.VoucherID = voucherId
+
+	return v
+}
+
+// UpdateVoucherisError updates the Voucher status and updates the UpdatedAt timestamp.
+func (v *Voucher) UpdateVoucherError(errormsg string) *Voucher {
+	v.HasError = true
+	v.Error = errormsg
+	v.UpdatedAt = time.Now()
+	return v
+}
+
+// UpdateVoucherisError updates the Voucher status and updates the UpdatedAt timestamp.
+func (v *Voucher) UpdateVoucherProvider(provider string) *Voucher {
+	v.CourierProvider = provider
+	v.UpdatedAt = time.Now()
+	return v
+}
+
+// UpdateVoucherAcs updates the Voucher status and updates the UpdatedAt timestamp.
+func (v *Voucher) UpdateVoucherAcs(acsVoucherRequest *AcsVoucherRequest) *Voucher {
+	v.AcsVoucherRequest = acsVoucherRequest
+	v.UpdatedAt = time.Now()
+	return v
+}
+
+// UpdateVoucherHermes updates the Voucher status and updates the UpdatedAt timestamp.
+func (v *Voucher) UpdateVoucherHermes(hermesVoucherRequest *HermesVoucerRequest) *Voucher {
+	v.HermesVoucerRequest = hermesVoucherRequest
 	v.UpdatedAt = time.Now()
 	return v
 }

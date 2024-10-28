@@ -10,6 +10,7 @@ import (
 	t "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/overview"
 	tmpl "github.com/stelgkio/otoo/internal/adapter/web/view/component/courier/template"
 	"github.com/stelgkio/otoo/internal/core/domain"
+	courier_domain "github.com/stelgkio/otoo/internal/core/domain/courier"
 	v "github.com/stelgkio/otoo/internal/core/domain/courier"
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/util"
@@ -222,6 +223,65 @@ func (dh *DashboardHandler) CreateVoucher(ctx echo.Context) error {
 	_, err = dh.orderSvc.GetOrderByID(voucher.ProjectID, voucher.OrderID)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
+	return nil
+
+}
+
+// CreateAndPrintCourier4uVoucher create and return the pdf
+func (dh *DashboardHandler) CreateAndPrintCourier4uVoucher(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+
+	req := new(courier_domain.HermesVoucerRequest)
+
+	if err := ctx.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, map[string]string{"error": "Invalid request payload"})
+	}
+	validationErrors := req.Validate()
+	if validationErrors != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": validationErrors.Error()})
+	}
+	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	extension := util.Filter(projectExtensions, func(e *domain.ProjectExtension) bool {
+		return e.Code == domain.Courier4u
+	})
+	if len(extension) > 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, map[string]string{"error": "Enable Courier4u extension first"})
+	}
+
+	courier4u := new(domain.Courier4uExtension)
+
+	courier4u, err = dh.extensionSvc.GetCourier4uProjectExtensionByID(ctx, extension[0].ExtensionID, projectID)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	if courier4u == nil {
+		courier4u = new(domain.Courier4uExtension)
+	}
+
+	voucher, err := dh.hermesSvc.CreateVoucher(ctx, courier4u, nil, req, projectID)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	var vouchers []string
+	vouchers = append(vouchers, voucher.Voucher)
+	pdfData, err := dh.hermesSvc.PrintVoucher(ctx, courier4u, nil, vouchers, projectID, courier4u.PrinterType)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
+	// Set headers for the PDF response
+	ctx.Response().Header().Set(echo.HeaderContentType, "application/pdf")
+	ctx.Response().Header().Set(echo.HeaderContentDisposition, "attachment; filename=vouchers.pdf")
+
+	// Write the PDF byte array to the response
+	_, err = ctx.Response().Writer.Write(pdfData)
+	if err != nil {
+		return ctx.String(http.StatusInternalServerError, "Error writing PDF to response")
 	}
 
 	return nil

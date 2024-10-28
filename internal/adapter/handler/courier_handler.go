@@ -300,7 +300,7 @@ func (dh *DashboardHandler) CreateAndPrintCourier4uVoucher(ctx echo.Context) err
 	}
 	// Create the response with the PDF data and filename
 	pdfResponse := PDFResponse{
-		Filename: "vouchers.pdf",                             // Set your filename here
+		Filename: fmt.Sprintf("voucher_%s.pdf", req.OrderID), // Set your filename here
 		Data:     base64.StdEncoding.EncodeToString(pdfData), // Encode the PDF data to Base64
 	}
 	voucher.UpdateVoucherIsPrinted(true)

@@ -121,13 +121,20 @@ func (vs *HermesService) PrintVoucher(ctx echo.Context, courier4u *domain.Courie
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
 	voucherIDs := strings.Join(vouchers, ",")
+
+	print := "a4"
+	if printType == "thermal" {
+		print = "a6"
+	} else {
+		print = "a4"
+	}
 	// Set headers
 	req.Header.Set("Authorization", "Bearer "+token)
 	req.Header.Set("Content-Type", "application/json")
 
 	// Set query parameters
 	q := req.URL.Query()
-	q.Add("type", printType)
+	q.Add("type", print)
 	q.Add("vouchers", voucherIDs)
 	req.URL.RawQuery = q.Encode()
 

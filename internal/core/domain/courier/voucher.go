@@ -183,7 +183,7 @@ type VoucherTableList struct {
 	ID              primitive.ObjectID     `bson:"_id,omitempty" json:"Id,omitempty"`
 	ProjectID       string                 `bson:"projectId" json:"projectId"`
 	OrderID         int64                  `bson:"orderId,omitempty" json:"orderId,omitempty"`
-	VoucherID       string                 `bson:"voucher_id,omitempty" json:"voucher_id,omitempty"`
+	VoucherID       string                 `json:"voucherId" bson:"voucher_id,omitempty"`
 	Status          VoucherStatus          `bson:"status,omitempty" json:"status,omitempty"`
 	Billing         woocommerce.Billing    `bson:"billing,omitempty" json:"billing,omitempty"`
 	Shipping        woocommerce.Shipping   `bson:"shipping,omitempty" json:"shipping,omitempty"`

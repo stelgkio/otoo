@@ -22,16 +22,16 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 					<li class="nav-item">
 						<a
 							href="#"
-							:class="{'nav-link': true, 'active': currentTab === 'completed'}"
-							@click.prevent="selectTab('completed')"
-						>Completed</a>
+							:class="{'nav-link': true, 'active': currentTab === 'processing'}"
+							@click.prevent="selectTab('processing')"
+						>Processing</a>
 					</li>
 					<li class="nav-item">
 						<a
 							href="#"
-							:class="{'nav-link': true, 'active': currentTab === 'processing'}"
-							@click.prevent="selectTab('processing')"
-						>Processing</a>
+							:class="{'nav-link': true, 'active': currentTab === 'completed'}"
+							@click.prevent="selectTab('completed')"
+						>Completed</a>
 					</li>
 					<li class="nav-item">
 						<a
@@ -91,9 +91,9 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 								Date
 								<i :class="getSortIcon('updated_at')"></i>
 							</th>
-							<th @click="sortTable('cod')">
+							<th @click="sortTable('total_amount')">
 								COD
-								<i :class="getSortIcon('cod')"></i>
+								<i :class="getSortIcon('total_amount')"></i>
 							</th>
 							<th>Status</th>
 							<template x-if="isPrinted">
@@ -125,11 +125,11 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 									</div>
 								</td>
 								<template x-if="!isNewTab">
-									<td x-text="voucher.Id"></td>
+									<td x-text="voucher.voucherId"></td>
 								</template>
 								<td x-text="'#' + voucher.orderId"></td>
 								<td x-text="new Date(voucher.updated_at).toLocaleString()"></td>
-								<td x-text="voucher.cod"></td>
+								<td x-text="voucher.total_amount"></td>
 								<td>
 									<span :class="badgeClass(voucher.status)" x-text="voucher.status"></span>
 								</td>
@@ -154,13 +154,15 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 									>
 										<i class="bi bi-plus-circle me-2"></i>Create Voucher
 									</button>
-									<button type="button" class="btn btn-sm btn-neutral" @click.stop="downloadVoucher(voucher.Id)">
-										<i
-											class="fas fa-download ml-1"
-											style="cursor: pointer;"
-											title="Download Voucher"
-										></i>
-									</button>
+									<template x-if="voucher.status !== 'new'">
+										<button type="button" class="btn btn-sm btn-neutral" @click.stop="downloadVoucher(voucher.voucherId)">
+											<i
+												class="fas fa-download ml-1"
+												style="cursor: pointer;"
+												title="Download Voucher"
+											></i>
+										</button>
+									</template>
 								</td>
 							</tr>
 						</template>

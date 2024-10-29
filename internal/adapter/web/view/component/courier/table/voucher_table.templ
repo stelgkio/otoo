@@ -62,7 +62,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 				</div>
 			</div>
 			<div class="table-responsive">
-				<table class="table table-hover table-nowrap">
+				<table class="table table-hover table-striped table-sm table-nowrap">
 					<thead>
 						<tr>
 							<th>
@@ -144,16 +144,15 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 									</td>
 								</template>
 								<td>
-									// <button type="button" class="btn btn-sm btn-neutral" @click="openOffcanvas(voucher)">
-									// 	<i class="bi bi-plus-circle me-2"></i>Create Voucher
-									// </button>
-									<button
-										type="button"
-										class="btn btn-sm btn-neutral"
-										@click="$dispatch('show-offcanvas', { voucher })"
-									>
-										<i class="bi bi-plus-circle me-2"></i>Create Voucher
-									</button>
+									<template x-if="voucher.status === 'new'">
+										<button
+											type="button"
+											class="btn btn-sm btn-neutral"
+											@click="$dispatch('show-offcanvas', { voucher })"
+										>
+											<i class="bi bi-plus-circle me-2"></i>Create Voucher
+										</button>
+									</template>
 									<template x-if="voucher.status !== 'new'">
 										<button type="button" class="btn btn-sm btn-neutral" @click.stop="downloadVoucher(voucher.voucherId)">
 											<i
@@ -168,7 +167,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 						</template>
 						<template x-for="i in 10 - paginatedVouchers.length" :key="'empty' + i">
 							<tr>
-								<td colspan="8" class="py-8"></td>
+								<td colspan="8" class="py-5"></td>
 							</tr>
 						</template>
 					</tbody>

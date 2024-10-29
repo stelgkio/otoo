@@ -165,16 +165,21 @@ func (dh *DashboardHandler) VoucherTable(ctx echo.Context) error {
 	if voucherRecords != nil {
 		for _, record := range voucherRecords {
 			vouchers = append(vouchers, v.VoucherTableList{
-				ID:        record.ID,
-				ProjectID: record.ProjectID,
-				OrderID:   record.OrderID,
-				VoucherID: record.VoucherID,
-				Status:    record.Status,
-				Shipping:  *record.Shipping,
-				Billing:   *record.Billing,
-				UpdatedAt: record.UpdatedAt,
-				Cod:       record.Cod,
-				Products:  record.Products,
+				ID:              record.ID,
+				ProjectID:       record.ProjectID,
+				OrderID:         record.OrderID,
+				VoucherID:       record.VoucherID,
+				Status:          record.Status,
+				Shipping:        *record.Shipping,
+				Billing:         *record.Billing,
+				UpdatedAt:       record.UpdatedAt,
+				Cod:             record.Cod,
+				Products:        record.Products,
+				HasError:        record.HasError,
+				Error:           record.Error,
+				CourierProvider: record.CourierProvider,
+				TotalAmount:     record.TotalAmount,
+				PaymentMethod:   record.PaymentMethod,
 			})
 		}
 	}

@@ -199,7 +199,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension) {
 								</h6>
 							</div>
 							<div class="card-body">
-								<textarea class="form-control form-control-sm" id="deliveryInstructions" rows="2" data-i18n="[placeholder]off-canvas-special-instructions"></textarea>
+								<textarea class="form-control form-control-sm" id="deliveryInstructions" rows="2" data-i18n="[placeholder]off-canvas-special-instructions" x-model="modalOrder.note"></textarea>
 							</div>
 						</div>
 					</div>
@@ -465,6 +465,7 @@ function initOrderForm() {
                 courier: '',
                 deliveryOption: ''
             },
+			note:"",
             products: []
         },
 
@@ -490,7 +491,8 @@ function initOrderForm() {
                 orderId: voucher.orderId,
                 billing: { ...this.modalOrder.billing, ...voucher.billing },
                 shipping: { ...this.modalOrder.shipping, ...voucher.shipping },
-                products: [...voucher.products]
+                products: [...voucher.products],
+				note: voucher.note
             };
 
             this.selectedCourier = voucher.shipping?.courier || '';
@@ -736,6 +738,7 @@ function initOrderForm() {
                     courier: '',
                     deliveryOption: ''
                 },
+				note:'',
                 products: []
             };
             this.selectedCourier = '';

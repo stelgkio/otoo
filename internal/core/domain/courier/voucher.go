@@ -197,6 +197,7 @@ type VoucherTableList struct {
 	CourierProvider string                 `json:"courier_provider" bson:"courier_provider"`
 	TotalAmount     string                 `json:"total_amount"  bson:"total_amount,omitempty"`
 	PaymentMethod   string                 `json:"paymentmethod"  bson:"paymentmethod,omitempty"`
+	Note            string                 `json:"note"  bson:"note,omitempty"`
 }
 
 // VoucherTableResponde represents an order table response

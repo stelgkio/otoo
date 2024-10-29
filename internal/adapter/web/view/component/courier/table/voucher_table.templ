@@ -198,27 +198,7 @@ function voucherTable(projectId) {
         errorMessage: '',
 		isNewTab: true, 
 		isPrinted: false,
-        // showOffcanvas: false,
-		//  modalOrder: {
-        //     billing: {
-        //         first_name: '',
-        //         last_name: '',
-        //         address_1: '',
-        //         city: '',
-        //         postcode: '',
-        //         email: '',
-        //         phone: '',
-        //     },
-        //     shipping: {
-        //         first_name: '',
-        //         last_name: '',
-        //         address_1: '',
-        //         city: '',
-        //         postcode: '',
-        //     },
-        //     products: [],
-        //     payment_method: ''
-        // },
+     
 
         async init() {
             await this.fetchVouchers(this.currentPage);
@@ -385,36 +365,7 @@ function voucherTable(projectId) {
                 this.loading = false;
             }
         },
-		//  openOffcanvas(voucher) {
-		// 	// Check if products exists and is an array
-		// 	if (!Array.isArray(voucher.products)) {			
-		// 		// Set products to an empty array if it's not valid
-		// 		voucher.products = []; 
-				
-    	// 	}
-		//  this.modalOrder = {
-        //            ...this.modalOrder,
-        //         ...voucher,
-        //         billing: { ...this.modalOrder.billing, ...voucher.billing },
-        //         shipping: { ...this.modalOrder.shipping, ...voucher.shipping },
-        //         products: [...voucher.products],
-        //         payment_method: voucher.payment_method
-        //     };
-			
-        //     this.showOffcanvas = true;
-		// 	  console.log('Opening offcanvas:', this.showOffcanvas);
-			
-        // },
-        // closeOffcanvas() {
-        //     this.showOffcanvas = false;
-        //     this.modalOrder = {
-        //         billing: { ...this.modalOrder.billing },
-        //         shipping: { ...this.modalOrder.shipping },
-        //         products: [],
-        //         payment_method: ''
-        //     };
-		// 	 console.log('Closing offcanvas:', this.showOffcanvas);
-        // },
+		
     };
 }
 

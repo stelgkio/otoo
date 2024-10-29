@@ -71,7 +71,9 @@ func (vs *VoucherService) UpdateVoucher(ctx echo.Context, order *o.OrderRecord, 
 			voucher.UpdateVoucherStatus(domain.VoucherStatusNew)
 		} else {
 			//TODO: to update a voucher we need to check in what state we have it in the courier provider
-			voucher.UpdateVoucherStatus(domain.VoucherStatusProcessing)
+			if !voucher.IsPrinted {
+				voucher.UpdateVoucherStatus(domain.VoucherStatusProcessing)
+			}
 		}
 	case "cancelled":
 		// If the voucher has not been printed, cancel it; otherwise, revert to processing

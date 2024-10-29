@@ -160,10 +160,15 @@ func (dh *DashboardHandler) VoucherTable(ctx echo.Context) error {
 		voucherRecords = item
 	}
 
+	var totalAmount = "0.00"
+
 	// Convert orderRecords to OrderTableList for the response
 	var vouchers []v.VoucherTableList
 	if voucherRecords != nil {
 		for _, record := range voucherRecords {
+			if record.PaymentMethod == "cod" {
+				totalAmount = record.TotalAmount
+			}
 			vouchers = append(vouchers, v.VoucherTableList{
 				ID:              record.ID,
 				ProjectID:       record.ProjectID,
@@ -178,7 +183,7 @@ func (dh *DashboardHandler) VoucherTable(ctx echo.Context) error {
 				HasError:        record.HasError,
 				Error:           record.Error,
 				CourierProvider: record.CourierProvider,
-				TotalAmount:     record.TotalAmount,
+				TotalAmount:     totalAmount,
 				PaymentMethod:   record.PaymentMethod,
 			})
 		}

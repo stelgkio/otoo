@@ -319,6 +319,7 @@ func (dh *DashboardHandler) CreateAndPrintCourier4uVoucher(ctx echo.Context) err
 		Filename: fmt.Sprintf("voucher_%s.pdf", req.OrderID), // Set your filename here
 		Data:     base64.StdEncoding.EncodeToString(pdfData), // Encode the PDF data to Base64
 	}
+	voucher.UpdateVoucherError("")
 	voucher.UpdateVoucherIsPrinted(true)
 	voucher.UpdateVoucherProvider(domain.Courier4u)
 	voucher.UpdateVoucherHermes(req)

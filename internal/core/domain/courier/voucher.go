@@ -129,10 +129,17 @@ func (v *Voucher) SetVoucher(voucherId int64) *Voucher {
 
 // UpdateVoucherisError updates the Voucher status and updates the UpdatedAt timestamp.
 func (v *Voucher) UpdateVoucherError(errormsg string) *Voucher {
+	if errormsg == "" {
+		v.HasError = false
+		v.Error = errormsg
+		v.UpdatedAt = time.Now()
+		return v
+	}
 	v.HasError = true
 	v.Error = errormsg
 	v.UpdatedAt = time.Now()
 	return v
+
 }
 
 // UpdateVoucherisError updates the Voucher status and updates the UpdatedAt timestamp.

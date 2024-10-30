@@ -186,6 +186,7 @@ func (dh *DashboardHandler) VoucherTable(ctx echo.Context) error {
 				TotalAmount:     totalAmount,
 				PaymentMethod:   record.PaymentMethod,
 				Note:            record.Note,
+				IsPrinted:       record.IsPrinted,
 			})
 		}
 	}

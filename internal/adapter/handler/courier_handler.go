@@ -268,7 +268,7 @@ func (dh *DashboardHandler) CreateAndPrintCourier4uVoucher(ctx echo.Context) err
 	}
 
 	voucher, err := dh.voucherSvc.GetVoucherByOrderIDAndProjectID(ctx, orderID, projectID)
-	if err != nil {
+	if err != nil || voucher == nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
@@ -279,7 +279,7 @@ func (dh *DashboardHandler) CreateAndPrintCourier4uVoucher(ctx echo.Context) err
 	extension := util.Filter(projectExtensions, func(e *domain.ProjectExtension) bool {
 		return e.Code == domain.Courier4u
 	})
-	if len(extension) > 0 {
+	if len(extension) == 0 {
 		return echo.NewHTTPError(http.StatusBadRequest, map[string]string{"error": "Enable Courier4u extension first"})
 	}
 
@@ -298,6 +298,11 @@ func (dh *DashboardHandler) CreateAndPrintCourier4uVoucher(ctx echo.Context) err
 		voucher.UpdateVoucherError(err.Error())
 		dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	if respVoucher.Error == true {
+		voucher.UpdateVoucherError(respVoucher.Message)
+		dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": respVoucher.Message})
 	}
 
 	voucher.SetVoucher(respVoucher.Voucher)

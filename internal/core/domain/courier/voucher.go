@@ -2,6 +2,7 @@ package domain
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
@@ -120,8 +121,8 @@ func (v *Voucher) UpdateVoucherIsPrinted(printed bool) *Voucher {
 	v.UpdatedAt = time.Now()
 	return v
 }
-func (v *Voucher) SetVoucher(voucherId string) *Voucher {
-	v.VoucherID = voucherId
+func (v *Voucher) SetVoucher(voucherId int64) *Voucher {
+	v.VoucherID = fmt.Sprintf("%d", voucherId)
 
 	return v
 }

@@ -11,24 +11,24 @@ import (
 
 // HermesVoucerRequest represents a voucher record
 type HermesVoucerRequest struct {
-	ReceiverName      string   `json:"receiver_name" bson:"receiver_name" validate:"required,max=64"`                                 // Receiver's name (max 64 chars)
-	ReceiverAddress   string   `json:"receiver_address" bson:"receiver_address" validate:"required_unless=ServiceReception 1,max=64"` // Receiver's address (max 64 chars) *Required if ServiceReception is not selected
-	ReceiverCity      string   `json:"receiver_city" bson:"receiver_city" validate:"required,max=64"`                                 // Receiver's city (max 64 chars)
-	ReceiverPostal    int      `json:"receiver_postal" bson:"receiver_postal" validate:"required,min=10000,max=99999"`                // Receiver's postal code (5 digits)
-	ReceiverTelephone string   `json:"receiver_telephone" bson:"receiver_telephone" validate:"required,max=32,telephone"`             // Receiver's telephone (custom telephone format validation)
-	Notes             *string  `json:"notes" bson:"notes" validate:"omitempty,max=128"`                                               // Delivery instructions (max 128 chars)
-	OrderID           string   `json:"order_id" bson:"order_id" validate:"required,max=36"`                                           // Internal order note (max 36 chars)
-	Cod               float64  `json:"cod" bson:"cod" validate:"required,max=499.99"`                                                 // Cash on Delivery amount (max 499.99)
-	ServiceSavvato    *int     `json:"service_savvato" bson:"service_savvato" validate:"oneof=0 1"`                                   // Service option for Saturday delivery (0 or 1)
-	ServiceEpigon     *int     `json:"service_epigon" bson:"service_epigon" validate:"oneof=0 1"`                                     // Service option for next-day delivery (0 or 1)
-	ServiceEpistrofi  *int     `json:"service_epistrofi" bson:"service_epistrofi" validate:"oneof=0 1"`                               // Service option for return (0 or 1)
-	ServiceSameday    *int     `json:"service_sameday" bson:"service_sameday" validate:"oneof=0 1"`                                   // Service option for same-day delivery (0 or 1)
-	ServiceProtocol   *int     `json:"service_protocol" bson:"service_protocol" validate:"oneof=0 1"`                                 // Service option for protocol number (0 or 1)
-	ServiceReception  *int     `json:"service_reception" bson:"service_reception" validate:"oneof=0 1"`                               // Service option for pickup from store (0 or 1)
-	ParcelWeight      int      `json:"parcel_weight" bson:"parcel_weight" validate:"required,min=1"`                                  // Parcel weight (minimum 1)
-	ParcelDepth       *float64 `json:"parcel_depth" bson:"parcel_depth" validate:"required,min=1.0"`                                  // Parcel depth (minimum 1.0)
-	ParcelWidth       *float64 `json:"parcel_width" bson:"parcel_width" validate:"required,min=1.0"`                                  // Parcel width (minimum 1.0)
-	ParcelHeight      *float64 `json:"parcel_height" bson:"parcel_height" validate:"required,min=1.0"`                                // Parcel height (minimum 1.0)
+	ReceiverName      string   `json:"ReceiverName" bson:"ReceiverName" validate:"required,max=64"`                                 // Receiver's name (max 64 chars)
+	ReceiverAddress   string   `json:"ReceiverAddress" bson:"ReceiverAddress" validate:"required_unless=ServiceReception 1,max=64"` // Receiver's address (max 64 chars) *Required if ServiceReception is not selected
+	ReceiverCity      string   `json:"ReceiverCity" bson:"ReceiverCity" validate:"required,max=64"`                                 // Receiver's city (max 64 chars)
+	ReceiverPostal    int      `json:"ReceiverPostal" bson:"ReceiverPostal" validate:"required,min=10000,max=99999"`                // Receiver's postal code (5 digits)
+	ReceiverTelephone string   `json:"ReceiverTelephone" bson:"ReceiverTelephone" validate:"required,max=32,telephone"`             // Receiver's telephone (custom telephone format validation)
+	Notes             *string  `json:"Notes" bson:"Notes" validate:"omitempty,max=128"`                                             // Delivery instructions (max 128 chars)
+	OrderID           string   `json:"OrderID" bson:"OrderID" validate:"required,max=36"`                                           // Internal order note (max 36 chars)
+	Cod               float64  `json:"Cod" bson:"Cod" validate:"required,max=499.99"`                                               // Cash on Delivery amount (max 499.99)
+	ServiceSavvato    *int     `json:"ServiceSavvato" bson:"ServiceSavvato" validate:"oneof=0 1"`                                   // Service option for Saturday delivery (0 or 1)
+	ServiceEpigon     *int     `json:"ServiceEpigon" bson:"ServiceEpigon" validate:"oneof=0 1"`                                     // Service option for next-day delivery (0 or 1)
+	ServiceEpistrofi  *int     `json:"ServiceEpistrofi" bson:"ServiceEpistrofi" validate:"oneof=0 1"`                               // Service option for return (0 or 1)
+	ServiceSameday    *int     `json:"ServiceSameday" bson:"ServiceSameday" validate:"oneof=0 1"`                                   // Service option for same-day delivery (0 or 1)
+	ServiceProtocol   *int     `json:"ServiceProtocol" bson:"ServiceProtocol" validate:"oneof=0 1"`                                 // Service option for protocol number (0 or 1)
+	ServiceReception  *int     `json:"ServiceReception" bson:"ServiceReception" validate:"oneof=0 1"`                               // Service option for pickup from store (0 or 1)
+	ParcelWeight      int      `json:"ParcelWeight" bson:"ParcelWeight" validate:"required,min=1"`                                  // Parcel weight (minimum 1)
+	ParcelDepth       *float64 `json:"ParcelDepth" bson:"ParcelDepth" validate:"required,min=1.0"`                                  // Parcel depth (minimum 1.0)
+	ParcelWidth       *float64 `json:"ParcelWidth" bson:"ParcelWidth" validate:"required,min=1.0"`                                  // Parcel width (minimum 1.0)
+	ParcelHeight      *float64 `json:"ParcelHeight" bson:"ParcelHeight" validate:"required,min=1.0"`                                // Parcel height (minimum 1.0)
 
 }
 
@@ -200,7 +200,7 @@ type VoucherResponse struct {
 	Success bool   `json:"success"`           // Indicates if the operation was successful
 	Error   bool   `json:"error"`             // Indicates if there was an error
 	Message string `json:"message"`           // Contains the response message
-	Voucher string `json:"voucher,omitempty"` // Voucher ID (optional, might be empty if not applicable)
+	Voucher int64  `json:"voucher,omitempty"` // Voucher ID (optional, might be empty if not applicable)
 }
 
 // VoucherPrintResponse defines the expected structure of the response for the PrintVouchers endpoint

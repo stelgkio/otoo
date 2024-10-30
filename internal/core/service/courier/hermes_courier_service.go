@@ -64,7 +64,7 @@ func (vs *HermesService) CreateVoucher(ctx echo.Context, courier4u *domain.Couri
 
 	// Set headers
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", token)
+	req.Header.Set("Authorization", "Bearer "+token)
 
 	// Initialize HTTP client
 	client := &http.Client{}
@@ -98,7 +98,7 @@ func (vs *HermesService) CreateVoucher(ctx echo.Context, courier4u *domain.Couri
 }
 
 // PrintVoucher inserts a new Voucher into the database
-func (vs *HermesService) PrintVoucher(ctx echo.Context, courier4u *domain.Courier4uExtension, redcourier *domain.RedCourierExtension, voucherId string, projectID, printType string) ([]byte, error) {
+func (vs *HermesService) PrintVoucher(ctx echo.Context, courier4u *domain.Courier4uExtension, redcourier *domain.RedCourierExtension, voucherId int64, projectID, printType string) ([]byte, error) {
 
 	url := ""
 	token := ""
@@ -133,7 +133,7 @@ func (vs *HermesService) PrintVoucher(ctx echo.Context, courier4u *domain.Courie
 	// Set query parameters
 	q := req.URL.Query()
 	q.Add("type", print)
-	q.Add("vouchers", voucherId)
+	q.Add("vouchers", fmt.Sprintf("%d", voucherId))
 	req.URL.RawQuery = q.Encode()
 
 	// Initialize HTTP client

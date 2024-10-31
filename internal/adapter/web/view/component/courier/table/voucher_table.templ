@@ -114,14 +114,16 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 						<template x-for="voucher in paginatedVouchers" :key="voucher.Id">
 							<tr @click="openOffcanvas(voucher)">
 								<td>
-									<div class="form-check">
-										<input
-											class="form-check-input"
-											type="checkbox"
-											:value="voucher.Id"
-											x-model="selectedVouchers"
-											@click.stop
-										/>
+									<div class="text-base">
+										<div class="form-check">
+											<input
+												class="form-check-input"
+												type="checkbox"
+												:value="voucher.Id"
+												x-model="selectedVouchers"
+												@click.stop
+											/>
+										</div>
 									</div>
 								</td>
 								<template x-if="!isNewTab">
@@ -160,6 +162,11 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 												style="cursor: pointer;"
 												title="Download Voucher"
 											></i>
+										</button>
+									</template>
+									<template x-if="voucher.status !== 'new'">
+										<button type="button" class="btn btn-sm btn-neutral">
+											<i class="bi bi-eye"></i>
 										</button>
 									</template>
 								</td>

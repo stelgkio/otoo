@@ -11,6 +11,7 @@ const (
 	DataSynchronizerCode string = "data-synchronizer"
 	WalletExpences       string = "wallet-expences"
 	Courier4u            string = "courier4u"
+	RedCourier           string = "redcourier"
 	TeamMember           string = "team-member"
 )
 

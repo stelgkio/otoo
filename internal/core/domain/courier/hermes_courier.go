@@ -216,3 +216,9 @@ type VoucherPrintResponse struct {
 type VoucherFailure struct {
 	Voucher int `json:"voucher"` // Voucher ID
 }
+
+// HermesVoucerUpdateRequest defines the expected structure of the request for the UpdateVoucher endpoint
+type HermesVoucerUpdateRequest struct {
+	VoucherID int64 `json:"voucher"`
+	HermesVoucerRequest
+}

@@ -347,6 +347,8 @@ func NewRouter(
 		couriergroup.GET("/redcourier/donwload/:voucherId/:projectId", dashboardHandler.DownloadCourier4uVoucher)
 		couriergroup.GET("/acscourier/donwload/:voucherId/:projectId", dashboardHandler.DownloadCourier4uVoucher)
 
+		//UPDATE Voucher
+		couriergroup.PUT("/courier4u/update/:voucherId/:projectId", dashboardHandler.UpdateAndPrintCourier4uVoucher)
 	}
 
 	return &Router{e}, nil

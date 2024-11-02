@@ -12,4 +12,6 @@ type HermesService interface {
 	PrintVoucher(ctx echo.Context, courier4u *domain.Courier4uExtension, redcourier *domain.RedCourierExtension, voucherId int64, projectID, printType string) ([]byte, error)
 	// // GetVoucherByID selects a Voucher by id
 	CreateVoucher(ctx echo.Context, courier4u *domain.Courier4uExtension, redcourier *domain.RedCourierExtension, hermesVoucerRequest *domain_courier.HermesVoucerRequest, projectID string) (*domain_courier.VoucherResponse, error)
+	// UpdateVoucher update a Voucher
+	UpdateVoucher(ctx echo.Context, courier4u *domain.Courier4uExtension, redcourier *domain.RedCourierExtension, hermesVoucerRequest *domain_courier.HermesVoucerUpdateRequest, projectID string) (*domain_courier.VoucherResponse, error)
 }

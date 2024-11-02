@@ -171,3 +171,69 @@ func (vs *HermesService) PrintVoucher(ctx echo.Context, courier4u *domain.Courie
 
 	return nil, fmt.Errorf("failed to print vouchers: %s", errorResponse.Message)
 }
+
+// UpdateVoucher update a Voucher
+func (vs *HermesService) UpdateVoucher(ctx echo.Context, courier4u *domain.Courier4uExtension, redcourier *domain.RedCourierExtension, hermesVoucerRequest *courier_domain.HermesVoucerUpdateRequest, projectID string) (*courier_domain.VoucherResponse, error) {
+
+	url := ""
+	token := ""
+	if courier4u == nil && redcourier == nil {
+		return nil, fmt.Errorf("internal server error")
+	}
+	if courier4u != nil {
+		url = courier4uURL + "/api/v5.0/EditVoucher"
+		token = courier4u.CourierAPIKey
+	}
+	if redcourier != nil {
+		url = redCourierURL + "/api/v5.0/EditVoucher"
+		token = redcourier.CourierAPIKey
+	}
+
+	// Encode the struct to JSON
+	jsonBody, err := json.Marshal(hermesVoucerRequest)
+	if err != nil {
+		fmt.Println("Error encoding JSON:", err)
+		return nil, err
+	}
+
+	// Create a new HTTP POST request
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonBody))
+	if err != nil {
+		fmt.Println("Error creating request:", err)
+		return nil, err
+	}
+
+	// Set headers
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+token)
+
+	// Initialize HTTP client
+	client := &http.Client{}
+
+	// Send the request
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Error sending request:", err)
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	// Read the response body
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println("Error reading response:", err)
+		return nil, err
+	}
+	// Print the response body
+	fmt.Println("Response:", string(body))
+	// Decode the response JSON into the VoucherResponse struct
+	var voucherResponse *courier_domain.VoucherResponse
+	err = json.Unmarshal(body, &voucherResponse)
+	if err != nil {
+		fmt.Println("Error decoding JSON response:", err)
+		return nil, err
+	}
+	// Print the structured response
+	fmt.Printf("Response Struct: %+v\n", voucherResponse)
+	return voucherResponse, nil
+}

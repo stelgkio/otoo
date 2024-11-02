@@ -222,3 +222,11 @@ type HermesVoucerUpdateRequest struct {
 	VoucherID int64 `json:"voucher"`
 	HermesVoucerRequest
 }
+
+// NewHermesVoucerUpdateRequest creates a new instance of HermesVoucerUpdateRequest
+func NewHermesVoucerUpdateRequest(voucherID int64, request *HermesVoucerRequest) *HermesVoucerUpdateRequest {
+	return &HermesVoucerUpdateRequest{
+		VoucherID:           voucherID,
+		HermesVoucerRequest: *request,
+	}
+}

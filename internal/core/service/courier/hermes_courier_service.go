@@ -197,7 +197,7 @@ func (vs *HermesService) UpdateVoucher(ctx echo.Context, courier4u *domain.Couri
 	}
 
 	// Create a new HTTP POST request
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonBody))
+	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonBody))
 	if err != nil {
 		fmt.Println("Error creating request:", err)
 		return nil, err

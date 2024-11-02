@@ -249,8 +249,8 @@ func (dh *DashboardHandler) CreateVoucher(ctx echo.Context) error {
 
 }
 
-// CreateAndPrintCourier4uVoucher create and return the pdf
-func (dh *DashboardHandler) CreateAndPrintCourier4uVoucher(ctx echo.Context) error {
+// CreateCourier4uVoucher create courier4u voucher
+func (dh *DashboardHandler) CreateCourier4uVoucher(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 
 	req := new(courier_domain.HermesVoucerRequest)
@@ -309,32 +309,18 @@ func (dh *DashboardHandler) CreateAndPrintCourier4uVoucher(ctx echo.Context) err
 	}
 
 	voucher.SetVoucher(respVoucher.Voucher)
-
-	pdfData, err := dh.hermesSvc.PrintVoucher(ctx, courier4u, nil, respVoucher.Voucher, projectID, courier4u.PrinterType)
-	if err != nil {
-		voucher.UpdateVoucherIsPrinted(false)
-		voucher.UpdateVoucherError(err.Error())
-		dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
-		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
-	}
-	// Create the response with the PDF data and filename
-	pdfResponse := PDFResponse{
-		Filename: fmt.Sprintf("voucher_%d.pdf", respVoucher.Voucher), // Set your filename here
-		Data:     base64.StdEncoding.EncodeToString(pdfData),         // Encode the PDF data to Base64
-	}
 	voucher.UpdateVoucherError("")
-	voucher.UpdateVoucherIsPrinted(true)
 	voucher.UpdateVoucherProvider(domain.Courier4u)
 	voucher.UpdateVoucherHermes(req)
 	voucher.UpdateVoucherStatus(courier_domain.VoucherStatusProcessing)
 	dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
 
-	return ctx.JSON(http.StatusOK, pdfResponse)
+	return ctx.JSON(http.StatusOK, "voucher created")
 
 }
 
-// CreateAndPrintRedCourierVoucher create and return the pdf
-func (dh *DashboardHandler) CreateAndPrintRedCourierVoucher(ctx echo.Context) error {
+// CreateRedCourierVoucher create and return the pdf
+func (dh *DashboardHandler) CreateRedCourierVoucher(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 
 	req := new(courier_domain.HermesVoucerRequest)
@@ -394,26 +380,13 @@ func (dh *DashboardHandler) CreateAndPrintRedCourierVoucher(ctx echo.Context) er
 
 	voucher.SetVoucher(respVoucher.Voucher)
 
-	pdfData, err := dh.hermesSvc.PrintVoucher(ctx, nil, redCourier, respVoucher.Voucher, projectID, redCourier.PrinterType)
-	if err != nil {
-		voucher.UpdateVoucherIsPrinted(false)
-		voucher.UpdateVoucherError(err.Error())
-		dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
-		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
-	}
-	// Create the response with the PDF data and filename
-	pdfResponse := PDFResponse{
-		Filename: fmt.Sprintf("voucher_%d.pdf", respVoucher.Voucher), // Set your filename here
-		Data:     base64.StdEncoding.EncodeToString(pdfData),         // Encode the PDF data to Base64
-	}
 	voucher.UpdateVoucherError("")
-	voucher.UpdateVoucherIsPrinted(true)
 	voucher.UpdateVoucherProvider(domain.Courier4u)
 	voucher.UpdateVoucherHermes(req)
 	voucher.UpdateVoucherStatus(courier_domain.VoucherStatusProcessing)
 	dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
 
-	return ctx.JSON(http.StatusOK, pdfResponse)
+	return ctx.JSON(http.StatusOK, "voucher created")
 
 }
 
@@ -523,8 +496,8 @@ func (dh *DashboardHandler) DownloadRedCourierVoucher(ctx echo.Context) error {
 
 }
 
-// UpdateAndPrintCourier4uVoucher create and return the pdf
-func (dh *DashboardHandler) UpdateAndPrintCourier4uVoucher(ctx echo.Context) error {
+// UpdateCourier4uVoucher create and return the pdf
+func (dh *DashboardHandler) UpdateCourier4uVoucher(ctx echo.Context) error {
 	projectID := ctx.Param("projectId")
 	voucherID := ctx.Param("voucherId")
 	req := new(courier_domain.HermesVoucerRequest)
@@ -590,25 +563,12 @@ func (dh *DashboardHandler) UpdateAndPrintCourier4uVoucher(ctx echo.Context) err
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": respVoucher.Message})
 	}
 
-	pdfData, err := dh.hermesSvc.PrintVoucher(ctx, courier4u, nil, vID, projectID, courier4u.PrinterType)
-	if err != nil {
-		voucher.UpdateVoucherIsPrinted(false)
-		voucher.UpdateVoucherError(err.Error())
-		dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
-		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
-	}
-	// Create the response with the PDF data and filename
-	pdfResponse := PDFResponse{
-		Filename: fmt.Sprintf("voucher_%d.pdf", respVoucher.Voucher), // Set your filename here
-		Data:     base64.StdEncoding.EncodeToString(pdfData),         // Encode the PDF data to Base64
-	}
 	voucher.UpdateVoucherError("")
-	voucher.UpdateVoucherIsPrinted(true)
 	voucher.UpdateVoucherProvider(domain.Courier4u)
 	voucher.UpdateVoucherHermes(req)
 	voucher.UpdateVoucherStatus(courier_domain.VoucherStatusProcessing)
 	dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
 
-	return ctx.JSON(http.StatusOK, pdfResponse)
+	return ctx.JSON(http.StatusOK, "voucher updated successfully")
 
 }

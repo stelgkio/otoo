@@ -339,16 +339,16 @@ func NewRouter(
 		couriergroup.GET("/modal/:Id", dashboardHandler.VoucherDetailModal)
 		couriergroup.GET("/openOffcanvas/:Id", dashboardHandler.CreateVoucher)
 		//CREATE Voucher
-		couriergroup.POST("/courier4u/create/:projectId", dashboardHandler.CreateAndPrintCourier4uVoucher)
-		couriergroup.POST("/redcourier/create/:projectId", dashboardHandler.CreateAndPrintCourier4uVoucher)
-		couriergroup.POST("/acscourier/create/:projectId", dashboardHandler.CreateAndPrintCourier4uVoucher)
+		couriergroup.POST("/courier4u/create/:projectId", dashboardHandler.CreateCourier4uVoucher)
+		couriergroup.POST("/redcourier/create/:projectId", dashboardHandler.CreateRedCourierVoucher)
+		couriergroup.POST("/acscourier/create/:projectId", dashboardHandler.CreateCourier4uVoucher)
 		//DOWNLOAD Voucher
 		couriergroup.GET("/courier4u/donwload/:voucherId/:projectId", dashboardHandler.DownloadCourier4uVoucher)
-		couriergroup.GET("/redcourier/donwload/:voucherId/:projectId", dashboardHandler.DownloadCourier4uVoucher)
+		couriergroup.GET("/redcourier/donwload/:voucherId/:projectId", dashboardHandler.DownloadRedCourierVoucher)
 		couriergroup.GET("/acscourier/donwload/:voucherId/:projectId", dashboardHandler.DownloadCourier4uVoucher)
 
 		//UPDATE Voucher
-		couriergroup.PUT("/courier4u/update/:voucherId/:projectId", dashboardHandler.UpdateAndPrintCourier4uVoucher)
+		couriergroup.PUT("/courier4u/update/:voucherId/:projectId", dashboardHandler.UpdateCourier4uVoucher)
 	}
 
 	return &Router{e}, nil

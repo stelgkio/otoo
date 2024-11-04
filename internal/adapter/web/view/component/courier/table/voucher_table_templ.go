@@ -50,7 +50,7 @@ func VoucherTable(projectId string, extensions []*domain.ProjectExtension) templ
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = c.CreateVoucher(extensions).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = c.CreateVoucher(extensions, projectId).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

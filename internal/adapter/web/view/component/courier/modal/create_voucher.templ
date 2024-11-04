@@ -451,7 +451,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 	</div>
 	<script>
 // Define the main function to manage the order form
-function createVoucher(projectID) {
+function createVoucher(projectId) {
     return {
         // Core UI state
 	   	projectId: projectId,  // Store the projectId
@@ -808,7 +808,7 @@ function createVoucher(projectID) {
                 note: "",
                 payment: {
                     cod: ''
-                }
+                },
             };
             this.errors = {};  // Clear all errors
             this.selectedCourier = '';  // Reset selected courier

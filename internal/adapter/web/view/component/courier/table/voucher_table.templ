@@ -181,7 +181,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 				</table>
 			</div>
 			/* Start Off canvas */
-			@c.CreateVoucher(extensions)
+			@c.CreateVoucher(extensions, projectId)
 			@p.PaginationControl()
 		</div>
 	</div>

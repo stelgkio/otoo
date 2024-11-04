@@ -54,6 +54,23 @@ i18next
                     "off-canvas-delivery-courier4u-sameday-delivery": "Same Day Delivery",
                     //button
                     "off-canvas-button-save": "Save Changes",
+                    //Voucher Header Table 
+                    "voucher-table-new-order": "New",
+                    "voucher-table-processing-orders": "Processing",
+                    "voucher-table-completed-orders": "Completed",
+                    "voucher-table-cancelled-orders": "Cancelled",
+                    "voucher-table-all-orders": "All",
+                    "voucher-table-export-voucher-button": "Export",
+                    "voucher-table-new-voucher-button": "New Voucher",
+                    // Order Header Table
+                    "order-table-all-orders": "All",
+                    "order-table-completed-orders": "Completed",
+                    "order-table-pending-orders": "Pending",
+                    "order-table-new-orders": "New",
+                    "order-table-processing-orders": "Processing",
+                    "order-table-cancelled-orders": "Cancelled",
+
+
 
 
 
@@ -109,6 +126,20 @@ i18next
                     "off-canvas-delivery-courier4u-sameday-delivery": "Παράδοση εντός ημέρας",
                     // Button  
                     "off-canvas-button-save": "Αποθήκευση",
+                    //Voucher Table
+                    "voucher-table-new-order": "Νέα",
+                    "voucher-table-processing-orders": "Υπο Επεξεργασία",
+                    "voucher-table-completed-orders": "Ολοκληρωμένες",
+                    "voucher-table-cancelled-orders": "Ακυρωμένες",
+                    "voucher-table-all-orders": "Όλες",
+                    "voucher-table-export-voucher-button": "Εξαγωγή",
+                    "voucher-table-new-voucher-button": "Νέο Voucher",
+                    /// Order Header Table
+                    "order-table-all-orders": "Όλες",
+                    "order-table-completed-orders": "Ολοκληρωμένες",
+                    "order-table-pending-orders": "Σε Εκκρεμότητα",
+                    "order-table-new-orders": "Νέες",
+                    "order-table-cancelled-orders": "Ακυρωμένες",
 
 
 

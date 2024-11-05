@@ -5,7 +5,7 @@ templ OrderModal() {
 		<div class="modal-dialog modal-xl modal-dialog-centered ">
 			<div class="modal-content shadow-lg border-0 rounded-2">
 				<div class="modal-header border-0 pb-0 pt-4 px-4">
-					<h5 class="modal-title  fw-bold" id="orderDetailsLabel">
+					<h5 class="modal-title  fw-bold" id="orderDetailsLabel" data-i18n="order-modal-header-title">
 						<i class="bi bi-receipt-cutoff me-2"></i>Order
 					</h5>
 					<button type="button" class="btn-close" aria-label="Close" @click="closeModal"></button>
@@ -17,23 +17,23 @@ templ OrderModal() {
 							<!-- Applying card style to Billing Information -->
 							<div class="card shadow-sm rounded-2 h-100">
 								<div class="card-header">
-									<h6 class="text-muted fw-bold mb-0">
+									<h6 class="text-muted fw-bold mb-0" data-i18n="order-modal-header-billing">
 										<i class="bi bi-credit-card me-2"></i>Billing Information
 									</h6>
 								</div>
 								<div class="card-body">
 									<form>
 										<div class="row">
-											<div class="col-md-6 mb-3">
+											<div class="col-md-6 mb-3" data-i18n="order-modal-billing-name">
 												<label class="form-label small">First Name</label>
 												<input type="text" class="form-control form-control-sm" x-model="modalOrder.billing.first_name"/>
 											</div>
-											<div class="col-md-6 mb-3">
+											<div class="col-md-6 mb-3" data-i18n="order-modal-billing-last-name">
 												<label class="form-label small">Last Name</label>
 												<input type="text" class="form-control form-control-sm" x-model="modalOrder.billing.last_name"/>
 											</div>
 										</div>
-										<div class="mb-3">
+										<div class="mb-3" data-i18n="order-modal-billing-address">
 											<label class="form-label small">Address</label>
 											<div class="input-group input-group-sm">
 												<span class="input-group-text">
@@ -43,16 +43,16 @@ templ OrderModal() {
 											</div>
 										</div>
 										<div class="row">
-											<div class="col-md-6 mb-3">
+											<div class="col-md-6 mb-3" data-i18n="order-modal-billing-city">
 												<label class="form-label small">City</label>
 												<input type="text" class="form-control form-control-sm" x-model="modalOrder.billing.city"/>
 											</div>
-											<div class="col-md-6 mb-3">
+											<div class="col-md-6 mb-3" data-i18n="order-modal-billing-postcode">
 												<label class="form-label small">Postcode</label>
 												<input type="text" class="form-control form-control-sm" x-model="modalOrder.billing.postcode"/>
 											</div>
 										</div>
-										<div class="mb-3">
+										<div class="mb-3" data-i18n="order-modal-billing-email">
 											<label class="form-label small">Email</label>
 											<div class="input-group input-group-sm">
 												<span class="input-group-text">
@@ -61,7 +61,7 @@ templ OrderModal() {
 												<input type="email" class="form-control form-control-sm" x-model="modalOrder.billing.email"/>
 											</div>
 										</div>
-										<div class="mb-3">
+										<div class="mb-3" data-i18n="order-modal-billing-phone">
 											<label class="form-label small">Phone</label>
 											<div class="input-group input-group-sm">
 												<span class="input-group-text">
@@ -79,24 +79,24 @@ templ OrderModal() {
 							<!-- Applying card style to Shipping Information -->
 							<div class="card shadow-sm rounded-2 h-100">
 								<div class="card-header">
-									<h6 class="text-muted fw-bold mb-0">
+									<h6 class="text-muted fw-bold mb-0" data-i18n="order-modal-header-shipping">
 										<i class="bi bi-truck me-2"></i>Shipping Information
 									</h6>
 								</div>
 								<div class="card-body">
 									<form>
 										<div class="row">
-											<div class="col-md-6 mb-3">
+											<div class="col-md-6 mb-3" data-i18n="order-modal-shipping-name">
 												<label class="form-label small">First Name</label>
 												<input type="text" class="form-control form-control-sm" x-model="modalOrder.shipping.first_name"/>
 											</div>
-											<div class="col-md-6 mb-3">
+											<div class="col-md-6 mb-3" data-i18n="order-modal-shipping-last-name">
 												<label class="form-label small">Last Name</label>
 												<input type="text" class="form-control form-control-sm" x-model="modalOrder.shipping.last_name"/>
 											</div>
 										</div>
 										<div class="row">
-											<div class="col-md-6 mb-3">
+											<div class="col-md-6 mb-3" data-i18n="order-modal-shipping-address">
 												<label class="form-label small">Address</label>
 												<div class="input-group input-group-sm">
 													<span class="input-group-text">
@@ -105,22 +105,22 @@ templ OrderModal() {
 													<input type="text" class="form-control form-control-sm" x-model="modalOrder.shipping.address_1"/>
 												</div>
 											</div>
-											<div class="col-md-6 mb-3">
+											<div class="col-md-6 mb-3" data-i18n="order-modal-shipping-address_2">
 												<label class="form-label small">Address 2</label>
 												<input type="text" class="form-control form-control-sm" x-model="modalOrder.shipping.address_2"/>
 											</div>
 										</div>
 										<div class="row">
-											<div class="col-md-6 mb-3">
+											<div class="col-md-6 mb-3" data-i18n="order-modal-shipping-city">
 												<label class="form-label small">City</label>
 												<input type="text" class="form-control form-control-sm" x-model="modalOrder.shipping.city"/>
 											</div>
-											<div class="col-md-6 mb-3">
+											<div class="col-md-6 mb-3" data-i18n="order-modal-shipping-postcode">
 												<label class="form-label small">Postcode</label>
 												<input type="text" class="form-control form-control-sm" x-model="modalOrder.shipping.postcode"/>
 											</div>
 										</div>
-										<div class="mb-3">
+										<div class="mb-3" data-i18n="order-modal-shipping-customer-not">
 											<label class="form-label small">Customer Notes</label>
 											<textarea class="form-control form-control-sm" rows="4" x-model="modalOrder.customer_note"></textarea>
 										</div>

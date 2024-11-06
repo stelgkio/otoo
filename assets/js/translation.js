@@ -24,28 +24,28 @@ i18next
                     "off-canvas-customer-address": "Address",
                     "off-canvas-customer-city": "City",
                     "off-canvas-customer-postal": "Postal",
-                    //Products Info
+                    //Products Info EN
                     "off-canvas-customer-products-header": "Products",
                     "off-canvas-customer-product-name": "Product Name",
                     "off-canvas-customer-product-quantity": "Product Quantity",
                     "off-canvas-customer-product-price": "Product Price",
-                    //Delivery Info
+                    //Delivery Info EN
                     "off-canvas-delivery-info": "Delivery Info",
                     "off-canvas-special-instructions": "Special Instructions",
                     "off-canvas-customer-store-pickup": "Store pickup",
-                    // Shipping Info
+                    // Shipping Info EN
                     "off-canvas-shipping-information": "Shipping Information",
                     "off-canvas-shipping-order-number": "Order Number",
                     "off-canvas-shipping-parcel-weight": "Parcel Weight",
                     "off-canvas-shipping-company": "Shipping Company",
                     "off-canvas-shipping-provider": "Select Courier Provider",
-                    //ACS
+                    //ACS EN
                     "off-canvas-delivery-options-acs": "Delivery Options (ACS)",
                     "off-canvas-acs-standard-delivery": "Standard Delivery",
                     "off-canvas-acs-saturday-delivery": "Saturday Delivery",
                     "off-canvas-acs-urgent-delivery": "Urgent Delivery",
                     "off-canvas-acs-pickup-delivery": "Pickup Delivery",
-                    //Courier4U
+                    //Courier4U EN
                     "off-canvas-delivery-options-courier4u": "Delivery Options (Courier4U)",
                     "off-canvas-delivery-courier4u-standard-delivery": "Standard Delivery",
                     "off-canvas-delivery-courier4u-saturday-delivery": "Saturday Delivery",
@@ -54,7 +54,7 @@ i18next
                     "off-canvas-delivery-courier4u-sameday-delivery": "Same Day Delivery",
                     //button
                     "off-canvas-button-save": "Save Changes",
-                    //Voucher Header Table 
+                    //Voucher Header Table EN
                     "voucher-table-new-order": "New",
                     "voucher-table-processing-orders": "Processing",
                     "voucher-table-completed-orders": "Completed",
@@ -62,13 +62,33 @@ i18next
                     "voucher-table-all-orders": "All",
                     "voucher-table-export-voucher-button": "Export",
                     "voucher-table-new-voucher-button": "New Voucher",
-                    // Order Header Table
+                    // Order Header Table EN
                     "order-table-all-orders": "All",
                     "order-table-completed-orders": "Completed",
                     "order-table-pending-orders": "Pending",
                     "order-table-new-orders": "New",
                     "order-table-processing-orders": "Processing",
                     "order-table-cancelled-orders": "Cancelled",
+                    // Order Modal Billing EN
+                    "order-modal-header-title": "Order Details",
+                    "order-modal-header-billing": "Billing Information",
+                    "order-modal-billing-name": "First Name",
+                    "order-modal-billing-address": "Address",
+                    "order-modal-billing-city": "City",
+                    "order-modal-billing-postal": "Postal",
+                    "order-modal-billing-email": "E-mail",
+                    "order-modal-billing-phone": "Phone",
+                    // Order Modal Shipping EN
+                    "order-modal-header-shipping": "Shipping Information",
+                    "order-modal-shipping-name": "First Name",
+                    "order-modal-shipping-last-name": "Last Name",
+                    "order-modal-shipping-address": "Address",
+                    "order-modal-shipping-address_2": "Address 2",
+                    "order-modal-shipping-city": "City",
+                    "order-modal-shipping-postal": "Postal",
+                    "order-modal-shipping-customer-note": "Customer Note",
+
+
 
 
 
@@ -140,6 +160,26 @@ i18next
                     "order-table-pending-orders": "Σε Εκκρεμότητα",
                     "order-table-new-orders": "Νέες",
                     "order-table-cancelled-orders": "Ακυρωμένες",
+                    // Order Modal Shipping GR
+                    "order-modal-header-title": "Πληροφορίες Παραγγελίας",
+                    "order-modal-header-billing": "Πληροφορίες Πληρωμής",
+                    "order-modal-billing-name": "Όνομα",
+                    "order-modal-billing-last-name": "Επώνυμο",
+                    "order-modal-billing-address": "Διεύθυνση",
+                    "order-modal-billing-city": "Πόλη",
+                    "order-modal-billing-postal": "Τ.Κ.",
+                    "order-modal-billing-email": "E-mail",
+                    "order-modal-billing-phone": "Τηλέφωνο",
+                    // Order Modal Shipping EN
+                    "order-modal-header-shipping": "Πληροφορίες Αποστολής",
+                    "order-modal-shipping-name": "Όνομα",
+                    "order-modal-shipping-last-name": "Επώνυμο",
+                    "order-modal-shipping-address": "Διεύθυνση",
+                    "order-modal-shipping-address_2": "Διεύθυνση 2",
+                    "order-modal-shipping-city": "Πόλη",
+                    "order-modal-shipping-postal": "Τ.Κ.",
+                    "order-modal-shipping-customer-note": "Σημειώσεις Πελάτη",
+
 
 
 

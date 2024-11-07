@@ -52,6 +52,19 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 						<i class="bi bi-truck"></i> Shipping
 					</button>
 				</li>
+				<li class="nav-item" role="presentation">
+					<button
+						class="nav-link"
+						id="more-info-tab"
+						data-bs-toggle="tab"
+						data-bs-target="#additional-info"
+						type="button"
+						role="tab"
+						@click="setActiveTab('additional')"
+					>
+						<i class="bi bi-truck"></i> Additional Info
+					</button>
+				</li>
 			</ul>
 			<!-- Tab Content -->
 			<div class="tab-content flex-grow-1 overflow-auto" id="orderTabContent">
@@ -255,8 +268,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 											type="number"
 											class="form-control form-control-sm"
 											id="parcelWeight"
-											placeholder="0.5"
+											placeholder="1.00"
 											step="0.5"
+											value="1.00"
 											x-model="voucher_object.shipping.weight"
 											:class="{ 'is-invalid': errors['shipping.weight'] }"
 											@blur="validateField('shipping.weight')"
@@ -481,15 +495,13 @@ function createVoucher(projectId) {
                 address_1: '',
                 city: '',
                 postcode: '',
-                weight: '',
+                weight: 1.00,
                 courier: '',
                 deliveryOption: ''
             },
             products: [],
             note: "",
-            payment: {
-                cod: ''
-            }
+            cod: ''
         },
 
         // Hermes-specific data
@@ -500,7 +512,7 @@ function createVoucher(projectId) {
 			ServiceSameday: null,
 			ServiceProtocol: null,
 			ServiceReception: null,
-			ParcelWeight: null,
+			ParcelWeight: 1.00,
 			ParcelDepth: null,
 			ParcelWidth: null,
 			ParcelHeight: null
@@ -520,10 +532,10 @@ function createVoucher(projectId) {
 				ReceiverAddress: this.voucher_object.shipping.address_1,
 				ReceiverCity: this.voucher_object.shipping.city,
 				ReceiverPostal: parseInt(this.voucher_object.shipping.postcode, 10),
-				ReceiverTelephone: this.voucher_object.shipping.phone,
+				ReceiverTelephone: this.voucher_object.billing.phone,
 				Notes: this.voucher_object.note,
-				OrderID: this.voucher_object.orderId,
-				Cod: parseFloat(this.voucher_object.payment.cod),
+				OrderID:String(this.voucher_object.orderId),
+				Cod: parseFloat(this.voucher_object.cod),
                 
                 // Hermes specific services
                 ServiceSavvato: this.hermes_settings.ServiceSavvato === '1' ? 1 : null,
@@ -533,11 +545,13 @@ function createVoucher(projectId) {
 				ServiceProtocol: this.hermes_settings.ServiceProtocol === '1' ? 1 : null,
 				ServiceReception: this.hermes_settings.ServiceReception === '1' ? 1 : null,
                 
-                // Parcel details
-                ParcelWeight: this.hermes_settings.ParcelWeight ? parseFloat(this.hermes_settings.ParcelWeight) : null,
-				ParcelDepth: this.hermes_settings.ParcelDepth ? parseFloat(this.hermes_settings.ParcelDepth) : null,
-				ParcelWidth: this.hermes_settings.ParcelWidth ? parseFloat(this.hermes_settings.ParcelWidth) : null,
-				ParcelHeight: this.hermes_settings.ParcelHeight ? parseFloat(this.hermes_settings.ParcelHeight) : null,
+          
+             // Parcel details
+				ParcelWeight: 1, // this.hermes_settings.ParcelWeight ? Math.max(parseFloat(this.hermes_settings.ParcelWeight), 1) : 1,
+				ParcelDepth: null,//this.hermes_settings.ParcelDepth ? Math.max(parseFloat(this.hermes_settings.ParcelDepth), 1) : 1,
+				ParcelWidth: null, //this.hermes_settings.ParcelWidth ? Math.max(parseFloat(this.hermes_settings.ParcelWidth), 1) : 1,
+				ParcelHeight: null, //this.hermes_settings.ParcelHeight ? Math.max(parseFloat(this.hermes_settings.ParcelHeight), 1) : 1,
+
             };
         },
 
@@ -554,19 +568,9 @@ function createVoucher(projectId) {
                		if (this.selectedCourier === 'courier4u') {
            			const payload = this.prepareHermesPayload();
 					
-
 					 // Log the payload for debugging
             			console.log('Full Payload:', payload);
-				
-                      // Create a full payload that includes billing, shipping, and products
-						const fullPayload = {
-							...payload,  // Spread the Hermes payload
-							billing: this.voucher_object.billing,  // Include billing
-							shipping: this.voucher_object.shipping,  // Include shipping
-							products: this.voucher_object.products,  // Include products
-							payment_method: this.voucher_object.payment_method,  // Include payment method
-							customer_note: this.voucher_object.note  // Include customer note
-						};
+						
 
 					const response = await fetch(`/voucher/courier4u/create/${this.projectID}`, {
 						method: 'POST',
@@ -611,7 +615,8 @@ function createVoucher(projectId) {
                 billing: { ...this.voucher_object.billing, ...voucher.billing },
                 shipping: { ...this.voucher_object.shipping, ...voucher.shipping },
                 products: [...voucher.products],
-                note: voucher.note
+                note: voucher.note,
+				cod: voucher.cod
             };
 
             this.selectedCourier = voucher.shipping?.courier || '';
@@ -659,6 +664,8 @@ function createVoucher(projectId) {
             console.log('Setting active tab:', tab);
             this.activeTab = tab;
         },
+
+		
 
         // Set up watchers for validation of form fields
         setupValidationWatchers() {
@@ -748,7 +755,7 @@ function createVoucher(projectId) {
 								this.errors[field] = 'Please enter a valid COD amount';
 								return false;
 							}
-						if (codAmount < 0) {
+						if (codAmount <= 0) {
 								this.errors[field] = 'COD amount cannot be negative';
 								return false;
 							}

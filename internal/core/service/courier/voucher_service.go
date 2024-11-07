@@ -24,6 +24,8 @@ func NewVoucherService(repo port.VoucherRepository) *VoucherService {
 
 // CreateVoucher inserts a new Voucher into the database
 func (vs *VoucherService) CreateVoucher(ctx echo.Context, OrderRecord *o.OrderRecord, projectID string) (*domain.Voucher, error) {
+	//TODO: Implement the logic to create a Voucher chech if the voucher is valid and if it is valid then create a voucher
+
 	voucher := domain.NewVoucher(projectID, OrderRecord.Order.ShippingTotal, OrderRecord.Order.CustomerNote, OrderRecord.Order.Shipping, OrderRecord.Order.Billing, OrderRecord.Order.ID, OrderRecord.Order.LineItems, OrderRecord.Order.PaymentMethod, OrderRecord.Order.Total)
 
 	return vs.repo.CreateVoucher(ctx, voucher, projectID)

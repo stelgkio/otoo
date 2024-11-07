@@ -161,7 +161,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 										</button>
 									</template>
 									<template x-if="voucher.status !== 'new'">
-										<button type="button" class="btn btn-sm btn-neutral" @click.stop="downloadVoucher(voucher.voucherId)">
+										<button type="button" class="btn btn-sm btn-neutral" @click.stop="downloadVoucher(voucher.Id, voucher.courier_provider)">
 											<i
 												class="fas fa-download ml-1"
 												style="cursor: pointer;"
@@ -293,10 +293,66 @@ function voucherTable(projectId) {
             if (page < 1 || page > this.totalPages) return;
             this.fetchVouchers(page);
         },
-		 downloadVoucher(voucherId) {
+
+		async downloadVoucher(voucherId,courier_provider) {
         
+		var url = '';
+		if (courier_provider == 'courier4u' ){
+			url=`/voucher/courier4u/donwload/${voucherId}/${this.projectID}`;
+		} else if (courier_provider == 'acs-courier') {
+			url=`/voucher/acscourier/download/${voucherId}/${this.projectID}`;
+		} else {
+			url=`/voucher/redcourier/download/${voucherId}/${this.projectID}`;
+			
+		}
        	 console.log(`Downloading voucher with ID: ${voucherId}`);
-        
+		 // Assuming you have a function to fetch the data from your endpoint
+			await fetch(url)
+			.then(response => {
+				if (response.ok) {
+				return response.json(); // Assuming response has { filename, base64 }
+				} else {
+				throw new Error("Network response was not OK");
+				}
+			})
+			.then(data => {
+				// Extract filename and base64 content
+				const { filename, base64 } = data;
+
+				// Ensure there are no data URI prefixes
+				const cleanedBase64 = base64.split(',').pop();
+
+				// Decode base64 to binary string
+				let binaryString;
+				try {
+				binaryString = atob(cleanedBase64);
+				} catch (error) {
+				console.error("Failed to decode base64 data:", error);
+				return;
+				}
+
+				// Convert binary string to Uint8Array
+				const byteArray = new Uint8Array(binaryString.length);
+				for (let i = 0; i < binaryString.length; i++) {
+				byteArray[i] = binaryString.charCodeAt(i);
+				}
+
+				// Create a Blob with 'application/pdf' MIME type
+				const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+				// Create an anchor element to trigger download
+				const link = document.createElement('a');
+				link.href = window.URL.createObjectURL(blob);
+				link.download = filename || "downloaded-file.pdf";
+				link.click();
+
+				// Clean up URL object
+				window.URL.revokeObjectURL(link.href);
+			})
+			.catch(error => {
+				console.error("There was a problem with the fetch operation:", error);
+			});
+         this.fetchVouchers(page);
     	},
 
         get paginatedVouchers() {

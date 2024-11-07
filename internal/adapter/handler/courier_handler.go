@@ -19,7 +19,7 @@ import (
 
 type PDFResponse struct {
 	Filename string `json:"filename"` // Filename of the PDF
-	Data     string `json:"data"`     // Base64 encoded PDF data
+	Data     string `json:"base64"`   // Base64 encoded PDF data
 }
 
 // CourierTable returns the order dashboard

@@ -40,6 +40,14 @@ i18next
                     "off-canvas-shipping-company": "Shipping Company",
                     "off-canvas-shipping-provider": "Select Courier Provider",
                     "off-canvas-parcel-cod": "COD",
+                    //Off Canvas Billing Info EN
+                    "off-canvas-modal-name": "Name",
+                    "off-canvas-modal-last-name": "Last Name",
+                    "off-canvas-email": "Email",
+                    "off-canvas-modal-phone": "Phone",
+                    "off-canvas-modal-address": "Address",
+                    "off-canvas-modal-city": "City",
+                    "off-canvas-modal-postal": "Postal",
                     //Off Canvas ACS EN
                     "off-canvas-delivery-options-acs": "Delivery Options (ACS)",
                     "off-canvas-acs-standard-delivery": "Standard Delivery",
@@ -113,21 +121,6 @@ i18next
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 }
             },
             el: {
@@ -140,13 +133,13 @@ i18next
                     "off-canvas-customer-tab": "Πελάτης",
                     "off-canvas-shipping-tab": "Αποστολή",
                     "off-canvas-customer-info-header": "Στοιχεία Πελάτη",
-                    "off-canvas-customer-first_name": "Όνομα",
-                    "off-canvas-customer-last_name": "Επώνυμο",
-                    "off-canvas-customer-email": "Email",
-                    "off-canvas-customer-phone": "Τηλέφωνο",
-                    "off-canvas-customer-address": "Διεύθυνση",
-                    "off-canvas-customer-city": "Πόλη",
-                    "off-canvas-customer-postal": "Τ.K.",
+                    "off-canvas-modal-name": "Όνομα",
+                    "off-canvas-modal-last-name": "Επώνυμο",
+                    "off-canvas-email": "Email",
+                    "off-canvas-modal-phone": "Τηλέφωνο",
+                    "ooff-canvas-modal-address": "Διεύθυνση",
+                    "off-canvas-modal-city": "Πόλη",
+                    "off-canvas-modal-postal": "Τ.K.",
                     //Off Canvas Products Info
                     "off-canvas-customer-products-header": "Προϊόντα",
                     "off-canvas-customer-product-name": "Όνομα Προϊόντος",
@@ -177,12 +170,11 @@ i18next
                     "off-canvas-delivery-courier4u-sameday-delivery": "Παράδοση εντός ημέρας",
                     "off-canvas-delivery-courier4u-ServiceProtocol-delivery": "Πρωτοκολλο Παράδοσης",
                     //Off Canvas Parcel Weight/Height/Width Options GR
-                    "off-canvas-wh-options-courier4u": "Λεπτομέρειες Πακέτου",
-                    "off-canvas-shipping-parcel-courier4u-weight": "Βάρος Πακέτου",
-                    "off-canvas-wh-options-courier4u-weight": "Βάρος",
-                    "off-canvas-wh-options-courier4u-depth": "Βάθος",
-                    "off-canvas-wh-options-courier4u-height": "Υψος",
-                    "off-canvas-wh-options-courier4u-width": "Πλάτος",
+                    "off-canvas-wh-options-courier4u": "Επιλογές Δέματος",
+                    "off-canvas-shipping-parcel-courier4u-weight": "Βάρος Δέματος",
+                    "off-canvas-shipping-parcel-depth": "Βάθος Δέματος",
+                    "off-canvas-shipping-parcel-height": "Ύψος Δέματος",
+                    "off-canvas-shipping-parcel-width": "Πλάτος Δέματος",
                     "offcanvas-nav-customer": "Πελάτης",
                     "offcanvas-nav-shipping": "Αποστολή",
                     // Button  

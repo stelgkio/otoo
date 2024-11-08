@@ -53,7 +53,9 @@ i18next
                     "off-canvas-delivery-courier4u-urgent-delivery": "Urgent Delivery",
                     "off-canvas-delivery-courier4u-pickup-delivery": "Pickup Delivery",
                     "off-canvas-delivery-courier4u-sameday-delivery": "Same Day Delivery",
-                    "off-canvas-delivery-courier4u-ServiceProtocol-delivery": "Service Protocol Delivery",
+                    "off-canvas-delivery-courier4u-return-delivery": "Return Delivery",
+
+                    "off-canvas-delivery-courier4u-ServiceProtocol-delivery": "Service Protocol Number",
                     //Off Canvas Parsel Weight/Height/Width Options EN
                     "off-canvas-shipping-parcel-courier4u-weight": "Package Weight",
                     "off-canvas-wh-options-courier4u": "Package Options",
@@ -157,6 +159,7 @@ i18next
                     "off-canvas-delivery-courier4u-pickup-delivery": "Παραλαβή Απο Κατάστημα",
                     "off-canvas-delivery-courier4u-sameday-delivery": "Παράδοση εντός ημέρας",
                     "off-canvas-delivery-courier4u-ServiceProtocol-delivery": "Πρωτοκολλο Παράδοσης",
+                    "off-canvas-delivery-courier4u-return-delivery": "Επιστροφή Προϊόντος",
                     //Off Canvas Parcel Weight/Height/Width Options GR
                     "off-canvas-wh-options-courier4u": "Λεπτομέρειες Πακέτου",
                     "off-canvas-shipping-parcel-courier4u-weight": "Βάρος Πακέτου",

@@ -54,7 +54,8 @@ i18next
                     "off-canvas-delivery-courier4u-sameday-delivery": "Same Day Delivery",
                     "off-canvas-delivery-courier4u-ServiceProtocol-delivery": "Service Protocol Delivery",
                     //Off Canvas Parsel Weight/Height/Width Options EN
-                    "off-canvas-wh-options-courier4u": "Weight/Height/Width Options",
+                    "off-canvas-shipping-parcel-courier4u-weight": "Package Weight",
+                    "off-canvas-wh-options-courier4u": "Package Options",
                     "off-canvas-shipping-parcel-depth": "Parcel Depth",
                     "off-canvas-shipping-parcel-height": "Parcel Height",
                     "off-canvas-shipping-parcel-width": "Parcel Width",
@@ -163,7 +164,7 @@ i18next
                     "off-canvas-button-save": "Αποθήκευση",
                     //Voucher Table
                     "voucher-table-new-order": "Νέα",
-                    "voucher-table-processing-orders": "Υπο Επεξεργασία",
+                    "voucher-table-processing-orders": "Σε Επεξεργασία",
                     "voucher-table-completed-orders": "Ολοκληρωμένες",
                     "voucher-table-cancelled-orders": "Ακυρωμένες",
                     "voucher-table-all-orders": "Όλες",

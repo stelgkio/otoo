@@ -250,7 +250,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 								</div>
 								<!-- Order COD -->
 								<div class="mb-3">
-									<label for="parcelCOD" class="form-label small" data-i18n="off-canvas-shipping-parclel-cod">COD (€)</label>
+									<label for="parcelCOD" class="form-label small" data-i18n="off-canvas-parcel-cod">COD (€)</label>
 									<div class="input-group input-group-sm">
 										<span class="input-group-text">
 											<i class="bi bi-cash"></i>
@@ -503,6 +503,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 					id="saveBtn"
 					@click="handleSubmit()"
 					:disabled="!isFormValid() || isSubmitting"
+					data-i18n="off-canvas-save-btn"
 				>
 					<template x-if="!isSubmitting">
 						<span>Save Changes</span>
@@ -520,6 +521,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 					class="btn btn-neutral rounded-1 px-4"
 					id="closeBtn"
 					@click="closeOffcanvas()"
+					data-i18n="off-canvas-close-btn"
 				>
 					Close
 				</button>

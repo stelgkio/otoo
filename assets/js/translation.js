@@ -39,6 +39,7 @@ i18next
                     "off-canvas-shipping-parcel-weight": "Parcel Weight",
                     "off-canvas-shipping-company": "Shipping Company",
                     "off-canvas-shipping-provider": "Select Courier Provider",
+                    "off-canvas-parcel-cod": "COD",
                     //Off Canvas ACS EN
                     "off-canvas-delivery-options-acs": "Delivery Options (ACS)",
                     "off-canvas-acs-standard-delivery": "Standard Delivery",
@@ -59,16 +60,16 @@ i18next
                     "off-canvas-shipping-parcel-depth": "Parcel Depth",
                     "off-canvas-shipping-parcel-height": "Parcel Height",
                     "off-canvas-shipping-parcel-width": "Parcel Width",
-
                     //Off Canvas button
-                    "off-canvas-button-save": "Save Changes",
+                    "off-canvas-save-btn": "Save Changes",
+                    "off-canvas-close-btn": "Cancel",
                     //Voucher Header Table EN
                     "voucher-table-new-order": "New",
                     "voucher-table-processing-orders": "Processing",
                     "voucher-table-completed-orders": "Completed",
                     "voucher-table-cancelled-orders": "Cancelled",
                     "voucher-table-all-orders": "All",
-                    "voucher-table-export-voucher-button": "Export",
+                    "voucher-table-export-voucher-button": "Export Voucher",
                     "voucher-table-new-voucher-button": "New Voucher",
                     // Order Header Table EN
                     "order-table-all-orders": "All",
@@ -95,7 +96,7 @@ i18next
                     "order-modal-shipping-city": "City",
                     "order-modal-shipping-postal": "Postal",
                     "order-modal-shipping-customer-note": "Customer Note",
-                    "off-canvas-shipping-parcle-cod": "Cash on Delivery",
+                    "off-canvas-shipping-parclel-cod": "Cash on Delivery",
 
 
 
@@ -139,6 +140,7 @@ i18next
                     "off-canvas-shipping-order-number": "Αριθμός Παραγγελίας",
                     "off-canvas-shipping-company": "Εταιρεία Αποστολής",
                     "off-canvas-shipping-provider": "Επιλογή Ταχυδρομικής Εταιρείας",
+                    "off-canvas-parcel-cod": "Αντικαταβολή",
                     //Off Canvas ACS
                     "off-canvas-delivery-options-acs": "Επιλογές Αποστολής (ACS)",
                     "off-canvas-acs-standard-delivery": "Κανονική Αποστολή",
@@ -161,14 +163,15 @@ i18next
                     "off-canvas-wh-options-courier4u-height": "Υψος",
                     "off-canvas-wh-options-courier4u-width": "Πλάτος",
                     // Button  
-                    "off-canvas-button-save": "Αποθήκευση",
+                    "off-canvas-save-btn": "Αποθήκευση",
+                    "off-canvas-close-btn": "Ακύρωση",
                     //Voucher Table
                     "voucher-table-new-order": "Νέες",
                     "voucher-table-processing-orders": "Σε Επεξεργασία",
                     "voucher-table-completed-orders": "Ολοκληρωμένες",
                     "voucher-table-cancelled-orders": "Ακυρωμένες",
                     "voucher-table-all-orders": "Όλες",
-                    "voucher-table-export-voucher-button": "Εξαγωγή",
+                    "voucher-table-export-voucher-button": "Εξαγωγή Voucher",
                     "voucher-table-new-voucher-button": "Νέο Voucher",
                     /// Order Header Table
                     "order-table-all-orders": "Όλες",
@@ -196,7 +199,7 @@ i18next
                     "order-modal-shipping-city": "Πόλη",
                     "order-modal-shipping-postal": "Τ.Κ.",
                     "order-modal-shipping-customer-note": "Σημειώσεις Πελάτη",
-                    "off-canvas-shipping-parcle-cod": "Αντικαταβολή",
+                    "off-canvas-shipping-parclel-cod": "Αντικαταβολή",
 
 
                 }

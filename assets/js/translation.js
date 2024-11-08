@@ -99,6 +99,25 @@ i18next
                     "order-modal-shipping-postal": "Postal",
                     "order-modal-shipping-customer-note": "Customer Note",
                     "off-canvas-shipping-parclel-cod": "Cash on Delivery",
+                    // Sorting Table EN
+                    "sorting-table-voucher-id": "Voucher ID",
+                    "sorting-table-order-id": "Order ID",
+                    "sorting-table-order-date": "Order Date",
+                    "sorting-table-order-cod": "COD",
+                    "sorting-table-status-header:": "Status",
+                    "sorting-table-printed:": "Printed",
+                    "sorting-table-action-header": "Action",
+                    "sorting-no-results-msg": "No results found",
+                    "sorting-create-voucher": "Create Voucher",
+
+
+
+
+
+
+
+
+
 
 
 
@@ -204,6 +223,16 @@ i18next
                     "order-modal-shipping-postal": "Τ.Κ.",
                     "order-modal-shipping-customer-note": "Σημειώσεις Πελάτη",
                     "off-canvas-shipping-parclel-cod": "Αντικαταβολή",
+                    // Sorting Table GR
+                    "sorting-table-voucher-id": "VOUCHER ID",
+                    "sorting-table-order-id": "ID ΠΑΡΑΓΓΕΛΙΑΣ",
+                    "sorting-table-order-date": "ΗΜ/ΝΙΑ",
+                    "sorting-table-order-cod": "ΑΝΤΙΚΑΤΑΒΟΛΗ",
+                    "sorting-table-status-header": "ΚΑΤΑΣΤΑΣΗ",
+                    "sorting-table-printed": "ΕΚΤΥΠΩΜΕΝΟ",
+                    "sorting-table-action-header": "ΕΝΕΡΓΕΙΕΣ",
+                    "sorting-no-results-msg": "Δεν υπάρχουν αποτελέσματα",
+                    "sorting-create-voucher": "Δημιουργία Voucher",
 
 
                 }

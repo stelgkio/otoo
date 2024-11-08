@@ -6,6 +6,7 @@ import (
 )
 
 templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
+	<!-- Start off canvas -->
 	<div
 		class="offcanvas offcanvas-end w-100 w-md-75 w-lg-50"
 		data-bs-backdrop="true"
@@ -282,44 +283,44 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										class="form-check-input"
 										type="checkbox"
 										name="deliveryOption"
-										id="standardDeliveryACS"
+										id="AcsStandardDelivery"
 										value="standard"
 										x-model="voucher_object.shipping.deliveryOption"
 									/>
-									<label class="form-check-label" for="standardDelivery" data-i18n="off-canvas-acs-standard-delivery">Standard Delivery</label>
+									<label class="form-check-label" for="AcsSaturdayDelivery" data-i18n="off-canvas-acs-standard-delivery">Standard Delivery</label>
 								</div>
 								<div class="form-check">
 									<input
 										class="form-check-input"
 										type="checkbox"
 										name="deliveryOption"
-										id="saturdayDelivery"
+										id="AcsSaturdayDelivery"
 										value="saturday"
 										x-model="voucher_object.shipping.deliveryOption"
 									/>
-									<label class="form-check-label" for="saturdayDelivery" data-i18n="off-canvas-acs-saturday-delivery">Saturday Delivery</label>
+									<label class="form-check-label" for="AcsSaturdayDelivery" data-i18n="off-canvas-acs-saturday-delivery">Saturday Delivery</label>
 								</div>
 								<div class="form-check">
 									<input
 										class="form-check-input"
 										type="checkbox"
 										name="deliveryOption"
-										id="urgentDelivery"
+										id="AcsUrgentDelivery"
 										value="urgent"
 										x-model="voucher_object.shipping.deliveryOption"
 									/>
-									<label class="form-check-label" for="urgentDelivery" data-i18n="off-canvas-acs-urgent-delivery">Urgent Delivery</label>
+									<label class="form-check-label" for="AcsUrgentDelivery" data-i18n="off-canvas-acs-urgent-delivery">Urgent Delivery</label>
 								</div>
 								<div class="form-check">
 									<input
 										class="form-check-input"
 										type="checkbox"
 										name="deliveryOption"
-										id="pickupDelivery"
+										id="AcsPickupDelivery"
 										value="pickup"
 										x-model="voucher_object.shipping.deliveryOption"
 									/>
-									<label class="form-check-label" for="pickupDelivery" data-i18n="off-canvas-acs-pickup-delivery">Pickup</label>
+									<label class="form-check-label" for="AcsPickupDelivery" data-i18n="off-canvas-acs-pickup-delivery">Pickup</label>
 								</div>
 							</div>
 						</div>

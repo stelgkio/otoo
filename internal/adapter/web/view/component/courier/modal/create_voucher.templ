@@ -27,6 +27,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 		<div class="offcanvas-body d-flex flex-column">
 			<!-- Tabs -->
 			<ul class="nav nav-tabs" id="orderTabs" role="tablist">
+				// Customer Tab
 				<li class="nav-item" role="presentation">
 					<button
 						class="nav-link active"
@@ -37,9 +38,10 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 						role="tab"
 						@click="setActiveTab('customer')"
 					>
-						<i class="bi bi-person"></i> Customer
+						<span data-i18n="offcanvas-nav-customer">Customer</span>
 					</button>
 				</li>
+				/// Shipping Tab
 				<li class="nav-item" role="presentation">
 					<button
 						class="nav-link"
@@ -50,7 +52,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 						role="tab"
 						@click="setActiveTab('shipping')"
 					>
-						<i class="bi bi-truck"></i> Shipping
+						<span data-i18n="offcanvas-nav-customer">Shipping</span>
 					</button>
 				</li>
 			</ul>

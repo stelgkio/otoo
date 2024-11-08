@@ -60,6 +60,8 @@ i18next
                     "off-canvas-shipping-parcel-depth": "Parcel Depth",
                     "off-canvas-shipping-parcel-height": "Parcel Height",
                     "off-canvas-shipping-parcel-width": "Parcel Width",
+                    "offcanvas-nav-customer": "Customer",
+                    "offcanvas-nav-shipping": "Shipping",
                     //Off Canvas button
                     "off-canvas-save-btn": "Save Changes",
                     "off-canvas-close-btn": "Cancel",
@@ -155,13 +157,15 @@ i18next
                     "off-canvas-delivery-courier4u-pickup-delivery": "Παραλαβή Απο Κατάστημα",
                     "off-canvas-delivery-courier4u-sameday-delivery": "Παράδοση εντός ημέρας",
                     "off-canvas-delivery-courier4u-ServiceProtocol-delivery": "Πρωτοκολλο Παράδοσης",
-                    //Off Canvas Parsel Weight/Height/Width Options GR
+                    //Off Canvas Parcel Weight/Height/Width Options GR
                     "off-canvas-wh-options-courier4u": "Λεπτομέρειες Πακέτου",
                     "off-canvas-shipping-parcel-courier4u-weight": "Βάρος Πακέτου",
                     "off-canvas-wh-options-courier4u-weight": "Βάρος",
                     "off-canvas-wh-options-courier4u-depth": "Βάθος",
                     "off-canvas-wh-options-courier4u-height": "Υψος",
                     "off-canvas-wh-options-courier4u-width": "Πλάτος",
+                    "offcanvas-nav-customer": "Πελάτης",
+                    "offcanvas-nav-shipping": "Αποστολή",
                     // Button  
                     "off-canvas-save-btn": "Αποθήκευση",
                     "off-canvas-close-btn": "Ακύρωση",

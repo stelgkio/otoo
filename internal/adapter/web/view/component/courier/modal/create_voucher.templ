@@ -341,7 +341,6 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 												type="number"
 												class="form-control form-control-sm"
 												id="parcelWeight"
-												placeholder="1.00"
 												step="0.5"
 												value="1.00"
 												x-model="hermes_settings.ParcelWeight"
@@ -363,7 +362,6 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 												type="number"
 												class="form-control form-control-sm"
 												id="parcelDepth"
-												placeholder="1.00"
 												step="0.5"
 												value="1.00"
 												x-model="hermes_settings.ParcelDepth"
@@ -384,7 +382,6 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 												type="number"
 												class="form-control form-control-sm"
 												id="parcelWidth"
-												placeholder="1.00"
 												step="0.5"
 												value="1.00"
 												x-model="hermes_settings.parcelWidth"
@@ -403,7 +400,6 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 												type="number"
 												class="form-control form-control-sm"
 												id="parcelHeight"
-												placeholder="1.00"
 												step="0.5"
 												value="1.00"
 												x-model="hermes_settings.parselHeight"
@@ -576,7 +572,6 @@ function createVoucher(projectId) {
                 address_1: '',
                 city: '',
                 postcode: '',
-                weight: 1.00,
                 courier: '',
                 deliveryOption: ''
             },
@@ -628,7 +623,7 @@ function createVoucher(projectId) {
                 
           
              // Parcel details
-				ParcelWeight: 1, // this.hermes_settings.ParcelWeight ? Math.max(parseFloat(this.hermes_settings.ParcelWeight), 1) : 1,
+				ParcelWeight:  this.hermes_settings.ParcelWeight ? Math.max(parseFloat(this.hermes_settings.ParcelWeight), 1) : 1,
 				ParcelDepth: null,//this.hermes_settings.ParcelDepth ? Math.max(parseFloat(this.hermes_settings.ParcelDepth), 1) : 1,
 				ParcelWidth: null, //this.hermes_settings.ParcelWidth ? Math.max(parseFloat(this.hermes_settings.ParcelWidth), 1) : 1,
 				ParcelHeight: null, //this.hermes_settings.ParcelHeight ? Math.max(parseFloat(this.hermes_settings.ParcelHeight), 1) : 1,
@@ -786,6 +781,7 @@ function createVoucher(projectId) {
 
             // Get the value of the field to validate
             const value = field.split('.').reduce((obj, key) => obj?.[key], this.voucher_object);
+			const herm_value = field.split('.').reduce((obj, key) => obj?.[key], this.hermes_settings);
             delete this.errors[field];  // Clear previous errors
 
             const optionalFields = ['shipping.deliveryOption'];
@@ -822,8 +818,8 @@ function createVoucher(projectId) {
                     }
                     break;
 
-				case field === 'shipping.weight':
-                    const weight = parseFloat(value);
+				case field === 'weight':
+                    const weight = parseFloat(herm_value);
                     if (isNaN(weight) || weight <= 0) {
                         this.errors[field] = 'Please enter a valid weight greater than 0';
                         return false;
@@ -855,7 +851,7 @@ function createVoucher(projectId) {
                 'billing.first_name', 'billing.last_name', 'billing.email', 'billing.phone', 
                 'billing.address_1', 'billing.city', 'billing.postcode',
                 'shipping.first_name', 'shipping.last_name', 'shipping.address_1', 
-                'shipping.city', 'shipping.postcode', 'shipping.courier', 
+                'shipping.city', 'shipping.postcode', 'shipping.courier', 'shipping.weight',
                 'shipping.deliveryOption'
             ];
             let valid = true;
@@ -888,15 +884,12 @@ function createVoucher(projectId) {
                     address_1: '',
                     city: '',
                     postcode: '',
-                    weight: '',
                     courier: '',
                     deliveryOption: ''
                 },
                 products: [],
                 note: "",
-                payment: {
-                    cod: ''
-                },
+        		cod: ''
             };
             this.errors = {};  // Clear all errors
             this.selectedCourier = '';  // Reset selected courier

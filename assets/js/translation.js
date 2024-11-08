@@ -163,7 +163,7 @@ i18next
                     // Button  
                     "off-canvas-button-save": "Αποθήκευση",
                     //Voucher Table
-                    "voucher-table-new-order": "Νέα",
+                    "voucher-table-new-order": "Νέες",
                     "voucher-table-processing-orders": "Σε Επεξεργασία",
                     "voucher-table-completed-orders": "Ολοκληρωμένες",
                     "voucher-table-cancelled-orders": "Ακυρωμένες",

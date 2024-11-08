@@ -174,6 +174,7 @@ i18next
                     "order-table-all-orders": "Όλες",
                     "order-table-completed-orders": "Ολοκληρωμένες",
                     "order-table-pending-orders": "Σε Εκκρεμότητα",
+                    "order-table-processing-orders": "Σε Επεξεργασία",
                     "order-table-new-orders": "Νέες",
                     "order-table-cancelled-orders": "Ακυρωμένες",
                     // Order Modal Shipping GR

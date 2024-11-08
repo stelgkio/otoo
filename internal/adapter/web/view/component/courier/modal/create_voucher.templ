@@ -576,7 +576,6 @@ function createVoucher(projectId) {
                 address_1: '',
                 city: '',
                 postcode: '',
-                weight: 1.00,
                 courier: '',
                 deliveryOption: ''
             },
@@ -628,7 +627,7 @@ function createVoucher(projectId) {
                 
           
              // Parcel details
-				ParcelWeight: 1, // this.hermes_settings.ParcelWeight ? Math.max(parseFloat(this.hermes_settings.ParcelWeight), 1) : 1,
+				ParcelWeight:  this.hermes_settings.ParcelWeight ? Math.max(parseFloat(this.hermes_settings.ParcelWeight), 1) : 1,
 				ParcelDepth: null,//this.hermes_settings.ParcelDepth ? Math.max(parseFloat(this.hermes_settings.ParcelDepth), 1) : 1,
 				ParcelWidth: null, //this.hermes_settings.ParcelWidth ? Math.max(parseFloat(this.hermes_settings.ParcelWidth), 1) : 1,
 				ParcelHeight: null, //this.hermes_settings.ParcelHeight ? Math.max(parseFloat(this.hermes_settings.ParcelHeight), 1) : 1,
@@ -786,6 +785,7 @@ function createVoucher(projectId) {
 
             // Get the value of the field to validate
             const value = field.split('.').reduce((obj, key) => obj?.[key], this.voucher_object);
+			const herm_value = field.split('.').reduce((obj, key) => obj?.[key], this.hermes_settings);
             delete this.errors[field];  // Clear previous errors
 
             const optionalFields = ['shipping.deliveryOption'];
@@ -822,8 +822,8 @@ function createVoucher(projectId) {
                     }
                     break;
 
-				case field === 'shipping.weight':
-                    const weight = parseFloat(value);
+				case field === 'weight':
+                    const weight = parseFloat(herm_value);
                     if (isNaN(weight) || weight <= 0) {
                         this.errors[field] = 'Please enter a valid weight greater than 0';
                         return false;
@@ -888,7 +888,6 @@ function createVoucher(projectId) {
                     address_1: '',
                     city: '',
                     postcode: '',
-                    weight: '',
                     courier: '',
                     deliveryOption: ''
                 },

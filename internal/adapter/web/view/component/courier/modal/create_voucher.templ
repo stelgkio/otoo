@@ -71,7 +71,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 								<div class="row g-2">
 									<!-- First Name -->
 									<div class="col-md-6">
-										<label for="customerName" class="form-label small">First Name</label>
+										<label for="customerName" class="form-label small" data-i18n="off-canvas-modal-name">First Name</label>
 										<input
 											type="text"
 											class="form-control form-control-sm"
@@ -84,7 +84,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 									</div>
 									<!-- Last Name -->
 									<div class="col-md-6">
-										<label for="customerSurname" class="form-label small">Last Name</label>
+										<label for="customerSurname" class="form-label small" data-i18n="off-canvas-modal-last-name">Last Name</label>
 										<input
 											type="text"
 											class="form-control form-control-sm"
@@ -97,7 +97,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 									</div>
 									<!-- Email -->
 									<div class="col-md-6">
-										<label for="customerEmail" class="form-label small">Email</label>
+										<label for="customerEmail" class="form-label small" data-i18n="off-canvas-email">Email</label>
 										<input
 											type="email"
 											class="form-control form-control-sm"
@@ -110,7 +110,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 									</div>
 									<!-- Phone -->
 									<div class="col-md-6">
-										<label for="customerPhone" class="form-label small">Phone</label>
+										<label for="customerPhone" class="form-label small" data-i18n="off-canvas-modal-phone">Phone</label>
 										<input
 											type="tel"
 											class="form-control form-control-sm"
@@ -123,7 +123,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 									</div>
 									<!-- Address -->
 									<div class="col-12">
-										<label for="customerAddress" class="form-label small">Address</label>
+										<label for="customerAddress" class="form-label small" data-i18n="off-canvas-modal-address">Address</label>
 										<div class="input-group input-group-sm">
 											<span class="input-group-text">
 												<i class="bi bi-geo-alt"></i>
@@ -141,7 +141,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 									</div>
 									<!-- City -->
 									<div class="col-md-6">
-										<label for="customerCity" class="form-label small">City</label>
+										<label for="customerCity" class="form-label small" data-i18n="off-canvas-modal-city">City</label>
 										<input
 											type="text"
 											class="form-control form-control-sm"
@@ -154,7 +154,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 									</div>
 									<!-- Postal Code -->
 									<div class="col-md-6">
-										<label for="customerPostalCode" class="form-label small">Postal Code</label>
+										<label for="customerPostalCode" class="form-label small" data-i18n="off-canvas-modal-postal">Postal Code</label>
 										<input
 											type="text"
 											class="form-control form-control-sm"
@@ -180,9 +180,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 									<table class="table table-sm">
 										<thead>
 											<tr>
-												<th data-i18n="off-canvas-customer-product-name">Product</th>
-												<th data-i18n="off-canvas-customer-product-quantity">Quantity</th>
-												<th data-i18n="off-canvas-customer-product-price">Price</th>
+												<th data-i18n="off-canvas-customer-product-name"><span data-i18n="off-canvas-modal-product">Product</span></th>
+												<th data-i18n="off-canvas-customer-product-quantity"><span data-i18n="off-canvas-modal-quantity">Quantity</span></th>
+												<th data-i18n="off-canvas-customer-product-price"><span data-i18n="off-canvas-modal-price">Price</span></th>
 											</tr>
 										</thead>
 										<tbody>

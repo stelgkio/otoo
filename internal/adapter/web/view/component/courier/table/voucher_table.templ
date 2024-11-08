@@ -87,36 +87,36 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 							</th>
 							<template x-if="!isNewTab">
 								<th @click="sortTable('Id')">
-									Voucher ID
+									<span data-i18n="sorting-table-voucher-id">Voucher ID</span>
 									<i :class="getSortIcon('Id')"></i>
 								</th>
 							</template>
 							<th @click="sortTable('orderId')">
-								Order ID
+								<span data-i18n="sorting-table-order-id">Order ID</span>
 								<i :class="getSortIcon('orderId')"></i>
 							</th>
 							<th @click="sortTable('updated_at')">
-								Date
+								<span data-i18n="sorting-table-order-date">Date</span>
 								<i :class="getSortIcon('updated_at')"></i>
 							</th>
 							<th @click="sortTable('total_amount')">
-								COD
+								<span data-i18n="sorting-table-order-cod">COD</span>
 								<i :class="getSortIcon('total_amount')"></i>
 							</th>
-							<th>Status</th>
+							<th><span data-i18n="sorting-table-status-header">Status</span></th>
 							<template x-if="isPrinted">
 								<th @click="sortTable('is_printed')">
-									Printed
+									<span data-i18n="sorting-table-printed">Printed</span>
 									<i :class="getSortIcon('is_printed')"></i>
 								</th>
 							</template>
-							<th>Action</th>
+							<th><span data-i18n="sorting-table-action-header">Action</span></th>
 						</tr>
 					</thead>
 					<tbody>
 						<template x-if="!loading && totalItems === 0">
 							<tr>
-								<td colspan="8">No vouchers found.</td>
+								<td colspan="8"><span data-i18n="sorting-no-results-msg"></span>No vouchers found</td>
 							</tr>
 						</template>
 						<template x-for="voucher in paginatedVouchers" :key="voucher.Id">
@@ -160,7 +160,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 											class="btn btn-sm btn-neutral"
 											@click="$dispatch('show-offcanvas', { voucher })"
 										>
-											<i class="bi bi-plus-circle me-2"></i>Create Voucher
+											<i class="bi bi-plus-circle me-2"></i><span data-i18n="sorting-create-voucher">Create Voucher</span>
 										</button>
 									</template>
 									<template x-if="voucher.status !== 'new'">

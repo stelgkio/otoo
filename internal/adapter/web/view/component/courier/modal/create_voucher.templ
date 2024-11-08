@@ -497,23 +497,35 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 				</div>
 			</div>
 			<!-- Save Button -->
-			<button
-				type="button"
-				class="btn btn-primary w-100"
-				id="saveBtn"
-				@click="handleSubmit()"
-				:disabled="!isFormValid() || isSubmitting"
-			>
-				<template x-if="!isSubmitting">
-					<span>Save Changes</span>
-				</template>
-				<template x-if="isSubmitting">
-					<span class="d-flex align-items-center justify-content-center">
-						<span class="spinner-border spinner-border-sm me-2" role="status"></span>
-						Processing...
-					</span>
-				</template>
-			</button>
+			<div class="d-grid gap-2">
+				<button
+					type="button"
+					class="btn btn-primary w-100"
+					id="saveBtn"
+					@click="handleSubmit()"
+					:disabled="!isFormValid() || isSubmitting"
+				>
+					<template x-if="!isSubmitting">
+						<span>Save Changes</span>
+					</template>
+					<template x-if="isSubmitting">
+						<span class="d-flex align-items-center justify-content-center">
+							<span class="spinner-border spinner-border-sm me-2" role="status"></span>
+							Processing...
+						</span>
+					</template>
+				</button>
+				<!-- Close Button -->
+				<button
+					type="button"
+					class="btn btn-neutral rounded-1 px-4"
+					id="closeBtn"
+					@click="closeOffcanvas()"
+				>
+					Close
+				</button>
+				<!-- Save Button -->
+			</div>
 		</div>
 		<!-- Toast for notifications -->
 		<div class="toast-container position-fixed bottom-0 end-0 p-3">

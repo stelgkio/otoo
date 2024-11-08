@@ -94,6 +94,7 @@ i18next
                     "order-modal-shipping-city": "City",
                     "order-modal-shipping-postal": "Postal",
                     "order-modal-shipping-customer-note": "Customer Note",
+                    "off-canvas-shipping-parcle-cod": "Cash on Delivery",
 
 
 
@@ -152,7 +153,7 @@ i18next
                     "off-canvas-delivery-courier4u-sameday-delivery": "Παράδοση εντός ημέρας",
                     "off-canvas-delivery-courier4u-ServiceProtocol-delivery": "Πρωτοκολλο Παράδοσης",
                     //Off Canvas Parsel Weight/Height/Width Options GR
-                    "off-canvas-wh-options-courier4u": " Βάρος/Ύψος/Πλάτος",
+                    "off-canvas-wh-options-courier4u": "Λεπτομέρειες Πακέτου",
                     "off-canvas-shipping-parcel-courier4u-weight": "Βάρος Πακέτου",
                     "off-canvas-wh-options-courier4u-weight": "Βάρος",
                     "off-canvas-wh-options-courier4u-depth": "Βάθος",
@@ -193,7 +194,7 @@ i18next
                     "order-modal-shipping-city": "Πόλη",
                     "order-modal-shipping-postal": "Τ.Κ.",
                     "order-modal-shipping-customer-note": "Σημειώσεις Πελάτη",
-
+                    "off-canvas-shipping-parcle-cod": "Αντικαταβολή",
 
 
                 }

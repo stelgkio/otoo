@@ -256,14 +256,13 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 											type="number"
 											class="form-control form-control-sm"
 											id="parcelCOD"
-											placeholder="0.00"
 											step="0.01"
-											x-model="voucher_object.shipping.cod"
-											:class="{ 'is-invalid': errors['shipping.cod'] }"
-											@blur="validateField('shipping.cod')"
+											x-model="voucher_object.cod"
+											:class="{ 'is-invalid': errors['cod'] }"
+											@blur="validateField('cod')"
 											required
 										/>
-										<div class="invalid-feedback" x-text="errors['shipping.cod']"></div> <!-- Error message display -->
+										<div class="invalid-feedback" x-text="errors['cod']"></div> <!-- Error message display -->
 									</div>
 								</div>
 							</div>
@@ -364,9 +363,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 												type="number"
 												class="form-control form-control-sm"
 												id="parcelDepth"
-												placeholder="10.00"
+												placeholder="1.00"
 												step="0.5"
-												value="10.00"
+												value="1.00"
 												x-model="hermes_settings.ParcelDepth"
 											/>
 											<div class="invalid-feedback" x-text="errors['shipping.depth']"></div>
@@ -385,9 +384,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 												type="number"
 												class="form-control form-control-sm"
 												id="parcelWidth"
-												placeholder="20.00"
+												placeholder="1.00"
 												step="0.5"
-												value="20.00"
+												value="1.00"
 												x-model="hermes_settings.parcelWidth"
 											/>
 											<div class="invalid-feedback" x-text="errors['shipping.width']"></div>
@@ -404,9 +403,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 												type="number"
 												class="form-control form-control-sm"
 												id="parcelHeight"
-												placeholder="15.00"
+												placeholder="1.00"
 												step="0.5"
-												value="15.00"
+												value="1.00"
 												x-model="hermes_settings.parselHeight"
 											/>
 											<div class="invalid-feedback" x-text="errors['shipping.height']"></div>
@@ -686,7 +685,7 @@ function createVoucher(projectId) {
                 shipping: { ...this.voucher_object.shipping, ...voucher.shipping },
                 products: [...voucher.products],
                 note: voucher.note,
-				cod: voucher.cod
+				cod: voucher.total_amount
             };
 
             this.selectedCourier = voucher.shipping?.courier || '';
@@ -819,13 +818,13 @@ function createVoucher(projectId) {
                     }
                     break;
 
-				case field === 'shipping.cod':
+				case field === 'cod':
 					const codAmount = parseFloat(value);
 						if (isNaN(codAmount)) {
 								this.errors[field] = 'Please enter a valid COD amount';
 								return false;
 							}
-						if (codAmount <= 0) {
+						if (codAmount <= 0.00) {
 								this.errors[field] = 'COD amount cannot be negative';
 								return false;
 							}

@@ -342,10 +342,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 											<input
 												type="number"
 												class="form-control form-control-sm"
-												id="parcelWeight"
+												id="HermesParcelWeight"
 												placeholder="1.00"
 												step="0.5"
-												value="1.00"
 												x-model="hermes_settings.ParcelWeight"
 												:class="{ 'is-invalid': errors['shipping.weight'] }"
 												@blur="validateField('shipping.weight')"
@@ -364,10 +363,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 											<input
 												type="number"
 												class="form-control form-control-sm"
-												id="parcelDepth"
+												id="HermesParcelDepth"
 												placeholder="1.00"
 												step="0.5"
-												value="1.00"
 												x-model="hermes_settings.ParcelDepth"
 											/>
 											<div class="invalid-feedback" x-text="errors['shipping.depth']"></div>
@@ -385,10 +383,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 											<input
 												type="number"
 												class="form-control form-control-sm"
-												id="parcelWidth"
+												id="HermesParcelWidth"
 												placeholder="1.00"
 												step="0.5"
-												value="1.00"
 												x-model="hermes_settings.parcelWidth"
 											/>
 											<div class="invalid-feedback" x-text="errors['shipping.width']"></div>
@@ -404,10 +401,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 											<input
 												type="number"
 												class="form-control form-control-sm"
-												id="parcelHeight"
+												id="HermesParcelHeight"
 												placeholder="1.00"
 												step="0.5"
-												value="1.00"
 												x-model="hermes_settings.parselHeight"
 											/>
 											<div class="invalid-feedback" x-text="errors['shipping.height']"></div>

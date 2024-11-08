@@ -6,6 +6,7 @@ import (
 )
 
 templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
+	<!-- Start off canvas -->
 	<div
 		class="offcanvas offcanvas-end w-100 w-md-75 w-lg-50"
 		data-bs-backdrop="true"
@@ -218,6 +219,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 									<i class="bi bi-truck"></i> Shipping Information
 								</h6>
 							</div>
+							<!-- Shipping Company -->
 							<div class="card-body">
 								<div class="mb-3">
 									<label for="shippingCompany" class="form-label small" data-i18n="off-canvas-shipping-company">Shipping Company</label>
@@ -236,6 +238,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 									</select>
 									<div class="invalid-feedback" x-text="errors['shipping.courier']"></div>
 								</div>
+								<!-- Order Number -->
 								<div class="mb-3">
 									<label for="orderId" class="form-label small" data-i18n="off-canvas-shipping-order-number">Order Number</label>
 									<div class="input-group input-group-sm">
@@ -245,9 +248,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										<input type="text" class="form-control form-control-sm" id="orderId" x-model="voucher_object.orderId" readonly/>
 									</div>
 								</div>
-								// COD
+								<!-- Order COD -->
 								<div class="mb-3">
-									<label for="parcelCOD" class="form-label small" data-i18n="off-canvas-shipping-parcle-cod">COD (€)</label>
+									<label for="parcelCOD" class="form-label small" data-i18n="off-canvas-parcel-cod">COD (€)</label>
 									<div class="input-group input-group-sm">
 										<span class="input-group-text">
 											<i class="bi bi-cash"></i>
@@ -278,46 +281,46 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 								<div class="form-check">
 									<input
 										class="form-check-input"
-										type="radio"
+										type="checkbox"
 										name="deliveryOption"
-										id="standardDeliveryACS"
+										id="AcsStandardDelivery"
 										value="standard"
 										x-model="voucher_object.shipping.deliveryOption"
 									/>
-									<label class="form-check-label" for="standardDelivery" data-i18n="off-canvas-acs-standard-delivery">Standard Delivery</label>
+									<label class="form-check-label" for="AcsSaturdayDelivery" data-i18n="off-canvas-acs-standard-delivery">Standard Delivery</label>
 								</div>
 								<div class="form-check">
 									<input
 										class="form-check-input"
-										type="radio"
+										type="checkbox"
 										name="deliveryOption"
-										id="saturdayDelivery"
+										id="AcsSaturdayDelivery"
 										value="saturday"
 										x-model="voucher_object.shipping.deliveryOption"
 									/>
-									<label class="form-check-label" for="saturdayDelivery" data-i18n="off-canvas-acs-saturday-delivery">Saturday Delivery</label>
+									<label class="form-check-label" for="AcsSaturdayDelivery" data-i18n="off-canvas-acs-saturday-delivery">Saturday Delivery</label>
 								</div>
 								<div class="form-check">
 									<input
 										class="form-check-input"
-										type="radio"
+										type="checkbox"
 										name="deliveryOption"
-										id="urgentDelivery"
+										id="AcsUrgentDelivery"
 										value="urgent"
 										x-model="voucher_object.shipping.deliveryOption"
 									/>
-									<label class="form-check-label" for="urgentDelivery" data-i18n="off-canvas-acs-urgent-delivery">Urgent Delivery</label>
+									<label class="form-check-label" for="AcsUrgentDelivery" data-i18n="off-canvas-acs-urgent-delivery">Urgent Delivery</label>
 								</div>
 								<div class="form-check">
 									<input
 										class="form-check-input"
-										type="radio"
+										type="checkbox"
 										name="deliveryOption"
-										id="pickupDelivery"
+										id="AcsPickupDelivery"
 										value="pickup"
 										x-model="voucher_object.shipping.deliveryOption"
 									/>
-									<label class="form-check-label" for="pickupDelivery" data-i18n="off-canvas-acs-pickup-delivery">Pickup</label>
+									<label class="form-check-label" for="AcsPickupDelivery" data-i18n="off-canvas-acs-pickup-delivery">Pickup</label>
 								</div>
 							</div>
 						</div>
@@ -325,7 +328,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 						<div class="card mb-3 shadow-sm" x-show="selectedCourier === 'courier4u'">
 							<div class="card-header">
 								<h6 class="mb-0" data-i18n="off-canvas-wh-options-courier4u">
-									<i class="bi bi-box-arrow-in-down"></i> WHY Options (Courier4U)
+									<i class="bi bi-box-arrow-in-down"></i> W/D/W/H Options (Courier4U)
 								</h6>
 							</div>
 							<div class="card-body">
@@ -340,9 +343,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 											<input
 												type="number"
 												class="form-control form-control-sm"
-												id="parcelWeight"
+												id="HermesParcelWeight"
+												placeholder="1.00"
 												step="0.5"
-												value="1.00"
 												x-model="hermes_settings.ParcelWeight"
 												:class="{ 'is-invalid': errors['shipping.weight'] }"
 												@blur="validateField('shipping.weight')"
@@ -361,9 +364,8 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 											<input
 												type="number"
 												class="form-control form-control-sm"
-												id="parcelDepth"
+												id="HermesParcelDepth"
 												step="0.5"
-												value="1.00"
 												x-model="hermes_settings.ParcelDepth"
 											/>
 											<div class="invalid-feedback" x-text="errors['shipping.depth']"></div>
@@ -381,9 +383,8 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 											<input
 												type="number"
 												class="form-control form-control-sm"
-												id="parcelWidth"
+												id="HermesParcelWidth"
 												step="0.5"
-												value="1.00"
 												x-model="hermes_settings.parcelWidth"
 											/>
 											<div class="invalid-feedback" x-text="errors['shipping.width']"></div>
@@ -399,9 +400,8 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 											<input
 												type="number"
 												class="form-control form-control-sm"
-												id="parcelHeight"
+												id="HermesParcelHeight"
 												step="0.5"
-												value="1.00"
 												x-model="hermes_settings.parselHeight"
 											/>
 											<div class="invalid-feedback" x-text="errors['shipping.height']"></div>
@@ -500,6 +500,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 					id="saveBtn"
 					@click="handleSubmit()"
 					:disabled="!isFormValid() || isSubmitting"
+					data-i18n="off-canvas-save-btn"
 				>
 					<template x-if="!isSubmitting">
 						<span>Save Changes</span>
@@ -517,6 +518,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 					class="btn btn-neutral rounded-1 px-4"
 					id="closeBtn"
 					@click="closeOffcanvas()"
+					data-i18n="off-canvas-close-btn"
 				>
 					Close
 				</button>
@@ -851,8 +853,8 @@ function createVoucher(projectId) {
                 'billing.first_name', 'billing.last_name', 'billing.email', 'billing.phone', 
                 'billing.address_1', 'billing.city', 'billing.postcode',
                 'shipping.first_name', 'shipping.last_name', 'shipping.address_1', 
-                'shipping.city', 'shipping.postcode', 'shipping.courier', 'shipping.weight',
-                'shipping.deliveryOption'
+                'shipping.city', 'shipping.postcode', 'shipping.courier', 
+                'shipping.deliveryOption', 'cod', 'shipping.weight'
             ];
             let valid = true;
 
@@ -889,7 +891,7 @@ function createVoucher(projectId) {
                 },
                 products: [],
                 note: "",
-        		cod: ''
+				cod: ''
             };
             this.errors = {};  // Clear all errors
             this.selectedCourier = '';  // Reset selected courier

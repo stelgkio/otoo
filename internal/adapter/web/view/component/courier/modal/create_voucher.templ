@@ -52,19 +52,6 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 						<i class="bi bi-truck"></i> Shipping
 					</button>
 				</li>
-				<li class="nav-item" role="presentation">
-					<button
-						class="nav-link"
-						id="more-info-tab"
-						data-bs-toggle="tab"
-						data-bs-target="#additional-info"
-						type="button"
-						role="tab"
-						@click="setActiveTab('additional')"
-					>
-						<i class="bi bi-truck"></i> Additional Info
-					</button>
-				</li>
 			</ul>
 			<!-- Tab Content -->
 			<div class="tab-content flex-grow-1 overflow-auto" id="orderTabContent">
@@ -258,27 +245,6 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										<input type="text" class="form-control form-control-sm" id="orderId" x-model="voucher_object.orderId" readonly/>
 									</div>
 								</div>
-								<div class="mb-3">
-									<label for="parcelWeight" class="form-label small" data-i18n="off-canvas-shipping-parcel-weight">Parcel Weight (kg)</label>
-									<div class="input-group input-group-sm">
-										<span class="input-group-text">
-											<i class="bi bi-body-text"></i>
-										</span>
-										<input
-											type="number"
-											class="form-control form-control-sm"
-											id="parcelWeight"
-											placeholder="1.00"
-											step="0.5"
-											value="1.00"
-											x-model="voucher_object.shipping.weight"
-											:class="{ 'is-invalid': errors['shipping.weight'] }"
-											@blur="validateField('shipping.weight')"
-											required
-										/>
-										<div class="invalid-feedback" x-text="errors['shipping.weight']"></div>
-									</div>
-								</div>
 								// COD
 								<div class="mb-3">
 									<label for="parcelCOD" class="form-label small" data-i18n="off-canvas-shipping-parcle-cod">COD (€)</label>
@@ -359,6 +325,98 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 						<!-- Section for Courier4U Options (Conditional) -->
 						<div class="card mb-3 shadow-sm" x-show="selectedCourier === 'courier4u'">
 							<div class="card-header">
+								<h6 class="mb-0" data-i18n="off-canvas-wh-options-courier4u">
+									<i class="bi bi-box-arrow-in-down"></i> WHY Options (Courier4U)
+								</h6>
+							</div>
+							<div class="card-body">
+								<div class="row">
+									<!-- Parcel Weight -->
+									<div class="col-md-6 mb-3">
+										<label for="parcelWeight" class="form-label small" data-i18n="off-canvas-shipping-parcel-courier4u-weight">Parcel Weight (kg)</label>
+										<div class="input-group input-group-sm">
+											<span class="input-group-text">
+												<i class="bi bi-box-seam"></i>
+											</span>
+											<input
+												type="number"
+												class="form-control form-control-sm"
+												id="parcelWeight"
+												placeholder="1.00"
+												step="0.5"
+												value="1.00"
+												x-model="hermes_settings.ParcelWeight"
+												:class="{ 'is-invalid': errors['shipping.weight'] }"
+												@blur="validateField('shipping.weight')"
+												required
+											/>
+											<div class="invalid-feedback" x-text="errors['shipping.weight']"></div>
+										</div>
+									</div>
+									<!-- Parcel Depth -->
+									<div class="col-md-6 mb-3">
+										<label for="parcelDepth" class="form-label small" data-i18n="off-canvas-shipping-parcel-depth">Parcel Depth (cm)</label>
+										<div class="input-group input-group-sm">
+											<span class="input-group-text">
+												<i class="bi bi-arrows-expand"></i>
+											</span>
+											<input
+												type="number"
+												class="form-control form-control-sm"
+												id="parcelDepth"
+												placeholder="10.00"
+												step="0.5"
+												value="10.00"
+												x-model="hermes_settings.ParcelDepth"
+											/>
+											<div class="invalid-feedback" x-text="errors['shipping.depth']"></div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<!-- Parcel Width -->
+									<div class="col-md-6 mb-3">
+										<label for="parcelWidth" class="form-label small" data-i18n="off-canvas-shipping-parcel-width">Parcel Width (cm)</label>
+										<div class="input-group input-group-sm">
+											<span class="input-group-text">
+												<i class="bi bi-arrows-angle-expand"></i>
+											</span>
+											<input
+												type="number"
+												class="form-control form-control-sm"
+												id="parcelWidth"
+												placeholder="20.00"
+												step="0.5"
+												value="20.00"
+												x-model="hermes_settings.parcelWidth"
+											/>
+											<div class="invalid-feedback" x-text="errors['shipping.width']"></div>
+										</div>
+									</div>
+									<!-- Parcel Height -->
+									<div class="col-md-6 mb-3">
+										<label for="parcelHeight" class="form-label small" data-i18n="off-canvas-shipping-parcel-height">Parcel Height (cm)</label>
+										<div class="input-group input-group-sm">
+											<span class="input-group-text">
+												<i class="bi bi-arrow-up"></i>
+											</span>
+											<input
+												type="number"
+												class="form-control form-control-sm"
+												id="parcelHeight"
+												placeholder="15.00"
+												step="0.5"
+												value="15.00"
+												x-model="hermes_settings.parselHeight"
+											/>
+											<div class="invalid-feedback" x-text="errors['shipping.height']"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="card mb-3 shadow-sm" x-show="selectedCourier === 'courier4u'">
+							<div class="card-header">
 								<h6 class="mb-0" data-i18n="off-canvas-delivery-options-courier4u">
 									<i class="bi bi-box-arrow-in-down"></i> Delivery Options (Courier4U)
 								</h6>
@@ -420,6 +478,18 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 									/>
 									<label class="form-check-label" for="sameDayDelivery4u" data-i18n="off-canvas-delivery-courier4u-sameday-delivery">
 										Same Day
+									</label>
+								</div>
+								<div class="form-check">
+									<input
+										class="form-check-input"
+										type="checkbox"
+										id="ServiceProtocolDayDelivery4u"
+										x-model="hermes_settings.shipping.deliveryOptions"
+										value="sameday"
+									/>
+									<label class="form-check-label" for="ServiceProtocolDayDelivery4u" data-i18n="off-canvas-delivery-courier4u-ServiceProtocol-delivery">
+										Service Protocol Day
 									</label>
 								</div>
 							</div>

@@ -24,35 +24,42 @@ i18next
                     "off-canvas-customer-address": "Address",
                     "off-canvas-customer-city": "City",
                     "off-canvas-customer-postal": "Postal",
-                    //Products Info EN
+                    //Off Canvas Products Info EN
                     "off-canvas-customer-products-header": "Products",
                     "off-canvas-customer-product-name": "Product Name",
                     "off-canvas-customer-product-quantity": "Product Quantity",
                     "off-canvas-customer-product-price": "Product Price",
-                    //Delivery Info EN
+                    //Off Canvas Delivery Info EN
                     "off-canvas-delivery-info": "Delivery Info",
                     "off-canvas-special-instructions": "Special Instructions",
                     "off-canvas-customer-store-pickup": "Store pickup",
-                    // Shipping Info EN
+                    // Off Canvas Shipping Info EN
                     "off-canvas-shipping-information": "Shipping Information",
                     "off-canvas-shipping-order-number": "Order Number",
                     "off-canvas-shipping-parcel-weight": "Parcel Weight",
                     "off-canvas-shipping-company": "Shipping Company",
                     "off-canvas-shipping-provider": "Select Courier Provider",
-                    //ACS EN
+                    //Off Canvas ACS EN
                     "off-canvas-delivery-options-acs": "Delivery Options (ACS)",
                     "off-canvas-acs-standard-delivery": "Standard Delivery",
                     "off-canvas-acs-saturday-delivery": "Saturday Delivery",
                     "off-canvas-acs-urgent-delivery": "Urgent Delivery",
                     "off-canvas-acs-pickup-delivery": "Pickup Delivery",
-                    //Courier4U EN
+                    //Off Canvas Courier4U EN
                     "off-canvas-delivery-options-courier4u": "Delivery Options (Courier4U)",
                     "off-canvas-delivery-courier4u-standard-delivery": "Standard Delivery",
                     "off-canvas-delivery-courier4u-saturday-delivery": "Saturday Delivery",
                     "off-canvas-delivery-courier4u-urgent-delivery": "Urgent Delivery",
                     "off-canvas-delivery-courier4u-pickup-delivery": "Pickup Delivery",
                     "off-canvas-delivery-courier4u-sameday-delivery": "Same Day Delivery",
-                    //button
+                    "off-canvas-delivery-courier4u-ServiceProtocol-delivery": "Service Protocol Delivery",
+                    //Off Canvas Parsel Weight/Height/Width Options EN
+                    "off-canvas-wh-options-courier4u": "Weight/Height/Width Options",
+                    "off-canvas-shipping-parcel-depth": "Parcel Depth",
+                    "off-canvas-shipping-parcel-height": "Parcel Height",
+                    "off-canvas-shipping-parcel-width": "Parcel Width",
+
+                    //Off Canvas button
                     "off-canvas-button-save": "Save Changes",
                     //Voucher Header Table EN
                     "voucher-table-new-order": "New",
@@ -104,7 +111,7 @@ i18next
                     // Index GR
                     "title": "Όλα σε μία Λύση, Ενσωμάτωση & Αναλυτικά Δεδομένα Πίνακα Ελέγχου Πιο Γρήγορα από Ποτέ.",
                     "Dashboard": "Πίνακας Ελέγχου",
-                    // Off Canvas GR
+                    //Off Canvas GR
                     "offcanvas-order_processing": "Επεξεργασία Παραγγελίας #",
                     "off-canvas-customer-tab": "Πελάτης",
                     "off-canvas-shipping-tab": "Αποστολή",
@@ -116,34 +123,41 @@ i18next
                     "off-canvas-customer-address": "Διεύθυνση",
                     "off-canvas-customer-city": "Πόλη",
                     "off-canvas-customer-postal": "Τ.K.",
-                    //Products Info
+                    //Off Canvas Products Info
                     "off-canvas-customer-products-header": "Προϊόντα",
                     "off-canvas-customer-product-name": "Όνομα Προϊόντος",
                     "off-canvas-customer-product-quantity": "Ποσότητα Προϊόντος",
                     "off-canvas-customer-product-price": "Τιμή Προϊόντος",
-                    //Delivery Info
+                    //Off Canvas Delivery Info
                     "off-canvas-delivery-info": "Πληροφορίες Αποστολής",
                     "off-canvas-special-instructions": "Σημειώσεις Παράδοσης",
                     "off-canvas-customer-store-pickup": "Παραλαβή Απο Κατάστημα",
-                    //Shipping Info
+                    //Off Canvas Shipping Info
                     "off-canvas-shipping-information": "Στοιχεία Αποστολής",
                     "off-canvas-shipping-order-number": "Αριθμός Παραγγελίας",
-                    "off-canvas-shipping-parcel-weight": "Βάρος Πακέτου",
                     "off-canvas-shipping-company": "Εταιρεία Αποστολής",
                     "off-canvas-shipping-provider": "Επιλογή Ταχυδρομικής Εταιρείας",
-                    //ACS
+                    //Off Canvas ACS
                     "off-canvas-delivery-options-acs": "Επιλογές Αποστολής (ACS)",
                     "off-canvas-acs-standard-delivery": "Κανονική Αποστολή",
                     "off-canvas-acs-saturday-delivery": "Αποστολή Σάββατο",
                     "off-canvas-acs-urgent-delivery": "Επείγον Αποστολή",
                     "off-canvas-acs-pickup-delivery": "Παραλαβή Απο Κατάστημα",
-                    //Courier4U
+                    //Off Canvas Courier4U
                     "off-canvas-delivery-options-courier4u": "Επιλογές Αποστολής (Courier4U)",
                     "off-canvas-delivery-courier4u-standard-delivery": "Κανονική Αποστολή",
                     "off-canvas-delivery-courier4u-saturday-delivery": "Αποστολή Σάββατο",
                     "off-canvas-delivery-courier4u-urgent-delivery": "Επείγον Αποστολή",
                     "off-canvas-delivery-courier4u-pickup-delivery": "Παραλαβή Απο Κατάστημα",
                     "off-canvas-delivery-courier4u-sameday-delivery": "Παράδοση εντός ημέρας",
+                    "off-canvas-delivery-courier4u-ServiceProtocol-delivery": "Πρωτοκολλο Παράδοσης",
+                    //Off Canvas Parsel Weight/Height/Width Options GR
+                    "off-canvas-wh-options-courier4u": " Βάρος/Ύψος/Πλάτος",
+                    "off-canvas-shipping-parcel-courier4u-weight": "Βάρος Πακέτου",
+                    "off-canvas-wh-options-courier4u-weight": "Βάρος",
+                    "off-canvas-wh-options-courier4u-depth": "Βάθος",
+                    "off-canvas-wh-options-courier4u-height": "Υψος",
+                    "off-canvas-wh-options-courier4u-width": "Πλάτος",
                     // Button  
                     "off-canvas-button-save": "Αποθήκευση",
                     //Voucher Table
@@ -179,10 +193,6 @@ i18next
                     "order-modal-shipping-city": "Πόλη",
                     "order-modal-shipping-postal": "Τ.Κ.",
                     "order-modal-shipping-customer-note": "Σημειώσεις Πελάτη",
-
-
-
-
 
 
 

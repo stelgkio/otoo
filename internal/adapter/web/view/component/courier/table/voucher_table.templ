@@ -120,7 +120,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 							</tr>
 						</template>
 						<template x-for="voucher in paginatedVouchers" :key="voucher.Id">
-							<tr @click="openOffcanvas(voucher)">
+							<tr>
 								<td>
 									<div class="text-base">
 										<div class="form-check">

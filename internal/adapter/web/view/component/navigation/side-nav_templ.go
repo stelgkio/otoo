@@ -112,33 +112,33 @@ func SideBar(user *domain.User, projectName, projectId string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a> <a class=\"dropdown-item\" class=\"dropdown-item\" href=\"/dashboard\"><i class=\"bi bi-house me-3\"></i>Projects </a><div class=\"dropdown-divider\"></div><a class=\"dropdown-item\" hx-get=\"/dashboard/logout\"><i class=\"bi bi-person me-3\"></i>Logout</a></div></div></div><div class=\"collapse navbar-collapse overflow-x-hidden\" id=\"sidebarCollapse\"><ul class=\"navbar-nav\"><li class=\"nav-item my-1\"><a class=\"nav-link d-flex align-items-center rounded-pill \" href=\"#sidebar-dashboards\" data-bs-toggle=\"collapse\" role=\"button\" aria-expanded=\"true\" aria-controls=\"sidebar-dashboards\"><i class=\"bi bi-house-fill\"></i> <span>Dashboards</span> <span class=\"badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto\"></span></a><div class=\"collapse show\" id=\"sidebar-dashboards\"><ul class=\"nav nav-sm flex-column mt-1\"><li class=\"nav-item\"><a href=\"javascript:void(0)\" hx-get=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a> <a class=\"dropdown-item\" class=\"dropdown-item\" href=\"/dashboard\"><i class=\"bi bi-house me-3\"></i>Projects </a><div class=\"dropdown-divider\"></div><a class=\"dropdown-item\" hx-get=\"/dashboard/logout\"><i class=\"bi bi-person me-3\"></i><span data-i18n=\"side-nav-logout\">> Logout </span></a></div></div></div><div class=\"collapse navbar-collapse overflow-x-hidden\" id=\"sidebarCollapse\"><ul class=\"navbar-nav\"><li class=\"nav-item my-1\"><a class=\"nav-link d-flex align-items-center rounded-pill \" href=\"#sidebar-dashboards\" data-bs-toggle=\"collapse\" role=\"button\" aria-expanded=\"true\" aria-controls=\"sidebar-dashboards\"><i class=\"bi bi-house-fill\"></i> <span data-i18n=\"side-nav-dashboard\">Dashboard</span> <span class=\"badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto\"></span></a><div class=\"collapse show\" id=\"sidebar-dashboards\"><ul class=\"nav nav-sm flex-column mt-1\"><li class=\"nav-item\"><a href=\"javascript:void(0)\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/dashboard/default/%s", projectId))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/side-nav.templ`, Line: 116, Col: 66}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/side-nav.templ`, Line: 114, Col: 66}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\" class=\"nav-link fw-bold\" hx-indicator=\"#spinnerDefault\">Default <span id=\"spinnerDefault\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span></a></li><li class=\"nav-item\"><a href=\"javascript:void(0)\" hx-get=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\" class=\"nav-link fw-bold\" hx-indicator=\"#spinnerDefault\" data-i18n=\"side-nav-default\">Default <span id=\"spinnerDefault\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span></a></li><li class=\"nav-item\"><a href=\"javascript:void(0)\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/dashboard/customer/%s", projectId))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/side-nav.templ`, Line: 134, Col: 67}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/side-nav.templ`, Line: 133, Col: 67}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\" class=\"nav-link\" hx-indicator=\"#spinnerCustomers\">Customers  <span id=\"spinnerCustomers\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span></a></li><li class=\"nav-item\"><a href=\"javascript:void(0)\" hx-get=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\" class=\"nav-link\" hx-indicator=\"#spinnerCustomers\" data-i18n=\"side-nav-customers\">Customers  <span id=\"spinnerCustomers\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span></a></li><li class=\"nav-item\"><a href=\"javascript:void(0)\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -151,33 +151,33 @@ func SideBar(user *domain.User, projectName, projectId string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\" class=\"nav-link\" hx-indicator=\"#spinnerProducts\">Products <span id=\"spinnerProducts\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span></a></li><li class=\"nav-item\"><a href=\"javascript:void(0)\" hx-get=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\" class=\"nav-link\" hx-indicator=\"#spinnerProducts\" data-i18n=\"side-nav-products\">Products <span id=\"spinnerProducts\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span></a></li><li class=\"nav-item\"><a href=\"javascript:void(0)\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/dashboard/order/%s", projectId))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/side-nav.templ`, Line: 170, Col: 64}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/side-nav.templ`, Line: 171, Col: 64}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\" class=\"nav-link\" hx-indicator=\"#spinnerOrders\">Orders <span id=\"spinnerOrders\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span></a></li></ul></div></li></ul><hr class=\"navbar-divider my-5 opacity-70\"><ul class=\"navbar-nav\"><li><span class=\"nav-link text-xs fw-semibold text-uppercase text-muted ls-wide\">Resources</span></li><li class=\"nav-item my-1\" id=\"extensions-dropdown\"><a class=\"nav-link d-flex align-items-center rounded-pill\" href=\"#extension-components\" data-bs-toggle=\"collapse\" role=\"button\" aria-expanded=\"false\" aria-controls=\"extension-components\" hx-trigger=\"load\" hx-get=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\" class=\"nav-link\" hx-indicator=\"#spinnerOrders\" data-i18n=\"side-nav-orders\">Orders <span id=\"spinnerOrders\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span></a></li></ul></div></li></ul><hr class=\"navbar-divider my-5 opacity-70\"><ul class=\"navbar-nav\"><li><span class=\"nav-link text-xs fw-semibold text-uppercase text-muted ls-wide\" data-i18n=\"side-nav-resources\">Resources</span></li><li class=\"nav-item my-1\" id=\"extensions-dropdown\"><a class=\"nav-link d-flex align-items-center rounded-pill\" href=\"#extension-components\" data-bs-toggle=\"collapse\" role=\"button\" aria-expanded=\"false\" aria-controls=\"extension-components\" hx-trigger=\"load\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/extension/project_extensions/%s", projectId))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/side-nav.templ`, Line: 205, Col: 74}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/side-nav.templ`, Line: 208, Col: 74}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#extensions-dropdown\"><i class=\"bi bi-grid-1x2-fill\"></i> <span>Extensions</span> <span class=\"badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto\"></span></a><div class=\"collapse\" id=\"extension-components\"></div></li>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#extensions-dropdown\"><i class=\"bi bi-grid-1x2-fill\"></i> <span data-i18n=\"side-nav-extensions\">Extensions</span> <span class=\"badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto\"></span></a><div class=\"collapse\" id=\"extension-components\"></div></li>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -189,13 +189,13 @@ func SideBar(user *domain.User, projectName, projectId string) templ.Component {
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/extension/%s", projectId))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/side-nav.templ`, Line: 221, Col: 56}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/side-nav.templ`, Line: 224, Col: 56}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\"><i class=\"bi bi-calendar2-plus-fill\"></i> <span>Add Extensions</span> <span class=\"badge badge-sm rounded-pill me-n2 bg-warning-subtle text-warning ms-auto\">🔥 Hot</span></a></li>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\"><i class=\"bi bi-calendar2-plus-fill\"></i> <span data-i18n=\"side-nav-add-extensions\">Add Extensions</span> <span class=\"badge badge-sm rounded-pill me-n2 bg-warning-subtle text-warning ms-auto\">🔥 Hot</span></a></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -207,13 +207,13 @@ func SideBar(user *domain.User, projectName, projectId string) templ.Component {
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/project/settings/%s", projectId))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/side-nav.templ`, Line: 243, Col: 62}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/side-nav.templ`, Line: 246, Col: 62}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\" hx-push-url=\"true\"><i class=\"bi bi-gear-fill\"></i> <span>Settings</span></a></li></ul><div class=\"mt-auto\"></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\" hx-push-url=\"true\"><i class=\"bi bi-gear-fill\"></i> <span data-i18n=\"side-nav-settings\">Settings</span></a></li></ul><div class=\"mt-auto\"></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

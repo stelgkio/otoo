@@ -75,12 +75,12 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										<input
 											type="text"
 											class="form-control form-control-sm"
-											:class="{ 'is-invalid': errors['billing.first_name'] }"
+											:class="{ 'is-invalid': errors['shipping.first_name'] }"
 											id="customerName"
-											x-model="voucher_object.billing.first_name"
-											@blur="validateField('billing.first_name')"
+											x-model="voucher_object.shipping.first_name"
+											@blur="validateField('shipping.first_name')"
 										/>
-										<div class="invalid-feedback" x-text="errors['billing.first_name']"></div>
+										<div class="invalid-feedback" x-text="errors['shipping.first_name']"></div>
 									</div>
 									<!-- Last Name -->
 									<div class="col-md-6">
@@ -88,12 +88,12 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										<input
 											type="text"
 											class="form-control form-control-sm"
-											:class="{ 'is-invalid': errors['billing.last_name'] }"
+											:class="{ 'is-invalid': errors['shipping.last_name'] }"
 											id="customerSurname"
-											x-model="voucher_object.billing.last_name"
-											@blur="validateField('billing.last_name')"
+											x-model="voucher_object.shipping.last_name"
+											@blur="validateField('shipping.last_name')"
 										/>
-										<div class="invalid-feedback" x-text="errors['billing.last_name']"></div>
+										<div class="invalid-feedback" x-text="errors['shipping.last_name']"></div>
 									</div>
 									<!-- Email -->
 									<div class="col-md-6">
@@ -131,12 +131,12 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 											<input
 												type="text"
 												class="form-control form-control-sm"
-												:class="{ 'is-invalid': errors['billing.address_1'] }"
+												:class="{ 'is-invalid': errors['shipping.address_1'] }"
 												id="customerAddress"
-												x-model="voucher_object.billing.address_1"
-												@blur="validateField('billing.address_1')"
+												x-model="voucher_object.shipping.address_1"
+												@blur="validateField('shipping.address_1')"
 											/>
-											<div class="invalid-feedback" x-text="errors['billing.address_1']"></div>
+											<div class="invalid-feedback" x-text="errors['shipping.address_1']"></div>
 										</div>
 									</div>
 									<!-- City -->
@@ -145,12 +145,12 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										<input
 											type="text"
 											class="form-control form-control-sm"
-											:class="{ 'is-invalid': errors['billing.city'] }"
+											:class="{ 'is-invalid': errors['shipping.city'] }"
 											id="customerCity"
-											x-model="voucher_object.billing.city"
-											@blur="validateField('billing.city')"
+											x-model="voucher_object.shipping.city"
+											@blur="validateField('shipping.city')"
 										/>
-										<div class="invalid-feedback" x-text="errors['billing.city']"></div>
+										<div class="invalid-feedback" x-text="errors['shipping.city']"></div>
 									</div>
 									<!-- Postal Code -->
 									<div class="col-md-6">
@@ -158,12 +158,12 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										<input
 											type="text"
 											class="form-control form-control-sm"
-											:class="{ 'is-invalid': errors['billing.postcode'] }"
+											:class="{ 'is-invalid': errors['shipping.postcode'] }"
 											id="customerPostalCode"
-											x-model="voucher_object.billing.postcode"
-											@blur="validateField('billing.postcode')"
+											x-model="voucher_object.shipping.postcode"
+											@blur="validateField('shipping.postcode')"
 										/>
-										<div class="invalid-feedback" x-text="errors['billing.postcode']"></div>
+										<div class="invalid-feedback" x-text="errors['shipping.postcode']"></div>
 									</div>
 								</div>
 							</div>
@@ -499,6 +499,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 			<div class="d-grid gap-2">
 				<div x-show="toastMessage" class="alert alert-danger mt-2" role="alert">
 					<span x-text="toastMessage"></span>
+				</div>
+				<div x-show="toastMessageSuuccess" class="alert alert-success mt-2" role="alert">
+					<span x-text="toastMessageSuuccess"></span>
 				</div>
 				<button
 					type="button"

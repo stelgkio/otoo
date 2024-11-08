@@ -7,6 +7,7 @@ function createVoucher(projectId) {
         errors: {},
         isSubmitting: false,
         toastMessage: '',
+        toastMessageSuuccess: '',
         toastType: 'bg-success',
         selectedCourier: '',
 
@@ -56,6 +57,7 @@ function createVoucher(projectId) {
             console.log('Initializing component with projectId:', this.projectId);
             this.setupValidationWatchers();
             this.initializeBootstrapComponents();
+            this.hideToast();
         },
 
         // Prepare payload for Hermes API
@@ -79,16 +81,18 @@ function createVoucher(projectId) {
                 ServiceReception: this.voucher_object.hermes_settings.ServiceReception === true ? 1 : null,
 
                 // Parcel details
-                ParcelWeight: parseFloat(this.voucher_object.hermes_settings.ParcelWeight),
-                ParcelDepth: parseFloat(this.voucher_object.hermes_settings.ParcelDepth),
-                ParcelWidth: parseFloat(this.voucher_object.hermes_settings.ParcelWidth),
-                ParcelHeight: parseFloat(this.voucher_object.hermes_settings.ParcelHeight),
+                ParcelWeight: isNaN(parseFloat(this.voucher_object.hermes_settings.ParcelWeight)) ? 1.00 : parseFloat(this.voucher_object.hermes_settings.ParcelWeight),
+
+                ParcelDepth: isNaN(parseFloat(this.voucher_object.hermes_settings.ParcelDepth)) ? 1.00 : parseFloat(this.voucher_object.hermes_settings.ParcelDepth),
+                ParcelWidth: isNaN(parseFloat(this.voucher_object.hermes_settings.ParcelWidth)) ? 1.00 : parseFloat(this.voucher_object.hermes_settings.ParcelWidth),
+                ParcelHeight: isNaN(parseFloat(this.voucher_object.hermes_settings.ParcelHeight)) ? 1.00 : parseFloat(this.voucher_object.hermes_settings.ParcelHeight),
 
             };
         },
 
         // Handle form submission
         async handleSubmit() {
+            this.hideToast()
             if (!this.validateForm()) {
                 this.showToast('Please check the form for errors', 'bg-danger');
                 return;
@@ -115,26 +119,29 @@ function createVoucher(projectId) {
                     if (!response.ok) {
                         const errorData = await response.json();
                         console.error('Response Error:', errorData);
-                        throw new Error('Failed to create voucher: ' + errorData.message || response.statusText);
+                        this.showToast(errorData.error, 'bg-danger');
+                        throw new Error('Failed to create voucher: ' + errorData.error);
+
                     }
-
-
-
+                    this.toastMessageSuuccess = 'Voucher created successfully!';
                     this.closeOffcanvas();
                 }
             } catch (error) {
                 console.error('Error creating voucher:', error);
-                this.showToast('Failed to create voucher', 'bg-danger');
+                this.showToast(error, 'bg-danger');
             } finally {
                 this.isSubmitting = false;
             }
         },
-
+        hideToast() {
+            this.toastMessage = '';
+            this.toastMessageSuccess = '';
+        },
         // Show the order offcanvas and populate data if voucher exists
         openOffcanvas(voucher) {
             console.log('Opening offcanvas with voucher:', voucher);
             console.log('Project ID:', this.projectId);
-
+            this.hideToast()
             // Ensure products is an array in voucher data
             if (!Array.isArray(voucher.products)) {
                 voucher.products = [];
@@ -245,6 +252,7 @@ function createVoucher(projectId) {
 
         // Validate individual fields with custom rules
         validateField(field) {
+
             console.log('Validating field:', field);
 
             // Get the value of the field to validate

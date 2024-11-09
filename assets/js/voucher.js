@@ -367,10 +367,10 @@ function createVoucher(projectId) {
             this.isSubmitting = true;
             try {
                 if (this.selectedCourier === 'courier4u') {
-                    await createCourier4uVoucher()
+                    await this.createCourier4uVoucher()
                 }
                 if (this.selectedCourier === 'redcourier') {
-                    await createRedCourierVoucher()
+                    await this.createRedCourierVoucher()
                 }
             } catch (error) {
                 console.error('Error creating voucher:', error);
@@ -691,7 +691,19 @@ function createVoucher(projectId) {
                 },
                 products: [],
                 note: "",
-                cod: ''
+                cod: '',
+                hermes_settings: {
+                    ServiceSavvato: '',
+                    ServiceEpigon: '',
+                    ServiceEpistrofi: '',
+                    ServiceSameday: '',
+                    ServiceProtocol: '',
+                    ServiceReception: '',
+                    ParcelWeight: "1.00",
+                    ParcelDepth: '',
+                    ParcelWidth: '',
+                    ParcelHeight: '',
+                }
             };
             this.errors = {};  // Clear all errors
             this.selectedCourier = '';  // Reset selected courier
@@ -1140,7 +1152,20 @@ function updateHermeVoucher(projectId) {
                 },
                 products: [],
                 note: "",
-                cod: ''
+                cod: '',
+                hermes_settings: {
+                    ServiceSavvato: '',
+                    ServiceEpigon: '',
+                    ServiceEpistrofi: '',
+                    ServiceSameday: '',
+                    ServiceProtocol: '',
+                    ServiceReception: '',
+                    ParcelWeight: "1.00",
+                    ParcelDepth: '',
+                    ParcelWidth: '',
+                    ParcelHeight: '',
+                }
+
             };
             this.errors = {};  // Clear all errors
             this.selectedCourier = '';  // Reset selected courier

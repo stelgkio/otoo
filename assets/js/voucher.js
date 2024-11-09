@@ -174,7 +174,7 @@ function voucherTable(projectId) {
                     isDownloading = false
                 });
             isDownloading = false
-            this.fetchVouchers(page);
+            await this.fetchVouchers(page);
 
         },
 

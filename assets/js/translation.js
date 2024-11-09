@@ -119,6 +119,18 @@ i18next
                     "sorting-table-action-header": "Action",
                     "sorting-no-results-msg": "No results found",
                     "sorting-create-voucher": "Create Voucher",
+                    // Side nav
+                    "side-nav-logout": "Logout",
+                    "side-nav-projects": "Projects",
+                    "side-nav-dashboard": "Dashboard",
+                    "side-nav-default": "Default",
+                    "side-nav-customers": "Customers",
+                    "side-nav-products": "Products",
+                    "side-nav-orders": "Orders",
+                    "side-nav-resources": "Resources",
+                    "side-nav-extensions": "Extensions",
+                    "side-nav-add-extensions": "Add Extensions",
+                    "side-nav-settings": "Settings",
 
 
 
@@ -228,6 +240,21 @@ i18next
                     "sorting-table-action-header": "ΕΝΕΡΓΕΙΕΣ",
                     "sorting-no-results-msg": "Δεν υπάρχουν αποτελέσματα",
                     "sorting-create-voucher": "Δημιουργία Voucher",
+                    // Side nav
+                    "side-nav-logout": "Αποσύνδεση",
+                    "side-nav-projects": "Έργα",
+                    "side-nav-dashboard": "Πίνακας Ελέγχου",
+                    "side-nav-default": "Προεπιλογή",
+                    "side-nav-customers": "Πελάτες",
+                    "side-nav-products": "Προϊόντα",
+                    "side-nav-orders": "Παραγγελίες",
+                    "side-nav-resources": "Πόροι",
+                    "side-nav-extensions": "Επεκτάσεις",
+                    "side-nav-add-extensions": "Προσθήκη Επεκτάσεων",
+                    "side-nav-settings": "Ρυθμίσεις",
+
+
+
 
 
                 }

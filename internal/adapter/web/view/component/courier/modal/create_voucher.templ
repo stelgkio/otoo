@@ -281,6 +281,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 								</h6>
 							</div>
 							<div class="card-body">
+								<!-- Standard Delivery ACS -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
@@ -292,6 +293,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 									/>
 									<label class="form-check-label" for="AcsSaturdayDelivery" data-i18n="off-canvas-acs-standard-delivery">Standard Delivery</label>
 								</div>
+								<!-- Saturday Delivery ACS -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
@@ -303,6 +305,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 									/>
 									<label class="form-check-label" for="AcsSaturdayDelivery" data-i18n="off-canvas-acs-saturday-delivery">Saturday Delivery</label>
 								</div>
+								<!-- Urgent Delivery ACS -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
@@ -314,6 +317,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 									/>
 									<label class="form-check-label" for="AcsUrgentDelivery" data-i18n="off-canvas-acs-urgent-delivery">Urgent Delivery</label>
 								</div>
+								<!-- Pickup Delivery ACS -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
@@ -343,6 +347,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 											<span class="input-group-text">
 												<i class="bi bi-box-seam"></i>
 											</span>
+											<!-- Parcel Weight Courier4U-->
 											<input
 												type="number"
 												class="form-control form-control-sm"
@@ -356,7 +361,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 											<div class="invalid-feedback" x-text="errors['hermes_settings.ParcelWeight']"></div>
 										</div>
 									</div>
-									<!-- Parcel Depth -->
+									<!-- Parcel Depth Courier4U -->
 									<div class="col-md-6 mb-3">
 										<label for="parcelDepth" class="form-label small" data-i18n="off-canvas-shipping-parcel-depth">Parcel Depth (cm)</label>
 										<div class="input-group input-group-sm">
@@ -370,12 +375,11 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 												step="0.5"
 												x-model="voucher_object.hermes_settings.ParcelDepth"
 											/>
-											// <div class="invalid-feedback" x-text="errors['shipping.depth']"></div>
 										</div>
 									</div>
 								</div>
 								<div class="row">
-									<!-- Parcel Width -->
+									<!-- Parcel Width Courier4U -->
 									<div class="col-md-6 mb-3">
 										<label for="parcelWidth" class="form-label small" data-i18n="off-canvas-shipping-parcel-width">Parcel Width (cm)</label>
 										<div class="input-group input-group-sm">
@@ -389,10 +393,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 												step="0.5"
 												x-model="voucher_object.hermes_settings.ParcelWidth"
 											/>
-											// <div class="invalid-feedback" x-text="errors['shipping.width']"></div>
 										</div>
 									</div>
-									<!-- Parcel Height -->
+									<!-- Parcel Height Courier4U -->
 									<div class="col-md-6 mb-3">
 										<label for="parcelHeight" class="form-label small" data-i18n="off-canvas-shipping-parcel-height">Parcel Height (cm)</label>
 										<div class="input-group input-group-sm">
@@ -406,7 +409,6 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 												step="0.5"
 												x-model="voucher_object.hermes_settings.ParcelHeight"
 											/>
-											// <div class="invalid-feedback" x-text="errors['hermes_settings.height']"></div>
 										</div>
 									</div>
 								</div>
@@ -419,6 +421,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 								</h6>
 							</div>
 							<div class="card-body">
+								<!-- Saturday Delivery Courier4U -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
@@ -431,6 +434,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										Saturday Delivery
 									</label>
 								</div>
+								<!-- Urgent Delivery Courier4U -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
@@ -443,6 +447,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										Urgent Delivery
 									</label>
 								</div>
+								<!-- Return Delivery Courier4U -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
@@ -455,6 +460,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										Return Delivery
 									</label>
 								</div>
+								<!-- Pickup Delivery Courier4U -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
@@ -467,6 +473,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										Pickup from Store
 									</label>
 								</div>
+								<!-- Same Day Delivery Courier4U -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
@@ -479,6 +486,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										Same Day
 									</label>
 								</div>
+								<!-- Service Protocol Courier4U -->
 								<div class="form-check">
 									<input
 										class="form-check-input"

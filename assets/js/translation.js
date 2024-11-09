@@ -13,7 +13,7 @@ i18next
                     "title": "All in one Solution,Integration & Dashboard Analytics	Faster than Ever.!",
                     "Dashboard": "Dashboard",
                     // Off Canvas EN
-                    "offcanvas-order_processing": "Order Processing #",
+                    "offcanvas-order_processing": "Create Voucher#",
                     "off-canvas-customer-tab": "Customer",
                     "off-canvas-shipping-tab": "Shipping",
                     "off-canvas-customer-info-header": "Customer Info",
@@ -131,7 +131,7 @@ i18next
                     "title": "Όλα σε μία Λύση, Ενσωμάτωση & Αναλυτικά Δεδομένα Πίνακα Ελέγχου Πιο Γρήγορα από Ποτέ.",
                     "Dashboard": "Πίνακας Ελέγχου",
                     //Off Canvas GR
-                    "offcanvas-order_processing": "Επεξεργασία Παραγγελίας #",
+                    "offcanvas-order_processing": "Δημιουργία Voucher#",
                     "off-canvas-customer-tab": "Πελάτης",
                     "off-canvas-shipping-tab": "Αποστολή",
                     "off-canvas-customer-info-header": "Στοιχεία Πελάτη",

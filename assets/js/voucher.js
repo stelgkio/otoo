@@ -22,6 +22,7 @@ function voucherTable(projectId) {
         errorMessage: '',
         isNewTab: true,
         isPrinted: false,
+        isDownloading: false,
 
 
         async init() {
@@ -108,7 +109,13 @@ function voucherTable(projectId) {
         },
 
         async downloadVoucher(voucherId, courier_provider) {
-
+            // Ask for confirmation before proceeding
+            const userConfirmed = window.confirm("Are you sure you want to download this voucher? If you download this voucher, it will be marked as printed and cannot be edited.");
+            if (!userConfirmed) {
+                console.log("Voucher download cancelled by user.");
+                return; // Exit the function if user cancels
+            }
+            isDownloading = true
             var url = '';
             if (courier_provider == 'courier4u') {
                 url = `/voucher/courier4u/donwload/${voucherId}/${this.projectID}`;
@@ -164,8 +171,11 @@ function voucherTable(projectId) {
                 })
                 .catch(error => {
                     console.error("There was a problem with the fetch operation:", error);
+                    isDownloading = false
                 });
+            isDownloading = false
             this.fetchVouchers(page);
+
         },
 
         get paginatedVouchers() {
@@ -311,7 +321,10 @@ function createVoucher(projectId) {
             this.initializeBootstrapComponents();
             this.hideToast();
         },
-
+        triggerUpdateVoucherEvent() {
+            // Dispatch the event to the parent component
+            this.$dispatch('update-voucher');
+        },
         // Prepare payload for Hermes API
         prepareHermesPayload() {
             return {
@@ -393,7 +406,7 @@ function createVoucher(projectId) {
             }
 
             this.toastMessageSuccess = 'Courier4u voucher created successfully!';
-            //this.fetchVouchers(this.currentPage);
+            this.triggerUpdateVoucherEvent()
             this.closeOffcanvas();
 
 
@@ -422,7 +435,7 @@ function createVoucher(projectId) {
             }
 
             this.toastMessageSuccess = 'Redcourier voucher created successfully!';
-            //fetchVouchers(this.currentPage);
+            this.triggerUpdateVoucherEvent()
             this.closeOffcanvas();
 
 
@@ -768,7 +781,7 @@ function updateHermeVoucher(projectId) {
         UpdateHermeVoucherInit() {
             console.log('Initializing component with projectId:', this.projectId);
             this.setupValidationWatchers();
-            initializeBootstrapComponents('UpdateHermeVoucherInit');
+            this.initializeBootstrapComponents('UpdateHermeVoucherInit');
             this.hideToast();
         },
 
@@ -814,29 +827,11 @@ function updateHermeVoucher(projectId) {
             this.isSubmitting = true;
             try {
                 if (this.selectedCourier === 'courier4u') {
-                    const payload = this.prepareHermesPayload();
+                    await this.updateCourier4uVoucher()
 
-                    // Log the payload for debugging
-                    console.log('Full Payload:', payload);
-
-
-                    const response = await fetch(`/voucher/courier4u/create/${this.projectID}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(payload) // Use the payload directly
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        console.error('Response Error:', errorData);
-                        this.showToast(errorData.error, 'bg-danger');
-                        throw new Error('Failed to create voucher: ' + errorData.error);
-
-                    }
-                    this.toastMessageSuuccess = 'Voucher created successfully!';
-                    this.closeOffcanvas("UpdateHermeVoucherInit");
+                }
+                if (this.selectedCourier === 'redcourier') {
+                    await this.updateRedcourierVoucher()
                 }
             } catch (error) {
                 console.error('Error creating voucher:', error);
@@ -849,7 +844,11 @@ function updateHermeVoucher(projectId) {
             this.toastMessage = '';
             this.toastMessageSuccess = '';
         },
-        async createCourier4uVoucher() {
+        triggerUpdateVoucherEvent() {
+            // Dispatch the event to the parent component
+            this.$dispatch('update-voucher');
+        },
+        async updateCourier4uVoucher() {
             const payload = this.prepareHermesPayload();
 
             // Log the payload for debugging
@@ -868,17 +867,19 @@ function updateHermeVoucher(projectId) {
                 const errorData = await response.json();
                 console.error('Response Error (Courier4u):', errorData);
                 this.showToast(errorData.error, 'bg-danger');
-                throw new Error('Failed to create voucher: ' + errorData.error);
+                throw new Error('Failed to update voucher: ' + errorData.error);
             }
 
-            this.toastMessageSuccess = 'Courier4u voucher created successfully!';
-            // fetchVouchers(this.currentPage);
+            this.toastMessageSuccess = 'Courier4u voucher updated successfully!';
+            // Check if $parent is defined before calling fetchVouchers
+
+            this.triggerUpdateVoucherEvent()
             this.closeOffcanvas("UpdateHermeVoucherInit");
 
 
         },
 
-        async createRedcourierVoucher() {
+        async updateRedcourierVoucher() {
             const payload = this.prepareHermesPayload();
 
             // Log the payload for debugging
@@ -897,11 +898,11 @@ function updateHermeVoucher(projectId) {
                 const errorData = await response.json();
                 console.error('Response Error (Redcourier):', errorData);
                 this.showToast(errorData.error, 'bg-danger');
-                throw new Error('Failed to create voucher: ' + errorData.error);
+                throw new Error('Failed to update voucher: ' + errorData.error);
             }
 
-            this.toastMessageSuccess = 'Redcourier voucher created successfully!';
-            // fetchVouchers(this.currentPage);
+            this.toastMessageSuccess = 'Redcourier voucher updated successfully!';
+            triggerUpdateVoucherEvent()
             this.closeOffcanvas("UpdateHermeVoucherInit");
 
 
@@ -1171,6 +1172,8 @@ function updateHermeVoucher(projectId) {
                 console.error('Error closing offcanvas:', error);
             }
         },
+
+
     };
 }
 
@@ -1183,17 +1186,17 @@ function mapToUpdateVoucherObject(data) {
             first_name: data.billing?.first_name || '',
             last_name: data.billing?.last_name || '',
             email: data.billing?.email || '',
-            phone: data.hermes_courier?.ReceiverTelephone || '',
+            phone: data.billing?.phone || '',
             address_1: data.billing?.address_1 || '',
             city: data.billing?.city || '',
             postcode: data.billing?.postcode || ''
         },
         shipping: {
-            first_name: data.hermes_courier?.ReceiverName?.split(" ")[0] || '',
-            last_name: data.hermes_courier?.ReceiverName?.split(" ")[1] || '',
-            address_1: data.hermes_courier?.ReceiverAddress || '',
-            city: data.hermes_courier?.ReceiverCity || '',
-            postcode: data.hermes_courier?.ReceiverPostal || '',
+            first_name: data.shipping?.first_name || '',
+            last_name: data.shipping?.last_name || '',
+            address_1: data.shipping?.address_1 || '',
+            city: data.shipping?.city || '',
+            postcode: data.shipping?.postcode || '',
 
         },
         products: data.products?.map(product => ({
@@ -1224,3 +1227,5 @@ function mapToUpdateVoucherObject(data) {
         }
     };
 }
+
+

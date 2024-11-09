@@ -9,7 +9,7 @@ import (
 
 templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 	<div id="dashboard-voucher">
-		<div id="dashboard-voucher-table" x-data={ fmt.Sprintf("voucherTable('%s')", projectId) } x-init="init()">
+		<div id="dashboard-voucher-table" x-data={ fmt.Sprintf("voucherTable('%s')", projectId) } x-init="init()" @update-voucher.window="fetchVouchers(currentPage)">
 			<div class="px-6 px-lg-7 pt-1 border-bottom">
 				<ul class="nav nav-tabs nav-tabs-flush gap-8 overflow-x border-0 mt-4">
 					<li class="nav-item">
@@ -54,20 +54,20 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 					</li>
 				</ul>
 			</div>
-			<div class="d-flex gap-2 scrollable-x py-3 px-7 border-bottom">
-				<div class="align-items-center ms-auto text-sm text-muted text-primary-hover fw-semibold d-none d-md-flex" role="button">
-					<div class="hstack gap-2 ms-auto">
-						//Export  Voucher Button
-						<button type="button" class="btn btn-sm btn-neutral d-none d-lg-inline-flex">
-							<i class="bi bi-arrow-90deg-right me-2"></i><span data-i18n="voucher-table-export-voucher-button">Export</span>
-						</button>
-						//New Voucher Button
-						<button type="button" class="btn btn-sm btn-primary d-none d-lg-inline-flex">
-							<i class="bi bi-plus-lg me-2"></i><span data-i18n="voucher-table-new-voucher-button">New Voucher</span>
-						</button>
-					</div>
-				</div>
-			</div>
+			// <div class="d-flex gap-2 scrollable-x py-3 px-7 border-bottom">
+			// 	<div class="align-items-center ms-auto text-sm text-muted text-primary-hover fw-semibold d-none d-md-flex" role="button">
+			// 		<div class="hstack gap-2 ms-auto">
+			// 			//Export  Voucher Button
+			// 			<button type="button" class="btn btn-sm btn-neutral d-none d-lg-inline-flex">
+			// 				<i class="bi bi-arrow-90deg-right me-2"></i><span data-i18n="voucher-table-export-voucher-button">Export</span>
+			// 			</button>
+			// 			//New Voucher Button
+			// 			<button type="button" class="btn btn-sm btn-primary d-none d-lg-inline-flex">
+			// 				<i class="bi bi-plus-lg me-2"></i><span data-i18n="voucher-table-new-voucher-button">New Voucher</span>
+			// 			</button>
+			// 		</div>
+			// 	</div>
+			// </div>
 			//Voucher Table
 			<div class="table-responsive">
 				<table class="table table-hover table-striped table-sm table-nowrap">

@@ -24,11 +24,45 @@ func NewVoucherService(repo port.VoucherRepository) *VoucherService {
 
 // CreateVoucher inserts a new Voucher into the database
 func (vs *VoucherService) CreateVoucher(ctx echo.Context, OrderRecord *o.OrderRecord, projectID string) (*domain.Voucher, error) {
-	//TODO: Implement the logic to create a Voucher chech if the voucher is valid and if it is valid then create a voucher
+	voucher, err := vs.repo.GetVoucherByOrderIDAndProjectID(ctx, OrderRecord.Order.ID, projectID)
+	if err != nil {
+		return nil, err
+	}
 
-	voucher := domain.NewVoucher(projectID, OrderRecord.Order.ShippingTotal, OrderRecord.Order.CustomerNote, OrderRecord.Order.Shipping, OrderRecord.Order.Billing, OrderRecord.Order.ID, OrderRecord.Order.LineItems, OrderRecord.Order.PaymentMethod, OrderRecord.Order.Total)
+	if voucher == nil {
+		newvoucher := domain.NewVoucher(projectID, OrderRecord.Order.ShippingTotal, OrderRecord.Order.CustomerNote, OrderRecord.Order.Shipping, OrderRecord.Order.Billing, OrderRecord.Order.ID, OrderRecord.Order.LineItems, OrderRecord.Order.PaymentMethod, OrderRecord.Order.Total)
+		return vs.repo.CreateVoucher(ctx, newvoucher, projectID)
+	}
+	// Update the voucher status based on the order status
+	switch OrderRecord.Order.Status {
+	case "completed":
+		if !voucher.IsPrinted {
+			voucher.UpdateVoucherStatus(domain.VoucherStatusCompleted)
+		}
+	case "processing":
+		if voucher.Status == domain.VoucherStatusNew {
+			voucher.UpdateVoucherStatus(domain.VoucherStatusNew)
+		} else {
+			//TODO: to update a voucher we need to check in what state we have it in the courier provider
+			if !voucher.IsPrinted {
+				voucher.UpdateVoucherStatus(domain.VoucherStatusProcessing)
+			}
+		}
+	case "cancelled":
+		// If the voucher has not been printed, cancel it; otherwise, revert to processing
+		if !voucher.IsPrinted {
+			voucher.UpdateVoucherStatus(domain.VoucherStatusCancelled)
+		}
+	case "on-hold":
+		if !voucher.IsPrinted {
+			voucher.UpdateVoucherStatus(domain.VoucherStatusOnHold)
+		}
+	default:
+	}
 
-	return vs.repo.CreateVoucher(ctx, voucher, projectID)
+	voucher.UpdateVoucher(OrderRecord.Order.ShippingTotal, OrderRecord.Order.CustomerNote, OrderRecord.Order.Shipping, OrderRecord.Order.Billing, OrderRecord.Order.LineItems, OrderRecord.Order.PaymentMethod, OrderRecord.Order.Total)
+
+	return vs.repo.UpdateVoucher(ctx, voucher, projectID, voucher.VoucherID, OrderRecord.OrderID)
 }
 
 // GetVoucherByVoucherID retrieves a Voucher by its ID

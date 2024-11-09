@@ -114,7 +114,7 @@ i18next
                     "sorting-table-order-id": "Order ID",
                     "sorting-table-order-date": "Order Date",
                     "sorting-table-order-cod": "COD",
-                    "sorting-table-status-header:": "Status",
+                    "sorting-table-status-header": "Status",
                     "sorting-table-printed:": "Printed",
                     "sorting-table-action-header": "Action",
                     "sorting-no-results-msg": "No results found",

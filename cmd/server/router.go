@@ -349,6 +349,8 @@ func NewRouter(
 
 		//UPDATE Voucher
 		couriergroup.PUT("/courier4u/update/:voucherId/:projectId", dashboardHandler.UpdateCourier4uVoucher)
+		couriergroup.PUT("/redcourier/update/:voucherId/:projectId", dashboardHandler.UpdateRerCourierVoucher)
+
 	}
 
 	return &Router{e}, nil

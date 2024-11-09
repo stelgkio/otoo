@@ -3,6 +3,7 @@ package domain
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	w "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
@@ -159,6 +160,18 @@ func (v *Voucher) UpdateVoucherAcs(acsVoucherRequest *AcsVoucherRequest) *Vouche
 // UpdateVoucherHermes updates the Voucher status and updates the UpdatedAt timestamp.
 func (v *Voucher) UpdateVoucherHermes(hermesVoucherRequest *HermesVoucerRequest) *Voucher {
 	v.HermesVoucerRequest = hermesVoucherRequest
+	v.TotalAmount = fmt.Sprintf("%.2f", hermesVoucherRequest.Cod)
+	v.Shipping.Address1 = hermesVoucherRequest.ReceiverAddress
+	v.Shipping.City = hermesVoucherRequest.ReceiverCity
+	v.Shipping.PostCode = fmt.Sprintf("%d", hermesVoucherRequest.ReceiverPostal)
+	v.Billing.Phone = hermesVoucherRequest.ReceiverTelephone
+	v.Shipping.FirstName = strings.Split(hermesVoucherRequest.ReceiverName, " ")[0]
+	v.Shipping.LastName = strings.Split(hermesVoucherRequest.ReceiverName, " ")[1]
+	if hermesVoucherRequest.Notes != nil {
+		v.Note = *hermesVoucherRequest.Notes
+	} else {
+		v.Note = ""
+	}
 	v.UpdatedAt = time.Now()
 	return v
 }

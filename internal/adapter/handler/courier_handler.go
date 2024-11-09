@@ -572,3 +572,80 @@ func (dh *DashboardHandler) UpdateCourier4uVoucher(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, "voucher updated successfully")
 
 }
+
+// UpdateRerCourierVoucher create and return the pdf
+func (dh *DashboardHandler) UpdateRerCourierVoucher(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	voucherID := ctx.Param("voucherId")
+	req := new(courier_domain.HermesVoucerRequest)
+
+	if err := ctx.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, map[string]string{"error": "Invalid request payload"})
+	}
+	validationErrors := req.Validate()
+	if validationErrors != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": validationErrors.Error()})
+	}
+	// Convert string to int64
+	orderID, err := strconv.ParseInt(req.OrderID, 10, 64)
+	if err != nil {
+		// Handle the error
+		fmt.Println("Error converting string to int64:", err)
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Invalid order ID"})
+	}
+
+	voucher, err := dh.voucherSvc.GetVoucherByOrderIDAndProjectID(ctx, orderID, projectID)
+	if err != nil || voucher == nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
+	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	extension := util.Filter(projectExtensions, func(e *domain.ProjectExtension) bool {
+		return e.Code == domain.RedCourier
+	})
+	if len(extension) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, map[string]string{"error": "Enable Courier4u extension first"})
+	}
+
+	redCourier := new(domain.RedCourierExtension)
+
+	redCourier, err = dh.extensionSvc.GetRedCourierProjectExtensionByID(ctx, extension[0].ExtensionID, projectID)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	if redCourier == nil {
+		redCourier = new(domain.RedCourierExtension)
+	}
+
+	vID, err := strconv.ParseInt(voucherID, 10, 64)
+	if err != nil {
+		// Handle the error
+		fmt.Println("Error converting string to int64:", err)
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Invalid voucher ID"})
+	}
+	updateVoucherReq := courier_domain.NewHermesVoucerUpdateRequest(vID, req)
+
+	respVoucher, err := dh.hermesSvc.UpdateVoucher(ctx, nil, redCourier, updateVoucherReq, projectID)
+	if err != nil {
+		voucher.UpdateVoucherError(err.Error())
+		dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	if respVoucher.Error == true {
+		voucher.UpdateVoucherError(respVoucher.Message)
+		dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": respVoucher.Message})
+	}
+
+	voucher.UpdateVoucherError("")
+	voucher.UpdateVoucherProvider(domain.Courier4u)
+	voucher.UpdateVoucherHermes(req)
+	voucher.UpdateVoucherStatus(courier_domain.VoucherStatusProcessing)
+	dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
+
+	return ctx.JSON(http.StatusOK, "voucher updated successfully")
+
+}

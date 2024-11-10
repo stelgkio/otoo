@@ -131,8 +131,7 @@ i18next
                     "side-nav-extensions": "Extensions",
                     "side-nav-add-extensions": "Add Extensions",
                     "side-nav-settings": "Settings",
-                    // Dashboard overview EN
-
+                    // Dashboard overview EN ( Shared with Order/Customer/Product Overview )
                     "dashboard-overview_orders": "Orders",
                     "dashboard-overview_products": "Products",
                     "dashboard-overview_customers": "Customers",
@@ -166,28 +165,28 @@ i18next
                     "ooff-canvas-modal-address": "Διεύθυνση",
                     "off-canvas-modal-city": "Πόλη",
                     "off-canvas-modal-postal": "Τ.K.",
-                    //Off Canvas Products Info
+                    //Off Canvas Products Info GR
                     "off-canvas-customer-products-header": "Προϊόντα",
                     "off-canvas-customer-product-name": "Όνομα Προϊόντος",
                     "off-canvas-customer-product-quantity": "Ποσότητα Προϊόντος",
                     "off-canvas-customer-product-price": "Τιμή Προϊόντος",
-                    //Off Canvas Delivery Info
+                    //Off Canvas Delivery Info GR
                     "off-canvas-delivery-info": "Πληροφορίες Αποστολής",
                     "off-canvas-special-instructions": "Σημειώσεις Παράδοσης",
                     "off-canvas-customer-store-pickup": "Παραλαβή Απο Κατάστημα",
-                    //Off Canvas Shipping Info
+                    //Off Canvas Shipping Info GR
                     "off-canvas-shipping-information": "Στοιχεία Αποστολής",
                     "off-canvas-shipping-order-number": "Αριθμός Παραγγελίας",
                     "off-canvas-shipping-company": "Εταιρεία Αποστολής",
                     "off-canvas-shipping-provider": "Επιλογή Ταχυδρομικής Εταιρείας",
                     "off-canvas-parcel-cod": "Αντικαταβολή",
-                    //Off Canvas ACS
+                    //Off Canvas ACS GR
                     "off-canvas-delivery-options-acs": "Επιλογές Αποστολής (ACS)",
                     "off-canvas-acs-standard-delivery": "Κανονική Αποστολή",
                     "off-canvas-acs-saturday-delivery": "Αποστολή Σάββατο",
                     "off-canvas-acs-urgent-delivery": "Επείγον Αποστολή",
                     "off-canvas-acs-pickup-delivery": "Παραλαβή Απο Κατάστημα",
-                    //Off Canvas Courier4U
+                    //Off Canvas Courier4U GR
                     "off-canvas-delivery-options-courier4u": "Επιλογές Αποστολής (Courier4U)",
                     "off-canvas-delivery-courier4u-standard-delivery": "Κανονική Αποστολή",
                     "off-canvas-delivery-courier4u-saturday-delivery": "Αποστολή Σάββατο",
@@ -204,10 +203,10 @@ i18next
                     "off-canvas-shipping-parcel-width": "Πλάτος Δέματος",
                     "offcanvas-nav-customer": "Πελάτης",
                     "offcanvas-nav-shipping": "Αποστολή",
-                    // Button  
+                    // Button GR
                     "off-canvas-save-btn": "Αποθήκευση",
                     "off-canvas-close-btn": "Ακύρωση",
-                    //Voucher Table
+                    //Voucher Table GR
                     "voucher-table-new-order": "Νέες",
                     "voucher-table-processing-orders": "Σε Επεξεργασία",
                     "voucher-table-completed-orders": "Ολοκληρωμένες",
@@ -252,11 +251,11 @@ i18next
                     "sorting-table-action-header": "ΕΝΕΡΓΕΙΕΣ",
                     "sorting-no-results-msg": "Δεν υπάρχουν αποτελέσματα",
                     "sorting-create-voucher": "Δημιουργία Voucher",
-                    // Side nav
+                    // Side nav GR
                     "side-nav-logout": "Αποσύνδεση",
                     "side-nav-projects": "Έργα",
                     "side-nav-dashboard": "Πίνακας Ελέγχου",
-                    "side-nav-default": "Προεπιλογή",
+                    "side-nav-default": "Στατιστικά",
                     "side-nav-customers": "Πελάτες",
                     "side-nav-products": "Προϊόντα",
                     "side-nav-orders": "Παραγγελίες",
@@ -264,8 +263,7 @@ i18next
                     "side-nav-extensions": "Επεκτάσεις",
                     "side-nav-add-extensions": "Προσθήκη Επεκτάσεων",
                     "side-nav-settings": "Ρυθμίσεις",
-                    // Dashboard overview GR
-
+                    // Dashboard overview EN ( Shared with Order/Customer/Product Overview )
                     "dashboard-overview_orders": "Παραγγελίες",
                     "dashboard-overview_products": "Προϊόντα",
                     "dashboard-overview_customers": "Πελάτες",

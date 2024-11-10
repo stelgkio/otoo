@@ -11,6 +11,7 @@ i18next
                 translation: {
                     // Index EN
                     "title": "All in one Solution,Integration & Dashboard Analytics	Faster than Ever.!",
+                    "subtitle": "With KonektorX you can connect any e-commerce platform quicker than ever.",
                     "Dashboard": "Dashboard",
                     // Off Canvas EN
                     "offcanvas-order_processing": "Create Voucher#",
@@ -62,7 +63,6 @@ i18next
                     "off-canvas-delivery-courier4u-pickup-delivery": "Pickup Delivery",
                     "off-canvas-delivery-courier4u-sameday-delivery": "Same Day Delivery",
                     "off-canvas-delivery-courier4u-return-delivery": "Return Delivery",
-
                     "off-canvas-delivery-courier4u-ServiceProtocol-delivery": "Service Protocol Number",
                     //Off Canvas Parsel Weight/Height/Width Options EN
                     "off-canvas-shipping-parcel-courier4u-weight": "Package Weight",
@@ -75,7 +75,7 @@ i18next
                     //Off Canvas button
                     "off-canvas-save-btn": "Save Changes",
                     "off-canvas-close-btn": "Cancel",
-                    //Voucher Header Table EN
+                    //Voucher Header Section Table EN
                     "voucher-table-new-order": "New",
                     "voucher-table-processing-orders": "Processing",
                     "voucher-table-completed-orders": "Completed",
@@ -83,7 +83,7 @@ i18next
                     "voucher-table-all-orders": "All",
                     "voucher-table-export-voucher-button": "Export Voucher",
                     "voucher-table-new-voucher-button": "New Voucher",
-                    // Order Header Table EN
+                    // Order Header Section Table EN
                     "order-table-all-orders": "All",
                     "order-table-completed-orders": "Completed",
                     "order-table-pending-orders": "Pending",
@@ -139,6 +139,29 @@ i18next
                     "dashboard-overview_orders": "Orders",
                     "dashboard-overview-week_orders": "Orders",
                     "dashboard-overview-month_orders": "Orders",
+                    // Dashboard Shared Tables EN
+                    "dashboard-table-order_id": "Order ID",
+                    "dashboard-table-order-created": "Created",
+                    "dashboard-table-order_date": "Order Date",
+                    "dashboard-table-order_status": "Order Status",
+                    "dashboard-table-order_total": "Order Total",
+                    "dashboard-table-order_action": "Action",
+                    "dashboard-table-customer_name": "Name",
+                    "dashboard-table-customer_email": "Email",
+                    "dashboard-table-customer-total_orders": "Total Orders",
+                    "dashboard-table-customer-total_spent": "Total Spent",
+                    "dashboard-table-customer_id": "product ID",
+                    "dashboard-table-customer_email": "Product Name",
+                    "dashboard-table-customer-total_spent": "Πελάτης δεν βρέθηκε",
+                    "dashboard-table-products_id": "product ID",
+                    "dashboard-table-products_name": "Product Name",
+                    "dashboard-table-products_price": "Pricing",
+                    "dashboard-table-products_category": "Category",
+                    "dashboard-table-products_type": "Type",
+                    "dashboard-table-products-total_orders": "Total Orders",
+
+
+
 
 
 
@@ -151,7 +174,8 @@ i18next
             el: {
                 translation: {
                     // Index GR
-                    "title": "Όλα σε μία Λύση, Ενσωμάτωση & Αναλυτικά Δεδομένα Πίνακα Ελέγχου Πιο Γρήγορα από Ποτέ.",
+                    "title": "Μια Ολοκληρωμένη Λύση για την επιχείρηση σας, Πιο Γρήγορα από Ποτέ!",
+                    "subtitle": "Με το KonektorX, μπορείτε να συνδέσετε οποιαδήποτε πλατφόρμα e-commerce πιο γρήγορα από ποτέ.",
                     "Dashboard": "Πίνακας Ελέγχου",
                     //Off Canvas GR
                     "offcanvas-order_processing": "Δημιουργία Voucher#",
@@ -203,7 +227,7 @@ i18next
                     "off-canvas-shipping-parcel-width": "Πλάτος Δέματος",
                     "offcanvas-nav-customer": "Πελάτης",
                     "offcanvas-nav-shipping": "Αποστολή",
-                    // Button GR
+                    //Button GR
                     "off-canvas-save-btn": "Αποθήκευση",
                     "off-canvas-close-btn": "Ακύρωση",
                     //Voucher Table GR
@@ -214,7 +238,7 @@ i18next
                     "voucher-table-all-orders": "Όλες",
                     "voucher-table-export-voucher-button": "Εξαγωγή Voucher",
                     "voucher-table-new-voucher-button": "Νέο Voucher",
-                    /// Order Header Table
+                    //Order Header Section Table GR
                     "order-table-all-orders": "Όλες",
                     "order-table-completed-orders": "Ολοκληρωμένες",
                     "order-table-pending-orders": "Σε Εκκρεμότητα",
@@ -267,10 +291,28 @@ i18next
                     "dashboard-overview_orders": "Παραγγελίες",
                     "dashboard-overview_products": "Προϊόντα",
                     "dashboard-overview_customers": "Πελάτες",
-                    "dashboard-overview-total_orders": "Συννολικές Παραγγελίες",
+                    "dashboard-overview-total_orders": "Συνολικές Παραγγελίες",
                     "dashboard-overview_orders": "Παραγγελίες",
                     "dashboard-overview-week_orders": "Παραγγελίες",
                     "dashboard-overview-month_orders": "Παραγγελίες",
+                    // Dashboard Shared Tables EN
+                    "dashboard-table-order_id": "ID Παραγγελίας",
+                    "dashboard-table-order-created": "Ημ/νία Δημιουργίας",
+                    "dashboard-table-order_date": "Ημ/νία Παραγγελίας",
+                    "dashboard-table-order_status": "Κατάσταση Παραγγελίας",
+                    "dashboard-table-order_total": "Συνολικό Ποσό",
+                    "dashboard-table-order_action": "Ενέργειες",
+                    "dashboard-table-customer_name": "Όνομα Πελάτη",
+                    "dashboard-table-customer_email": "Email",
+                    "dashboard-table-customer-total_orders": "Συνολικές Παραγγελίες",
+                    "dashboard-table-customer-total_spent": "Συνολικό Ποσό",
+                    "dashboard-table-customer-total_spent": "Πελάτης δεν βρέθηκε",
+                    "dashboard-table-products_id": "ID Προϊόντος",
+                    "dashboard-table-products_name": "Όνομα Προϊόντος",
+                    "dashboard-table-products_price": "Τιμή Προϊόντος",
+                    "dashboard-table-products_category": "Κατηγορία Προϊόντος",
+                    "dashboard-table-products_type": "Τύπος Προϊόντος",
+                    "dashboard-table-products-total_orders": "Συνολικές Παραγγελίες",
 
 
 

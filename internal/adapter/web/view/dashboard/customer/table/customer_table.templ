@@ -31,16 +31,16 @@ templ CustomerTable(projectId string) {
 				<table class="table table-hover table-sm  table-striped  table-nowrap">
 					<thead>
 						<tr>
-							<th scope="col">Name</th>
+							<th scope="col"><span data-i18n="dashboard-table-customer_name">Name </span></th>
 							<th @click="sortTable('email')">
-								Email
+								<span data-i18n="dashboard-table-customer_email">Email </span>
 								<i :class="getSortIcon('email')"></i>
 							</th>
 							<th @click="sortTable('order_count')">
-								Total Orders
+								<span data-i18n="dashboard-table-customer-total_orders">Total Orders </span>
 								<i :class="getSortIcon('order_count')"></i>
 							</th>
-							<th scope="col">Money Spend</th>
+							<th scope="col"><span data-i18n="dashboard-table-customer-total_spent">Money Spend </span></th>
 						</tr>
 					</thead>
 					<tbody>

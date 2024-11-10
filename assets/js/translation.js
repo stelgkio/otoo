@@ -131,6 +131,18 @@ i18next
                     "side-nav-extensions": "Extensions",
                     "side-nav-add-extensions": "Add Extensions",
                     "side-nav-settings": "Settings",
+                    // Dashboard overview EN
+
+                    "dashboard-overview_orders": "Orders",
+                    "dashboard-overview_products": "Products",
+                    "dashboard-overview_customers": "Customers",
+                    "dashboard-overview-total_orders": "Total Orders",
+                    "dashboard-overview_orders": "Orders",
+                    "dashboard-overview-week_orders": "Orders",
+                    "dashboard-overview-month_orders": "Orders",
+
+
+
 
 
 
@@ -252,7 +264,15 @@ i18next
                     "side-nav-extensions": "Επεκτάσεις",
                     "side-nav-add-extensions": "Προσθήκη Επεκτάσεων",
                     "side-nav-settings": "Ρυθμίσεις",
+                    // Dashboard overview GR
 
+                    "dashboard-overview_orders": "Παραγγελίες",
+                    "dashboard-overview_products": "Προϊόντα",
+                    "dashboard-overview_customers": "Πελάτες",
+                    "dashboard-overview-total_orders": "Συννολικές Παραγγελίες",
+                    "dashboard-overview_orders": "Παραγγελίες",
+                    "dashboard-overview-week_orders": "Παραγγελίες",
+                    "dashboard-overview-month_orders": "Παραγγελίες",
 
 
 

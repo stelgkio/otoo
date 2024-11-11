@@ -66,14 +66,14 @@ func RemoveTokensAndDeleteCookies(user *user.User, c echo.Context) error {
 
 func generateAccessToken(user *user.User) (string, time.Time, error) {
 	// Declare the expiration time of the token
-	expirationTime := time.Now().UTC().Add(24 * time.Hour)
+	expirationTime := time.Now().UTC().Add(24 * 30 * time.Hour)
 
 	return generateToken(user, expirationTime, []byte(GetJWTSecret()))
 }
 
 func generateRefreshToken(user *user.User) (string, time.Time, error) {
 	// Declare the expiration time of the token
-	expirationTime := time.Now().UTC().Add(24 * time.Hour)
+	expirationTime := time.Now().UTC().Add(24 * 30 * time.Hour)
 
 	return generateToken(user, expirationTime, []byte(GetRefreshJWTSecret()))
 }
@@ -109,6 +109,7 @@ func setTokenCookie(name, token string, expiration time.Time, c echo.Context) {
 	cookie.Expires = expiration
 	cookie.Path = "/"
 	cookie.HttpOnly = true
+	cookie.Secure = false
 
 	c.SetCookie(cookie)
 }
@@ -119,6 +120,7 @@ func removeTokenCookie(name string, c echo.Context) {
 	cookie.MaxAge = -1
 	cookie.Path = "/"
 	cookie.HttpOnly = true
+	cookie.Secure = false
 
 	c.SetCookie(cookie)
 }
@@ -129,7 +131,8 @@ func setUserCookie(user *user.User, expiration time.Time, c echo.Context) {
 	cookie.Value = user.Email
 	cookie.Expires = expiration
 	cookie.Path = "/"
-
+	cookie.HttpOnly = true
+	cookie.Secure = false
 	c.SetCookie(cookie)
 }
 func removeUserCookie(c echo.Context) {
@@ -143,54 +146,158 @@ func removeUserCookie(c echo.Context) {
 }
 
 // JWTErrorChecker will be executed when user try to access a protected path.
-func JWTErrorChecker(c echo.Context, err error) error {
-	slog.Error("JWTErrorChecker", "error", err)
+// func JWTErrorChecker(c echo.Context, err error) error {
+// 	slog.Error("JWTErrorChecker", "error", err)
 
+//		return c.Redirect(http.StatusMovedPermanently, c.Echo().Reverse("SignInForm"))
+//	}
+func JWTErrorChecker(c echo.Context, err error) error {
+	if errors.Is(err, jwt.ErrTokenExpired) {
+		slog.Warn("JWT token expired", "error", err)
+		return c.Redirect(http.StatusMovedPermanently, c.Echo().Reverse("SignInForm"))
+	}
+	slog.Error("JWT authentication error", "error", err)
 	return c.Redirect(http.StatusMovedPermanently, c.Echo().Reverse("SignInForm"))
 }
 
 // TokenRefresherMiddleware middleware, which refreshes JWT tokens if the access token is about to expire.
+// func TokenRefresherMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+// 	return func(c echo.Context) error {
+// 		// If the user is not authenticated (no user token data in the context), don't do anything.
+// 		if c.Get("user") == nil {
+// 			return next(c)
+// 		}
+// 		// Gets user token from the context.
+// 		u := c.Get("user").(*jwt.Token)
+
+// 		claims := u.Claims.(*JwtCustomClaims)
+
+// 		// We ensure that a new token is not issued until enough time has elapsed
+// 		// In this case, a new token will only be issued if the old token is within
+// 		// 15 mins of expiry.
+// 		// if time.Unix(claims.ExpiresAt.Unix(), 0).Sub(time.Now().UTC()) < 15*time.Minute {
+// 		// 	// Gets the refresh token from the cookie.
+// 		// 	rc, err := c.Cookie(refreshTokenCookieName)
+// 		// 	if err == nil && rc != nil {
+// 		// 		// Parses token and checks if it valid.
+// 		// 		tkn, err := jwt.ParseWithClaims(rc.Value, claims, func(token *jwt.Token) (interface{}, error) {
+// 		// 			return []byte(GetRefreshJWTSecret()), nil
+// 		// 		})
+// 		// 		if err != nil {
+// 		// 			if err == jwt.ErrSignatureInvalid {
+
+// 		// 				c.Response().Writer.WriteHeader(http.StatusUnauthorized)
+// 		// 			}
+// 		// 		}
+
+// 		// 		if tkn != nil && tkn.Valid {
+// 		// 			// If everything is good, update tokens.
+// 		// 			_ = GenerateTokensAndSetCookies(&user.User{
+// 		// 				Name: claims.Name,
+// 		// 			}, c)
+// 		// 		}
+// 		// 	}
+// 		// }
+// 		// Check if access token expires within the next 15 minutes
+// 		if time.Until(claims.ExpiresAt.Time) < 15*time.Minute {
+// 			// Retrieve the refresh token from cookies
+// 			refreshCookie, err := c.Cookie(refreshTokenCookieName)
+// 			if err != nil || refreshCookie == nil {
+// 				slog.Error("Refresh token cookie missing", "error", err)
+// 				return c.Redirect(http.StatusUnauthorized, "/login")
+// 			}
+
+// 			// Parse and validate the refresh token without re-using access token claims
+// 			refreshClaims := &JwtCustomClaims{}
+// 			refreshToken, err := jwt.ParseWithClaims(refreshCookie.Value, refreshClaims, func(token *jwt.Token) (interface{}, error) {
+// 				return []byte(GetRefreshJWTSecret()), nil
+// 			})
+
+// 			if err != nil || !refreshToken.Valid {
+// 				slog.Error("Invalid or expired refresh token", "error", err)
+// 				return c.Redirect(http.StatusUnauthorized, "/login")
+// 			}
+
+// 			// Generate and set new access and refresh tokens
+// 			err = GenerateTokensAndSetCookies(&user.User{
+// 				Name: refreshClaims.Name,
+// 				//Id:   uuid.MustParse(refreshClaims.ID),
+// 			}, c)
+
+// 			if err != nil {
+// 				slog.Error("Failed to set new tokens", "error", err)
+// 				return echo.NewHTTPError(http.StatusInternalServerError, "Failed to refresh token")
+// 			}
+// 		}
+
+// 		// Continue to the next handler if token is valid or has been refreshed
+// 		return next(c)
+
+// 	}
+
+// }
+
 func TokenRefresherMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		// If the user is not authenticated (no user token data in the context), don't do anything.
-		if c.Get("user") == nil {
+		// Check if the user is authenticated
+		userToken, ok := c.Get("user").(*jwt.Token)
+		if !ok || userToken == nil {
+			slog.Error("No valid user token in context")
 			return next(c)
 		}
-		// Gets user token from the context.
-		u := c.Get("user").(*jwt.Token)
 
-		claims := u.Claims.(*JwtCustomClaims)
-
-		// We ensure that a new token is not issued until enough time has elapsed
-		// In this case, a new token will only be issued if the old token is within
-		// 15 mins of expiry.
-		if time.Unix(claims.ExpiresAt.Unix(), 0).Sub(time.Now().UTC()) < 15*time.Minute {
-			// Gets the refresh token from the cookie.
-			rc, err := c.Cookie(refreshTokenCookieName)
-			if err == nil && rc != nil {
-				// Parses token and checks if it valid.
-				tkn, err := jwt.ParseWithClaims(rc.Value, claims, func(token *jwt.Token) (interface{}, error) {
-					return []byte(GetRefreshJWTSecret()), nil
-				})
-				if err != nil {
-					if err == jwt.ErrSignatureInvalid {
-
-						c.Response().Writer.WriteHeader(http.StatusUnauthorized)
-					}
-				}
-
-				if tkn != nil && tkn.Valid {
-					// If everything is good, update tokens.
-					_ = GenerateTokensAndSetCookies(&user.User{
-						Name: claims.Name,
-					}, c)
-				}
-			}
+		// Retrieve and verify claims from user token
+		claims, ok := userToken.Claims.(*JwtCustomClaims)
+		if !ok || claims == nil {
+			slog.Error("Failed to retrieve claims from user token")
+			return next(c)
 		}
 
+		// Debug: log the expiration time of the access token
+		slog.Info("Access token expiration time", "expiresAt", claims.ExpiresAt.Time)
+
+		// Check if access token is expiring soon (within 15 minutes)
+		if time.Until(claims.ExpiresAt.Time) < 15*time.Minute {
+			// Log that we're attempting to refresh the token
+			slog.Info("Access token is expiring soon, attempting refresh")
+
+			// Retrieve the refresh token from cookies
+			refreshCookie, err := c.Cookie(refreshTokenCookieName)
+			if err != nil || refreshCookie == nil {
+				slog.Error("Missing refresh token cookie", "error", err)
+				return c.Redirect(http.StatusUnauthorized, "/login") // or handle the error differently
+			}
+
+			// Parse and validate the refresh token
+			refreshClaims := &JwtCustomClaims{}
+			refreshToken, err := jwt.ParseWithClaims(refreshCookie.Value, refreshClaims, func(token *jwt.Token) (interface{}, error) {
+				return []byte(GetRefreshJWTSecret()), nil
+			})
+
+			if err != nil || !refreshToken.Valid {
+				slog.Error("Invalid or expired refresh token", "error", err)
+				return c.Redirect(http.StatusUnauthorized, "/login")
+			}
+
+			// Log that refresh token is valid and a new access token will be generated
+			slog.Info("Refresh token is valid; generating new tokens")
+
+			// Generate new tokens and set cookies
+			err = GenerateTokensAndSetCookies(&user.User{
+				Name: refreshClaims.Name,
+			}, c)
+
+			if err != nil {
+				slog.Error("Failed to set new tokens", "error", err)
+				return echo.NewHTTPError(http.StatusInternalServerError, "Failed to refresh token")
+			}
+
+			slog.Info("Tokens refreshed successfully")
+		}
+
+		// Continue to the next handler if token is valid or has been refreshed
 		return next(c)
 	}
-
 }
 
 func GetUserID(c echo.Context) (uuid.UUID, error) {

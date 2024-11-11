@@ -191,19 +191,19 @@ templ OrderTable(projectId string) {
 								</div>
 							</th>
 							<th @click="sortTable('orderId')">
-								Order ID
+								<span data-i18n="dashboard-table-order_id">Order ID</span>
 								<i :class="getSortIcon('orderId')"></i>
 							</th>
 							<th @click="sortTable('order_created')">
-								Order Created
+								<span data-i18n="dashboard-table-order-created">Order Created</span>
 								<i :class="getSortIcon('order_created')"></i>
 							</th>
 							<th @click="sortTable('total_amount')">
-								Total Amount
+								<span data-i18n="dashboard-table-order_total">Total Amount</span>
 								<i :class="getSortIcon('total_amount')"></i>
 							</th>
-							<th>Status</th>
-							<th>Action</th>
+							<th><span data-i18n="dashboard-table-order_status">Status</span></th>
+							<th><span data-i18n="dashboard-table-order_action">Action</span></th>
 						</tr>
 					</thead>
 					<tbody>

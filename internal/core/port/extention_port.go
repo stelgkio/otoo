@@ -33,6 +33,12 @@ type ExtensionRepository interface {
 	GetCourier4uProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.Courier4uExtension, error)
 	DeleteCourier4uProjectExtension(ctx echo.Context, extensionID, projectID string) error
 
+	////////////////// RedCourier Extension/////////////////////////
+	CreateRedCourierProjectExtension(ctx echo.Context, projectID string, e *domain.RedCourierExtension) error
+	GetAllRedCourierProjectExtensions(ctx echo.Context, projectID string) ([]*domain.RedCourierExtension, error)
+	GetRedCourierProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.RedCourierExtension, error)
+	DeleteRedCourierProjectExtension(ctx echo.Context, extensionID, projectID string) error
+
 	////////////////// Data Synchronizer Extension/////////////////////////
 
 	CreateSynchronizerProjectExtension(ctx echo.Context, projectID string, e *domain.DataSynchronizerExtension) error
@@ -71,6 +77,12 @@ type ExtensionService interface {
 	GetAllCourier4uProjectExtensions(ctx echo.Context, projectID string) ([]*domain.Courier4uExtension, error)
 	GetCourier4uProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.Courier4uExtension, error)
 	DeleteCourier4uProjectExtension(ctx echo.Context, extensionID, projectID string) error
+
+	////////////////// RedCourier Extension/////////////////////////
+	CreateRedCourierProjectExtension(ctx echo.Context, projectID string, e *domain.RedCourierExtension) error
+	GetAllRedCourierProjectExtensions(ctx echo.Context, projectID string) ([]*domain.RedCourierExtension, error)
+	GetRedCourierProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.RedCourierExtension, error)
+	DeleteRedCourierProjectExtension(ctx echo.Context, extensionID, projectID string) error
 
 	////////////////// Data Synchronizer Extension/////////////////////////
 

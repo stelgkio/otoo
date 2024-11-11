@@ -24,14 +24,55 @@ func NewVoucherService(repo port.VoucherRepository) *VoucherService {
 
 // CreateVoucher inserts a new Voucher into the database
 func (vs *VoucherService) CreateVoucher(ctx echo.Context, OrderRecord *o.OrderRecord, projectID string) (*domain.Voucher, error) {
-	voucher := domain.NewVoucher(projectID, OrderRecord.Order.ShippingTotal, OrderRecord.Order.CustomerNote, OrderRecord.Order.Shipping, OrderRecord.Order.Billing, OrderRecord.Order.ID, OrderRecord.Order.LineItems)
+	voucher, err := vs.repo.GetVoucherByOrderIDAndProjectID(ctx, OrderRecord.Order.ID, projectID)
+	if err != nil {
+		return nil, err
+	}
 
-	return vs.repo.CreateVoucher(ctx, voucher, projectID)
+	if voucher == nil {
+		newvoucher := domain.NewVoucher(projectID, OrderRecord.Order.ShippingTotal, OrderRecord.Order.CustomerNote, OrderRecord.Order.Shipping, OrderRecord.Order.Billing, OrderRecord.Order.ID, OrderRecord.Order.LineItems, OrderRecord.Order.PaymentMethod, OrderRecord.Order.Total)
+		return vs.repo.CreateVoucher(ctx, newvoucher, projectID)
+	}
+	// Update the voucher status based on the order status
+	switch OrderRecord.Order.Status {
+	case "completed":
+		if !voucher.IsPrinted {
+			voucher.UpdateVoucherStatus(domain.VoucherStatusCompleted)
+		}
+	case "processing":
+		if voucher.Status == domain.VoucherStatusNew {
+			voucher.UpdateVoucherStatus(domain.VoucherStatusNew)
+		} else {
+			//TODO: to update a voucher we need to check in what state we have it in the courier provider
+			if !voucher.IsPrinted {
+				voucher.UpdateVoucherStatus(domain.VoucherStatusProcessing)
+			}
+		}
+	case "cancelled":
+		// If the voucher has not been printed, cancel it; otherwise, revert to processing
+		if !voucher.IsPrinted {
+			voucher.UpdateVoucherStatus(domain.VoucherStatusCancelled)
+		}
+	case "on-hold":
+		if !voucher.IsPrinted {
+			voucher.UpdateVoucherStatus(domain.VoucherStatusOnHold)
+		}
+	default:
+	}
+
+	voucher.UpdateVoucher(OrderRecord.Order.ShippingTotal, OrderRecord.Order.CustomerNote, OrderRecord.Order.Shipping, OrderRecord.Order.Billing, OrderRecord.Order.LineItems, OrderRecord.Order.PaymentMethod, OrderRecord.Order.Total)
+
+	return vs.repo.UpdateVoucher(ctx, voucher, projectID, voucher.VoucherID, OrderRecord.OrderID)
 }
 
 // GetVoucherByVoucherID retrieves a Voucher by its ID
 func (vs *VoucherService) GetVoucherByVoucherID(ctx echo.Context, voucherID string) (*domain.Voucher, error) {
 	return vs.repo.GetVoucherByVoucherID(ctx, voucherID)
+}
+
+// GetVoucherByOrderIDAndProjectID retrieves a Voucher by its ID
+func (vs *VoucherService) GetVoucherByOrderIDAndProjectID(ctx echo.Context, orderID int64, projectID string) (*domain.Voucher, error) {
+	return vs.repo.GetVoucherByOrderIDAndProjectID(ctx, orderID, projectID)
 }
 
 // FindVoucherByProjectID retrieves vouchers by project ID
@@ -62,7 +103,14 @@ func (vs *VoucherService) UpdateVoucher(ctx echo.Context, order *o.OrderRecord, 
 			voucher.UpdateVoucherStatus(domain.VoucherStatusCompleted)
 		}
 	case "processing":
-		voucher.UpdateVoucherStatus(domain.VoucherStatusNew)
+		if voucher.Status == domain.VoucherStatusNew {
+			voucher.UpdateVoucherStatus(domain.VoucherStatusNew)
+		} else {
+			//TODO: to update a voucher we need to check in what state we have it in the courier provider
+			if !voucher.IsPrinted {
+				voucher.UpdateVoucherStatus(domain.VoucherStatusProcessing)
+			}
+		}
 	case "cancelled":
 		// If the voucher has not been printed, cancel it; otherwise, revert to processing
 		if !voucher.IsPrinted {
@@ -75,7 +123,7 @@ func (vs *VoucherService) UpdateVoucher(ctx echo.Context, order *o.OrderRecord, 
 	default:
 	}
 
-	voucher.UpdateVoucher(order.Order.ShippingTotal, order.Order.CustomerNote, order.Order.Shipping, order.Order.Billing, order.Order.LineItems)
+	voucher.UpdateVoucher(order.Order.ShippingTotal, order.Order.CustomerNote, order.Order.Shipping, order.Order.Billing, order.Order.LineItems, order.Order.PaymentMethod, order.Order.Total)
 
 	return vs.repo.UpdateVoucher(ctx, voucher, projectID, voucher.VoucherID, order.OrderID)
 }
@@ -127,4 +175,8 @@ func (vs *VoucherService) FindVoucherByProjectIDAsync(projectID string, size, pa
 	} else {
 		results <- vouchers
 	}
+}
+
+func (vs *VoucherService) UpdateVoucherNewDetails(ctx echo.Context, voucher *domain.Voucher, projectID string) (*domain.Voucher, error) {
+	return vs.repo.UpdateVoucherNewDetails(ctx, voucher, projectID)
 }

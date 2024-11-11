@@ -338,6 +338,18 @@ func NewRouter(
 		couriergroup.GET("/table/:projectId/:status/:page", dashboardHandler.VoucherTable)
 		couriergroup.GET("/modal/:Id", dashboardHandler.VoucherDetailModal)
 		couriergroup.GET("/openOffcanvas/:Id", dashboardHandler.CreateVoucher)
+		//CREATE Voucher
+		couriergroup.POST("/courier4u/create/:projectId", dashboardHandler.CreateCourier4uVoucher)
+		couriergroup.POST("/redcourier/create/:projectId", dashboardHandler.CreateRedCourierVoucher)
+		couriergroup.POST("/acscourier/create/:projectId", dashboardHandler.CreateCourier4uVoucher)
+		//DOWNLOAD Voucher
+		couriergroup.GET("/courier4u/donwload/:voucherId/:projectId", dashboardHandler.DownloadCourier4uVoucher)
+		couriergroup.GET("/redcourier/donwload/:voucherId/:projectId", dashboardHandler.DownloadRedCourierVoucher)
+		couriergroup.GET("/acscourier/donwload/:voucherId/:projectId", dashboardHandler.DownloadCourier4uVoucher)
+
+		//UPDATE Voucher
+		couriergroup.PUT("/courier4u/update/:voucherId/:projectId", dashboardHandler.UpdateCourier4uVoucher)
+		couriergroup.PUT("/redcourier/update/:voucherId/:projectId", dashboardHandler.UpdateRerCourierVoucher)
 
 	}
 

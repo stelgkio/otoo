@@ -11,6 +11,7 @@ const (
 	DataSynchronizerCode string = "data-synchronizer"
 	WalletExpences       string = "wallet-expences"
 	Courier4u            string = "courier4u"
+	RedCourier           string = "redcourier"
 	TeamMember           string = "team-member"
 )
 
@@ -144,6 +145,32 @@ type Courier4uExtension struct {
 
 // Validate validates the request body
 func (p *Courier4uExtension) Validate() map[string](string) {
+
+	errors := make(map[string]string)
+
+	if p.CourierAPIKey == "" {
+		errors["courier_api_key"] = "Api Key Id is required"
+	}
+
+	return errors
+}
+
+// Courier4uExtension represents active acs details for acs courier
+type RedCourierExtension struct {
+	ID primitive.ObjectID `bson:"_id,omitempty"`
+
+	ProjectID     string    `json:"project_id" bson:"project_id,omitempty"`
+	ExtensionID   string    `json:"extension_id" bson:"extension_id,omitempty"`
+	CreatedAt     time.Time `json:"created_at"  bson:"created_at,omitempty"`
+	UpdatedAt     time.Time `json:"updated_at"  bson:"updated_at,omitempty"`
+	DeletedAt     time.Time `json:"deleted_at"  bson:"deleted_at,omitempty"`
+	IsActive      bool      `json:"is_active" bson:"is_active,omitempty"`
+	CourierAPIKey string    `json:"courier_api_key" bson:"acs_api_key" form:"courier_api_key"`
+	PrinterType   string    `json:"printer_type" bson:"printer_type" form:"printer_type"`
+}
+
+// Validate validates the request body
+func (p *RedCourierExtension) Validate() map[string](string) {
 
 	errors := make(map[string]string)
 

@@ -9,11 +9,12 @@ import (
 
 templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 	<div id="dashboard-voucher">
-		<div id="dashboard-voucher-table" x-data={ fmt.Sprintf("voucherTable('%s')", projectId) } x-init="init()">
+		<div id="dashboard-voucher-table" x-data={ fmt.Sprintf("voucherTable('%s')", projectId) } x-init="init()" @update-voucher.window="fetchVouchers(currentPage)">
 			<div class="px-6 px-lg-7 pt-1 border-bottom">
 				<ul class="nav nav-tabs nav-tabs-flush gap-8 overflow-x border-0 mt-4">
 					<li class="nav-item">
 						<a
+							data-i18n="voucher-table-new-order"
 							href="#"
 							:class="{'nav-link': true, 'active': currentTab === 'new'}"
 							@click.prevent="selectTab('new')"
@@ -21,13 +22,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 					</li>
 					<li class="nav-item">
 						<a
-							href="#"
-							:class="{'nav-link': true, 'active': currentTab === 'completed'}"
-							@click.prevent="selectTab('completed')"
-						>Completed</a>
-					</li>
-					<li class="nav-item">
-						<a
+							data-i18n="voucher-table-processing-orders"
 							href="#"
 							:class="{'nav-link': true, 'active': currentTab === 'processing'}"
 							@click.prevent="selectTab('processing')"
@@ -35,6 +30,15 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 					</li>
 					<li class="nav-item">
 						<a
+							data-i18n="voucher-table-completed-orders"
+							href="#"
+							:class="{'nav-link': true, 'active': currentTab === 'completed'}"
+							@click.prevent="selectTab('completed')"
+						>Completed</a>
+					</li>
+					<li class="nav-item">
+						<a
+							data-i18n="voucher-table-cancelled-orders"
 							href="#"
 							:class="{'nav-link': true, 'active': currentTab === 'cancelled'}"
 							@click.prevent="selectTab('cancelled')"
@@ -42,6 +46,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 					</li>
 					<li class="nav-item">
 						<a
+							data-i18n="voucher-table-all-orders"
 							href="#"
 							:class="{'nav-link': true, 'active': currentTab === 'all'}"
 							@click.prevent="selectTab('all')"
@@ -49,20 +54,23 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 					</li>
 				</ul>
 			</div>
-			<div class="d-flex gap-2 scrollable-x py-3 px-7 border-bottom">
-				<div class="align-items-center ms-auto text-sm text-muted text-primary-hover fw-semibold d-none d-md-flex" role="button">
-					<div class="hstack gap-2 ms-auto">
-						<button type="button" class="btn btn-sm btn-neutral d-none d-lg-inline-flex">
-							<i class="bi bi-arrow-90deg-right me-2"></i> Export
-						</button>
-						<a class="btn btn-sm btn-primary">
-							<i class="bi bi-plus-lg me-2"></i> New Voucher
-						</a>
-					</div>
-				</div>
-			</div>
+			// <div class="d-flex gap-2 scrollable-x py-3 px-7 border-bottom">
+			// 	<div class="align-items-center ms-auto text-sm text-muted text-primary-hover fw-semibold d-none d-md-flex" role="button">
+			// 		<div class="hstack gap-2 ms-auto">
+			// 			//Export  Voucher Button
+			// 			<button type="button" class="btn btn-sm btn-neutral d-none d-lg-inline-flex">
+			// 				<i class="bi bi-arrow-90deg-right me-2"></i><span data-i18n="voucher-table-export-voucher-button">Export</span>
+			// 			</button>
+			// 			//New Voucher Button
+			// 			<button type="button" class="btn btn-sm btn-primary d-none d-lg-inline-flex">
+			// 				<i class="bi bi-plus-lg me-2"></i><span data-i18n="voucher-table-new-voucher-button">New Voucher</span>
+			// 			</button>
+			// 		</div>
+			// 	</div>
+			// </div>
+			//Voucher Table
 			<div class="table-responsive">
-				<table class="table table-hover table-nowrap">
+				<table class="table table-hover table-striped table-sm table-nowrap">
 					<thead>
 						<tr>
 							<th>
@@ -79,57 +87,59 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 							</th>
 							<template x-if="!isNewTab">
 								<th @click="sortTable('Id')">
-									Voucher ID
+									<span data-i18n="sorting-table-voucher-id">Voucher ID</span>
 									<i :class="getSortIcon('Id')"></i>
 								</th>
 							</template>
 							<th @click="sortTable('orderId')">
-								Order ID
+								<span data-i18n="sorting-table-order-id">Order ID</span>
 								<i :class="getSortIcon('orderId')"></i>
 							</th>
 							<th @click="sortTable('updated_at')">
-								Date
+								<span data-i18n="sorting-table-order-date">Date</span>
 								<i :class="getSortIcon('updated_at')"></i>
 							</th>
-							<th @click="sortTable('cod')">
-								COD
-								<i :class="getSortIcon('cod')"></i>
+							<th @click="sortTable('total_amount')">
+								<span data-i18n="sorting-table-order-cod">COD</span>
+								<i :class="getSortIcon('total_amount')"></i>
 							</th>
-							<th>Status</th>
+							<th><span data-i18n="sorting-table-status-header">Status</span></th>
 							<template x-if="isPrinted">
 								<th @click="sortTable('is_printed')">
-									Printed
+									<span data-i18n="sorting-table-printed">Printed</span>
 									<i :class="getSortIcon('is_printed')"></i>
 								</th>
 							</template>
-							<th>Action</th>
+							<th><span data-i18n="sorting-table-action-header">Action</span></th>
 						</tr>
 					</thead>
 					<tbody>
 						<template x-if="!loading && totalItems === 0">
 							<tr>
-								<td colspan="8">No vouchers found.</td>
+								<td colspan="8"><span data-i18n="sorting-no-results-msg"></span>No vouchers found</td>
 							</tr>
 						</template>
 						<template x-for="voucher in paginatedVouchers" :key="voucher.Id">
-							<tr @click="openOffcanvas(voucher)">
+							<tr>
 								<td>
-									<div class="form-check">
-										<input
-											class="form-check-input"
-											type="checkbox"
-											:value="voucher.Id"
-											x-model="selectedVouchers"
-											@click.stop
-										/>
+									<div class="text-base">
+										<div class="form-check">
+											<input
+												class="form-check-input"
+												type="checkbox"
+												:value="voucher.Id"
+												x-model="selectedVouchers"
+												@click.stop
+											/>
+										</div>
 									</div>
 								</td>
 								<template x-if="!isNewTab">
-									<td x-text="voucher.Id"></td>
+									<td x-text="voucher.voucherId"></td>
 								</template>
 								<td x-text="'#' + voucher.orderId"></td>
 								<td x-text="new Date(voucher.updated_at).toLocaleString()"></td>
-								<td x-text="voucher.cod"></td>
+								<td x-text="voucher.total_amount"></td>
 								<td>
 									<span :class="badgeClass(voucher.status)" x-text="voucher.status"></span>
 								</td>
@@ -144,270 +154,48 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 									</td>
 								</template>
 								<td>
-									<button type="button" class="btn btn-sm btn-neutral" @click="openOffcanvas(voucher)">
-										<i class="bi bi-plus-circle me-2"></i>Create Voucher
-									</button>
-									<button type="button" class="btn btn-sm btn-neutral" @click.stop="downloadVoucher(voucher.Id)">
-										<i
-											class="fas fa-download ml-1"
-											style="cursor: pointer;"
-											title="Download Voucher"
-										></i>
-									</button>
+									<template x-if="voucher.status === 'new'">
+										<button
+											type="button"
+											class="btn btn-sm btn-neutral"
+											@click="$dispatch('show-offcanvas', { voucher })"
+										>
+											<i class="bi bi-plus-circle me-2"></i><span data-i18n="sorting-create-voucher">Create Voucher</span>
+										</button>
+									</template>
+									<template x-if="voucher.status !== 'new'">
+										<button type="button" class="btn btn-sm btn-neutral" @click.stop="downloadVoucher(voucher.Id, voucher.courier_provider)">
+											<i
+												class="fas fa-download ml-1"
+												style="cursor: pointer;"
+												title="Download Voucher"
+											></i>
+										</button>
+									</template>
+									<template x-if="voucher.status !== 'new'">
+										<button
+											type="button"
+											class="btn btn-sm btn-neutral"
+											@click="$dispatch('show-hermer-update-offcanvas', { voucher })"
+										>
+											<i class="bi bi-pencil-square"></i>
+										</button>
+									</template>
 								</td>
 							</tr>
 						</template>
 						<template x-for="i in 10 - paginatedVouchers.length" :key="'empty' + i">
 							<tr>
-								<td colspan="8" class="py-8"></td>
+								<td colspan="8" class="py-5"></td>
 							</tr>
 						</template>
 					</tbody>
 				</table>
 			</div>
 			/* Start Off canvas */
-			@c.CreateVoucher(extensions)
+			@c.CreateVoucher(extensions, projectId)
+			@c.UpdateHermerVoucher(extensions, projectId)
 			@p.PaginationControl()
 		</div>
 	</div>
-	<script>
-function voucherTable(projectId) {
-    return {
-        projectID: projectId,
-        currentTab: 'new',
-        vouchers: [],
-        selectedVouchers: [],
-        selectAllCheckbox: false,
-        sortKey: 'created_at',
-        sortAsc: false,
-        currentPage: 1,
-        itemsPerPage: 10,
-        totalItems: 0,
-        totalPages: 0,
-        loading: false,
-        selectedStatus: '',
-        errorMessage: '',
-		isNewTab: true, 
-		isPrinted: false,
-        showOffcanvas: false,
-		 modalOrder: {
-            billing: {
-                first_name: '',
-                last_name: '',
-                address_1: '',
-                city: '',
-                postcode: '',
-                email: '',
-                phone: '',
-            },
-            shipping: {
-                first_name: '',
-                last_name: '',
-                address_1: '',
-                city: '',
-                postcode: '',
-            },
-            products: [],
-            payment_method: ''
-        },
-
-        async init() {
-            await this.fetchVouchers(this.currentPage);
-        },
-
-        async fetchVouchers(page = 1) {
-            this.loading = true;
-            try {
-                const url = this.getUrlForTab(this.currentTab, page);
-                const response = await fetch(url);
-                const result = await response.json();
-                if (response.ok) {
-                    this.vouchers = result.data || [];
-                    this.totalItems = result.meta.totalItems || 0;
-                    this.currentPage = result.meta.currentPage || 1;
-                    this.itemsPerPage = result.meta.itemsPerPage || 10;
-                    this.totalPages = result.meta.totalPages || 0;
-                } else {
-                    console.error('Error fetching data:', result.message);
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                this.loading = false;
-            }
-        },
-
-        getUrlForTab(tab, page) {
-            const baseUrl = `${window.location.origin}/voucher/table/${this.projectID}`;
-            const sortDirection = this.sortAsc ? 'asc' : 'desc';
-            switch (tab) {
-                case 'all':
-                    return `${baseUrl}/all/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-                case 'pending':
-                    return `${baseUrl}/pending/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-                case 'completed':
-                    return `${baseUrl}/completed/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-                case 'processing':
-                    return `${baseUrl}/processing/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-                case 'cancelled':
-                    return `${baseUrl}/cancelled/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-				case 'new':
-                    return `${baseUrl}/new/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-                default:
-                    return `${baseUrl}/all/${page}?sort=${this.sortKey}&direction=${sortDirection}`;
-            }
-        },
-
-        selectTab(tab) {
-			if (tab != 'new') {
-				this.isNewTab = false;
-				this.isPrinted = true;
-			}else {
-				this.isNewTab = true;
-				this.isPrinted = false;
-			}
-            this.currentTab = tab;
-            this.currentPage = 1; 
-            this.fetchVouchers(this.currentPage);
-        },
-
-        selectAll() {
-            this.selectedVouchers = this.selectAllCheckbox ? this.vouchers.map(voucher => voucher.Id) : [];
-        },
-
-        sortTable(key) {
-            if (this.sortKey === key) {
-                this.sortAsc = !this.sortAsc;
-            } else {
-                this.sortKey = key;
-                this.sortAsc = true;
-            }
-            this.fetchVouchers(this.currentPage);
-        },
-        getSortIcon(key) {
-            if (this.sortKey !== key) return '';
-            return this.sortAsc ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
-        },
-
-        changePage(page) {
-            if (page < 1 || page > this.totalPages) return;
-            this.fetchVouchers(page);
-        },
-		 downloadVoucher(voucherId) {
-        
-       	 console.log(`Downloading voucher with ID: ${voucherId}`);
-        
-    	},
-
-        get paginatedVouchers() {
-            return this.vouchers;
-        },
-		get currentPageStart() {
-			return (this.currentPage - 1) * this.itemsPerPage + 1;
-		},
-
-		get currentPageEnd() {
-			return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
-		},
-		get pageNumbers() {
-			const range = 2; // Number of pages to show around the current page
-			let start = Math.max(1, this.currentPage - range);
-			let end = Math.min(this.totalPages, this.currentPage + range);
-
-			// Adjust range if there are not enough pages on one side
-			if (this.totalPages - end < range) {
-				end = this.totalPages;
-				start = Math.max(1, end - 2 * range);
-			} else if (start <= range) {
-				start = 1;
-				end = Math.min(this.totalPages, start + 2 * range);
-			}
-
-			return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-		},
-
-        badgeClass(status) {
-            const baseClass = 'badge bg-body-secondary badge-custom';
-            switch (status) {
-                case 'pending':
-                    return `${baseClass} text-info`;
-				 case 'new':
-                    return `${baseClass} text-primary`;	
-                case 'completed':
-                    return `${baseClass} text-success`;
-                case 'cancelled':
-                    return `${baseClass} text-danger`;
-                case 'processing':
-                    return `${baseClass} text-warning`;
-                default:
-                    return baseClass;
-            }
-        },
-
-        async applyAction() {
-            if (!this.selectedStatus || !this.selectedVouchers.length) {
-                this.errorMessage = 'Please select a status and at least one voucher.';
-                return;
-            }
-            this.loading = true;
-            try {
-                const response = await fetch('/voucher/bulk-action', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        voucherIds: this.selectedVouchers,
-                        status: this.selectedStatus,
-                    }),
-                });
-                const result = await response.json();
-                if (response.ok) {
-                    this.selectedVouchers = [];
-                    this.selectedStatus = '';
-                    this.selectAllCheckbox = false;
-                    this.fetchVouchers(this.currentPage);
-                } else {
-                    this.errorMessage = result.message;
-                }
-            } catch (error) {
-                this.errorMessage = 'An error occurred while processing the request.';
-            } finally {
-                this.loading = false;
-            }
-        },
-		 openOffcanvas(voucher) {
-			// Check if products exists and is an array
-			if (!Array.isArray(voucher.products)) {			
-				// Set products to an empty array if it's not valid
-				voucher.products = []; 
-				
-    		}
-		 this.modalOrder = {
-                   ...this.modalOrder,
-                ...voucher,
-                billing: { ...this.modalOrder.billing, ...voucher.billing },
-                shipping: { ...this.modalOrder.shipping, ...voucher.shipping },
-                products: [...voucher.products],
-                payment_method: voucher.payment_method
-            };
-			
-            this.showOffcanvas = true;
-			  console.log('Opening offcanvas:', this.showOffcanvas);
-			
-        },
-        closeOffcanvas() {
-            this.showOffcanvas = false;
-            this.modalOrder = {
-                billing: { ...this.modalOrder.billing },
-                shipping: { ...this.modalOrder.shipping },
-                products: [],
-                payment_method: ''
-            };
-			 console.log('Closing offcanvas:', this.showOffcanvas);
-        },
-    };
-}
-
-</script>
 }

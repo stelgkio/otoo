@@ -5,31 +5,25 @@ import (
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
-	<style>
-		.offcanvas-backdrop {
-		backdrop-filter: blur(2px); 
-		background-color: rgba(0, 0, 0, 0.3); 
-		}
-	</style>
-	<!-- Start off canvas -->
+templ UpdateHermerVoucher(extensions []*domain.ProjectExtension, projectId string) {
+	<!-- Start UpdateHermerVouchers -->
 	<div
 		class="offcanvas offcanvas-end w-100 w-md-75 w-lg-50"
 		data-bs-backdrop="true"
 		tabindex="-1"
-		id="orderProcessingOffcanvas"
-		aria-labelledby="offcanvasExample1Label"
-		x-data={ fmt.Sprintf("createVoucher('%s')", projectId) }
-		x-init="createVoucherInit()"
+		id="openUpdateHemerOffCamva"
+		x-data={ fmt.Sprintf("updateHermeVoucher('%s')", projectId) }
+		x-init="UpdateHermeVoucherInit()"
+		aria-labelledby="offcanvasExample2Label"
 		:class="{ 'show': showOffcanvas }"
 		:style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }"
-		@show-offcanvas.window="openOffcanvas($event.detail.voucher)"
+		@show-hermer-update-offcanvas.window="openUpdateHemerOffCamva($event.detail.voucher)"
 	>
 		<div class="offcanvas-header">
-			<h5 class="offcanvas-title" id="orderProcessingOffcanvasLabel" data-i18n="offcanvas-order_processing">
+			<h5 class="offcanvas-title" id="openUpdateHemerOffCamvaLabel" data-i18n="offcanvas-order_processing">
 				<i class="bi bi-pencil-square"></i>Order Processing #<span x-text="voucher_object.orderId"></span>
 			</h5>
-			<button type="button" class="btn-close" @click="closeOffcanvas()"></button>
+			<button type="button" class="btn-close" @click="closeOffcanvas('UpdateHermeVoucherInit')"></button>
 		</div>
 		<div class="offcanvas-body d-flex flex-column">
 			<!-- Tabs -->
@@ -38,9 +32,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 				<li class="nav-item" role="presentation">
 					<button
 						class="nav-link active"
-						id="customer-tab"
+						id="customer-tab2"
 						data-bs-toggle="tab"
-						data-bs-target="#customer-info"
+						data-bs-target="#customer-info2"
 						type="button"
 						role="tab"
 						@click="setActiveTab('customer')"
@@ -52,9 +46,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 				<li class="nav-item" role="presentation">
 					<button
 						class="nav-link"
-						id="shipping-tab"
+						id="shipping-tab2"
 						data-bs-toggle="tab"
-						data-bs-target="#shipping-info"
+						data-bs-target="#shipping-info2"
 						type="button"
 						role="tab"
 						@click="setActiveTab('shipping')"
@@ -66,7 +60,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 			<!-- Tab Content -->
 			<div class="tab-content flex-grow-1 overflow-auto" id="orderTabContent">
 				<!-- Customer Information Tab -->
-				<div class="tab-pane fade show active" id="customer-info" role="tabpanel">
+				<div class="tab-pane fade show active" id="customer-info2" role="tabpanel">
 					<div class="p-3">
 						<div class="card mb-3 shadow-sm">
 							<div class="card-header">
@@ -219,7 +213,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 					</div>
 				</div>
 				<!-- Shipping Information Tab -->
-				<div class="tab-pane fade" id="shipping-info" role="tabpanel" aria-labelledby="shipping-tab">
+				<div class="tab-pane fade" id="shipping-info2" role="tabpanel" aria-labelledby="shipping-tab2">
 					<div class="p-3">
 						<!-- Section for Shipping Information -->
 						<div class="card mb-3 shadow-sm">
@@ -238,7 +232,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										x-model="selectedCourier"
 										:class="{ 'is-invalid': errors['shipping.courier'] }"
 										@change="validateField('shipping.courier')"
-										required
+										disabled
 									>
 										<option value="" data-i18n="off-canvas-shipping-provider">Select Courier Provider</option>
 										for _, extension := range extensions {
@@ -254,7 +248,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										<span class="input-group-text">
 											<i class="bi bi-upc-scan"></i>
 										</span>
-										<input type="text" class="form-control form-control-sm" id="orderId" x-model="voucher_object.orderId" readonly/>
+										<input type="text" class="form-control form-control-sm" id="orderId" x-model="voucher_object.orderId"/>
 									</div>
 								</div>
 								<!-- Order COD -->
@@ -287,7 +281,6 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 								</h6>
 							</div>
 							<div class="card-body">
-								<!-- Standard Delivery ACS -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
@@ -299,37 +292,34 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 									/>
 									<label class="form-check-label" for="AcsSaturdayDelivery" data-i18n="off-canvas-acs-standard-delivery">Standard Delivery</label>
 								</div>
-								<!-- Saturday Delivery ACS -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
 										type="checkbox"
 										name="deliveryOption"
-										id="AcsSaturdayDelivery1"
+										id="AcsSaturdayDelivery"
 										value="saturday"
 										x-model="voucher_object.shipping.deliveryOption"
 									/>
 									<label class="form-check-label" for="AcsSaturdayDelivery" data-i18n="off-canvas-acs-saturday-delivery">Saturday Delivery</label>
 								</div>
-								<!-- Urgent Delivery ACS -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
 										type="checkbox"
 										name="deliveryOption"
-										id="AcsUrgentDelivery1"
+										id="AcsUrgentDelivery"
 										value="urgent"
 										x-model="voucher_object.shipping.deliveryOption"
 									/>
 									<label class="form-check-label" for="AcsUrgentDelivery" data-i18n="off-canvas-acs-urgent-delivery">Urgent Delivery</label>
 								</div>
-								<!-- Pickup Delivery ACS -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
 										type="checkbox"
 										name="deliveryOption"
-										id="AcsPickupDelivery1"
+										id="AcsPickupDelivery"
 										value="pickup"
 										x-model="voucher_object.shipping.deliveryOption"
 									/>
@@ -353,7 +343,6 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 											<span class="input-group-text">
 												<i class="bi bi-box-seam"></i>
 											</span>
-											<!-- Parcel Weight Courier4U-->
 											<input
 												type="number"
 												class="form-control form-control-sm"
@@ -367,7 +356,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 											<div class="invalid-feedback" x-text="errors['hermes_settings.ParcelWeight']"></div>
 										</div>
 									</div>
-									<!-- Parcel Depth Courier4U -->
+									<!-- Parcel Depth -->
 									<div class="col-md-6 mb-3">
 										<label for="parcelDepth" class="form-label small" data-i18n="off-canvas-shipping-parcel-depth">Parcel Depth (cm)</label>
 										<div class="input-group input-group-sm">
@@ -381,11 +370,12 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 												step="0.5"
 												x-model="voucher_object.hermes_settings.ParcelDepth"
 											/>
+											// <div class="invalid-feedback" x-text="errors['shipping.depth']"></div>
 										</div>
 									</div>
 								</div>
 								<div class="row">
-									<!-- Parcel Width Courier4U -->
+									<!-- Parcel Width -->
 									<div class="col-md-6 mb-3">
 										<label for="parcelWidth" class="form-label small" data-i18n="off-canvas-shipping-parcel-width">Parcel Width (cm)</label>
 										<div class="input-group input-group-sm">
@@ -399,9 +389,10 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 												step="0.5"
 												x-model="voucher_object.hermes_settings.ParcelWidth"
 											/>
+											// <div class="invalid-feedback" x-text="errors['shipping.width']"></div>
 										</div>
 									</div>
-									<!-- Parcel Height Courier4U -->
+									<!-- Parcel Height -->
 									<div class="col-md-6 mb-3">
 										<label for="parcelHeight" class="form-label small" data-i18n="off-canvas-shipping-parcel-height">Parcel Height (cm)</label>
 										<div class="input-group input-group-sm">
@@ -415,6 +406,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 												step="0.5"
 												x-model="voucher_object.hermes_settings.ParcelHeight"
 											/>
+											// <div class="invalid-feedback" x-text="errors['hermes_settings.height']"></div>
 										</div>
 									</div>
 								</div>
@@ -427,12 +419,11 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 								</h6>
 							</div>
 							<div class="card-body">
-								<!-- Saturday Delivery Courier4U -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
 										type="checkbox"
-										id="saturdayDelivery4u1"
+										id="saturdayDelivery4u"
 										x-model="voucher_object.hermes_settings.ServiceSavvato"
 										value="1"
 									/>
@@ -440,12 +431,11 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										Saturday Delivery
 									</label>
 								</div>
-								<!-- Urgent Delivery Courier4U -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
 										type="checkbox"
-										id="urgentDelivery4u1"
+										id="urgentDelivery4u"
 										x-model="voucher_object.hermes_settings.ServiceEpigon"
 										value="1"
 									/>
@@ -453,12 +443,11 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										Urgent Delivery
 									</label>
 								</div>
-								<!-- Return Delivery Courier4U -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
 										type="checkbox"
-										id="serviceEpistrofi1"
+										id="serviceEpistrofi"
 										x-model="voucher_object.hermes_settings.ServiceEpistrofi"
 										value="1"
 									/>
@@ -466,12 +455,11 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										Return Delivery
 									</label>
 								</div>
-								<!-- Pickup Delivery Courier4U -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
 										type="checkbox"
-										id="pickupDelivery4u1"
+										id="pickupDelivery4u"
 										x-model="voucher_object.hermes_settings.ServiceReception"
 										value="1"
 									/>
@@ -479,12 +467,11 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										Pickup from Store
 									</label>
 								</div>
-								<!-- Same Day Delivery Courier4U -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
 										type="checkbox"
-										id="sameDayDelivery4u1"
+										id="sameDayDelivery4u"
 										x-model="voucher_object.hermes_settings.ServiceSameday"
 										value="1"
 									/>
@@ -492,12 +479,11 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										Same Day
 									</label>
 								</div>
-								<!-- Service Protocol Courier4U -->
 								<div class="form-check">
 									<input
 										class="form-check-input"
 										type="checkbox"
-										id="ServiceProtocolDayDelivery4u1"
+										id="ServiceProtocolDayDelivery4u"
 										x-model="voucher_object.hermes_settings.ServiceProtocol"
 										value="1"
 									/>
@@ -525,9 +511,10 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 					@click="handleSubmit()"
 					:disabled=" isSubmitting"
 					data-i18n="off-canvas-save-btn"
+					x-bind:disabled="isPrinted === true"
 				>
 					<template x-show="!isSubmitting">
-						<span>Create Voucher</span>
+						<span>Update Voucher</span>
 					</template>
 					<template x-show="isSubmitting">
 						<span class="d-flex align-items-center justify-content-center">
@@ -541,7 +528,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 					type="button"
 					class="btn btn-neutral rounded-1 px-4"
 					id="closeBtn"
-					@click="closeOffcanvas()"
+					@click="closeOffcanvas('UpdateHermeVoucherInit')"
 					data-i18n="off-canvas-close-btn"
 				>
 					Close

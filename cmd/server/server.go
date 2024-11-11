@@ -66,6 +66,8 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
 
+	//User
+	hermesService := courier.NewHermesService(voucherRepo)
 	//WooCommerce
 	woocommerceWebhookService := woocommerce.NewWoocommerceWebhookService(woocommerceRepo)
 	WooCommerceHandler := handler.NewWooCommerceHandler(woocommerceRepo,
@@ -118,7 +120,8 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 		extensionService,
 		notificationService,
 		voucherService,
-		paymentService)
+		paymentService,
+		hermesService)
 
 	//Profile
 	profileHandler := handler.NewProfileHandler(userService, projectService, authService)

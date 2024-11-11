@@ -116,6 +116,29 @@ func (ex *ExtensionService) DeleteCourier4uProjectExtension(ctx echo.Context, ex
 	return ex.repo.DeleteCourier4uProjectExtension(ctx, extensionID, projectID)
 }
 
+////////////////// RedCourier Extension/////////////////////////
+
+// CreateRedCourierProjectExtension creates a new ProjectExtension
+func (ex *ExtensionService) CreateRedCourierProjectExtension(ctx echo.Context, projectID string, e *domain.RedCourierExtension) error {
+
+	return ex.repo.CreateRedCourierProjectExtension(ctx, projectID, e)
+}
+
+// GetAllRedCourierProjectExtensions gets all ProjectExtensions
+func (ex *ExtensionService) GetAllRedCourierProjectExtensions(ctx echo.Context, projectID string) ([]*domain.RedCourierExtension, error) {
+	return ex.repo.GetAllRedCourierProjectExtensions(ctx, projectID)
+}
+
+// GetRedCourierProjectExtensionByID gets a ProjectExtension by ID
+func (ex *ExtensionService) GetRedCourierProjectExtensionByID(ctx echo.Context, extensionID, projectID string) (*domain.RedCourierExtension, error) {
+	return ex.repo.GetRedCourierProjectExtensionByID(ctx, extensionID, projectID)
+}
+
+// DeleteRedCourierProjectExtension deletes a ProjectExtension by ID
+func (ex *ExtensionService) DeleteRedCourierProjectExtension(ctx echo.Context, extensionID, projectID string) error {
+	return ex.repo.DeleteRedCourierProjectExtension(ctx, extensionID, projectID)
+}
+
 ////////////////// Data Synchronizer Extension/////////////////////////
 
 // CreateSynchronizerProjectExtension creates a new ProjectExtension

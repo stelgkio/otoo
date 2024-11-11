@@ -794,3 +794,115 @@ func (ex *ExtensionRepository) DeleteCourier4uProjectExtension(c echo.Context, e
 
 	return nil
 }
+
+//////////////////  RedCourier Extension  /////////////////////////
+
+// CreateRedCourierProjectExtension creates a new ProjectExtension
+func (ex *ExtensionRepository) CreateRedCourierProjectExtension(c echo.Context, projectID string, e *domain.RedCourierExtension) error {
+	collection := ex.mongo.Database("otoo").Collection("redcourier_project_extensions")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	filter := bson.M{"extension_id": e.ExtensionID, "is_active": true, "project_id": projectID}
+	update := bson.M{"$set": e}
+
+	// Set upsert option to true
+	opt := options.Update().SetUpsert(true)
+
+	// Perform the upsert operation
+	_, err := collection.UpdateOne(ctx, filter, update, opt)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// GetAllRedCourierProjectExtensions gets all ProjectExtensions
+func (ex *ExtensionRepository) GetAllRedCourierProjectExtensions(c echo.Context, projectID string) ([]*domain.RedCourierExtension, error) {
+	collection := ex.mongo.Database("otoo").Collection("redcourier_project_extensions")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	filter := bson.M{
+		"project_id": projectID,
+		"is_active":  true,
+	}
+
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var projectExtensions []*domain.RedCourierExtension
+	for cursor.Next(ctx) {
+		var projectExtension domain.RedCourierExtension
+		if err := cursor.Decode(&projectExtension); err != nil {
+			return nil, err
+		}
+		projectExtensions = append(projectExtensions, &projectExtension)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return projectExtensions, nil
+}
+
+// GetRedCourierProjectExtensionByID gets a ProjectExtension by ID
+func (ex *ExtensionRepository) GetRedCourierProjectExtensionByID(c echo.Context, extensionID, projectID string) (*domain.RedCourierExtension, error) {
+	collection := ex.mongo.Database("otoo").Collection("redcourier_project_extensions")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	filter := bson.M{
+		"project_id":   projectID,
+		"extension_id": extensionID,
+		"is_active":    true,
+	}
+
+	var projectExtension domain.RedCourierExtension
+	err := collection.FindOne(ctx, filter).Decode(&projectExtension)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &projectExtension, nil
+}
+
+// DeleteRedCourierProjectExtension deletes a ProjectExtension by ID
+func (ex *ExtensionRepository) DeleteRedCourierProjectExtension(c echo.Context, extensionID, projectID string) error {
+	collection := ex.mongo.Database("otoo").Collection("redcourier_project_extensions")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	extID, err := primitive.ObjectIDFromHex(extensionID)
+	if err != nil {
+		return errors.New("Invalid extension ID format")
+	}
+
+	filter := bson.M{
+		"_id":          extID,
+		"project_id":   projectID,
+		"extension_id": extensionID,
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"deleted_at": time.Now(),
+			"is_active":  false,
+		},
+	}
+
+	result, err := collection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return err
+	}
+	if result.MatchedCount == 0 {
+		return errors.New("ProjectExtension not found")
+	}
+
+	return nil
+}

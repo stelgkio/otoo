@@ -91,6 +91,42 @@ func (r *VoucherRepository) UpdateVoucher(ctx echo.Context, voucher *domain.Vouc
 	return &updatedVoucher, nil
 }
 
+// UpdateVoucherNewDetails updates a Voucher by voucherID and returns the updated Voucher.
+func (r *VoucherRepository) UpdateVoucherNewDetails(ctx echo.Context, voucher *domain.Voucher, projectID string) (*domain.Voucher, error) {
+	collection := r.mongo.Database("otoo").Collection("vouchers")
+
+	// Prepare the filter for finding the voucher
+
+	filter := bson.M{"projectId": projectID, "is_active": true, "orderId": voucher.OrderID}
+
+	// Prepare the update data
+	update := bson.M{"$set": voucher}
+
+	// Set upsert option to false if you don't want to create a new document if it doesn't exist
+	opt := options.Update().SetUpsert(true)
+
+	// Perform the update operation
+	result, err := collection.UpdateOne(context.Background(), filter, update, opt)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check if any documents were modified
+	if result.MatchedCount == 0 {
+		return nil, errors.New("voucher not found")
+	}
+
+	// Retrieve the updated voucher
+	var updatedVoucher domain.Voucher
+	err = collection.FindOne(context.Background(), filter).Decode(&updatedVoucher)
+	if err != nil {
+		return nil, err
+	}
+
+	return &updatedVoucher, nil
+
+}
+
 // GetVoucherByVoucherID selects a Voucher by voucher ID.
 func (r *VoucherRepository) GetVoucherByVoucherID(ctx echo.Context, voucherID string) (*domain.Voucher, error) {
 	collection := r.mongo.Database("otoo").Collection("vouchers")

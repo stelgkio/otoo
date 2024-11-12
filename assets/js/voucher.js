@@ -674,7 +674,8 @@ function createVoucher(projectId) {
                     break;
 
                 case field.endsWith('postcode'):
-                    if (value.length < 5 || value.length > 5) {
+                    // Check if the value is exactly 5 characters long and only contains digits
+                    if (!/^\d{5}$/.test(value)) {
                         this.errors[field] = 'Please enter a valid postcode';
                         return false;
                     }
@@ -1142,12 +1143,12 @@ function newVoucher(projectId) {
                     break;
 
                 case field.endsWith('postcode'):
-                    if (value.length < 5 || value.length > 5) {
+                    // Check if the value is exactly 5 characters long and only contains digits
+                    if (!/^\d{5}$/.test(value)) {
                         this.errors[field] = 'Please enter a valid postcode';
                         return false;
                     }
                     break;
-
                 case field.endsWith('ParcelWeight'):
                     console.log('Validating field tttt:', field);
                     console.log('Validatinvalue:', value);
@@ -1606,7 +1607,7 @@ function updateHermeVoucher(projectId) {
                 case field.endsWith('postcode'):
                     // Check if the value is exactly 5 characters long and only contains digits
                     if (!/^\d{5}$/.test(value)) {
-                        this.errors[field] = 'Please enter a valid 5-digit postcode containing only numbers';
+                        this.errors[field] = 'Please enter a valid postcode';
                         return false;
                     }
                     break;

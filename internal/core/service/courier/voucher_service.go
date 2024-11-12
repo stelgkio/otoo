@@ -2,12 +2,16 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"log/slog"
+	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	domain "github.com/stelgkio/otoo/internal/core/domain/courier"
 	o "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/port"
+	"github.com/stelgkio/woocommerce"
 )
 
 // VoucherService defines the methods for interacting with the Voucher service
@@ -63,6 +67,36 @@ func (vs *VoucherService) CreateVoucher(ctx echo.Context, OrderRecord *o.OrderRe
 	voucher.UpdateVoucher(OrderRecord.Order.ShippingTotal, OrderRecord.Order.CustomerNote, OrderRecord.Order.Shipping, OrderRecord.Order.Billing, OrderRecord.Order.LineItems, OrderRecord.Order.PaymentMethod, OrderRecord.Order.Total)
 
 	return vs.repo.UpdateVoucher(ctx, voucher, projectID, voucher.VoucherID, OrderRecord.OrderID)
+}
+
+// CreateHermesVoucher inserts a new Voucher into the database
+func (vs *VoucherService) CreateHermesVoucher(ctx echo.Context, voucher *domain.HermesVoucerRequest, projectID string) (*domain.Voucher, error) {
+	shipping := &woocommerce.Shipping{
+		FirstName: strings.Split(voucher.ReceiverName, " ")[0],
+		Address1:  voucher.ReceiverAddress,
+		LastName:  strings.Split(voucher.ReceiverName, " ")[1],
+		City:      voucher.ReceiverCity,
+		PostCode:  fmt.Sprintf("%d", voucher.ReceiverPostal),
+	}
+
+	billing := &woocommerce.Billing{
+		Email:     voucher.ReceiverEmail,
+		Phone:     voucher.ReceiverTelephone,
+		FirstName: strings.Split(voucher.ReceiverName, " ")[0],
+		LastName:  strings.Split(voucher.ReceiverName, " ")[1],
+		Address1:  voucher.ReceiverAddress,
+		City:      voucher.ReceiverCity,
+		PostCode:  fmt.Sprintf("%d", voucher.ReceiverPostal),
+	}
+	orderID, err := strconv.ParseInt(voucher.OrderID, 10, 64)
+	if err != nil {
+		// Handle the error
+		fmt.Println("Error converting string to int64:", err)
+		return nil, err
+	}
+	newvoucher := domain.NewVoucher(projectID, fmt.Sprintf("%.2f", voucher.Cod), *voucher.Notes, shipping, billing, orderID, nil, "cod", fmt.Sprintf("%.2f", voucher.Cod))
+	return vs.repo.CreateVoucher(ctx, newvoucher, projectID)
+
 }
 
 // GetVoucherByVoucherID retrieves a Voucher by its ID

@@ -306,7 +306,6 @@ i18next
                     "dashboard-table-customer_email": "Email",
                     "dashboard-table-customer-total_orders": "Συνολικές Παραγγελίες",
                     "dashboard-table-customer-total_spent": "Συνολικό Ποσό",
-                    "dashboard-table-customer-total_spent": "Πελάτης δεν βρέθηκε",
                     "dashboard-table-products_id": "ID Προϊόντος",
                     "dashboard-table-products_name": "Όνομα Προϊόντος",
                     "dashboard-table-products_price": "Τιμή Προϊόντος",

@@ -15,7 +15,8 @@ import (
 type Voucher struct {
 	ID                  primitive.ObjectID     `json:"Id" bson:"_id,omitempty"`
 	ProjectID           string                 `json:"projectId"  bson:"projectId,omitempty"`
-	OrderID             int64                  `json:"orderId"  bson:"orderId,omitempty"`
+	OrderID             *int64                 `json:"orderId"  bson:"orderId,omitempty"`
+	CustomOrderID       *int64                 `json:"custom_orderId"  bson:"custom_orderId,omitempty"`
 	VoucherID           string                 `json:"voucher_id"  bson:"voucher_id"`
 	TotalAmount         string                 `json:"total_amount"  bson:"total_amount,omitempty"`
 	PaymentMethod       string                 `json:"paymentmethod"  bson:"paymentmethod,omitempty"`
@@ -54,7 +55,7 @@ func NewVoucher(projectID, cod,
 		Shipping:            shipping,
 		Billing:             billing,
 		Products:            products,
-		OrderID:             orderID,
+		OrderID:             &orderID,
 		Status:              VoucherStatusNew, // Set a default status if needed
 		CreatedAt:           time.Now(),
 		UpdatedAt:           time.Now(),
@@ -124,6 +125,15 @@ func (v *Voucher) UpdateVoucherIsPrinted(printed bool) *Voucher {
 }
 func (v *Voucher) SetVoucher(voucherId int64) *Voucher {
 	v.VoucherID = fmt.Sprintf("%d", voucherId)
+
+	return v
+}
+
+// SetCustomOrderID updates the Voucher status and updates the UpdatedAt timestamp.
+func (v *Voucher) SetCustomOrderID(customorderID *int64, customOrderID bool) *Voucher {
+	if customOrderID {
+		v.OrderID = customorderID
+	}
 
 	return v
 }

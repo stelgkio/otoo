@@ -5,38 +5,42 @@ import (
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
-templ UpdateHermerVoucher(extensions []*domain.ProjectExtension, projectId string) {
-	<!-- Start UpdateHermerVouchers -->
+templ NewVoucher(extensions []*domain.ProjectExtension, projectId string) {
+	<style>
+		.offcanvas-backdrop {
+		backdrop-filter: blur(2px); 
+		background-color: rgba(0, 0, 0, 0.3); 
+		}
+	</style>
+	<!-- Start off canvas -->
 	<div
 		class="offcanvas offcanvas-end w-100 w-md-75 w-lg-50"
 		data-bs-backdrop="true"
 		tabindex="-1"
-		id="openUpdateHemerOffCamva"
-		x-data={ fmt.Sprintf("updateHermeVoucher('%s')", projectId) }
-		x-init="UpdateHermeVoucherInit()"
-		aria-labelledby="offcanvasExample2Label"
+		id="newVoucherOffcanvas"
+		aria-labelledby="newVoucherOffcanvasLabel"
+		x-data={ fmt.Sprintf("newVoucher('%s')", projectId) }
+		x-init="newVoucherInit()"
 		:class="{ 'show': showOffcanvas }"
 		:style="{ visibility: showOffcanvas ? 'visible' : 'hidden' }"
-		@show-hermer-update-offcanvas.window="openUpdateHemerOffCamva($event.detail.voucher)"
+		@new-voucher.window="openNewVoucherOffcanva()"
 	>
 		<div class="offcanvas-header">
-			<h5 class="offcanvas-title" id="openUpdateHemerOffCamvaLabel" data-i18n="offcanvas-order_processing">
-				<i class="bi bi-pencil-square"></i>Order Processing #
+			<h5 class="offcanvas-title" id="newVoucherOffcanvasLabel" data-i18n="offcanvas-order_processing">
+				<i class="bi bi-pencil-square"></i>New Voucher #<span x-text="voucher_object.orderId"></span>
 			</h5>
-			<h5 class="offcanvas-title" x-text="voucher_object.voucherId"></h5>
-			<button type="button" class="btn-close" @click="closeOffcanvas('UpdateHermeVoucherInit')"></button>
+			<button type="button" class="btn-close" @click="closeOffcanvas('newVoucherInit')"></button>
 		</div>
 		<div class="offcanvas-body d-flex flex-column">
 			<!-- Tabs -->
-			<span x-model="voucher_object.voucherId"></span>
 			<ul class="nav nav-tabs" id="orderTabs" role="tablist">
 				// Customer Tab
 				<li class="nav-item" role="presentation">
 					<button
 						class="nav-link active"
-						id="customer-tab2"
+						id="customer-tab"
 						data-bs-toggle="tab"
-						data-bs-target="#customer-info2"
+						data-bs-target="#customer-info3"
 						type="button"
 						role="tab"
 						@click="setActiveTab('customer')"
@@ -48,9 +52,9 @@ templ UpdateHermerVoucher(extensions []*domain.ProjectExtension, projectId strin
 				<li class="nav-item" role="presentation">
 					<button
 						class="nav-link"
-						id="shipping-tab2"
+						id="shipping-tab"
 						data-bs-toggle="tab"
-						data-bs-target="#shipping-info2"
+						data-bs-target="#shipping-info3"
 						type="button"
 						role="tab"
 						@click="setActiveTab('shipping')"
@@ -62,7 +66,7 @@ templ UpdateHermerVoucher(extensions []*domain.ProjectExtension, projectId strin
 			<!-- Tab Content -->
 			<div class="tab-content flex-grow-1 overflow-auto" id="orderTabContent">
 				<!-- Customer Information Tab -->
-				<div class="tab-pane fade show active" id="customer-info2" role="tabpanel">
+				<div class="tab-pane fade show active" id="customer-info3" role="tabpanel">
 					<div class="p-3">
 						<div class="card mb-3 shadow-sm">
 							<div class="card-header">
@@ -171,36 +175,6 @@ templ UpdateHermerVoucher(extensions []*domain.ProjectExtension, projectId strin
 								</div>
 							</div>
 						</div>
-						<!-- Section for Products -->
-						<div class="card mb-3 shadow-sm">
-							<div class="card-header">
-								<h6 class="mb-0" data-i18n="off-canvas-customer-products-header">
-									<i class="bi bi-box-seam"></i> Products
-								</h6>
-							</div>
-							<div class="card-body">
-								<div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
-									<table class="table table-sm">
-										<thead>
-											<tr>
-												<th data-i18n="off-canvas-customer-product-name"><span data-i18n="off-canvas-modal-product">Product</span></th>
-												<th data-i18n="off-canvas-customer-product-quantity"><span data-i18n="off-canvas-modal-quantity">Quantity</span></th>
-												<th data-i18n="off-canvas-customer-product-price"><span data-i18n="off-canvas-modal-price">Price</span></th>
-											</tr>
-										</thead>
-										<tbody>
-											<template x-for="product in voucher_object.products" :key="product.id">
-												<tr>
-													<td x-text="product.name"></td>
-													<td x-text="product.quantity"></td>
-													<td x-text="product.price"></td>
-												</tr>
-											</template>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
 						<!-- Section for Delivery Instructions -->
 						<div class="card mb-3 shadow-sm">
 							<div class="card-header">
@@ -215,7 +189,7 @@ templ UpdateHermerVoucher(extensions []*domain.ProjectExtension, projectId strin
 					</div>
 				</div>
 				<!-- Shipping Information Tab -->
-				<div class="tab-pane fade" id="shipping-info2" role="tabpanel" aria-labelledby="shipping-tab2">
+				<div class="tab-pane fade" id="shipping-info3" role="tabpanel" aria-labelledby="shipping-tab3">
 					<div class="p-3">
 						<!-- Section for Shipping Information -->
 						<div class="card mb-3 shadow-sm">
@@ -234,7 +208,6 @@ templ UpdateHermerVoucher(extensions []*domain.ProjectExtension, projectId strin
 										x-model="selectedCourier"
 										:class="{ 'is-invalid': errors['shipping.courier'] }"
 										@change="validateField('shipping.courier')"
-										disabled
 									>
 										<option value="" data-i18n="off-canvas-shipping-provider">Select Courier Provider</option>
 										for _, extension := range extensions {
@@ -250,7 +223,7 @@ templ UpdateHermerVoucher(extensions []*domain.ProjectExtension, projectId strin
 										<span class="input-group-text">
 											<i class="bi bi-upc-scan"></i>
 										</span>
-										<input type="number" class="form-control form-control-sm" id="orderId" x-model="voucher_object.orderId" readonly/>
+										<input type="number" class="form-control form-control-sm" @blur="formatOrderIdWithLeadingZeros" id="orderId" x-model="voucher_object.orderId"/>
 									</div>
 								</div>
 								<!-- Order COD -->
@@ -513,10 +486,9 @@ templ UpdateHermerVoucher(extensions []*domain.ProjectExtension, projectId strin
 					@click="handleSubmit()"
 					:disabled=" isSubmitting"
 					data-i18n="off-canvas-save-btn"
-					x-bind:disabled="isPrinted === true"
 				>
 					<template x-show="!isSubmitting">
-						<span>Update Voucher</span>
+						<span>Create Voucher</span>
 					</template>
 					<template x-show="isSubmitting">
 						<span class="d-flex align-items-center justify-content-center">
@@ -530,7 +502,7 @@ templ UpdateHermerVoucher(extensions []*domain.ProjectExtension, projectId strin
 					type="button"
 					class="btn btn-neutral rounded-1 px-4"
 					id="closeBtn"
-					@click="closeOffcanvas('UpdateHermeVoucherInit')"
+					@click="closeOffcanvas('newVoucherInit')"
 					data-i18n="off-canvas-close-btn"
 				>
 					Close

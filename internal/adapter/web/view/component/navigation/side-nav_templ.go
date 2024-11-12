@@ -112,7 +112,7 @@ func SideBar(user *domain.User, projectName, projectId string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a> <a class=\"dropdown-item\" class=\"dropdown-item\" href=\"/dashboard\"><i class=\"bi bi-house me-3\"></i><span data-i18n=\"side-nav-projects\">Projects </span></a><div class=\"dropdown-divider\"></div><a class=\"dropdown-item\" hx-get=\"/dashboard/logout\"><i class=\"bi bi-person me-3\"></i><span data-i18n=\"side-nav-logout\">Logout </span></a></div></div></div><div class=\"collapse navbar-collapse overflow-x-hidden\" id=\"sidebarCollapse\"><ul class=\"navbar-nav\"><li class=\"nav-item my-1\"><a class=\"nav-link d-flex align-items-center rounded-pill \" href=\"#sidebar-dashboards\" data-bs-toggle=\"collapse\" role=\"button\" aria-expanded=\"true\" aria-controls=\"sidebar-dashboards\"><i class=\"bi bi-house-fill\"></i> <span data-i18n=\"side-nav-dashboard\">Dashboard</span> <span class=\"badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto\"></span></a><div class=\"collapse show\" id=\"sidebar-dashboards\"><ul class=\"nav nav-sm flex-column mt-1\"><li class=\"nav-item\"><a href=\"javascript:void(0)\" hx-get=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a> <a class=\"dropdown-item\" class=\"dropdown-item\" href=\"/dashboard\"><i class=\"bi bi-house me-3\"></i><span>Projects </span></a><div class=\"dropdown-divider\"></div><a class=\"dropdown-item\" hx-get=\"/dashboard/logout\"><i class=\"bi bi-person me-3\"></i><span data-i18n=\"side-nav-logout\">Logout </span></a></div></div></div><div class=\"collapse navbar-collapse overflow-x-hidden\" id=\"sidebarCollapse\"><ul class=\"navbar-nav\"><li class=\"nav-item my-1\"><a class=\"nav-link d-flex align-items-center rounded-pill \" href=\"#sidebar-dashboards\" data-bs-toggle=\"collapse\" role=\"button\" aria-expanded=\"true\" aria-controls=\"sidebar-dashboards\"><i class=\"bi bi-house-fill\"></i> <span data-i18n=\"side-nav-dashboard\">Dashboard</span> <span class=\"badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto\"></span></a><div class=\"collapse show\" id=\"sidebar-dashboards\"><ul class=\"nav nav-sm flex-column mt-1\"><li class=\"nav-item\"><a href=\"javascript:void(0)\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -195,7 +195,7 @@ func SideBar(user *domain.User, projectName, projectId string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\"><i class=\"bi bi-calendar2-plus-fill\"></i> <span data-i18n=\"side-nav-add-extensions\">Add Extensions</span> <span class=\"badge badge-sm rounded-pill me-n2 bg-warning-subtle text-warning ms-auto\">🔥 Hot</span></a></li>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-push-url=\"true\" hx-target=\"#dashboard-content\"><i class=\"bi bi-calendar2-plus-fill\"></i> <span data-i18n=\"side-nav-add-extensions\">Add Extensions</span> <span class=\"badge badge-sm rounded-pill me-n2 bg-warning-subtle text-warning ms-auto\"></span></a></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -207,7 +207,7 @@ func SideBar(user *domain.User, projectName, projectId string) templ.Component {
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/project/settings/%s", projectId))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/side-nav.templ`, Line: 246, Col: 62}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/navigation/side-nav.templ`, Line: 243, Col: 62}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {

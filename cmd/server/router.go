@@ -98,8 +98,9 @@ func NewRouter(
 
 	usergroup := e.Group("/user")
 	{
-		usergroup.Use(configureJWT())
+
 		usergroup.Use(auth.TokenRefresherMiddleware)
+		usergroup.Use(configureJWT())
 		usergroup.GET("/list/:projectId", authHandler.UserList)
 		usergroup.GET("/createMember/:projectId", authHandler.CreateMemberModal)
 		usergroup.POST("/addmember/:projectId", authHandler.AddMember)
@@ -109,9 +110,9 @@ func NewRouter(
 	//Dashboard
 	dashboardgroup := e.Group("/dashboard")
 	{
-		dashboardgroup.Use(configureJWT())
-		dashboardgroup.Use(auth.TokenRefresherMiddleware)
 
+		dashboardgroup.Use(auth.TokenRefresherMiddleware)
+		dashboardgroup.Use(configureJWT())
 		dashboardgroup.GET("", projectHandler.GetProjectDashboardPage).Name = "dashboard"
 
 		dashboardgroup.GET("/logout", authHandler.Logout)
@@ -152,10 +153,11 @@ func NewRouter(
 	//Extension group
 	extensiongroup := e.Group("/extension")
 	{
-		// Add authentication
-		extensiongroup.Use(configureJWT())
+
 		//Attach jwt token refresher.
 		extensiongroup.Use(auth.TokenRefresherMiddleware)
+		// Add authentication
+		extensiongroup.Use(configureJWT())
 		extensiongroup.GET("/:projectId", dashboardHandler.Extention)
 		extensiongroup.GET("/:projectId/:extensionId/success", dashboardHandler.StripeSuccesRedirect)
 		extensiongroup.GET("/:projectId/:extensionId/fail", dashboardHandler.StripeFailRedirect)
@@ -191,10 +193,8 @@ func NewRouter(
 	//Payment group
 	paymentgroup := e.Group("/payment")
 	{
-		// Add authentication
-		paymentgroup.Use(configureJWT())
-		//Attach jwt token refresher.
 		paymentgroup.Use(auth.TokenRefresherMiddleware)
+		paymentgroup.Use(configureJWT())
 		paymentgroup.POST("", dashboardHandler.Payment)
 		paymentgroup.GET("/table/:projectId/:page", dashboardHandler.PaymentTable)
 
@@ -202,11 +202,8 @@ func NewRouter(
 	//Project group
 	projectgroup := e.Group("/project")
 	{
-		// Add authentication
-		projectgroup.Use(configureJWT())
-		//Attach jwt token refresher.
 		projectgroup.Use(auth.TokenRefresherMiddleware)
-
+		projectgroup.Use(configureJWT())
 		projectgroup.GET("/list", projectHandler.ProjectListPage)
 		projectgroup.GET("/test/synchronize/:projectId", projectHandler.ProjectSynchronizeTest)
 		projectgroup.GET("/synchronize/:projectId", projectHandler.ProjectSynchronize)
@@ -267,8 +264,9 @@ func NewRouter(
 
 	webhookgroup := e.Group("/webhook")
 	{
-		webhookgroup.Use(configureJWT())
+
 		webhookgroup.Use(auth.TokenRefresherMiddleware)
+		webhookgroup.Use(configureJWT())
 		webhookgroup.GET("/:projectId/:webhookId", nil)
 		webhookgroup.GET("/:projectId", WooCommerceHandler.FindWebHooks)
 		webhookgroup.GET("/progress/:projectId", WooCommerceHandler.WebHooksProgressPage)
@@ -287,16 +285,16 @@ func NewRouter(
 
 	customergroupB := e.Group("/customer")
 	{
-		customergroupB.Use(configureJWT())
 		customergroupB.Use(auth.TokenRefresherMiddleware)
+		customergroupB.Use(configureJWT())
 		customergroupB.GET("/table/:projectId/:page", dashboardHandler.CustomerTable)
 
 	}
 
 	ordergroupB := e.Group("/order")
 	{
-		ordergroupB.Use(configureJWT())
 		ordergroupB.Use(auth.TokenRefresherMiddleware)
+		ordergroupB.Use(configureJWT())
 		ordergroupB.GET("/table/:projectId/:status/:page", dashboardHandler.OrderTable)
 		ordergroupB.GET("/chart/:projectId", dashboardHandler.OrderCharts)
 		ordergroupB.GET("/monthy/chart/:projectId", dashboardHandler.OrderMonthlyCharts)
@@ -307,8 +305,9 @@ func NewRouter(
 	}
 	productgroupB := e.Group("/product")
 	{
-		productgroupB.Use(configureJWT())
+
 		productgroupB.Use(auth.TokenRefresherMiddleware)
+		productgroupB.Use(configureJWT())
 		productgroupB.GET("/table/:projectId/:page", dashboardHandler.ProductTable)
 		// ordergroup.GET("/tablehtml/:projectId", dashboardHandler.ProductTableHTML)
 
@@ -317,8 +316,9 @@ func NewRouter(
 	//Profile
 	profilegroup := e.Group("/profile")
 	{
-		profilegroup.Use(configureJWT())
+
 		profilegroup.Use(auth.TokenRefresherMiddleware)
+		profilegroup.Use(configureJWT())
 		profilegroup.GET("", profileHandler.Profile).Name = "profile"
 		profilegroup.GET("/password", profileHandler.ProfilePassword)
 		profilegroup.POST("/password/update", profileHandler.UpdatePassword)
@@ -331,8 +331,9 @@ func NewRouter(
 	//Courier
 	couriergroup := e.Group("/voucher")
 	{
-		couriergroup.Use(configureJWT())
+
 		couriergroup.Use(auth.TokenRefresherMiddleware)
+		couriergroup.Use(configureJWT())
 		couriergroup.GET("/table/view/:projectId", dashboardHandler.CourierTable)
 		couriergroup.GET("/table/html/:projectId", dashboardHandler.VoucherTableHTML)
 		couriergroup.GET("/table/:projectId/:status/:page", dashboardHandler.VoucherTable)
@@ -350,6 +351,10 @@ func NewRouter(
 		//UPDATE Voucher
 		couriergroup.PUT("/courier4u/update/:voucherId/:projectId", dashboardHandler.UpdateCourier4uVoucher)
 		couriergroup.PUT("/redcourier/update/:voucherId/:projectId", dashboardHandler.UpdateRerCourierVoucher)
+
+		//ownload-multiple Voucher
+		couriergroup.POST("/courier4u/download-multiple/:projectId", dashboardHandler.Courier4uDownloadMmultipleVoucher)
+		couriergroup.POST("/redcourier/download-multiple/:projectId", dashboardHandler.RedCourierDownloadMmultipleVoucher)
 
 	}
 

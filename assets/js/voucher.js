@@ -674,7 +674,7 @@ function createVoucher(projectId) {
                     break;
 
                 case field.endsWith('postcode'):
-                    if (value.length < 5) {
+                    if (value.length < 5 || value.length > 5) {
                         this.errors[field] = 'Please enter a valid postcode';
                         return false;
                     }
@@ -1142,7 +1142,7 @@ function newVoucher(projectId) {
                     break;
 
                 case field.endsWith('postcode'):
-                    if (value.length < 5) {
+                    if (value.length < 5 || value.length > 5) {
                         this.errors[field] = 'Please enter a valid postcode';
                         return false;
                     }
@@ -1604,7 +1604,7 @@ function updateHermeVoucher(projectId) {
                     break;
 
                 case field.endsWith('postcode'):
-                    if (value.length < 5) {
+                    if (value.length < 5 || value.length > 5) {
                         this.errors[field] = 'Please enter a valid postcode';
                         return false;
                     }

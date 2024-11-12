@@ -881,8 +881,8 @@ function newVoucher(projectId) {
         },
         formatOrderIdWithLeadingZeros() {
             // Convert orderId to a string and pad with five leading zeros
-            const orderIdString = String(this.voucher_object.orderId);
-            this.voucher_object.orderId = orderIdString + '000000';
+            const orderIdString = String(this.voucher_object.orderId).padStart(10, '0');
+            this.voucher_object.orderId = orderIdString;
         },
 
         // Prepare payload for Hermes API

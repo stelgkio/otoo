@@ -15,20 +15,22 @@ type HermesVoucerRequest struct {
 	ReceiverAddress   string   `json:"ReceiverAddress" bson:"ReceiverAddress" validate:"required_unless=ServiceReception 1,max=64"` // Receiver's address (max 64 chars) *Required if ServiceReception is not selected
 	ReceiverCity      string   `json:"ReceiverCity" bson:"ReceiverCity" validate:"required,max=64"`                                 // Receiver's city (max 64 chars)
 	ReceiverPostal    int      `json:"ReceiverPostal" bson:"ReceiverPostal" validate:"required,min=10000,max=99999"`                // Receiver's postal code (5 digits)
-	ReceiverTelephone string   `json:"ReceiverTelephone" bson:"ReceiverTelephone" validate:"required,max=32,telephone"`             // Receiver's telephone (custom telephone format validation)
-	Notes             *string  `json:"Notes" bson:"Notes" validate:"omitempty,max=128"`                                             // Delivery instructions (max 128 chars)
-	OrderID           string   `json:"OrderID" bson:"OrderID" validate:"required,max=36"`                                           // Internal order note (max 36 chars)
-	Cod               float64  `json:"Cod" bson:"Cod" validate:"required,max=499.99"`                                               // Cash on Delivery amount (max 499.99)
-	ServiceSavvato    *int     `json:"ServiceSavvato" bson:"ServiceSavvato" validate:"oneof=0 1"`                                   // Service option for Saturday delivery (0 or 1)
-	ServiceEpigon     *int     `json:"ServiceEpigon" bson:"ServiceEpigon" validate:"oneof=0 1"`                                     // Service option for next-day delivery (0 or 1)
-	ServiceEpistrofi  *int     `json:"ServiceEpistrofi" bson:"ServiceEpistrofi" validate:"oneof=0 1"`                               // Service option for return (0 or 1)
-	ServiceSameday    *int     `json:"ServiceSameday" bson:"ServiceSameday" validate:"oneof=0 1"`                                   // Service option for same-day delivery (0 or 1)
-	ServiceProtocol   *int     `json:"ServiceProtocol" bson:"ServiceProtocol" validate:"oneof=0 1"`                                 // Service option for protocol number (0 or 1)
-	ServiceReception  *int     `json:"ServiceReception" bson:"ServiceReception" validate:"oneof=0 1"`                               // Service option for pickup from store (0 or 1)
-	ParcelWeight      int      `json:"ParcelWeight" bson:"ParcelWeight" validate:"required,min=1"`                                  // Parcel weight (minimum 1)
-	ParcelDepth       *float64 `json:"ParcelDepth" bson:"ParcelDepth" validate:"required,min=1.0"`                                  // Parcel depth (minimum 1.0)
-	ParcelWidth       *float64 `json:"ParcelWidth" bson:"ParcelWidth" validate:"required,min=1.0"`                                  // Parcel width (minimum 1.0)
-	ParcelHeight      *float64 `json:"ParcelHeight" bson:"ParcelHeight" validate:"required,min=1.0"`                                // Parcel height (minimum 1.0)
+	ReceiverTelephone string   `json:"ReceiverTelephone" bson:"ReceiverTelephone" validate:"required,max=32,telephone"`
+	ReceiverEmail     string   `json:"ReceiverEmail" bson:"ReceiverEmail" validate:"required,email"`  // Receiver's telephone (custom telephone format validation)
+	Notes             *string  `json:"Notes" bson:"Notes" validate:"omitempty,max=128"`               // Delivery instructions (max 128 chars)
+	OrderID           string   `json:"OrderID" bson:"OrderID" validate:"required,max=36"`             // Internal order note (max 36 chars)
+	Cod               float64  `json:"Cod" bson:"Cod" validate:"required,max=499.99"`                 // Cash on Delivery amount (max 499.99)
+	ServiceSavvato    *int     `json:"ServiceSavvato" bson:"ServiceSavvato" validate:"oneof=0 1"`     // Service option for Saturday delivery (0 or 1)
+	ServiceEpigon     *int     `json:"ServiceEpigon" bson:"ServiceEpigon" validate:"oneof=0 1"`       // Service option for next-day delivery (0 or 1)
+	ServiceEpistrofi  *int     `json:"ServiceEpistrofi" bson:"ServiceEpistrofi" validate:"oneof=0 1"` // Service option for return (0 or 1)
+	ServiceSameday    *int     `json:"ServiceSameday" bson:"ServiceSameday" validate:"oneof=0 1"`     // Service option for same-day delivery (0 or 1)
+	ServiceProtocol   *int     `json:"ServiceProtocol" bson:"ServiceProtocol" validate:"oneof=0 1"`   // Service option for protocol number (0 or 1)
+	ServiceReception  *int     `json:"ServiceReception" bson:"ServiceReception" validate:"oneof=0 1"` // Service option for pickup from store (0 or 1)
+	ParcelWeight      int      `json:"ParcelWeight" bson:"ParcelWeight" validate:"required,min=1"`    // Parcel weight (minimum 1)
+	ParcelDepth       *float64 `json:"ParcelDepth" bson:"ParcelDepth" validate:"required,min=1.0"`    // Parcel depth (minimum 1.0)
+	ParcelWidth       *float64 `json:"ParcelWidth" bson:"ParcelWidth" validate:"required,min=1.0"`    // Parcel width (minimum 1.0)
+	ParcelHeight      *float64 `json:"ParcelHeight" bson:"ParcelHeight" validate:"required,min=1.0"`
+	CustomOrderID     bool     `json:"CustomOrderID"` // Parcel height (minimum 1.0)
 
 }
 

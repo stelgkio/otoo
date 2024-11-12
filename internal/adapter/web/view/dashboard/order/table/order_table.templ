@@ -98,7 +98,7 @@ templ OrderTable(projectId string) {
 								/>
 							</div>
 							<div class="ms-3 me-5">
-								<label for="statusTodo">Change status to completed</label>
+								<label for="statusCompleted">Change status to completed</label>
 							</div>
 							// <div class="ms-auto">
 							// <span class="badge rounded-pill bg-opacity-25 bg-success text-success">23</span>
@@ -116,7 +116,7 @@ templ OrderTable(projectId string) {
 								/>
 							</div>
 							<div class="ms-3 me-5">
-								<label for="statusInProgress">Change status to pending</label>
+								<label for="statuSpending">Change status to pending</label>
 							</div>
 						</div>
 						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
@@ -131,7 +131,7 @@ templ OrderTable(projectId string) {
 								/>
 							</div>
 							<div class="ms-3 me-5">
-								<label for="statusDone">Change status to processing</label>
+								<label for="statusProdessing">Change status to processing</label>
 							</div>
 						</div>
 						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
@@ -475,6 +475,7 @@ templ OrderTable(projectId string) {
 				customer_note:''
             };
         },
+		
 		 async saveChanges() {
             this.loading = true;
             try {

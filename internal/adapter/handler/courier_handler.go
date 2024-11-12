@@ -169,10 +169,11 @@ func (dh *DashboardHandler) VoucherTable(ctx echo.Context) error {
 			if record.PaymentMethod == "cod" {
 				totalAmount = record.TotalAmount
 			}
+
 			vouchers = append(vouchers, v.VoucherTableList{
 				ID:                  record.ID,
 				ProjectID:           record.ProjectID,
-				OrderID:             record.OrderID,
+				OrderID:             *record.OrderID,
 				VoucherID:           record.VoucherID,
 				Status:              record.Status,
 				Shipping:            *record.Shipping,
@@ -222,7 +223,7 @@ func (dh *DashboardHandler) VoucherDetailModal(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	_, err = dh.orderSvc.GetOrderByID(voucher.ProjectID, voucher.OrderID)
+	_, err = dh.orderSvc.GetOrderByID(voucher.ProjectID, *voucher.OrderID)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
@@ -240,7 +241,7 @@ func (dh *DashboardHandler) CreateVoucher(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	_, err = dh.orderSvc.GetOrderByID(voucher.ProjectID, voucher.OrderID)
+	_, err = dh.orderSvc.GetOrderByID(voucher.ProjectID, *voucher.OrderID)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
@@ -271,8 +272,15 @@ func (dh *DashboardHandler) CreateCourier4uVoucher(ctx echo.Context) error {
 	}
 
 	voucher, err := dh.voucherSvc.GetVoucherByOrderIDAndProjectID(ctx, orderID, projectID)
-	if err != nil || voucher == nil {
+	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	} else if voucher == nil && req.CustomOrderID == true {
+		voucher, err = dh.voucherSvc.CreateHermesVoucher(ctx, req, projectID)
+		if err != nil {
+			return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+		}
+	} else {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Courier4u voucher does not exist"})
 	}
 
 	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
@@ -313,6 +321,7 @@ func (dh *DashboardHandler) CreateCourier4uVoucher(ctx echo.Context) error {
 	voucher.UpdateVoucherProvider(domain.Courier4u)
 	voucher.UpdateVoucherHermes(req)
 	voucher.UpdateVoucherStatus(courier_domain.VoucherStatusProcessing)
+	voucher.SetCustomOrderID(&orderID, req.CustomOrderID)
 	dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
 
 	return ctx.JSON(http.StatusOK, "voucher created")
@@ -341,8 +350,15 @@ func (dh *DashboardHandler) CreateRedCourierVoucher(ctx echo.Context) error {
 	}
 
 	voucher, err := dh.voucherSvc.GetVoucherByOrderIDAndProjectID(ctx, orderID, projectID)
-	if err != nil || voucher == nil {
+	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	} else if voucher != nil && req.CustomOrderID == true {
+		voucher, err = dh.voucherSvc.CreateHermesVoucher(ctx, req, projectID)
+		if err != nil {
+			return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+		}
+	} else {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Courier4u voucher does not exist"})
 	}
 
 	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
@@ -384,6 +400,7 @@ func (dh *DashboardHandler) CreateRedCourierVoucher(ctx echo.Context) error {
 	voucher.UpdateVoucherProvider(domain.Courier4u)
 	voucher.UpdateVoucherHermes(req)
 	voucher.UpdateVoucherStatus(courier_domain.VoucherStatusProcessing)
+	voucher.SetCustomOrderID(&orderID, req.CustomOrderID)
 	dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
 
 	return ctx.JSON(http.StatusOK, "voucher created")
@@ -433,8 +450,8 @@ func (dh *DashboardHandler) DownloadCourier4uVoucher(ctx echo.Context) error {
 	}
 	// Create the response with the PDF data and filename
 	pdfResponse := PDFResponse{
-		Filename: fmt.Sprintf("voucher_%s.pdf", voucher.VoucherID), // Set your filename here
-		Data:     base64.StdEncoding.EncodeToString(pdfData),       // Encode the PDF data to Base64
+		Filename: fmt.Sprintf("couerier4u_voucher_%s.pdf", voucher.VoucherID), // Set your filename here
+		Data:     base64.StdEncoding.EncodeToString(pdfData),                  // Encode the PDF data to Base64
 	}
 	voucher.UpdateVoucherIsPrinted(true)
 	dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
@@ -486,8 +503,8 @@ func (dh *DashboardHandler) DownloadRedCourierVoucher(ctx echo.Context) error {
 	}
 	// Create the response with the PDF data and filename
 	pdfResponse := PDFResponse{
-		Filename: fmt.Sprintf("voucher_%s.pdf", voucher.VoucherID), // Set your filename here
-		Data:     base64.StdEncoding.EncodeToString(pdfData),       // Encode the PDF data to Base64
+		Filename: fmt.Sprintf("redcourier_voucher_%s.pdf", voucher.VoucherID), // Set your filename here
+		Data:     base64.StdEncoding.EncodeToString(pdfData),                  // Encode the PDF data to Base64
 	}
 	voucher.UpdateVoucherIsPrinted(true)
 	dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
@@ -567,10 +584,10 @@ func (dh *DashboardHandler) UpdateCourier4uVoucher(ctx echo.Context) error {
 	voucher.UpdateVoucherProvider(domain.Courier4u)
 	voucher.UpdateVoucherHermes(req)
 	voucher.UpdateVoucherStatus(courier_domain.VoucherStatusProcessing)
+	voucher.SetCustomOrderID(&orderID, req.CustomOrderID)
 	dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
 
 	return ctx.JSON(http.StatusOK, "voucher updated successfully")
-
 }
 
 // UpdateRerCourierVoucher create and return the pdf
@@ -644,8 +661,138 @@ func (dh *DashboardHandler) UpdateRerCourierVoucher(ctx echo.Context) error {
 	voucher.UpdateVoucherProvider(domain.Courier4u)
 	voucher.UpdateVoucherHermes(req)
 	voucher.UpdateVoucherStatus(courier_domain.VoucherStatusProcessing)
+	voucher.SetCustomOrderID(&orderID, req.CustomOrderID)
 	dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
 
 	return ctx.JSON(http.StatusOK, "voucher updated successfully")
+}
+
+type RequestBody struct {
+	VoucherIds []v.VoucherTableList `json:"voucherIds"`
+}
+
+// RedCourierDownloadMmultipleVoucher returns the order dashboard
+func (dh *DashboardHandler) RedCourierDownloadMmultipleVoucher(ctx echo.Context) error {
+	voucherID := ctx.Param("voucherId")
+
+	var requestBody RequestBody
+	if err := ctx.Bind(&requestBody); err != nil {
+		return ctx.JSON(http.StatusBadRequest, echo.Map{"error": "invalid request format"})
+	}
+
+	projectID := ctx.Param("projectId")
+
+	voucher, err := dh.voucherSvc.GetVoucherByVoucherID(ctx, voucherID)
+
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	extension := util.Filter(projectExtensions, func(e *domain.ProjectExtension) bool {
+		return e.Code == domain.Courier4u
+	})
+	if len(extension) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, map[string]string{"error": "Enable Courier4u extension first"})
+	}
+	redcourier := new(domain.RedCourierExtension)
+
+	redcourier, err = dh.extensionSvc.GetRedCourierProjectExtensionByID(ctx, extension[0].ExtensionID, projectID)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	if redcourier == nil {
+		redcourier = new(domain.RedCourierExtension)
+	}
+	var voucherIDs []int64
+	for _, voucher := range requestBody.VoucherIds {
+		// Convert the voucherId (which is a string) to int64
+		voucherIDInt, err := strconv.ParseInt(voucher.VoucherID, 10, 64)
+		if err != nil {
+			// Handle the error if the conversion fails
+			return ctx.JSON(http.StatusBadRequest, echo.Map{"error": fmt.Sprintf("invalid voucherId %s", voucher.VoucherID)})
+		}
+		voucherIDs = append(voucherIDs, voucherIDInt)
+	}
+	pdfData, err := dh.hermesSvc.PrintMultipleVoucher(ctx, nil, redcourier, voucherIDs, projectID, redcourier.PrinterType)
+	if err != nil {
+		voucher.UpdateVoucherIsPrinted(false)
+		voucher.UpdateVoucherError(err.Error())
+		dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	// Create the response with the PDF data and filename
+	pdfResponse := PDFResponse{
+		Filename: fmt.Sprintf("redcourier_voucher_%s.pdf", voucher.VoucherID), // Set your filename here
+		Data:     base64.StdEncoding.EncodeToString(pdfData),                  // Encode the PDF data to Base64
+	}
+	voucher.UpdateVoucherIsPrinted(true)
+	dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
+
+	return ctx.JSON(http.StatusOK, pdfResponse)
+
+}
+
+// Courier4uDownloadMmultipleVoucher returns the order dashboard
+func (dh *DashboardHandler) Courier4uDownloadMmultipleVoucher(ctx echo.Context) error {
+
+	projectID := ctx.Param("projectId")
+	var requestBody RequestBody
+	if err := ctx.Bind(&requestBody); err != nil {
+		return ctx.JSON(http.StatusBadRequest, echo.Map{"error": "invalid request format"})
+	}
+
+	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	extension := util.Filter(projectExtensions, func(e *domain.ProjectExtension) bool {
+		return e.Code == domain.Courier4u
+	})
+	if len(extension) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, map[string]string{"error": "Enable Courier4u extension first"})
+	}
+	courier4u := new(domain.Courier4uExtension)
+
+	courier4u, err = dh.extensionSvc.GetCourier4uProjectExtensionByID(ctx, extension[0].ExtensionID, projectID)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	if courier4u == nil {
+		courier4u = new(domain.Courier4uExtension)
+	}
+	var voucherIDs []int64
+	for _, voucher := range requestBody.VoucherIds {
+		// Convert the voucherId (which is a string) to int64
+		voucherIDInt, err := strconv.ParseInt(voucher.VoucherID, 10, 64)
+		if err != nil {
+			// Handle the error if the conversion fails
+			return ctx.JSON(http.StatusBadRequest, echo.Map{"error": fmt.Sprintf("invalid voucherId %s", voucher.VoucherID)})
+		}
+		voucherIDs = append(voucherIDs, voucherIDInt)
+	}
+	pdfData, err := dh.hermesSvc.PrintMultipleVoucher(ctx, courier4u, nil, voucherIDs, projectID, courier4u.PrinterType)
+	if err != nil {
+
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	for _, v := range requestBody.VoucherIds {
+		voucher, err := dh.voucherSvc.GetVoucherByVoucherID(ctx, v.ID.Hex())
+
+		if err != nil {
+			return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+		}
+		voucher.UpdateVoucherIsPrinted(true)
+		dh.voucherSvc.UpdateVoucherNewDetails(ctx, voucher, projectID)
+	}
+	// Create the response with the PDF data and filename
+	pdfResponse := PDFResponse{
+		Filename: "courier4u_multi_voucher.pdf",              // Set your filename here
+		Data:     base64.StdEncoding.EncodeToString(pdfData), // Encode the PDF data to Base64
+	}
+
+	return ctx.JSON(http.StatusOK, pdfResponse)
 
 }

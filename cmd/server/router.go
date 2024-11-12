@@ -352,6 +352,10 @@ func NewRouter(
 		couriergroup.PUT("/courier4u/update/:voucherId/:projectId", dashboardHandler.UpdateCourier4uVoucher)
 		couriergroup.PUT("/redcourier/update/:voucherId/:projectId", dashboardHandler.UpdateRerCourierVoucher)
 
+		//ownload-multiple Voucher
+		couriergroup.POST("/courier4u/download-multiple/:projectId", dashboardHandler.Courier4uDownloadMmultipleVoucher)
+		couriergroup.POST("/redcourier/download-multiple/:projectId", dashboardHandler.RedCourierDownloadMmultipleVoucher)
+
 	}
 
 	return &Router{e}, nil

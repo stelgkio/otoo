@@ -32,6 +32,7 @@ type VoucherRepository interface {
 type VoucherService interface {
 	// CreateVoucher inserts a new Voucher into the database
 	CreateVoucher(ctx echo.Context, OrderRecord *o.OrderRecord, projectID string) (*domain.Voucher, error)
+	CreateHermesVoucher(ctx echo.Context, voucher *domain.HermesVoucerRequest, projectID string) (*domain.Voucher, error)
 	// // GetVoucherByID selects a Voucher by id
 	GetVoucherByVoucherID(ctx echo.Context, voucherID string) (*domain.Voucher, error)
 	// FindVoucherByProjectIDAsync finds a Voucher by projectID

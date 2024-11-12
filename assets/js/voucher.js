@@ -18,7 +18,7 @@ function voucherTable(projectId) {
         totalItems: 0,
         totalPages: 0,
         loading: false,
-        selectedStatus: '',
+        selectedMultipleOption: '',
         errorMessage: '',
         isNewTab: true,
         isPrinted: false,
@@ -223,38 +223,119 @@ function voucherTable(projectId) {
             }
         },
 
-        async applyAction() {
-            if (!this.selectedStatus || !this.selectedVouchers.length) {
-                this.errorMessage = 'Please select a status and at least one voucher.';
+        async bulkAction() {
+            if (!this.selectedMultipleOption || !this.selectedVouchers.length) {
+                this.errorMessage = 'Please select a option and at least one voucher.';
                 return;
             }
             this.loading = true;
             try {
-                const response = await fetch('/voucher/bulk-action', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        voucherIds: this.selectedVouchers,
-                        status: this.selectedStatus,
-                    }),
-                });
-                const result = await response.json();
-                if (response.ok) {
-                    this.selectedVouchers = [];
-                    this.selectedStatus = '';
-                    this.selectAllCheckbox = false;
-                    this.fetchVouchers(this.currentPage);
-                } else {
-                    this.errorMessage = result.message;
+
+                const selectedVoucherObjects = this.selectedVouchers.map(selectedId =>
+                    this.vouchers.find(voucher => voucher.Id === selectedId)
+                );
+
+                // Filter vouchers based on the courier provider
+                const courier4uVouchers = selectedVoucherObjects.filter(voucher => voucher.courier_provider === 'courier4u');
+                const redcourierVouchers = selectedVoucherObjects.filter(voucher => voucher.courier_provider === 'redcourier');
+                const acsCourierVouchers = selectedVoucherObjects.filter(voucher => voucher.courier_provider === 'acs-courier');
+
+                // Function to handle the request for each provider and download the file
+                const downloadFile = async (voucherIds, provider) => {
+                    const url = `${window.location.origin}/voucher/${provider}/download-multiple/${this.projectID}`;
+                    await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            voucherIds,
+                        })
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                return response.json(); // Assuming response has { filename, base64 }
+                            } else {
+                                throw new Error("Network response was not OK");
+                            }
+                        })
+                        .then(data => {
+                            // Extract filename and base64 content
+                            const { filename, base64 } = data;
+
+                            // Ensure there are no data URI prefixes
+                            const cleanedBase64 = base64.split(',').pop();
+
+                            // Decode base64 to binary string
+                            let binaryString;
+                            try {
+                                binaryString = atob(cleanedBase64);
+                            } catch (error) {
+                                console.error("Failed to decode base64 data:", error);
+                                return;
+                            }
+
+                            // Convert binary string to Uint8Array
+                            const byteArray = new Uint8Array(binaryString.length);
+                            for (let i = 0; i < binaryString.length; i++) {
+                                byteArray[i] = binaryString.charCodeAt(i);
+                            }
+
+                            // Create a Blob with 'application/pdf' MIME type
+                            const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+                            // Create an anchor element to trigger download
+                            const link = document.createElement('a');
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = filename || "downloaded-file.pdf";
+                            link.click();
+
+                            // Clean up URL object
+                            window.URL.revokeObjectURL(link.href);
+                        })
+                        .catch(error => {
+                            console.error("There was a problem with the fetch operation:", error);
+                            isDownloading = false
+                        })
+                        .finally(() => {
+                            isDownloading = false;
+                        });
+                };
+
+
+
+
+                // Send download requests for each provider
+                // Prepare downloadPromises array only for non-empty voucher lists
+                const downloadPromises = [];
+
+                if (courier4uVouchers.length > 0) {
+                    downloadPromises.push(downloadFile(courier4uVouchers, 'courier4u'));
                 }
+                if (redcourierVouchers.length > 0) {
+                    downloadPromises.push(downloadFile(redcourierVouchers, 'redcourier'));
+                }
+                if (acsCourierVouchers.length > 0) {
+                    downloadPromises.push(downloadFile(acsCourierVouchers, 'acs-courier'));
+                }
+                // Wait for all downloads to finish
+                await Promise.all(downloadPromises);
+
+                // Reset form after downloads
+                this.selectedVouchers = [];
+                this.selectedMultipleOption = '';
+                this.selectAllCheckbox = false;
+                this.fetchVouchers(this.currentPage);
+
             } catch (error) {
-                this.errorMessage = 'An error occurred while processing the request.';
+                this.errorMessage = `An error occurred: ${error.message}`;
+                console.error(error);
             } finally {
                 this.loading = false;
             }
         },
+
+
 
     };
 }
@@ -351,7 +432,7 @@ function createVoucher(projectId) {
                 ParcelDepth: isNaN(parseFloat(this.voucher_object.hermes_settings.ParcelDepth)) ? 1.00 : parseFloat(this.voucher_object.hermes_settings.ParcelDepth),
                 ParcelWidth: isNaN(parseFloat(this.voucher_object.hermes_settings.ParcelWidth)) ? 1.00 : parseFloat(this.voucher_object.hermes_settings.ParcelWidth),
                 ParcelHeight: isNaN(parseFloat(this.voucher_object.hermes_settings.ParcelHeight)) ? 1.00 : parseFloat(this.voucher_object.hermes_settings.ParcelHeight),
-
+                CustomOrderId: false
             };
         },
 
@@ -731,6 +812,475 @@ function createVoucher(projectId) {
 }
 
 
+function newVoucher(projectId) {
+    return {
+        // Core UI state
+        projectId: projectId,  // Store the projectId
+        showOffcanvas: false,
+        activeTab: 'customer',
+        errors: {},
+        isSubmitting: false,
+        toastMessage: '',
+        toastMessageSuuccess: '',
+        toastType: 'bg-success',
+        selectedCourier: '',
+        offcanvasInstances: {},
+        // Generic voucher data
+        voucher_object: {
+            orderId: '',
+            billing: {
+                first_name: '',
+                last_name: '',
+                email: '',
+                phone: '',
+                address_1: '',
+                city: '',
+                postcode: ''
+            },
+            shipping: {
+                first_name: '',
+                last_name: '',
+                address_1: '',
+                city: '',
+                postcode: '',
+                courier: '',
+                deliveryOption: ''
+            },
+            products: [],
+            note: "",
+            cod: '',
+            hermes_settings: {
+                ServiceSavvato: '',
+                ServiceEpigon: '',
+                ServiceEpistrofi: '',
+                ServiceSameday: '',
+                ServiceProtocol: '',
+                ServiceReception: '',
+                ParcelWeight: "1.00",
+                ParcelDepth: '',
+                ParcelWidth: '',
+                ParcelHeight: '',
+            },
+        },
+        hasInteracted: false,
+        // Hermes-specific data
+
+        markInteracted() {
+            if (!this.hasInteracted) this.hasInteracted = true;
+        },
+        // Initialize form
+        newVoucherInit() {
+            console.log('Initializing component with projectId:', this.projectId);
+            this.setupValidationWatchers();
+            this.initializeBootstrapComponents('newVoucherInit');
+            this.hideToast();
+        },
+        triggerUpdateVoucherEvent() {
+            // Dispatch the event to the parent component
+            this.$dispatch('update-voucher');
+        },
+        formatOrderIdWithLeadingZeros() {
+            // Convert orderId to a string and pad with five leading zeros
+            const orderIdString = String(this.voucher_object.orderId);
+            this.voucher_object.orderId = orderIdString + '000000';
+        },
+
+        // Prepare payload for Hermes API
+        prepareHermesPayload() {
+            return {
+                ReceiverName: `${this.voucher_object.shipping.first_name} ${this.voucher_object.shipping.last_name}`,
+                ReceiverAddress: this.voucher_object.shipping.address_1,
+                ReceiverCity: this.voucher_object.shipping.city,
+                ReceiverPostal: parseInt(this.voucher_object.shipping.postcode, 10),
+                ReceiverTelephone: this.voucher_object.billing.phone,
+                Notes: this.voucher_object.note,
+                OrderID: String(this.voucher_object.orderId),
+                Cod: parseFloat(this.voucher_object.cod),
+
+                // Hermes specific services
+                ServiceSavvato: this.voucher_object.hermes_settings.ServiceSavvato === true ? 1 : null,
+                ServiceEpigon: this.voucher_object.hermes_settings.ServiceEpigon === true ? 1 : null,
+                ServiceEpistrofi: this.voucher_object.hermes_settings.ServiceEpistrofi === true ? 1 : null,
+                ServiceSameday: this.voucher_object.hermes_settings.ServiceSameday === true ? 1 : null,
+                ServiceProtocol: this.voucher_object.hermes_settings.ServiceProtocol === true ? 1 : null,
+                ServiceReception: this.voucher_object.hermes_settings.ServiceReception === true ? 1 : null,
+
+                // Parcel details
+                ParcelWeight: isNaN(parseFloat(this.voucher_object.hermes_settings.ParcelWeight)) ? 1.00 : parseFloat(this.voucher_object.hermes_settings.ParcelWeight),
+
+                ParcelDepth: isNaN(parseFloat(this.voucher_object.hermes_settings.ParcelDepth)) ? 1.00 : parseFloat(this.voucher_object.hermes_settings.ParcelDepth),
+                ParcelWidth: isNaN(parseFloat(this.voucher_object.hermes_settings.ParcelWidth)) ? 1.00 : parseFloat(this.voucher_object.hermes_settings.ParcelWidth),
+                ParcelHeight: isNaN(parseFloat(this.voucher_object.hermes_settings.ParcelHeight)) ? 1.00 : parseFloat(this.voucher_object.hermes_settings.ParcelHeight),
+                CustomOrderId: true,
+                ReceiverEmail: this.voucher_object.billing.email,
+            };
+        },
+
+        // Handle form submission
+        async handleSubmit() {
+            this.hideToast()
+            this.hasInteracted = true;
+            if (!this.validateForm()) {
+                this.showToast('Please check the form for errors', 'bg-danger');
+                return;
+            }
+
+            // Start the submission process
+            this.isSubmitting = true;
+            try {
+                if (this.selectedCourier === 'courier4u') {
+                    await this.createCourier4uVoucher()
+                }
+                if (this.selectedCourier === 'redcourier') {
+                    await this.createRedCourierVoucher()
+                }
+            } catch (error) {
+                console.error('Error creating voucher:', error);
+                this.showToast(error, 'bg-danger');
+            } finally {
+                this.isSubmitting = false;
+            }
+        },
+        hideToast() {
+            this.toastMessage = '';
+            this.toastMessageSuccess = '';
+        },
+        async createCourier4uVoucher() {
+            const payload = this.prepareHermesPayload();
+
+            // Log the payload for debugging
+            console.log('Full Payload (Courier4u):', payload);
+
+
+            const response = await fetch(`/voucher/courier4u/create/${this.projectID}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload) // Use the payload directly
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Response Error (Courier4u):', errorData);
+                this.showToast(errorData.error, 'bg-danger');
+                throw new Error('Failed to create voucher: ' + errorData.error);
+            }
+
+            this.toastMessageSuccess = 'Courier4u voucher created successfully!';
+            this.triggerUpdateVoucherEvent()
+            this.closeOffcanvas();
+
+
+        },
+
+        async createRedcourierVoucher() {
+            const payload = this.prepareHermesPayload();
+
+            // Log the payload for debugging
+            console.log('Full Payload (Redcourier):', payload);
+
+
+            const response = await fetch(`/voucher/redcourier/create/${this.projectID}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload) // Use the payload directly
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Response Error (Redcourier):', errorData);
+                this.showToast(errorData.error, 'bg-danger');
+                throw new Error('Failed to create voucher: ' + errorData.error);
+            }
+
+            this.toastMessageSuccess = 'Redcourier voucher created successfully!';
+            this.triggerUpdateVoucherEvent()
+            this.closeOffcanvas();
+
+
+        },
+        // Show the order offcanvas and populate data if voucher exists
+        openNewVoucherOffcanva(voucher) {
+            console.log('Opening offcanvas with voucher:', voucher);
+            console.log('Project ID:', this.projectId);
+            this.hideToast()
+            // Ensure products is an array in voucher dif (!Array.isArray(vata
+
+
+            // Merge voucher data into voucher_object
+            this.voucher_object = mapToNewVoucherObject(null)
+
+            this.selectedCourier = voucher?.shipping?.courier || '';
+            this.showOffcanvas = true;
+            this.activeTab = 'customer';
+            this.errors = {};
+
+            // Initialize Bootstrap offcanvas component if it doesn't exist
+            if (!this.offcanvasInstances["newVoucherInit"]) {
+                this.initializeBootstrapComponents('newVoucherInit');
+            }
+
+            // Show the offcanvas component
+            if (this.offcanvasInstances["newVoucherInit"]) {
+                this.offcanvasInstances["newVoucherInit"].show();
+            }
+        },
+
+        // Initialize and configure Bootstrap components
+
+        initializeBootstrapComponents(offcanvasId) {
+            try {
+                const offcanvasElement = document.getElementById("newVoucherOffcanvas");
+
+                // Initialize the offcanvas only if it hasn't been initialized
+                if (!this.offcanvasInstances[offcanvasId]) {
+                    this.offcanvasInstances[offcanvasId] = new bootstrap.Offcanvas(offcanvasElement, {
+                        backdrop: true,
+                        keyboard: true
+                    });
+
+                    // Set up an event listener to reset the form when offcanvas is closed
+                    offcanvasElement.addEventListener('hidden.bs.offcanvas', () => {
+                        this.offcanvasInstances["newVoucherInit"] = false;
+                        this.resetForm();
+                    });
+                }
+
+            } catch (error) {
+                console.error('Error initializing Bootstrap components:', error);
+            }
+        },
+
+        // Set active tab in the form
+        setActiveTab(tab) {
+            console.log('Setting active tab:', tab);
+            this.activeTab = tab;
+        },
+
+
+
+        // Set up watchers for validation of form fields
+        setupValidationWatchers() {
+            try {
+                // Watch changes in billing fields
+                ['first_name', 'last_name', 'email', 'phone', 'address_1', 'city', 'postcode'].forEach(field => {
+                    this.$watch(`voucher_object.billing.${field}`, () => {
+                        if (this.hasInteracted) {
+                            this.validateField(`billing.${field}`);
+                        }
+                    });
+                });
+
+                // Watch changes in shipping fields
+                ['first_name', 'last_name', 'address_1', 'city', 'postcode'].forEach(field => {
+                    this.$watch(`voucher_object.shipping.${field}`, () => {
+                        if (this.hasInteracted) {
+                            this.validateField(`shipping.${field}`);
+                        }
+                    });
+                });
+
+                // Watch changes in shipping-specific fields
+                this.$watch('selectedCourier', () => {
+                    this.voucher_object.shipping.courier = this.selectedCourier;
+                    if (this.hasInteracted) {
+                        this.validateField('shipping.courier');
+                    }
+                });
+
+                this.$watch('voucher_object.hermes_settings.ParcelWeight', () => {
+                    if (this.hasInteracted) {
+                        this.validateField('voucher_object.hermes_settings.ParcelWeight');
+                    }
+                });
+
+            } catch (error) {
+                console.error('Error setting up validation watchers:', error);
+            }
+        },
+
+        // Validate individual fields with custom rules
+        validateField(field) {
+            if (!this.hasInteracted) return true;
+            console.log('Validating field:', field);
+
+            // Get the value of the field to validate
+            var value = field.split('.').reduce((obj, key) => obj?.[key], this.voucher_object);
+
+            console.log('value :', value);
+            delete this.errors[field];  // Clear previous errors
+
+            const optionalFields = ['shipping.deliveryOption'];
+            if (!value && optionalFields.includes(field)) return true;  // Skip validation for optional fields
+
+
+            // Basic required field validation
+            if (!value?.toString().trim()) {
+                this.errors[field] = 'This field is required';
+                return false;
+            }
+
+            // Specific validations based on field type
+            switch (true) {
+                case field.endsWith('email'):
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(value)) {
+                        this.errors[field] = 'Please enter a valid email address';
+                        return false;
+                    }
+                    break;
+
+                case field.endsWith('phone'):
+                    const phoneRegex = /^\+?[\d\s-]{10,}$/;
+                    if (!phoneRegex.test(value)) {
+                        this.errors[field] = 'Please enter a valid phone number';
+                        return false;
+                    }
+                    break;
+
+                case field.endsWith('postcode'):
+                    if (value.length < 5) {
+                        this.errors[field] = 'Please enter a valid postcode';
+                        return false;
+                    }
+                    break;
+
+                case field.endsWith('ParcelWeight'):
+                    console.log('Validating field tttt:', field);
+                    console.log('Validatinvalue:', value);
+                    const weight = parseFloat(value);
+                    if (isNaN(weight) || weight < 1) {
+                        this.errors[field] = 'Please enter a valid weight greater than 0';
+                        return false;
+                    } else {
+                        this.errors[field] = null; // Clear the error explicitly by setting to null
+                    }
+                    break;
+
+                case field === 'cod':
+                    const codAmount = parseFloat(value);
+                    if (isNaN(codAmount)) {
+                        this.errors[field] = 'Please enter a valid COD amount';
+                        return false;
+                    }
+                    if (codAmount <= 0.00) {
+                        this.errors[field] = 'COD amount cannot be negative';
+                        return false;
+                    }
+                    if (codAmount > 499.99) {
+                        this.errors[field] = 'COD amount must be less than or equal to 499.99';
+                        return false;
+                    }
+                    break;
+            }
+            return true;
+        },
+        validateParcelWeight(weightValue) {
+            // Ensure that 'errors' is initialized as an empty object if not defined
+            this.errors = this.errors || {};
+
+            // Parse the input value as a float
+            const weight = parseFloat(weightValue);
+
+            // Check if the weight is valid
+            if (isNaN(weight) || weight <= 0) {
+                // Add an error message to the errors object if invalid
+                this.errors['hermes_settings.ParcelWeight'] = 'Please enter a valid weight greater than 0';
+                return false;
+            } else {
+                // Clear the error message explicitly by setting it to an empty string
+                this.errors['hermes_settings.ParcelWeight'] = '';
+                return true;
+            }
+        },
+        // Validate the entire form before submission
+        validateForm() {
+            if (!this.hasInteracted) return true;
+            const fieldsToValidate = [
+                'billing.email', 'billing.phone',
+
+                'shipping.first_name', 'shipping.last_name', 'shipping.address_1',
+                'shipping.city', 'shipping.postcode', 'shipping.courier',
+                'cod', 'hermes_settings.ParcelWeight'
+            ];
+            let valid = true;
+
+            fieldsToValidate.forEach(field => {
+                valid = this.validateField(field) && valid;  // Combine validation results
+            });
+
+            return valid;  // Return overall validation status
+        },
+
+        // Reset the form fields and errors
+        resetForm() {
+            console.log('Resetting form fields');
+            this.voucher_object = {
+                ...this.voucher_object,
+                orderId: '',
+                billing: {
+                    first_name: '',
+                    last_name: '',
+                    email: '',
+                    phone: '',
+                    address_1: '',
+                    city: '',
+                    postcode: ''
+                },
+                shipping: {
+                    first_name: '',
+                    last_name: '',
+                    address_1: '',
+                    city: '',
+                    postcode: '',
+                    courier: '',
+                    deliveryOption: ''
+                },
+                products: [],
+                note: "",
+                cod: '',
+                hermes_settings: {
+                    ServiceSavvato: '',
+                    ServiceEpigon: '',
+                    ServiceEpistrofi: '',
+                    ServiceSameday: '',
+                    ServiceProtocol: '',
+                    ServiceReception: '',
+                    ParcelWeight: "1.00",
+                    ParcelDepth: '',
+                    ParcelWidth: '',
+                    ParcelHeight: '',
+                }
+            };
+            this.errors = {};  // Clear all errors
+            this.selectedCourier = '';  // Reset selected courier
+        },
+
+        // Display toast notifications
+        showToast(message, type) {
+            this.toastMessage = message;
+            this.toastType = type;
+
+            const toastElement = document.getElementById('toast');
+            if (toastElement) {
+                const toast = new bootstrap.Toast(toastElement);
+                toast.show();  // Show the toast
+            }
+        },
+
+        // Close the order offcanvas
+        closeOffcanvas() {
+            this.hasInteracted = false
+            if (this.offcanvasInstances["newVoucherInit"]) {
+                this.offcanvasInstances["newVoucherInit"].hide();
+            }
+        },
+    };
+}
+
 
 function updateHermeVoucher(projectId) {
     return {
@@ -823,7 +1373,7 @@ function updateHermeVoucher(projectId) {
                 ParcelDepth: isNaN(parseFloat(this.voucher_object.hermes_settings.ParcelDepth)) ? 1.00 : parseFloat(this.voucher_object.hermes_settings.ParcelDepth),
                 ParcelWidth: isNaN(parseFloat(this.voucher_object.hermes_settings.ParcelWidth)) ? 1.00 : parseFloat(this.voucher_object.hermes_settings.ParcelWidth),
                 ParcelHeight: isNaN(parseFloat(this.voucher_object.hermes_settings.ParcelHeight)) ? 1.00 : parseFloat(this.voucher_object.hermes_settings.ParcelHeight),
-
+                CustomOrderId: true
             };
         },
 
@@ -1253,4 +1803,42 @@ function mapToUpdateVoucherObject(data) {
     };
 }
 
+function mapToNewVoucherObject(data) {
+    return {
+        orderId: '',
+        voucherId: '',
+        billing: {
+            first_name: '',
+            last_name: '',
+            email: '',
+            phone: '',
+            address_1: '',
+            city: '',
+            postcode: ''
+        },
+        shipping: {
+            first_name: '',
+            last_name: '',
+            address_1: '',
+            city: '',
+            postcode: '',
+
+        },
+        products: [],
+        note: '',
+        cod: '',
+        hermes_settings: {
+            ServiceSavvato: false,
+            ServiceEpigon: false,
+            ServiceEpistrofi: false,
+            ServiceSameday: false,
+            ServiceProtocol: false,
+            ServiceReception: false,
+            ParcelWeight: "1.00",
+            ParcelDepth: '',
+            ParcelWidth: '',
+            ParcelHeight: ''
+        }
+    };
+}
 

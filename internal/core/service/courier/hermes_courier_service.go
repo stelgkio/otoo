@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stelgkio/otoo/internal/core/domain"
@@ -134,6 +135,86 @@ func (vs *HermesService) PrintVoucher(ctx echo.Context, courier4u *domain.Courie
 	q := req.URL.Query()
 	q.Add("type", print)
 	q.Add("vouchers", fmt.Sprintf("%d", voucherId))
+	req.URL.RawQuery = q.Encode()
+
+	// Initialize HTTP client
+	client := &http.Client{}
+
+	// Send the request
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	defer res.Body.Close()
+
+	// Check if the response is a success
+	if res.StatusCode == http.StatusOK {
+		// Read the PDF from the response body
+		pdfData, err := io.ReadAll(res.Body)
+		if err != nil {
+			return nil, fmt.Errorf("error reading response body: %w", err)
+		}
+		return pdfData, nil
+	}
+
+	// Handle potential error response
+	var errorResponse *courier_domain.VoucherPrintResponse
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response body: %w", err)
+	}
+
+	// You can parse the error response if needed
+	err = json.Unmarshal(body, &errorResponse)
+	if err != nil {
+		return nil, fmt.Errorf("error decoding JSON response: %w", err)
+	}
+
+	return nil, fmt.Errorf("failed to print vouchers: %s", errorResponse.Message)
+}
+
+// PrintMultipleVoucher inserts a new Voucher into the database
+func (vs *HermesService) PrintMultipleVoucher(ctx echo.Context, courier4u *domain.Courier4uExtension, redcourier *domain.RedCourierExtension, voucherId []int64, projectID, printType string) ([]byte, error) {
+
+	url := ""
+	token := ""
+	if courier4u == nil && redcourier == nil {
+		return nil, fmt.Errorf("internal server error")
+	}
+	if courier4u != nil {
+		url = courier4uURL + "/api/v5.0/PrintVouchers"
+		token = courier4u.CourierAPIKey
+	}
+	if redcourier != nil {
+		url = redCourierURL + "/api/v5.0/PrintVouchers"
+		token = redcourier.CourierAPIKey
+	}
+
+	// Create a new HTTP request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	print := "a4"
+	if printType == "thermal" {
+		print = "a6"
+	} else {
+		print = "a4"
+	}
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
+
+	// Set query parameters
+	q := req.URL.Query()
+	q.Add("type", print)
+	// Convert voucherId slice to a comma-separated string
+	voucherIDStr := make([]string, len(voucherId))
+	for i, id := range voucherId {
+		voucherIDStr[i] = fmt.Sprintf("%d", id)
+	}
+	q.Add("vouchers", strings.Join(voucherIDStr, ","))
 	req.URL.RawQuery = q.Encode()
 
 	// Initialize HTTP client

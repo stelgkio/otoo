@@ -27,8 +27,9 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 	>
 		<div class="offcanvas-header">
 			<h5 class="offcanvas-title" id="orderProcessingOffcanvasLabel" data-i18n="offcanvas-order_processing">
-				<i class="bi bi-pencil-square"></i>Order Processing #<span x-text="voucher_object.orderId"></span>
+				<i class="bi bi-pencil-square"></i>Order Processing # 
 			</h5>
+			<h5 class="offcanvas-title" x-text="voucher_object.orderId"></h5>
 			<button type="button" class="btn-close" @click="closeOffcanvas()"></button>
 		</div>
 		<div class="offcanvas-body d-flex flex-column">
@@ -254,7 +255,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										<span class="input-group-text">
 											<i class="bi bi-upc-scan"></i>
 										</span>
-										<input type="text" class="form-control form-control-sm" id="orderId" x-model="voucher_object.orderId" readonly/>
+										<input type="number" class="form-control form-control-sm" id="orderId" x-model="voucher_object.orderId" readonly/>
 									</div>
 								</div>
 								<!-- Order COD -->

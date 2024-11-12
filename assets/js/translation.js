@@ -213,12 +213,12 @@ i18next
                     //Off Canvas Courier4U GR
                     "off-canvas-delivery-options-courier4u": "Επιλογές Αποστολής (Courier4U)",
                     "off-canvas-delivery-courier4u-standard-delivery": "Κανονική Αποστολή",
-                    "off-canvas-delivery-courier4u-saturday-delivery": "Αποστολή Σάββατο",
-                    "off-canvas-delivery-courier4u-urgent-delivery": "Επείγον Αποστολή",
-                    "off-canvas-delivery-courier4u-pickup-delivery": "Παραλαβή Απο Κατάστημα",
-                    "off-canvas-delivery-courier4u-sameday-delivery": "Παράδοση εντός ημέρας",
-                    "off-canvas-delivery-courier4u-ServiceProtocol-delivery": "Πρωτοκολλο Παράδοσης",
-                    "off-canvas-delivery-courier4u-return-delivery": "Επιστροφή Προϊόντος",
+                    "off-canvas-delivery-courier4u-saturday-delivery": "Παράδοση Σάββατο",
+                    "off-canvas-delivery-courier4u-urgent-delivery": "Επείγουσα Παράδοση",
+                    "off-canvas-delivery-courier4u-pickup-delivery": "Παραλαβή από το κατάστημα",
+                    "off-canvas-delivery-courier4u-sameday-delivery": "Αυθημερόν",
+                    "off-canvas-delivery-courier4u-ServiceProtocol-delivery": "Αριθμός Πρωτοκόλλου",
+                    "off-canvas-delivery-courier4u-return-delivery": "Παράδοση - Παραλαβή",
                     //Off Canvas Parcel Weight/Height/Width Options GR
                     "off-canvas-wh-options-courier4u": "Επιλογές Δέματος",
                     "off-canvas-shipping-parcel-courier4u-weight": "Βάρος Δέματος",

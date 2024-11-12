@@ -881,7 +881,7 @@ function newVoucher(projectId) {
         },
         formatOrderIdWithLeadingZeros() {
             // Convert orderId to a string and pad with five leading zeros
-            const orderIdString = String(this.voucher_object.orderId).padStart(10, '0');
+            const orderIdString = String(this.voucher_object.orderId).padEnd(10, '0');
             this.voucher_object.orderId = orderIdString;
         },
 

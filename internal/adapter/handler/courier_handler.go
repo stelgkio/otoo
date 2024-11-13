@@ -279,8 +279,6 @@ func (dh *DashboardHandler) CreateCourier4uVoucher(ctx echo.Context) error {
 		if err != nil {
 			return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		}
-	} else {
-		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Courier4u voucher does not exist"})
 	}
 
 	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)
@@ -357,8 +355,6 @@ func (dh *DashboardHandler) CreateRedCourierVoucher(ctx echo.Context) error {
 		if err != nil {
 			return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		}
-	} else {
-		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Courier4u voucher does not exist"})
 	}
 
 	projectExtensions, err := dh.extensionSvc.GetAllProjectExtensions(ctx, projectID)

@@ -409,7 +409,7 @@ function createVoucher(projectId) {
         // Prepare payload for Hermes API
         prepareHermesPayload() {
             return {
-                ReceiverName: `${this.voucher_object.shipping.first_name} ${this.voucher_object.shipping.last_name}`,
+                ReceiverName: `${this.voucher_object.shipping.first_name.trim()} ${this.voucher_object.shipping.last_name.trim()}`,
                 ReceiverAddress: this.voucher_object.shipping.address_1,
                 ReceiverCity: this.voucher_object.shipping.city,
                 ReceiverPostal: parseInt(this.voucher_object.shipping.postcode, 10),
@@ -882,14 +882,14 @@ function newVoucher(projectId) {
         },
         formatOrderIdWithLeadingZeros() {
             // Convert orderId to a string and pad with five leading zeros
-            const orderIdString = String(this.voucher_object.orderId);
-            this.voucher_object.orderId = orderIdString + '000000';
+            const orderIdString = String(this.voucher_object.orderId).padEnd(10, '0');
+            this.voucher_object.orderId = orderIdString;
         },
 
         // Prepare payload for Hermes API
         prepareHermesPayload() {
             return {
-                ReceiverName: `${this.voucher_object.shipping.first_name} ${this.voucher_object.shipping.last_name}`,
+                ReceiverName: `${this.voucher_object.shipping.first_name.trim()} ${this.voucher_object.shipping.last_name.trim()}`,
                 ReceiverAddress: this.voucher_object.shipping.address_1,
                 ReceiverCity: this.voucher_object.shipping.city,
                 ReceiverPostal: parseInt(this.voucher_object.shipping.postcode, 10),
@@ -1351,7 +1351,7 @@ function updateHermeVoucher(projectId) {
         // Prepare payload for Hermes API
         prepareHermesPayload() {
             return {
-                ReceiverName: `${this.voucher_object.shipping.first_name} ${this.voucher_object.shipping.last_name}`,
+                ReceiverName: `${this.voucher_object.shipping.first_name.trim()} ${this.voucher_object.shipping.last_name.trim()}`,
                 ReceiverAddress: this.voucher_object.shipping.address_1,
                 ReceiverCity: this.voucher_object.shipping.city,
                 ReceiverPostal: parseInt(this.voucher_object.shipping.postcode, 10),
@@ -1664,11 +1664,10 @@ function updateHermeVoucher(projectId) {
         // Validate the entire form before submission
         validateForm() {
             const fieldsToValidate = [
-                'billing.first_name', 'billing.last_name', 'billing.email', 'billing.phone',
-                'billing.address_1', 'billing.city', 'billing.postcode',
+                'billing.email', 'billing.phone',
                 'shipping.first_name', 'shipping.last_name', 'shipping.address_1',
                 'shipping.city', 'shipping.postcode', 'shipping.courier',
-                'shipping.deliveryOption', 'cod', 'hermes_settings.ParcelWeight'
+                'cod', 'hermes_settings.ParcelWeight'
             ];
             let valid = true;
 

@@ -26,6 +26,19 @@ func NewVoucherService(repo port.VoucherRepository) *VoucherService {
 	}
 }
 
+// SplitFullName splits a full name into first and last names
+func SplitFullName(fullName string) (firstName, lastName string) {
+	parts := strings.Split(fullName, " ")
+	if len(parts) > 0 {
+		firstName = parts[0]
+	}
+	if len(parts) > 1 {
+		// Join the rest of the parts as the last name
+		lastName = strings.Join(parts[1:], " ")
+	}
+	return
+}
+
 // CreateVoucher inserts a new Voucher into the database
 func (vs *VoucherService) CreateVoucher(ctx echo.Context, OrderRecord *o.OrderRecord, projectID string) (*domain.Voucher, error) {
 	voucher, err := vs.repo.GetVoucherByOrderIDAndProjectID(ctx, OrderRecord.Order.ID, projectID)
@@ -71,10 +84,20 @@ func (vs *VoucherService) CreateVoucher(ctx echo.Context, OrderRecord *o.OrderRe
 
 // CreateHermesVoucher inserts a new Voucher into the database
 func (vs *VoucherService) CreateHermesVoucher(ctx echo.Context, voucher *domain.HermesVoucerRequest, projectID string) (*domain.Voucher, error) {
+	fullname := strings.Split(voucher.ReceiverName, " ")
+	var firstName, lastName string
+	if len(fullname) > 0 {
+		firstName = fullname[0]
+	}
+	if len(fullname) > 1 {
+		// Join the rest of the parts as the last name
+		lastName = strings.Join(fullname[1:], " ")
+	}
+
 	shipping := &woocommerce.Shipping{
-		FirstName: strings.Split(voucher.ReceiverName, " ")[0],
+		FirstName: firstName,
 		Address1:  voucher.ReceiverAddress,
-		LastName:  strings.Split(voucher.ReceiverName, " ")[1],
+		LastName:  lastName,
 		City:      voucher.ReceiverCity,
 		PostCode:  fmt.Sprintf("%d", voucher.ReceiverPostal),
 	}
@@ -82,8 +105,8 @@ func (vs *VoucherService) CreateHermesVoucher(ctx echo.Context, voucher *domain.
 	billing := &woocommerce.Billing{
 		Email:     voucher.ReceiverEmail,
 		Phone:     voucher.ReceiverTelephone,
-		FirstName: strings.Split(voucher.ReceiverName, " ")[0],
-		LastName:  strings.Split(voucher.ReceiverName, " ")[1],
+		FirstName: firstName,
+		LastName:  lastName,
 		Address1:  voucher.ReceiverAddress,
 		City:      voucher.ReceiverCity,
 		PostCode:  fmt.Sprintf("%d", voucher.ReceiverPostal),

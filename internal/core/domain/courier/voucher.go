@@ -167,16 +167,31 @@ func (v *Voucher) UpdateVoucherAcs(acsVoucherRequest *AcsVoucherRequest) *Vouche
 	return v
 }
 
+// SplitFullName splits a full name into first and last names
+func SplitFullName(fullName string) (firstName, lastName string) {
+	parts := strings.Split(fullName, " ")
+	if len(parts) > 0 {
+		firstName = parts[0]
+	}
+	if len(parts) > 1 {
+		// Join the rest of the parts as the last name
+		lastName = strings.Join(parts[1:], " ")
+	}
+	return
+}
+
 // UpdateVoucherHermes updates the Voucher status and updates the UpdatedAt timestamp.
 func (v *Voucher) UpdateVoucherHermes(hermesVoucherRequest *HermesVoucerRequest) *Voucher {
+	firstName, lastName := SplitFullName(hermesVoucherRequest.ReceiverName)
+
 	v.HermesVoucerRequest = hermesVoucherRequest
 	v.TotalAmount = fmt.Sprintf("%.2f", hermesVoucherRequest.Cod)
 	v.Shipping.Address1 = hermesVoucherRequest.ReceiverAddress
 	v.Shipping.City = hermesVoucherRequest.ReceiverCity
 	v.Shipping.PostCode = fmt.Sprintf("%d", hermesVoucherRequest.ReceiverPostal)
 	v.Billing.Phone = hermesVoucherRequest.ReceiverTelephone
-	v.Shipping.FirstName = strings.Split(hermesVoucherRequest.ReceiverName, " ")[0]
-	v.Shipping.LastName = strings.Split(hermesVoucherRequest.ReceiverName, " ")[1]
+	v.Shipping.FirstName = firstName
+	v.Shipping.LastName = lastName
 	if hermesVoucherRequest.Notes != nil {
 		v.Note = *hermesVoucherRequest.Notes
 	} else {

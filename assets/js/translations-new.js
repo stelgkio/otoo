@@ -94,7 +94,21 @@ i18next
                         "resources": "Resources",
                         "extensions": "Extensions",
                         "settings": "Settings"
-                    }
+                    },
+
+                    "project_settings": {
+                        "header": "Project Settings",
+                        "general": "General",
+                        "secrets": "Secrets",
+                        "webhooks": "Webhooks",
+                        "notifications": "Notifications",
+                        "payment_subscription": "Payment & Subscription",
+                        "team": "Team",
+                        "courier4u": "Courier4u",
+                        "acs_courier": "ACS Courier"
+                    },
+
+
                 }
 
             },
@@ -184,6 +198,17 @@ i18next
                         "resources": "Πόροι",
                         "extensions": "Επεκτάσεις",
                         "settings": "Ρυθμίσεις"
+                    },
+                    "project_settings": {
+                        "header": "Ρυθμίσεις Έργου",
+                        "general": "Γενικά",
+                        "secrets": "Μυστικά",
+                        "webhooks": "Webhooks",
+                        "notifications": "Ειδοποιήσεις",
+                        "payment_subscription": "Πληρωμές & Συνδρομές",
+                        "team": "Ομάδα",
+                        "courier4u": "Courier4u",
+                        "acs_courier": "ACS Courier"
                     }
                 }
 

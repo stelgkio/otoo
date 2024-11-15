@@ -8,39 +8,75 @@ i18next
         debug: true, // Enable debug logs in the console
 
         resources: {
-            en: {
-                translation:
-                {
-                    "index": {
-                        "title": "All in one Solution,Integration & Dashboard Analytics Faster than Ever.!",
-                        "subtitle": "With KonektorX you can connect any e-commerce platform quicker than ever.",
 
+            "en": {
+                "translation": {
+                    "index": {
+                        "title": "All in one Solution, Integration & Dashboard Analytics Faster than Ever.!",
+                        "subtitle": "With KonektorX you can connect any e-commerce platform quicker than ever."
                     },
                     "general": {
                         "dashboard": "Dashboard",
                         "no_results": "No results found"
                     },
-                    "customer": {
-                        "header": "Customer Info",
-                        "first_name": "First Name",
-                        "last_name": "Last Name",
-                        "email": "Email",
-                        "phone": "Phone",
-                        "address": "Address",
-                        "city": "City",
-                        "postal": "Postal",
-                        "total_orders": "Total Orders",
-                        "total_spent": "Total Spent"
+
+                    // Dashboard - Customer - Product - Order 
+                    "dashboard": {
+                        "customer": {
+                            "header": "Customer Info",
+                            "first_name": "First Name",
+                            "last_name": "Last Name",
+                            "email": "Email",
+                            "phone": "Phone",
+                            "address": "Address",
+                            "city": "City",
+                            "postal": "Postal",
+                            "total_orders": "Total Orders",
+                            "total_spent": "Total Spent"
+                        },
+                        "product": {
+                            "header": "Products",
+                            "name": "Product Name",
+                            "quantity": "Product Quantity",
+                            "price": "Product Price",
+                            "id": "Product ID",
+                            "category": "Category",
+                            "type": "Type"
+                        },
+                        "order": {
+                            "header": "Order Details",
+                            "all": "All",
+                            "new": "New",
+                            "completed": "Completed",
+                            "pending": "Pending",
+                            "processing": "Processing",
+                            "cancelled": "Cancelled",
+                            // Voucher //
+                            "voucher": {
+                                "header": "Voucher",
+                                "create": "Create Voucher",
+                                "update": "Update Voucher",
+                                "New Voucher": "New Voucher",
+                                "export": "Export Voucher",
+                                "table": {
+                                    "id": "Voucher ID",
+                                    "order_id": "Order ID",
+                                    "date": "Order Date",
+                                    "status": "Status",
+                                    "action": "Action"
+                                },
+                                // Modal //
+                                "modal": {
+
+                                },
+
+                            }
+                        },
+
                     },
-                    "product": {
-                        "header": "Products",
-                        "name": "Product Name",
-                        "quantity": "Product Quantity",
-                        "price": "Product Price",
-                        "id": "Product ID",
-                        "category": "Category",
-                        "type": "Type"
-                    },
+                    //End Dashboard - Customer - Product - Order
+
+
                     "shipping": {
                         "header": "Shipping Information",
                         "order_number": "Order Number",
@@ -62,28 +98,6 @@ i18next
                         "email": "E-mail",
                         "phone": "Phone"
                     },
-                    "order": {
-                        "header": "Order Details",
-                        "all": "All",
-                        "new": "New",
-                        "completed": "Completed",
-                        "pending": "Pending",
-                        "processing": "Processing",
-                        "cancelled": "Cancelled"
-                    },
-                    "voucher": {
-                        "header": "Voucher",
-                        "create": "Create Voucher",
-                        "update": "Update Voucher",
-                        "export": "Export Voucher",
-                        "table": {
-                            "id": "Voucher ID",
-                            "order_id": "Order ID",
-                            "date": "Order Date",
-                            "status": "Status",
-                            "action": "Action"
-                        }
-                    },
                     "side_nav": {
                         "logout": "Logout",
                         "projects": "Projects",
@@ -95,7 +109,6 @@ i18next
                         "extensions": "Extensions",
                         "settings": "Settings"
                     },
-
                     "project_settings": {
                         "header": "Project Settings",
                         "general": "General",
@@ -106,44 +119,69 @@ i18next
                         "team": "Team",
                         "courier4u": "Courier4u",
                         "acs_courier": "ACS Courier"
-                    },
-
-
+                    }
                 }
-
             },
-            el: {
-                translation:
-                {
+            "el": {
+                "translation": {
                     "index": {
                         "title": "Μια Ολοκληρωμένη Λύση για την επιχείρηση σας, Πιο Γρήγορα από Ποτέ!",
-                        "subtitle": "Με το KonektorX, μπορείτε να συνδέσετε οποιαδήποτε πλατφόρμα e-commerce πιο γρήγορα από ποτέ.",
-
+                        "subtitle": "Με το KonektorX, μπορείτε να συνδέσετε οποιαδήποτε πλατφόρμα e-commerce πιο γρήγορα από ποτέ."
                     },
                     "general": {
                         "dashboard": "Πίνακας Ελέγχου",
                         "no_results": "Δεν υπάρχουν αποτελέσματα"
                     },
-                    "customer": {
-                        "header": "Στοιχεία Πελάτη",
-                        "first_name": "Όνομα",
-                        "last_name": "Επώνυμο",
-                        "email": "Email",
-                        "phone": "Τηλέφωνο",
-                        "address": "Διεύθυνση",
-                        "city": "Πόλη",
-                        "postal": "Τ.K.",
-                        "total_orders": "Συνολικές Παραγγελίες",
-                        "total_spent": "Συνολικό Ποσό"
-                    },
-                    "product": {
-                        "header": "Προϊόντα",
-                        "name": "Όνομα Προϊόντος",
-                        "quantity": "Ποσότητα Προϊόντος",
-                        "price": "Τιμή Προϊόντος",
-                        "id": "ID Προϊόντος",
-                        "category": "Κατηγορία Προϊόντος",
-                        "type": "Τύπος Προϊόντος"
+                    "dashboard": {
+                        "customer": {
+                            "header": "Στοιχεία Πελάτη",
+                            "first_name": "Όνομα",
+                            "last_name": "Επώνυμο",
+                            "email": "Email",
+                            "phone": "Τηλέφωνο",
+                            "address": "Διεύθυνση",
+                            "city": "Πόλη",
+                            "postal": "Τ.K.",
+                            "total_orders": "Συνολικές Παραγγελίες",
+                            "total_spent": "Συνολικό Ποσό"
+                        },
+                        "product": {
+                            "header": "Προϊόντα",
+                            "name": "Όνομα Προϊόντος",
+                            "quantity": "Ποσότητα Προϊόντος",
+                            "price": "Τιμή Προϊόντος",
+                            "id": "ID Προϊόντος",
+                            "category": "Κατηγορία Προϊόντος",
+                            "type": "Τύπος Προϊόντος"
+                        },
+                        "order": {
+                            "header": "Πληροφορίες Παραγγελίας",
+                            "all": "Όλες",
+                            "new": "Νέες",
+                            "completed": "Ολοκληρωμένες",
+                            "pending": "Σε Εκκρεμότητα",
+                            "processing": "Σε Επεξεργασία",
+                            "cancelled": "Ακυρωμένες",
+                            // Voucher //
+                            "voucher": {
+                                "header": "Voucher",
+                                "create": "Δημιουργία Voucher",
+                                "update": "Επεξεργασία Voucher",
+                                "New Voucher": "Νέο Voucher",
+                                "export": "Εξαγωγή Voucher",
+                                "table": {
+                                    "id": "Voucher ID",
+                                    "order_id": "ID Παραγγελίας",
+                                    "date": "Ημ/νία Παραγγελίας",
+                                    "status": "Κατάσταση",
+                                    "action": "Ενέργειες"
+                                },
+                                "Modal": {
+
+                                },
+                            }
+                        },
+
                     },
                     "shipping": {
                         "header": "Στοιχεία Αποστολής",
@@ -165,28 +203,6 @@ i18next
                         "postal": "Τ.Κ.",
                         "email": "E-mail",
                         "phone": "Τηλέφωνο"
-                    },
-                    "order": {
-                        "header": "Πληροφορίες Παραγγελίας",
-                        "all": "Όλες",
-                        "new": "Νέες",
-                        "completed": "Ολοκληρωμένες",
-                        "pending": "Σε Εκκρεμότητα",
-                        "processing": "Σε Επεξεργασία",
-                        "cancelled": "Ακυρωμένες"
-                    },
-                    "voucher": {
-                        "header": "Voucher",
-                        "create": "Δημιουργία Voucher",
-                        "update": "Επεξεργασία Voucher",
-                        "export": "Εξαγωγή Voucher",
-                        "table": {
-                            "id": "Voucher ID",
-                            "order_id": "ID Παραγγελίας",
-                            "date": "Ημ/νία Παραγγελίας",
-                            "status": "Κατάσταση",
-                            "action": "Ενέργειες"
-                        }
                     },
                     "side_nav": {
                         "logout": "Αποσύνδεση",
@@ -211,9 +227,10 @@ i18next
                         "acs_courier": "ACS Courier"
                     }
                 }
-
             }
         }
+
+
     }, function (err, t) {
         if (err) console.error("i18next initialization error:", err);
         updateContent();

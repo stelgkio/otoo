@@ -452,16 +452,16 @@ i18next
 
                     // Voucher management
                     "voucher": {
-                        "header": "Διαχείριση Κουπονιών",
+                        "header": "Διαχείριση Voucher",
                         "actions": {
-                            "create": "Δημιουργία Κουπονιού",
-                            "update": "Ενημέρωση Κουπονιού",
+                            "create": "Δημιουργία Voucher",
+                            "update": "Ενημέρωση Voucher",
                             "new": "Νέο Κουπόνι",
-                            "export": "Εξαγωγή Κουπονιών"
+                            "export": "Εξαγωγή Voucher"
                         },
                         "table": {
-                            "id": "Αναγνωριστικό Κουπονιού",
-                            "code": "Κωδικός Κουπονιού",
+                            "id": "Αναγνωριστικό Voucher",
+                            "code": "Κωδικός Voucher",
                             "discount": "Έκπτωση",
                             "expiry_date": "Ημερομηνία Λήξης",
                             "status": "Κατάσταση"

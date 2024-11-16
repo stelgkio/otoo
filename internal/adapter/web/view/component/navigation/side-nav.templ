@@ -84,7 +84,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 						// </a>
 						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" hx-get="/dashboard/logout">
-							<i class="bi bi-person me-3"></i><span data-i18n="side-nav-logout">Logout </span>
+							<i class="bi bi-person me-3"></i><span data-i18n="navigation.side_nav.logout">Logout </span>
 						</a>
 					</div>
 				</div>
@@ -101,7 +101,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 							aria-controls="sidebar-dashboards"
 						>
 							<i class="bi bi-house-fill"></i>
-							<span data-i18n="side-nav-dashboard">Dashboard</span>
+							<span data-i18n="navigation.side_nav.dashboard">Dashboard</span>
 							<span
 								class="badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto"
 							></span>
@@ -116,7 +116,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 										hx-target="#dashboard-content"
 										class="nav-link fw-bold"
 										hx-indicator="#spinnerDefault"
-										data-i18n="side-nav-default"
+										data-i18n="navigation.side_nav.default"
 									>
 										Default
 										<span
@@ -135,7 +135,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 										hx-target="#dashboard-content"
 										class="nav-link"
 										hx-indicator="#spinnerCustomers"
-										data-i18n="side-nav-customers"
+										data-i18n="navigation.side_nav.customers"
 									>
 										Customers 
 										<span
@@ -154,7 +154,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 										hx-target="#dashboard-content"
 										class="nav-link"
 										hx-indicator="#spinnerProducts"
-										data-i18n="side-nav-products"
+										data-i18n="navigation.side_nav.products"
 									>
 										Products
 										<span
@@ -173,7 +173,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 										hx-target="#dashboard-content"
 										class="nav-link"
 										hx-indicator="#spinnerOrders"
-										data-i18n="side-nav-orders"
+										data-i18n="navigation.side_nav.orders"
 									>
 										Orders
 										<span
@@ -193,7 +193,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 					<li>
 						<span
 							class="nav-link text-xs fw-semibold text-uppercase text-muted ls-wide"
-							data-i18n="side-nav-resources"
+							data-i18n="navigation.side_nav.resources"
 						>Resources</span>
 					</li>
 					<li class="nav-item my-1" id="extensions-dropdown">
@@ -209,7 +209,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 							hx-target="#extensions-dropdown"
 						>
 							<i class="bi bi-grid-1x2-fill"></i>
-							<span data-i18n="side-nav-extensions">Extensions</span>
+							<span data-i18n="navigation.side_nav.extensions">Extensions</span>
 							<span
 								class="badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto"
 							></span>
@@ -226,7 +226,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 								hx-target="#dashboard-content"
 							>
 								<i class="bi bi-calendar2-plus-fill"></i>
-								<span data-i18n="side-nav-add-extensions">
+								<span data-i18n="navigation.side_nav.add_extensions">
 									Add
 									Extensions
 								</span>
@@ -247,7 +247,7 @@ templ SideBar(user *domain.User, projectName, projectId string) {
 							<i
 								class="bi bi-gear-fill"
 							></i>
-							<span data-i18n="side-nav-settings">
+							<span data-i18n="side_nav.settings">
 								Settings
 							</span>
 						</a>

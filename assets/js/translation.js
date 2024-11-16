@@ -145,8 +145,41 @@ i18next
                                 "category": "Category",
                                 "type": "Product Type",
                                 "total_orders": "Total Orders"
+                            }
+                        }
+                    },
+                    // Modal section
+                    "modal": {
+                        "order": {
+                            "title": "Order",
+                            "payment_method": "Payment Method",
+                            "details": {
+                                "header": "Order Details",
+                                "payment_info": "Payment Information",
+                                "products_list": "Products List"
                             },
-
+                            "billing": {
+                                "header": "Billing Information",
+                                "address_2": "Address 2"
+                            },
+                            "shipping": {
+                                "header": "Shipping Information",
+                                "address_2": "Address 2",
+                                "customer_note": "Customer Notes"
+                            },
+                            "products": {
+                                "header": "Products",
+                                "table": {
+                                    "name": "Product",
+                                    "quantity": "Qty",
+                                    "price": "Price"
+                                }
+                            },
+                            "buttons": {
+                                "save": "Save Changes",
+                                "close": "Close",
+                                "saving": "Saving..."
+                            }
                         }
                     },
 
@@ -254,6 +287,7 @@ i18next
                     }
                 }
             },
+
 
             "el": {
                 "translation": {
@@ -367,10 +401,8 @@ i18next
                                 "change_status_pending": "Αλλαγή κατάστασης σε εκκρεμή",
                                 "change_status_processing": "Αλλαγή κατάστασης σε επεξεργασία",
                                 "change_status_cancelled": "Αλλαγή κατάστασης σε ακυρωμένη"
-                            },
-
+                            }
                         },
-
                         "tables": {
                             "order": {
                                 "id": "Αναγνωριστικό Παραγγελίας",
@@ -401,6 +433,40 @@ i18next
                         }
                     },
 
+                    // Modal section
+                    "modal": {
+                        "order": {
+                            "title": "Παραγγελία",
+                            "payment_method": "Μέθοδος Πληρωμής",
+                            "details": {
+                                "header": "Λεπτομέρειες Παραγγελίας",
+                                "payment_info": "Πληροφορίες Πληρωμής",
+                                "products_list": "Λίστα Προϊόντων"
+                            },
+                            "billing": {
+                                "header": "Πληροφορίες Τιμολόγησης",
+                                "address_2": "Διεύθυνση 2"
+                            },
+                            "shipping": {
+                                "header": "Πληροφορίες Αποστολής",
+                                "address_2": "Διεύθυνση 2",
+                                "customer_note": "Σημειώσεις Πελάτη"
+                            },
+                            "products": {
+                                "header": "Προϊόντα",
+                                "table": {
+                                    "name": "Προϊόν",
+                                    "quantity": "Ποσ",
+                                    "price": "Τιμή"
+                                }
+                            },
+                            "buttons": {
+                                "save": "Αποθήκευση Αλλαγών",
+                                "close": "Κλείσιμο",
+                                "saving": "Αποθήκευση..."
+                            }
+                        }
+                    },
                     // Offcanvas components
                     "offcanvas": {
                         "order_processing": {
@@ -506,6 +572,8 @@ i18next
                 }
             }
         }
+
+
     }, function (err, t) {
         if (err) console.error("i18next initialization error:", err);
         updateContent();

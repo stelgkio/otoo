@@ -12,15 +12,13 @@ templ ProductTable(projectId string) {
 				<div class="d-flex gap-2">
 					<div class="input-group input-group-sm input-group-inline w-100 w-md-50">
 						<span class="input-group-text">
-							<i
-								class="bi bi-search me-2"
-							></i>
+							<i class="bi bi-search me-2"></i>
 						</span>
 						<input
 							type="search"
 							class="form-control ps-0"
-							placeholder="Search all products"
-							aria-label="Search"
+							data-i18n="[placeholder]dashboard.product.fields.search_placeholder"
+							data-i18n-aria-label="dashboard.product.fields.search_aria_label"
 						/>
 					</div>
 				</div>
@@ -28,24 +26,33 @@ templ ProductTable(projectId string) {
 		</div>
 		<div class="border-top">
 			<div class="table-responsive">
-				<table class="table table-hover table-sm  table-striped table-nowrap">
+				<table class="table table-hover table-sm table-striped table-nowrap">
 					<thead>
 						<tr>
-							//<th scope="col">Image</th>
-							<th scope="col"><span data-i18n="dashboard-table-products_id">Product ID</span></th>
-							<th scope="col"><span data-i18n="dashboard-table-products_name">Name</span></th>
-							//	<th scope="col">SKU</th>
-							<th scope="col"><span data-i18n="dashboard-table-products_price">Price</span></th>
-							<th scope="col"><span data-i18n="dashboard-table-products_category">Category</span></th>
-							<th scope="col"><span data-i18n="dashboard-table-products_type">Type</span></th>
-							<th scope="col"><span data-i18n="dashboard-table-products-total_orders">Total Orders</span></th>
-							// <th scope="col">Timestamp</th>
+							<th scope="col">
+								<span data-i18n="dashboard.tables.product.id"></span>
+							</th>
+							<th scope="col">
+								<span data-i18n="dashboard.tables.product.name"></span>
+							</th>
+							<th scope="col">
+								<span data-i18n="dashboard.tables.product.price"></span>
+							</th>
+							<th scope="col">
+								<span data-i18n="dashboard.tables.product.category"></span>
+							</th>
+							<th scope="col">
+								<span data-i18n="dashboard.tables.product.type"></span>
+							</th>
+							<th scope="col">
+								<span data-i18n="dashboard.tables.product.total_orders"></span>
+							</th>
 						</tr>
 					</thead>
 					<tbody>
 						<template x-if="!loading && totalItems === 0">
 							<tr>
-								<td colspan="8">No products found.</td>
+								<td colspan="8" data-i18n="general.no_results"></td>
 							</tr>
 						</template>
 						<template x-for="product in paginatedProducts" :key="product.id">

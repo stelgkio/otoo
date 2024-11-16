@@ -94,7 +94,9 @@ i18next
                                 "price": "Price",
                                 "id": "Product ID",
                                 "category": "Category",
-                                "type": "Type"
+                                "type": "Type",
+                                "search_placeholder": "Search all products",
+                                "search_aria_label": "Search products"
                             }
                         },
                         "order": {
@@ -342,7 +344,9 @@ i18next
                                 "price": "Τιμή",
                                 "id": "Αναγνωριστικό Προϊόντος",
                                 "category": "Κατηγορία",
-                                "type": "Τύπος"
+                                "type": "Τύπος",
+                                "search_placeholder": "Αναζήτηση σε όλα τα προϊόντα",
+                                "search_aria_label": "Αναζήτηση προϊόντων"
                             }
                         },
                         "order": {

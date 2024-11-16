@@ -16,4 +16,6 @@ type HermesService interface {
 	CreateVoucher(ctx echo.Context, courier4u *domain.Courier4uExtension, redcourier *domain.RedCourierExtension, hermesVoucerRequest *domain_courier.HermesVoucerRequest, projectID string) (*domain_courier.VoucherResponse, error)
 	// UpdateVoucher update a Voucher
 	UpdateVoucher(ctx echo.Context, courier4u *domain.Courier4uExtension, redcourier *domain.RedCourierExtension, hermesVoucerRequest *domain_courier.HermesVoucerUpdateRequest, projectID string) (*domain_courier.VoucherResponse, error)
+	// TrackingHermerVoucherStatus
+	TrackingHermerVoucherStatus(ctx echo.Context, courier4u *domain.Courier4uExtension, redcourier *domain.RedCourierExtension, voucherId int64) (*domain_courier.TrackingResponse, error)
 }

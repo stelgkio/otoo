@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/labstack/echo/v4"
+	d "github.com/stelgkio/otoo/internal/core/domain"
 	domain "github.com/stelgkio/otoo/internal/core/domain/courier"
 	o "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 	"github.com/stelgkio/otoo/internal/core/port"
@@ -16,13 +17,15 @@ import (
 
 // VoucherService defines the methods for interacting with the Voucher service
 type VoucherService struct {
-	repo port.VoucherRepository
+	repo      port.VoucherRepository
+	hermesSvc port.HermesService
 }
 
 // NewVoucherService creates a new voucher service instance
-func NewVoucherService(repo port.VoucherRepository) *VoucherService {
+func NewVoucherService(repo port.VoucherRepository, hermesSvc port.HermesService) *VoucherService {
 	return &VoucherService{
 		repo,
+		hermesSvc,
 	}
 }
 
@@ -234,6 +237,20 @@ func (vs *VoucherService) FindVoucherByProjectIDAsync(projectID string, size, pa
 	}
 }
 
-func (vs *VoucherService) UpdateVoucherNewDetails(ctx echo.Context, voucher *domain.Voucher, projectID string) (*domain.Voucher, error) {
+func (vs *VoucherService) UpdateVoucherNewDetails(ctx echo.Context, voucher *domain.Voucher, projectID string, courier4u *d.Courier4uExtension, redcourier *d.RedCourierExtension) (*domain.Voucher, error) {
+	if !voucher.HasError {
+		vID, err := strconv.ParseInt(voucher.VoucherID, 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		tracking, err := vs.hermesSvc.TrackingHermerVoucherStatus(ctx, courier4u, redcourier, vID)
+		if err != nil {
+			return nil, err
+		}
+		if redcourier != nil || courier4u != nil {
+			voucher.UpdateHermerVoucherTracking(tracking)
+		}
+	}
+
 	return vs.repo.UpdateVoucherNewDetails(ctx, voucher, projectID)
 }

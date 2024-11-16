@@ -232,3 +232,18 @@ func NewHermesVoucerUpdateRequest(voucherID int64, request *HermesVoucerRequest)
 		HermesVoucerRequest: *request,
 	}
 }
+
+// TrackingStatus defines the expected structure of the response for the UpdateVoucher endpoint
+type TrackingStatus struct {
+	StatusID int    `json:"status_id"`
+	Status   string `json:"status"`
+	Date     string `json:"date"`
+}
+
+// TrackingResponse defines the expected structure of the response for the Tracking endpoint
+type TrackingResponse struct {
+	Success bool             `json:"success"`
+	Error   bool             `json:"error"`
+	Message string           `json:"message"`
+	Data    []TrackingStatus `json:"data"`
+}

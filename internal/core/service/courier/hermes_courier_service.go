@@ -318,3 +318,66 @@ func (vs *HermesService) UpdateVoucher(ctx echo.Context, courier4u *domain.Couri
 	fmt.Printf("Response Struct: %+v\n", voucherResponse)
 	return voucherResponse, nil
 }
+
+// TrackingHermerVoucherStatus get the status of a voucher
+func (vs *HermesService) TrackingHermerVoucherStatus(ctx echo.Context, courier4u *domain.Courier4uExtension, redcourier *domain.RedCourierExtension, voucherId int64) (*courier_domain.TrackingResponse, error) {
+
+	url := ""
+	token := ""
+	if courier4u == nil && redcourier == nil {
+		return nil, fmt.Errorf("internal server error")
+	}
+	if courier4u != nil {
+		url = courier4uURL + "/api/v5.0/GetVoucherFullTrackingStatus"
+		token = courier4u.CourierAPIKey
+	}
+	if redcourier != nil {
+		url = redCourierURL + "/api/v5.0/GetVoucherFullTrackingStatus"
+		token = redcourier.CourierAPIKey
+	}
+
+	// Create a new HTTP request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
+
+	// Set query parameters
+	q := req.URL.Query()
+
+	q.Add("voucher", fmt.Sprintf("%d", voucherId))
+	req.URL.RawQuery = q.Encode()
+
+	// Initialize HTTP client
+	client := &http.Client{}
+
+	// Send the request
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	defer res.Body.Close()
+
+	// Read the response body
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println("Error reading response:", err)
+		return nil, err
+	}
+	// Print the response body
+	fmt.Println("Response:", string(body))
+	// Decode the response JSON into the VoucherResponse struct
+	var trackingResponse *courier_domain.TrackingResponse
+	err = json.Unmarshal(body, &trackingResponse)
+	if err != nil {
+		fmt.Println("Error decoding JSON response:", err)
+		return nil, err
+	}
+	// Print the structured response
+	fmt.Printf("Response Struct: %+v\n", trackingResponse)
+	return trackingResponse, nil
+}

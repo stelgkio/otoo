@@ -34,7 +34,7 @@ templ OrderTable(projectId string) {
 				<ul class="nav nav-tabs nav-tabs-flush gap-8 overflow-x border-0 mt-4">
 					<li class="nav-item">
 						<a
-							data-i18n="order-table-all-orders"
+							data-i18n="dashboard.order.types.all"
 							href="#"
 							:class="{'nav-link': true, 'active': currentTab === 'all'}"
 							@click.prevent="selectTab('all')"
@@ -42,7 +42,7 @@ templ OrderTable(projectId string) {
 					</li>
 					<li class="nav-item">
 						<a
-							data-i18n="order-table-completed-orders"
+							data-i18n="dashboard.order.types.completed"
 							href="#"
 							:class="{'nav-link': true, 'active': currentTab === 'completed'}"
 							@click.prevent="selectTab('completed')"
@@ -50,7 +50,7 @@ templ OrderTable(projectId string) {
 					</li>
 					<li class="nav-item">
 						<a
-							data-i18n="order-table-pending-orders"
+							data-i18n="dashboard.order.types.pending"
 							href="#"
 							:class="{'nav-link': true, 'active': currentTab === 'pending'}"
 							@click.prevent="selectTab('pending')"
@@ -58,7 +58,7 @@ templ OrderTable(projectId string) {
 					</li>
 					<li class="nav-item">
 						<a
-							data-i18n="order-table-processing-orders"
+							data-i18n="dashboard.order.types.processing"
 							href="#"
 							:class="{'nav-link': true, 'active': currentTab === 'processing'}"
 							@click.prevent="selectTab('processing')"
@@ -66,14 +66,14 @@ templ OrderTable(projectId string) {
 					</li>
 					<li class="nav-item">
 						<a
-							data-i18n="order-table-cancelled-orders"
+							data-i18n="dashboard.order.types.cancelled"
 							href="#"
 							:class="{'nav-link': true, 'active': currentTab === 'cancelled'}"
 							@click.prevent="selectTab('cancelled')"
 						>Canceled</a>
 					</li>
 				</ul>
-			</div>
+			</div><!-- Bulk Action Button -->
 			<div class="d-flex gap-2 py-3 px-7 border-bottom">
 				<div class="dropdown" x-data="{ showDropdown: false }" @click.outside="showDropdown = false">
 					<button
@@ -83,7 +83,7 @@ templ OrderTable(projectId string) {
 						@click="showDropdown = !showDropdown"
 						:aria-expanded="showDropdown.toString()"
 					>
-						<i class="bi bi-plus-circle"></i> <span class="ms-2">Bulk Action</span>
+						<i class="bi bi-plus-circle"></i> <span class="ms-2" data-i18n="dashboard.order.actions.bulk">Bulk Action</span>
 					</button>
 					<div class="dropdown-menu" :class="{ 'show': showDropdown }" aria-labelledby="dropdownMenuButton2">
 						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
@@ -98,7 +98,7 @@ templ OrderTable(projectId string) {
 								/>
 							</div>
 							<div class="ms-3 me-5">
-								<label for="statusCompleted">Change status to completed</label>
+								<label for="statusCompleted" data-i18n="dashboard.order.bulk_actions.change_status_completed">Change status to completed</label>
 							</div>
 							// <div class="ms-auto">
 							// <span class="badge rounded-pill bg-opacity-25 bg-success text-success">23</span>
@@ -116,7 +116,7 @@ templ OrderTable(projectId string) {
 								/>
 							</div>
 							<div class="ms-3 me-5">
-								<label for="statuSpending">Change status to pending</label>
+								<label for="statuSpending" data-i18n="dashboard.order.bulk_actions.change_status_pending">Change status to pending</label>
 							</div>
 						</div>
 						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
@@ -131,7 +131,7 @@ templ OrderTable(projectId string) {
 								/>
 							</div>
 							<div class="ms-3 me-5">
-								<label for="statusProdessing">Change status to processing</label>
+								<label for="statusProdessing" data-i18n="dashboard.order.bulk_actions.change_status_processing">Change status to processing</label>
 							</div>
 						</div>
 						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
@@ -146,12 +146,13 @@ templ OrderTable(projectId string) {
 								/>
 							</div>
 							<div class="ms-3 me-5">
-								<label for="statusCancelled">Change status to cancelled</label>
+								<label for="statusCancelled" data-i18n="dashboard.order.bulk_actions.change_status_cancelled">Change status to cancelled</label>
 							</div>
 						</div>
 						<!-- Add other status options here -->
 						<div class="mt-3">
 							<button
+								data-i18n="common.buttons.apply"
 								type="button"
 								class="btn btn-sm btn-primary d-sm-inline-flex position-relative"
 								@click="applyAction"
@@ -191,26 +192,26 @@ templ OrderTable(projectId string) {
 								</div>
 							</th>
 							<th @click="sortTable('orderId')">
-								<span data-i18n="dashboard-table-order_id">Order ID</span>
+								<span data-i18n="dashboard.tables.order.order_id">Order ID</span>
 								<i :class="getSortIcon('orderId')"></i>
 							</th>
 							<th @click="sortTable('order_created')">
-								<span data-i18n="dashboard-table-order-created">Order Created</span>
+								<span data-i18n="dashboard.tables.order.created">Order Created</span>
 								<i :class="getSortIcon('order_created')"></i>
 							</th>
 							<th @click="sortTable('total_amount')">
-								<span data-i18n="dashboard-table-order_total">Total Amount</span>
+								<span data-i18n="dashboard.tables.order.total">Total Amount</span>
 								<i :class="getSortIcon('total_amount')"></i>
 							</th>
-							<th><span data-i18n="dashboard-table-order_status">Status</span></th>
-							<th><span data-i18n="dashboard-table-order_action">Action</span></th>
+							<th><span data-i18n="dashboard.tables.order.status">Status</span></th>
+							<th><span data-i18n="dashboard.tables.order.action">Action</span></th>
 						</tr>
 					</thead>
 					<tbody>
 						<!-- Display this row if no orders are found -->
 						<template x-if="!loading && totalItems === 0">
 							<tr>
-								<td colspan="6">No orders found.</td>
+								<td colspan="6" data-i18n="general.no_results">No orders found.</td>
 							</tr>
 						</template>
 						<!-- Loop through paginated orders -->

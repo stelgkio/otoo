@@ -109,6 +109,12 @@ i18next
                             },
                             "actions": {
                                 "bulk": "Bulk Actions"
+                            },
+                            "bulk_actions": {
+                                "change_status_completed": "Change status to completed",
+                                "change_status_pending": "Change status to pending",
+                                "change_status_processing": "Change status to processing",
+                                "change_status_cancelled": "Change status to cancelled"
                             }
                         },
                         "tables": {
@@ -137,7 +143,8 @@ i18next
                                 "category": "Category",
                                 "type": "Product Type",
                                 "total_orders": "Total Orders"
-                            }
+                            },
+
                         }
                     },
 
@@ -350,8 +357,16 @@ i18next
                             },
                             "actions": {
                                 "bulk": "Ομαδικές Ενέργειες"
-                            }
+                            },
+                            "bulk_actions": {
+                                "change_status_completed": "Αλλαγή κατάστασης σε ολοκληρωμένη",
+                                "change_status_pending": "Αλλαγή κατάστασης σε εκκρεμή",
+                                "change_status_processing": "Αλλαγή κατάστασης σε επεξεργασία",
+                                "change_status_cancelled": "Αλλαγή κατάστασης σε ακυρωμένη"
+                            },
+
                         },
+
                         "tables": {
                             "order": {
                                 "id": "Αναγνωριστικό Παραγγελίας",

@@ -75,6 +75,21 @@ i18next
 
                     // Dashboard and main components
                     "dashboard": {
+                        "overview": {
+                            "orders": "Orders",
+                            "customers": "Customers",
+                            "products": "Products",
+                            "total_orders": "Total Orders",
+                            "day_orders": "Orders (24H)",
+                            "week_orders": "Orders (7D)",
+                            "month_orders": "Orders (30D)",
+                            // Tooltips
+                            "tooltip": {
+                                "day_orders": "The total completed order the last 24 hours.",
+                                "week_orders": "The total completed order the last 7 days.",
+                                "month_orders": "The total completed order the last month."
+                            }
+                        },
                         "header": "Dashboard",
                         "customer": {
                             "header": "Customer Information",
@@ -391,6 +406,22 @@ i18next
 
                     // Dashboard and main components
                     "dashboard": {
+                        "overview": {
+                            "orders": "Παραγγελίες",
+                            "customers": "Πελάτες",
+                            "products": "Προϊόντα",
+                            "total_orders": "Σύνολο Παραγγελιών",
+                            "day_orders": "Παραγγελίες (24Ω)",
+                            "week_orders": "Παραγγελίες (7Η)",
+                            "month_orders": "Παραγγελίες (30Η)",
+                            // Tooltips
+                            "tooltip": {
+                                "day_orders": "Οι συνολικές ολοκληρωμένες παραγγελίες τις τελευταίες 24 ώρες.",
+                                "week_orders": "Οι συνολικές ολοκληρωμένες παραγγελίες τις τελευταίες 7 ημέρες.",
+                                "month_orders": "Οι συνολικές ολοκληρωμένες παραγγελίες τον τελευταίο μήνα."
+                            }
+                        },
+
                         "header": "Πίνακας Ελέγχου",
                         "customer": {
                             "header": "Πληροφορίες Πελάτη",

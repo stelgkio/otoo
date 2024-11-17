@@ -26,7 +26,8 @@ i18next
                             "create": "Create",
                             "update": "Update",
                             "export": "Export",
-                            "submit": "Submit"
+                            "submit": "Submit",
+                            "apply": "Apply"
                         },
                         "status": {
                             "processing": "Processing...",
@@ -341,7 +342,8 @@ i18next
                             "create": "Δημιουργία",
                             "update": "Ενημέρωση",
                             "export": "Εξαγωγή",
-                            "submit": "Υποβολή"
+                            "submit": "Υποβολή",
+                            "apply": "Εφαρμογή"
                         },
                         "status": {
                             "processing": "Επεξεργασία...",

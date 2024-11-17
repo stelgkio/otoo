@@ -188,7 +188,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 					<tbody>
 						<template x-if="!loading && totalItems === 0">
 							<tr>
-								<td colspan="8"><span data-i18n="sorting-no-results-msg"></span>No vouchers found</td>
+								<td colspan="9"><span data-i18n="sorting-no-results-msg"></span>No vouchers found</td>
 							</tr>
 						</template>
 						<template x-for="voucher in paginatedVouchers" :key="voucher.Id">
@@ -261,7 +261,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 						</template>
 						<template x-for="i in 10 - paginatedVouchers.length" :key="'empty' + i">
 							<tr>
-								<td colspan="8" class="py-5"></td>
+								<td colspan="9" class="py-5"></td>
 							</tr>
 						</template>
 					</tbody>

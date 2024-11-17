@@ -83,12 +83,35 @@ i18next
                             "day_orders": "Orders (24H)",
                             "week_orders": "Orders (7D)",
                             "month_orders": "Orders (30D)",
+                            "default": "Default",
+                            "quick_stats": "Quick Stats",
                             // Tooltips
                             "tooltip": {
                                 "day_orders": "The total completed order the last 24 hours.",
                                 "week_orders": "The total completed order the last 7 days.",
                                 "month_orders": "The total completed order the last month."
+                            },
+                            "weekly_balance": {
+                                "title": "Weekly Balance",
+                                "active_rate": "Active Order Rate",
+                                "total_revenue": "Total Revenue"
+                            },
+                            "stats": {
+                                "orders": {
+                                    "title": "Orders",
+                                    "icon": "bag-plus"
+                                },
+                                "customers": {
+                                    "title": "Customers",
+                                    "icon": "file-earmark-person"
+                                },
+                                "products": {
+                                    "title": "Products",
+                                    "icon": "shop"
+                                }
+
                             }
+
                         },
                         "header": "Dashboard",
                         "customer": {
@@ -414,12 +437,34 @@ i18next
                             "day_orders": "Παραγγελίες (24Ω)",
                             "week_orders": "Παραγγελίες (7Η)",
                             "month_orders": "Παραγγελίες (30Η)",
+                            "default": "Προεπιλογή",
+                            "quick_stats": "Γρήγορα Στατιστικά",
                             // Tooltips
                             "tooltip": {
                                 "day_orders": "Οι συνολικές ολοκληρωμένες παραγγελίες τις τελευταίες 24 ώρες.",
                                 "week_orders": "Οι συνολικές ολοκληρωμένες παραγγελίες τις τελευταίες 7 ημέρες.",
                                 "month_orders": "Οι συνολικές ολοκληρωμένες παραγγελίες τον τελευταίο μήνα."
+                            },
+                            "weekly_balance": {
+                                "title": "Εβδομαδιαίο Υπόλοιπο",
+                                "active_rate": "Ποσοστό Ενεργών Παραγγελιών",
+                                "total_revenue": "Συνολικά Έσοδα"
+                            },
+                            "stats": {
+                                "orders": {
+                                    "title": "Παραγγελίες",
+                                    "icon": "bag-plus"
+                                },
+                                "customers": {
+                                    "title": "Πελάτες",
+                                    "icon": "file-earmark-person"
+                                },
+                                "products": {
+                                    "title": "Προϊόντα",
+                                    "icon": "shop"
+                                }
                             }
+
                         },
 
                         "header": "Πίνακας Ελέγχου",

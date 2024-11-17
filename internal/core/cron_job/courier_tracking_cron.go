@@ -161,8 +161,9 @@ func (c *CourierTrackingCron) RunRedCourierTrackingCron() error {
 	var wg sync.WaitGroup
 
 	for _, project := range projects {
-
+		wg.Add(1)
 		go func(project *domain.Project) {
+			defer wg.Done()
 			projectID := project.Id
 			projectExtensions, err := c.extensionSvc.GetAllProjectExtensions(nil, projectID.String())
 			if err != nil {
@@ -183,7 +184,7 @@ func (c *CourierTrackingCron) RunRedCourierTrackingCron() error {
 				return
 			}
 			if redcourier == nil {
-				slog.Error("courier4u extension does not exist: "+project.WoocommerceProject.Domain, "error", err)
+				slog.Error("redcourier extension does not exist: "+project.WoocommerceProject.Domain, "error", err)
 				return
 			}
 			wg.Add(1)
@@ -240,11 +241,10 @@ func (c *CourierTrackingCron) RunRedCourierTrackingCron() error {
 					return
 				}
 			}
-
+			if len(voucherListChan) == 0 {
+				return
+			}
 			for item := range voucherListChan {
-				if len(item) == 0 {
-					return
-				}
 				c.updateHermesTracking(client, item, projectID.String(), totalVouchers, nil, redcourier)
 				time.Sleep(1 * time.Second)
 			}

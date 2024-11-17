@@ -85,13 +85,13 @@ func NewRouter(
 			return c.JSON(http.StatusInternalServerError, "internal server error")
 		}
 		err := courierTrackingCron.RunCourier4uTrackingCron()
-		err2 := courierTrackingCron.RunRedCourierTrackingCron()
+		//err2 := courierTrackingCron.RunRedCourierTrackingCron()
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, err)
 		}
-		if err2 != nil {
-			return c.JSON(http.StatusInternalServerError, err2)
-		}
+		// if err2 != nil {
+		// 	return c.JSON(http.StatusInternalServerError, err2)
+		// }
 		return c.JSON(http.StatusAccepted, "OK")
 	})
 	e.POST("/contact", homeHandler.ContactForm)

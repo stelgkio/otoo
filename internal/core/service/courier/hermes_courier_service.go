@@ -369,7 +369,7 @@ func (vs *HermesService) TrackingHermerVoucherStatus(ctx echo.Context, courier4u
 		return nil, err
 	}
 	// Print the response body
-
+	fmt.Println("Response:", string(body))
 	// Decode the response JSON into the VoucherResponse struct
 	var trackingResponse *courier_domain.TrackingResponse
 	err = json.Unmarshal(body, &trackingResponse)
@@ -378,6 +378,6 @@ func (vs *HermesService) TrackingHermerVoucherStatus(ctx echo.Context, courier4u
 		return nil, err
 	}
 	// Print the structured response
-
+	fmt.Printf("Response Struct: %+v\n", trackingResponse)
 	return trackingResponse, nil
 }

@@ -47,106 +47,141 @@ func NewCourierTrackingCron(
 
 // RunCourier4uTrackingCron runs the cron job for order analytics
 func (c *CourierTrackingCron) RunCourier4uTrackingCron() error {
+	slog.Info("Starting Courier4u Tracking Cron Job")
+
 	// Get all projects
 	projects, err := c.projectSvc.GetAllProjects()
 	if err != nil {
-		slog.Error("Error getting projects: ", "error", err)
+		slog.Error("Error getting projects: %v", err)
 		return err
 	}
+	slog.Info("Fetched %d projects", len(projects))
+
 	var wg sync.WaitGroup
-
+	//errProjectChan := make(chan error, len(projects))
 	for _, project := range projects {
-		wg.Add(1)
-		go func(project *domain.Project) {
-			defer wg.Done()
-			projectID := project.Id
-			projectExtensions, err := c.extensionSvc.GetAllProjectExtensions(nil, projectID.String())
-			if err != nil {
-				slog.Error("Error getting project extensions: ", "error", err)
-				return
-			}
 
-			extensions := util.Filter(projectExtensions, func(e *domain.ProjectExtension) bool {
-				return e.Code == domain.Courier4u
-			})
-			if len(extensions) == 0 {
-				return
+		projectID := project.Id.String()
+		slog.Info("Processing project", "name", project.Name, "id", projectID)
+
+		projectExtensions, err := c.extensionSvc.GetAllProjectExtensions(nil, projectID)
+		if err != nil {
+			slog.Error("Error getting project extensions", "projectID", projectID, "error", err)
+			// errProjectChan <- err
+			// return
+			continue
+		}
+		if len(projectExtensions) == 0 {
+			slog.Info("No extensions found for project", "projectID", projectID)
+			// errProjectChan <- errors.New("no extensions found for project")
+			// return
+			continue
+		}
+		extensions := util.Filter(projectExtensions, func(e *domain.ProjectExtension) bool {
+			return e.Code == domain.Courier4u
+		})
+		if len(extensions) == 0 {
+			slog.Info("No Courier4u extension found for project", "projectID", projectID)
+			// errProjectChan <- errors.New("no courier4u extension found for project")
+			// return
+			continue
+		}
+
+		courier4u := new(domain.Courier4uExtension)
+		courier4u, err = c.extensionSvc.GetCourier4uProjectExtensionByID(nil, extensions[0].ExtensionID, projectID)
+		if err != nil {
+			slog.Error("Error getting courier4u extension", "projectID", projectID, "error", err)
+			// errProjectChan <- err
+			// return
+		}
+		if courier4u == nil {
+			slog.Error("courier4u extension does not exist", "domain", project.WoocommerceProject.Domain, "projectID", projectID)
+			// errProjectChan <- errors.New("courier4u extension does not exist")
+			// return
+			continue
+		}
+
+		client := woo_service.InitClient(project.WoocommerceProject.ConsumerKey, project.WoocommerceProject.ConsumerSecret, project.WoocommerceProject.Domain)
+
+		vooucherCountChan := make(chan int64, 1)
+		errChan := make(chan error, 1)
+		slog.Info("No vouchers count ", "projectID", projectID)
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			c.voucherSvc.GetVoucherCountAsync(projectID, cr.VoucherStatusProcessing, vooucherCountChan, errChan)
+		}()
+		go func() {
+			wg.Wait()
+			close(vooucherCountChan)
+			close(errChan)
+		}()
+
+		for errList := range errChan {
+			if errList != nil {
+				slog.Error("Error getting voucher count", "projectID", projectID, "error", errList)
+				// errProjectChan <- errList
+				// return
+				continue
 			}
-			courier4u := new(domain.Courier4uExtension)
-			courier4u, err = c.extensionSvc.GetCourier4uProjectExtensionByID(nil, extensions[0].ExtensionID, projectID.String())
-			if err != nil {
-				slog.Error("Error getting courier4u extension: ", "error", err)
-				return
+		}
+
+		var totalVouchers int64 = 0
+		for item := range vooucherCountChan {
+			if item == 0 {
+				slog.Info("No vouchers found for project (processing status)", "projectID", projectID)
+				// errProjectChan <- errors.New("no vouchers found for project (processing status)")
+				// return
+				continue
 			}
-			if courier4u == nil {
-				slog.Error("courier4u extension does not exist: "+project.WoocommerceProject.Domain, "error", err)
-				return
-			}
+			totalVouchers = item
+		}
+
+		if totalVouchers == 0 {
+			slog.Info("No vouchers found for project", "projectID", projectID)
+			// errProjectChan <- errors.New("no vouchers found for project")
+			// return
+			continue
+		}
+		slog.Info("No voucher count extension found for project", "projectID", projectID, "totalVouchers", totalVouchers)
+		workers := int(math.Ceil(float64(totalVouchers) / 100))
+		if workers == 0 {
+			workers = 1
+		}
+		slog.Info("Processing vouchers", "count", totalVouchers, "projectID", projectID, "workers", workers)
+
+		voucherListChan := make(chan []*cr.Voucher, workers)
+		errListChan := make(chan error, 1)
+		for i := 0; i < int(workers); i++ {
 			wg.Add(1)
-			client := woo_service.InitClient(project.WoocommerceProject.ConsumerKey, project.WoocommerceProject.ConsumerSecret, project.WoocommerceProject.Domain)
-			vooucherCountChan := make(chan int64, 1)
-			errChan := make(chan error, 1)
 			go func() {
 				defer wg.Done()
-				c.voucherSvc.GetVoucherCountAsync(projectID.String(), cr.VoucherStatusProcessing, vooucherCountChan, errChan)
+				c.voucherSvc.FindVoucherByProjectIDAsync(projectID, 100, i+1, "orderId", "desc", cr.VoucherStatusProcessing, voucherListChan, errListChan)
 			}()
-			go func() {
-				wg.Wait()
-				close(vooucherCountChan)
-				close(errChan)
-			}()
-			var totalVouchers int64
-			for item := range vooucherCountChan {
-				if item == 0 {
-					return
-				}
-				totalVouchers = item
-			}
-			for errList := range errChan {
-				if errList != nil {
-					return
-				}
-			}
+		}
 
-			if totalVouchers == 0 {
-				return
-			}
-			workers := int(math.Ceil(float64(totalVouchers) / 100))
-			if workers == 0 {
-				workers = 1
-			}
-			voucherListChan := make(chan []*cr.Voucher, workers)
-			errListChan := make(chan error, 1)
-			for i := 0; i < int(workers); i++ {
-				wg.Add(1)
-				go func() {
-					defer wg.Done()
-					c.voucherSvc.FindVoucherByProjectIDAsync(projectID.String(), 100, i+1, "orderId", "desc", cr.VoucherStatusProcessing, voucherListChan, errListChan)
-				}()
-			}
+		go func() {
+			wg.Wait()
+			close(voucherListChan)
+			close(errListChan)
+		}()
+		for errList := range errListChan {
+			if errList != nil {
+				slog.Error("Error getting vouchers", "projectID", projectID, "error", errList)
+				//errProjectChan <- errList
+				continue
 
-			go func() {
-				wg.Wait()
-				close(voucherListChan)
-				close(errListChan)
-			}()
-			for errList := range errListChan {
-				if errList != nil {
-					return
-				}
 			}
-			if len(voucherListChan) == 0 {
-				return
-			}
-			for item := range voucherListChan {
-				c.updateHermesTracking(client, item, projectID.String(), totalVouchers, courier4u, nil)
-				time.Sleep(1 * time.Second)
-			}
-		}(project)
+		}
+
+		for item := range voucherListChan {
+			slog.Info("Processing vouchers", "count", totalVouchers, "projectID", projectID, "voucherList", item)
+			c.updateHermesTracking(client, item, projectID, totalVouchers, courier4u, nil)
+			time.Sleep(1 * time.Second)
+		}
+
 	}
-	go func() {
-		wg.Wait()
-	}()
+
 	return nil
 }
 

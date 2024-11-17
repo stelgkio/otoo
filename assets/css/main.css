@@ -10702,7 +10702,7 @@ fieldset:disabled .btn {
 .table thead th {
     font-size: var(--x-table-th-font-size);
     font-weight: var(--x-table-th-font-weight);
-    text-transform: var(--x-table-th-text-transform);
+    /* text-transform: var(--x-table-th-text-transform); */
     letter-spacing: var(--x-table-th-letter-spacing);
     border-bottom-width: var(--x-border-width);
     white-space: nowrap;

@@ -284,7 +284,38 @@ i18next
                             "courier4u": "Courier4U Integration",
                             "acs_courier": "ACS Courier Integration"
                         }
+                    },
+                    "voucher": {
+                        "types": {
+                            "new": "New",
+                            "processing": "Processing",
+                            "completed": "Completed",
+                            "cancelled": "Cancelled",
+                            "all": "All"
+                        },
+                        "actions": {
+                            "bulk": "Bulk Action",
+                            "download_multiple": "Download Multiple Vouchers",
+                            "new": "New Voucher",
+                            "create": "Create Voucher",
+                            "export": "Export"
+                        },
+                        "table": {
+                            "id": "Voucher ID",
+                            "order_id": "Order ID",
+                            "date": "Date",
+                            "cod": "COD",
+                            "status": "Status",
+                            "printed": "Printed",
+                            "action": "Action"
+                        },
+                        "messages": {
+                            "no_results": "No vouchers found",
+                            "error": "An error occurred",
+                            "success": "Operation completed successfully"
+                        }
                     }
+
                 }
             },
 
@@ -567,6 +598,37 @@ i18next
                         "integrations": {
                             "courier4u": "Ενοποίηση Courier4U",
                             "acs_courier": "Ενοποίηση ACS Courier"
+                        }
+                    },
+                    // Greek version
+                    "voucher": {
+                        "types": {
+                            "new": "Νέο",
+                            "processing": "Σε Επεξεργασία",
+                            "completed": "Ολοκληρωμένο",
+                            "cancelled": "Ακυρωμένο",
+                            "all": "Όλα"
+                        },
+                        "actions": {
+                            "bulk": "Μαζική Ενέργεια",
+                            "download_multiple": "Λήψη Πολλαπλών Vouchers",
+                            "new": "Νέο Voucher",
+                            "create": "Δημιουργία Voucher",
+                            "export": "Εξαγωγή"
+                        },
+                        "table": {
+                            "id": "Αναγνωριστικό Voucher",
+                            "order_id": "Αναγνωριστικό Παραγγελίας",
+                            "date": "Ημερομηνία",
+                            "cod": "Αντικαταβολή",
+                            "status": "Κατάσταση",
+                            "printed": "Εκτυπωμένο",
+                            "action": "Ενέργεια"
+                        },
+                        "messages": {
+                            "no_results": "Δεν βρέθηκαν vouchers",
+                            "error": "Παρουσιάστηκε σφάλμα",
+                            "success": "Η ενέργεια ολοκληρώθηκε με επιτυχία"
                         }
                     }
                 }

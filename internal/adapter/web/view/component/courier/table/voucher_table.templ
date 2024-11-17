@@ -14,7 +14,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 				<ul class="nav nav-tabs nav-tabs-flush gap-8 overflow-x border-0 mt-4">
 					<li class="nav-item">
 						<a
-							data-i18n="voucher-table-new-order"
+							data-i18n="voucher.types.new"
 							href="#"
 							:class="{'nav-link': true, 'active': currentTab === 'new'}"
 							@click.prevent="selectTab('new')"
@@ -22,7 +22,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 					</li>
 					<li class="nav-item">
 						<a
-							data-i18n="voucher-table-processing-orders"
+							data-i18n="voucher.types.processing"
 							href="#"
 							:class="{'nav-link': true, 'active': currentTab === 'processing'}"
 							@click.prevent="selectTab('processing')"
@@ -30,7 +30,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 					</li>
 					<li class="nav-item">
 						<a
-							data-i18n="voucher-table-completed-orders"
+							data-i18n="voucher.types.completed"
 							href="#"
 							:class="{'nav-link': true, 'active': currentTab === 'completed'}"
 							@click.prevent="selectTab('completed')"
@@ -38,7 +38,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 					</li>
 					<li class="nav-item">
 						<a
-							data-i18n="voucher-table-cancelled-orders"
+							data-i18n="voucher.types.cancelled"
 							href="#"
 							:class="{'nav-link': true, 'active': currentTab === 'cancelled'}"
 							@click.prevent="selectTab('cancelled')"
@@ -46,7 +46,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 					</li>
 					<li class="nav-item">
 						<a
-							data-i18n="voucher-table-all-orders"
+							data-i18n="voucher.types.all"
 							href="#"
 							:class="{'nav-link': true, 'active': currentTab === 'all'}"
 							@click.prevent="selectTab('all')"
@@ -63,7 +63,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 						@click="showDropdown = !showDropdown"
 						:aria-expanded="showDropdown.toString()"
 					>
-						<i class="bi bi-plus-circle"></i> <span class="ms-2">Bulk Action</span>
+						<i class="bi bi-plus-circle"></i> <span class="ms-2" data-i18n="voucher.actions.bulk">Bulk Action</span>
 					</button>
 					<div class="dropdown-menu" :class="{ 'show': showDropdown }" aria-labelledby="dropdownMenuButton2">
 						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
@@ -78,7 +78,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 								/>
 							</div>
 							<div class="ms-3 me-5">
-								<label for="multiplevouchercreation">Download Mutliple Vouchers</label>
+								<label for="multiplevouchercreation" data-i18n="voucher.actions.download_multiple">Download Mutliple Vouchers</label>
 							</div>
 							// <div class="ms-auto">
 							// <span class="badge rounded-pill bg-opacity-25 bg-success text-success">23</span>
@@ -109,7 +109,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 								class="btn btn-sm btn-primary d-sm-inline-flex position-relative"
 								@click="bulkAction"
 							>
-								<span x-show="!loading">Apply </span>
+								<span x-show="!loading" data-i18n="common.buttons.apply">Apply </span>
 								<span
 									x-show="loading"
 									class="spinner-border spinner-border-sm"
@@ -134,7 +134,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 						// </button>
 						//New Voucher Button
 						<button type="button" class="btn btn-sm btn-primary d-lg-inline-flex" @click="$dispatch('new-voucher', { })">
-							<i class="bi bi-plus-lg me-2"></i><span data-i18n="voucher-table-new-voucher-button">New Voucher</span>
+							<i class="bi bi-plus-lg me-2"></i><span data-i18n="voucher.actions.new">New Voucher</span>
 						</button>
 					</div>
 				</div>
@@ -158,36 +158,36 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 							</th>
 							<template x-if="!isNewTab">
 								<th @click="sortTable('Id')">
-									<span data-i18n="sorting-table-voucher-id">Voucher ID</span>
+									<span data-i18n="voucher.table.id">Voucher ID</span>
 									<i :class="getSortIcon('Id')"></i>
 								</th>
 							</template>
 							<th @click="sortTable('orderId')">
-								<span data-i18n="sorting-table-order-id">Order ID</span>
+								<span data-i18n="voucher.table.order_id">Order ID</span>
 								<i :class="getSortIcon('orderId')"></i>
 							</th>
 							<th @click="sortTable('updated_at')">
-								<span data-i18n="sorting-table-order-date">Date</span>
+								<span data-i18n="voucher.table.date">Date</span>
 								<i :class="getSortIcon('updated_at')"></i>
 							</th>
 							<th @click="sortTable('total_amount')">
-								<span data-i18n="sorting-table-order-cod">COD</span>
+								<span data-i18n="voucher.table.cod">COD</span>
 								<i :class="getSortIcon('total_amount')"></i>
 							</th>
-							<th><span data-i18n="sorting-table-status-header">Status</span></th>
+							<th><span data-i18n="voucher.table.status">Status</span></th>
 							<template x-if="isPrinted">
 								<th @click="sortTable('is_printed')">
-									<span data-i18n="sorting-table-printed">Printed</span>
+									<span data-i18n="voucher.table.printed">Printed</span>
 									<i :class="getSortIcon('is_printed')"></i>
 								</th>
 							</template>
-							<th><span data-i18n="sorting-table-action-header">Action</span></th>
+							<th><span data-i18n="voucher.table.action">Action</span></th>
 						</tr>
 					</thead>
 					<tbody>
 						<template x-if="!loading && totalItems === 0">
 							<tr>
-								<td colspan="8"><span data-i18n="sorting-no-results-msg"></span>No vouchers found</td>
+								<td colspan="8"><span data-i18n="voucher.messages.no_results"></span>No vouchers found</td>
 							</tr>
 						</template>
 						<template x-for="voucher in paginatedVouchers" :key="voucher.Id">
@@ -231,7 +231,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 											class="btn btn-sm btn-neutral"
 											@click="$dispatch('show-offcanvas', { voucher })"
 										>
-											<i class="bi bi-plus-circle me-2"></i><span data-i18n="sorting-create-voucher">Create Voucher</span>
+											<i class="bi bi-plus-circle me-2"></i><span data-i18n="voucher.actions.create">Create Voucher</span>
 										</button>
 									</template>
 									<template x-if="voucher.status !== 'new'">

@@ -559,7 +559,7 @@ i18next
                                 }
                             },
                             "actions": {
-                                "create": "Δημιουργία Κουπονιού",
+                                "create": "Δημιουργία Voucher",
                                 "close": "Κλείσιμο",
                                 "processing": "Επεξεργασία..."
                             }
@@ -572,7 +572,7 @@ i18next
                         "actions": {
                             "create": "Δημιουργία Voucher",
                             "update": "Ενημέρωση Voucher",
-                            "new": "Νέο Κουπόνι",
+                            "new": "Νέο Voucher",
                             "export": "Εξαγωγή Voucher"
                         },
                         "table": {

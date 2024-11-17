@@ -56,8 +56,9 @@ func (c *CourierTrackingCron) RunCourier4uTrackingCron() error {
 	var wg sync.WaitGroup
 
 	for _, project := range projects {
-
+		wg.Add(1)
 		go func(project *domain.Project) {
+			defer wg.Done()
 			projectID := project.Id
 			projectExtensions, err := c.extensionSvc.GetAllProjectExtensions(nil, projectID.String())
 			if err != nil {
@@ -78,7 +79,7 @@ func (c *CourierTrackingCron) RunCourier4uTrackingCron() error {
 				return
 			}
 			if courier4u == nil {
-				slog.Error("courier4u extension does not exist: ", "error", err)
+				slog.Error("courier4u extension does not exist: "+project.WoocommerceProject.Domain, "error", err)
 				return
 			}
 			wg.Add(1)
@@ -96,6 +97,9 @@ func (c *CourierTrackingCron) RunCourier4uTrackingCron() error {
 			}()
 			var totalVouchers int64
 			for item := range vooucherCountChan {
+				if item == 0 {
+					return
+				}
 				totalVouchers = item
 			}
 			for errList := range errChan {
@@ -104,6 +108,9 @@ func (c *CourierTrackingCron) RunCourier4uTrackingCron() error {
 				}
 			}
 
+			if totalVouchers == 0 {
+				return
+			}
 			workers := int(math.Ceil(float64(totalVouchers) / 100))
 			if workers == 0 {
 				workers = 1
@@ -142,6 +149,8 @@ func (c *CourierTrackingCron) RunCourier4uTrackingCron() error {
 	}()
 	return nil
 }
+
+// RunRedCourierTrackingCron updates the hermes tracking for the given vouchers
 func (c *CourierTrackingCron) RunRedCourierTrackingCron() error {
 	// Get all projects
 	projects, err := c.projectSvc.GetAllProjects()
@@ -174,7 +183,7 @@ func (c *CourierTrackingCron) RunRedCourierTrackingCron() error {
 				return
 			}
 			if redcourier == nil {
-				slog.Error("redcourier extension does not exist: ", "error", err)
+				slog.Error("courier4u extension does not exist: "+project.WoocommerceProject.Domain, "error", err)
 				return
 			}
 			wg.Add(1)
@@ -192,12 +201,19 @@ func (c *CourierTrackingCron) RunRedCourierTrackingCron() error {
 			}()
 			var totalVouchers int64
 			for item := range vooucherCountChan {
+				if item == 0 {
+					return
+				}
 				totalVouchers = item
 			}
 			for errList := range errChan {
 				if errList != nil {
 					return
 				}
+			}
+
+			if totalVouchers == 0 {
+				return
 			}
 
 			workers := int(math.Ceil(float64(totalVouchers) / 100))
@@ -224,10 +240,11 @@ func (c *CourierTrackingCron) RunRedCourierTrackingCron() error {
 					return
 				}
 			}
-			if len(voucherListChan) == 0 {
-				return
-			}
+
 			for item := range voucherListChan {
+				if len(item) == 0 {
+					return
+				}
 				c.updateHermesTracking(client, item, projectID.String(), totalVouchers, nil, redcourier)
 				time.Sleep(1 * time.Second)
 			}

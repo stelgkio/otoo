@@ -1,356 +1,752 @@
 // Initialize i18next
 i18next
-    // .use(i18nextHttpBackend) // Optional: Load translations from external files
-    .use(i18nextBrowserLanguageDetector) // Detect user's language
+    .use(i18nextBrowserLanguageDetector)
     .init({
-        fallbackLng: 'en', // Default language if detection fails
-        debug: true, // Enable debug logs in the console
-
+        fallbackLng: localStorage.getItem('preferredLanguage') || 'en',
+        debug: true,
         resources: {
-            en: {
-                translation: {
-                    // Index EN
-                    "title": "All in one Solution,Integration & Dashboard Analytics	Faster than Ever.!",
-                    "subtitle": "With KonektorX you can connect any e-commerce platform quicker than ever.",
-                    "Dashboard": "Dashboard",
-                    // Off Canvas EN
-                    "offcanvas-order_processing": "Create Voucher#",
-                    "off-canvas-customer-tab": "Customer",
-                    "off-canvas-shipping-tab": "Shipping",
-                    "off-canvas-customer-info-header": "Customer Info",
-                    "off-canvas-customer-first_name": "First Name",
-                    "off-canvas-customer-last_name": "Last Name",
-                    "off-canvas-customer-email": "Email",
-                    "off-canvas-customer-phone": "Phone",
-                    "off-canvas-customer-address": "Address",
-                    "off-canvas-customer-city": "City",
-                    "off-canvas-customer-postal": "Postal",
-                    //Off Canvas Products Info EN
-                    "off-canvas-customer-products-header": "Products",
-                    "off-canvas-customer-product-name": "Product Name",
-                    "off-canvas-customer-product-quantity": "Product Quantity",
-                    "off-canvas-customer-product-price": "Product Price",
-                    //Off Canvas Delivery Info EN
-                    "off-canvas-delivery-info": "Delivery Info",
-                    "off-canvas-special-instructions": "Special Instructions",
-                    "off-canvas-customer-store-pickup": "Store pickup",
-                    // Off Canvas Shipping Info EN
-                    "off-canvas-shipping-information": "Shipping Information",
-                    "off-canvas-shipping-order-number": "Order Number",
-                    "off-canvas-shipping-parcel-weight": "Parcel Weight",
-                    "off-canvas-shipping-company": "Shipping Company",
-                    "off-canvas-shipping-provider": "Select Courier Provider",
-                    "off-canvas-parcel-cod": "COD",
-                    //Off Canvas Billing Info EN
-                    "off-canvas-modal-name": "Name",
-                    "off-canvas-modal-last-name": "Last Name",
-                    "off-canvas-email": "Email",
-                    "off-canvas-modal-phone": "Phone",
-                    "off-canvas-modal-address": "Address",
-                    "off-canvas-modal-city": "City",
-                    "off-canvas-modal-postal": "Postal",
-                    //Off Canvas ACS EN
-                    "off-canvas-delivery-options-acs": "Delivery Options (ACS)",
-                    "off-canvas-acs-standard-delivery": "Standard Delivery",
-                    "off-canvas-acs-saturday-delivery": "Saturday Delivery",
-                    "off-canvas-acs-urgent-delivery": "Urgent Delivery",
-                    "off-canvas-acs-pickup-delivery": "Pickup Delivery",
-                    //Off Canvas Courier4U EN
-                    "off-canvas-delivery-options-courier4u": "Delivery Options (Courier4U)",
-                    // "off-canvas-delivery-courier4u-standard-delivery": "Standard Delivery",
-                    "off-canvas-delivery-courier4u-saturday-delivery": "Delivery on Saturday",
-                    "off-canvas-delivery-courier4u-urgent-delivery": "Urgent Delivery",
-                    "off-canvas-delivery-courier4u-pickup-delivery": "Pickup from the store",
-                    "off-canvas-delivery-courier4u-sameday-delivery": "Same-Day",
-                    "off-canvas-delivery-courier4u-return-delivery": "Delivery - Pickup",
-                    "off-canvas-delivery-courier4u-ServiceProtocol-delivery": "Protocol Number",
-                    //Off Canvas Parsel Weight/Height/Width Options EN
-                    "off-canvas-shipping-parcel-courier4u-weight": "Package Weight",
-                    "off-canvas-wh-options-courier4u": "Package Options",
-                    "off-canvas-shipping-parcel-depth": "Parcel Depth",
-                    "off-canvas-shipping-parcel-height": "Parcel Height",
-                    "off-canvas-shipping-parcel-width": "Parcel Width",
-                    "offcanvas-nav-customer": "Customer",
-                    "offcanvas-nav-shipping": "Shipping",
-                    //Off Canvas button
-                    "off-canvas-save-btn": "Save Changes",
-                    "off-canvas-close-btn": "Cancel",
-                    //Voucher Header Section Table EN
-                    "voucher-table-new-order": "New",
-                    "voucher-table-processing-orders": "Processing",
-                    "voucher-table-completed-orders": "Completed",
-                    "voucher-table-cancelled-orders": "Cancelled",
-                    "voucher-table-all-orders": "All",
-                    "voucher-table-export-voucher-button": "Export Voucher",
-                    "voucher-table-new-voucher-button": "New Voucher",
-                    // Order Header Section Table EN
-                    "order-table-all-orders": "All",
-                    "order-table-completed-orders": "Completed",
-                    "order-table-pending-orders": "Pending",
-                    "order-table-new-orders": "New",
-                    "order-table-processing-orders": "Processing",
-                    "order-table-cancelled-orders": "Cancelled",
-                    // Order Modal Billing EN
-                    "order-modal-header-title": "Order Details",
-                    "order-modal-header-billing": "Billing Information",
-                    "order-modal-billing-name": "First Name",
-                    "order-modal-billing-address": "Address",
-                    "order-modal-billing-city": "City",
-                    "order-modal-billing-postal": "Postal",
-                    "order-modal-billing-email": "E-mail",
-                    "order-modal-billing-phone": "Phone",
-                    // Order Modal Shipping EN
-                    "order-modal-header-shipping": "Shipping Information",
-                    "order-modal-shipping-name": "First Name",
-                    "order-modal-shipping-last-name": "Last Name",
-                    "order-modal-shipping-address": "Address",
-                    "order-modal-shipping-address_2": "Address 2",
-                    "order-modal-shipping-city": "City",
-                    "order-modal-shipping-postal": "Postal",
-                    "order-modal-shipping-customer-note": "Customer Note",
-                    "off-canvas-shipping-parclel-cod": "Cash on Delivery",
-                    // Sorting Table EN
-                    "sorting-table-voucher-id": "Voucher ID",
-                    "sorting-table-order-id": "Order ID",
-                    "sorting-table-order-date": "Order Date",
-                    "sorting-table-order-cod": "COD",
-                    "sorting-table-status-header": "Status",
-                    "sorting-table-printed:": "Printed",
-                    "sorting-table-action-header": "Action",
-                    "sorting-no-results-msg": "No results found",
-                    "sorting-create-voucher": "Create Voucher",
-                    // Side nav
-                    "side-nav-logout": "Logout",
-                    "side-nav-projects": "Projects",
-                    "side-nav-dashboard": "Dashboard",
-                    "side-nav-default": "Default",
-                    "side-nav-customers": "Customers",
-                    "side-nav-products": "Products",
-                    "side-nav-orders": "Orders",
-                    "side-nav-resources": "Resources",
-                    "side-nav-extensions": "Extensions",
-                    "side-nav-add-extensions": "Add Extensions",
-                    "side-nav-settings": "Settings",
-                    // Dashboard overview EN ( Shared with Order/Customer/Product Overview )
-                    "dashboard-overview_orders": "Orders",
-                    "dashboard-overview_products": "Products",
-                    "dashboard-overview_customers": "Customers",
-                    "dashboard-overview-total_orders": "Total Orders",
-                    "dashboard-overview_orders": "Orders",
-                    "dashboard-overview-week_orders": "Orders",
-                    "dashboard-overview-month_orders": "Orders",
-                    // Dashboard Shared Tables EN
-                    "dashboard-table-order_id": "Order ID",
-                    "dashboard-table-order-created": "Created",
-                    "dashboard-table-order_date": "Order Date",
-                    "dashboard-table-order_status": "Order Status",
-                    "dashboard-table-order_total": "Order Total",
-                    "dashboard-table-order_action": "Action",
-                    "dashboard-table-customer_name": "Name",
-                    "dashboard-table-customer_email": "Email",
-                    "dashboard-table-customer-total_orders": "Total Orders",
-                    "dashboard-table-customer-total_spent": "Total Spent",
-                    "dashboard-table-customer_id": "product ID",
-                    "dashboard-table-customer_email": "Product Name",
-                    "dashboard-table-customer-total_spent": "Πελάτης δεν βρέθηκε",
-                    "dashboard-table-products_id": "product ID",
-                    "dashboard-table-products_name": "Product Name",
-                    "dashboard-table-products_price": "Pricing",
-                    "dashboard-table-products_category": "Category",
-                    "dashboard-table-products_type": "Type",
-                    "dashboard-table-products-total_orders": "Total Orders",
+            "en": {
+                "translation": {
+                    // Application-wide shared components and text
+                    "common": {
+                        "form_fields": {
+                            "first_name": "First Name",
+                            "last_name": "Last Name",
+                            "email": "Email",
+                            "phone": "Phone",
+                            "address": "Address",
+                            "city": "City",
+                            "postal": "Postal Code",
+                            "order_number": "Order Number"
+                        },
+                        "buttons": {
+                            "save": "Save",
+                            "close": "Close",
+                            "cancel": "Cancel",
+                            "create": "Create",
+                            "update": "Update",
+                            "export": "Export",
+                            "submit": "Submit",
+                            "apply": "Apply"
+                        },
+                        "status": {
+                            "processing": "Processing...",
+                            "loading": "Loading...",
+                            "completed": "Completed",
+                            "pending": "Pending",
+                            "cancelled": "Cancelled"
+                        },
+                        "messages": {
+                            "success": "Operation completed successfully",
+                            "error": "An error occurred",
+                            "no_results": "No results found"
+                        },
+                        "validation": {
+                            "required": "This field is required",
+                            "email": "Please enter a valid email address",
+                            "phone": "Please enter a valid phone number",
+                            "postal": "Please enter a valid postal code",
+                            "amount": "Please enter a valid amount"
+                        }
+                    },
 
+                    // Homepage content
+                    "index": {
+                        "title": "All-in-One Solution, Integration & Dashboard Analytics Faster than Ever!",
+                        "subtitle": "With KonektorX, you can connect any e-commerce platform quicker than ever."
+                    },
 
+                    // Main navigation
+                    "navigation": {
+                        "side_nav": {
+                            "dashboard": "Dashboard",
+                            "projects": "Projects",
+                            "customers": "Customers",
+                            "products": "Products",
+                            "orders": "Orders",
+                            "resources": "Resources",
+                            "extensions": "Extensions",
+                            "add_extensions": "Add Extensions",
+                            "settings": "Settings",
+                            "default": "Default",
+                            "logout": "Logout"
+                        }
+                    },
 
+                    // Dashboard and main components
+                    "dashboard": {
+                        "overview": {
+                            "orders": "Orders",
+                            "customers": "Customers",
+                            "products": "Products",
+                            "total_orders": "Total Orders",
+                            "day_orders": "Orders (24H)",
+                            "week_orders": "Orders (7D)",
+                            "month_orders": "Orders (30D)",
+                            "default": "Default",
+                            "quick_stats": "Quick Stats",
+                            // Tooltips
+                            "tooltip": {
+                                "day_orders": "The total completed order the last 24 hours.",
+                                "week_orders": "The total completed order the last 7 days.",
+                                "month_orders": "The total completed order the last month."
+                            },
+                            "weekly_balance": {
+                                "title": "Weekly Balance",
+                                "active_rate": "Active Order Rate",
+                                "total_revenue": "Total Revenue"
+                            },
+                            "stats": {
+                                "orders": {
+                                    "title": "Orders",
+                                    "icon": "bag-plus"
+                                },
+                                "customers": {
+                                    "title": "Customers",
+                                    "icon": "file-earmark-person"
+                                },
+                                "products": {
+                                    "title": "Products",
+                                    "icon": "shop"
+                                }
 
+                            }
 
+                        },
+                        "header": "Dashboard",
+                        "customer": {
+                            "header": "Customer Information",
+                            "search": {
+                                "placeholder": "Search all customers",
+                                "aria_label": "Search customers"
+                            },
+                            "metrics": {
+                                "total_orders": "Total Orders",
+                                "total_spent": "Total Spent"
+                            }
+                        },
+                        "product": {
+                            "header": "Products",
+                            "fields": {
+                                "name": "Product Name",
+                                "quantity": "Quantity",
+                                "price": "Price",
+                                "id": "Product ID",
+                                "category": "Category",
+                                "type": "Type",
+                                "search_placeholder": "Search all products",
+                                "search_aria_label": "Search products"
+                            }
+                        },
+                        "order": {
+                            "header": "Order Details",
+                            "types": {
+                                "all": "All Orders",
+                                "new": "New Orders",
+                                "completed": "Completed Orders",
+                                "pending": "Pending Orders",
+                                "processing": "Processing Orders",
+                                "cancelled": "Cancelled Orders"
+                            },
+                            "actions": {
+                                "bulk": "Bulk Actions"
+                            },
+                            "bulk_actions": {
+                                "change_status_completed": "Change status to completed",
+                                "change_status_pending": "Change status to pending",
+                                "change_status_processing": "Change status to processing",
+                                "change_status_cancelled": "Change status to cancelled"
+                            }
+                        },
+                        "tables": {
+                            "order": {
+                                "id": "Order ID",
+                                "order_id": "Order Number",
+                                "date": "Order Date",
+                                "status": "Order Status",
+                                "action": "Action",
+                                "created": "Order Created",
+                                "total": "Total Amount"
+                            },
+                            "customer": {
+                                "id": "Customer ID",
+                                "name": "Customer Name",
+                                "email": "Email",
+                                "phone": "Phone",
+                                "total_spent": "Total Spent",
+                                "total_orders": "Total Orders"
+                            },
+                            "product": {
+                                "id": "Product ID",
+                                "name": "Product Name",
+                                "quantity": "Stock Quantity",
+                                "price": "Price",
+                                "category": "Category",
+                                "type": "Product Type",
+                                "total_orders": "Total Orders"
+                            }
+                        }
+                    },
+                    // Modal section
+                    "modal": {
+                        "order": {
+                            "title": "Order",
+                            "payment_method": "Payment Method",
+                            "details": {
+                                "header": "Order Details",
+                                "payment_info": "Payment Information",
+                                "products_list": "Products List"
+                            },
+                            "billing": {
+                                "header": "Billing Information",
+                                "address_2": "Address 2"
+                            },
+                            "shipping": {
+                                "header": "Shipping Information",
+                                "address_2": "Address 2",
+                                "customer_note": "Customer Notes"
+                            },
+                            "products": {
+                                "header": "Products",
+                                "table": {
+                                    "name": "Product",
+                                    "quantity": "Qty",
+                                    "price": "Price"
+                                }
+                            },
+                            "buttons": {
+                                "save": "Save Changes",
+                                "close": "Close",
+                                "saving": "Saving..."
+                            }
+                        }
+                    },
 
+                    // Offcanvas components
+                    "offcanvas": {
+                        "order_processing": {
+                            "header": {
+                                "title": "Order Processing #",
+                                "close": "Close"
+                            },
+                            "tabs": {
+                                "customer": "Customer",
+                                "shipping": "Shipping"
+                            },
+                            "customer": {
+                                "header": "Customer Info",
+                                "products": {
+                                    "header": "Products",
+                                    "table": {
+                                        "product": "Product",
+                                        "quantity": "Quantity",
+                                        "price": "Price"
+                                    }
+                                },
+                                "delivery": {
+                                    "header": "Delivery Info",
+                                    "instructions": "Delivery Instructions"
+                                }
+                            },
+                            "shipping": {
+                                "header": "Shipping Information",
+                                "form": {
+                                    "company": "Shipping Company",
+                                    "provider": "Select Courier Provider",
+                                    "order_number": "Order Number",
+                                    "cod": "COD (€)"
+                                },
+                                "dimensions": {
+                                    "weight": "Parcel Weight (kg)",
+                                    "depth": "Parcel Depth (cm)",
+                                    "width": "Parcel Width (cm)",
+                                    "height": "Parcel Height (cm)"
+                                },
+                                "courier_options": {
+                                    "acs": {
+                                        "header": "Delivery Options (ACS)",
+                                        "standard": "Standard Delivery",
+                                        "saturday": "Saturday Delivery",
+                                        "urgent": "Urgent Delivery",
+                                        "pickup": "Pickup"
+                                    },
+                                    "courier4u": {
+                                        "header": "W/D/W/H Options (Courier4U)",
+                                        "delivery_header": "Delivery Options (Courier4U)",
+                                        "saturday": "Delivery on Saturday",
+                                        "urgent": "Urgent Delivery",
+                                        "return": "Delivery - Pickup",
+                                        "pickup": "Pickup from the store",
+                                        "same_day": "Same-Day",
+                                        "protocol": "Protocol Number"
+                                    }
+                                }
+                            },
+                            "actions": {
+                                "create": "Create Voucher",
+                                "close": "Close",
+                                "processing": "Processing..."
+                            }
+                        }
+                    },
 
+                    // Voucher management
+                    "voucher": {
+                        "header": "Voucher Management",
+                        "actions": {
+                            "create": "Create Voucher",
+                            "update": "Update Voucher",
+                            "new": "New Voucher",
+                            "export": "Export Vouchers"
+                        },
+                        "table": {
+                            "id": "Voucher ID",
+                            "code": "Voucher Code",
+                            "discount": "Discount",
+                            "expiry_date": "Expiry Date",
+                            "status": "Status"
+                        }
+                    },
 
-
+                    // Project settings
+                    "project_settings": {
+                        "header": "Project Settings",
+                        "sections": {
+                            "general": "General",
+                            "secrets": "Secrets",
+                            "webhooks": "Webhooks",
+                            "notifications": "Notifications",
+                            "payment_subscription": "Payment & Subscriptions",
+                            "team": "Team Management"
+                        },
+                        "integrations": {
+                            "courier4u": "Courier4U Integration",
+                            "acs_courier": "ACS Courier Integration"
+                        }
+                    },
+                    "voucher": {
+                        "types": {
+                            "new": "New",
+                            "processing": "Processing",
+                            "completed": "Completed",
+                            "cancelled": "Cancelled",
+                            "all": "All"
+                        },
+                        "actions": {
+                            "bulk": "Bulk Action",
+                            "download_multiple": "Download Multiple Vouchers",
+                            "new": "New Voucher",
+                            "create": "Create Voucher",
+                            "export": "Export"
+                        },
+                        "table": {
+                            "id": "Voucher ID",
+                            "order_id": "Order ID",
+                            "date": "Date",
+                            "cod": "COD",
+                            "status": "Status",
+                            "printed": "Printed",
+                            "action": "Action"
+                        },
+                        "messages": {
+                            "no_results": "No vouchers found",
+                            "error": "An error occurred",
+                            "success": "Operation completed successfully"
+                        }
+                    }
 
                 }
             },
-            el: {
-                translation: {
-                    // Index GR
-                    "title": "Μια Ολοκληρωμένη Λύση για την επιχείρηση σας, Πιο Γρήγορα από Ποτέ!",
-                    "subtitle": "Με το KonektorX, μπορείτε να συνδέσετε οποιαδήποτε πλατφόρμα e-commerce πιο γρήγορα από ποτέ.",
-                    "Dashboard": "Πίνακας Ελέγχου",
-                    //Off Canvas GR
-                    "offcanvas-order_processing": "Δημιουργία Voucher#",
-                    "off-canvas-customer-tab": "Πελάτης",
-                    "off-canvas-shipping-tab": "Αποστολή",
-                    "off-canvas-customer-info-header": "Στοιχεία Πελάτη",
-                    "off-canvas-modal-name": "Όνομα",
-                    "off-canvas-modal-last-name": "Επώνυμο",
-                    "off-canvas-email": "Email",
-                    "off-canvas-modal-phone": "Τηλέφωνο",
-                    "ooff-canvas-modal-address": "Διεύθυνση",
-                    "off-canvas-modal-city": "Πόλη",
-                    "off-canvas-modal-postal": "Τ.K.",
-                    //Off Canvas Products Info GR
-                    "off-canvas-customer-products-header": "Προϊόντα",
-                    "off-canvas-customer-product-name": "Όνομα Προϊόντος",
-                    "off-canvas-customer-product-quantity": "Ποσότητα Προϊόντος",
-                    "off-canvas-customer-product-price": "Τιμή Προϊόντος",
-                    //Off Canvas Delivery Info GR
-                    "off-canvas-delivery-info": "Πληροφορίες Αποστολής",
-                    "off-canvas-special-instructions": "Σημειώσεις Παράδοσης",
-                    "off-canvas-customer-store-pickup": "Παραλαβή Απο Κατάστημα",
-                    //Off Canvas Shipping Info GR
-                    "off-canvas-shipping-information": "Στοιχεία Αποστολής",
-                    "off-canvas-shipping-order-number": "Αριθμός Παραγγελίας",
-                    "off-canvas-shipping-company": "Εταιρεία Αποστολής",
-                    "off-canvas-shipping-provider": "Επιλογή Ταχυδρομικής Εταιρείας",
-                    "off-canvas-parcel-cod": "Αντικαταβολή",
-                    //Off Canvas ACS GR
-                    "off-canvas-delivery-options-acs": "Επιλογές Αποστολής (ACS)",
-                    "off-canvas-acs-standard-delivery": "Κανονική Αποστολή",
-                    "off-canvas-acs-saturday-delivery": "Αποστολή Σάββατο",
-                    "off-canvas-acs-urgent-delivery": "Επείγον Αποστολή",
-                    "off-canvas-acs-pickup-delivery": "Παραλαβή Απο Κατάστημα",
-                    //Off Canvas Courier4U GR
-                    "off-canvas-delivery-options-courier4u": "Επιλογές Αποστολής (Courier4U)",
-                    "off-canvas-delivery-courier4u-standard-delivery": "Κανονική Αποστολή",
-                    "off-canvas-delivery-courier4u-saturday-delivery": "Παράδοση Σάββατο",
-                    "off-canvas-delivery-courier4u-urgent-delivery": "Επείγουσα Παράδοση",
-                    "off-canvas-delivery-courier4u-pickup-delivery": "Παραλαβή από το κατάστημα",
-                    "off-canvas-delivery-courier4u-sameday-delivery": "Αυθημερόν",
-                    "off-canvas-delivery-courier4u-ServiceProtocol-delivery": "Αριθμός Πρωτοκόλλου",
-                    "off-canvas-delivery-courier4u-return-delivery": "Παράδοση - Παραλαβή",
-                    //Off Canvas Parcel Weight/Height/Width Options GR
-                    "off-canvas-wh-options-courier4u": "Επιλογές Δέματος",
-                    "off-canvas-shipping-parcel-courier4u-weight": "Βάρος Δέματος",
-                    "off-canvas-shipping-parcel-depth": "Βάθος Δέματος",
-                    "off-canvas-shipping-parcel-height": "Ύψος Δέματος",
-                    "off-canvas-shipping-parcel-width": "Πλάτος Δέματος",
-                    "offcanvas-nav-customer": "Πελάτης",
-                    "offcanvas-nav-shipping": "Αποστολή",
-                    //Button GR
-                    "off-canvas-save-btn": "Αποθήκευση",
-                    "off-canvas-close-btn": "Ακύρωση",
-                    //Voucher Table GR
-                    "voucher-table-new-order": "Νέες",
-                    "voucher-table-processing-orders": "Σε Επεξεργασία",
-                    "voucher-table-completed-orders": "Ολοκληρωμένες",
-                    "voucher-table-cancelled-orders": "Ακυρωμένες",
-                    "voucher-table-all-orders": "Όλες",
-                    "voucher-table-export-voucher-button": "Εξαγωγή Voucher",
-                    "voucher-table-new-voucher-button": "Νέο Voucher",
-                    //Order Header Section Table GR
-                    "order-table-all-orders": "Όλες",
-                    "order-table-completed-orders": "Ολοκληρωμένες",
-                    "order-table-pending-orders": "Σε Εκκρεμότητα",
-                    "order-table-processing-orders": "Σε Επεξεργασία",
-                    "order-table-new-orders": "Νέες",
-                    "order-table-cancelled-orders": "Ακυρωμένες",
-                    // Order Modal Shipping GR
-                    "order-modal-header-title": "Πληροφορίες Παραγγελίας",
-                    "order-modal-header-billing": "Πληροφορίες Πληρωμής",
-                    "order-modal-billing-name": "Όνομα",
-                    "order-modal-billing-last-name": "Επώνυμο",
-                    "order-modal-billing-address": "Διεύθυνση",
-                    "order-modal-billing-city": "Πόλη",
-                    "order-modal-billing-postal": "Τ.Κ.",
-                    "order-modal-billing-email": "E-mail",
-                    "order-modal-billing-phone": "Τηλέφωνο",
-                    // Order Modal Shipping EN
-                    "order-modal-header-shipping": "Πληροφορίες Αποστολής",
-                    "order-modal-shipping-name": "Όνομα",
-                    "order-modal-shipping-last-name": "Επώνυμο",
-                    "order-modal-shipping-address": "Διεύθυνση",
-                    "order-modal-shipping-address_2": "Διεύθυνση 2",
-                    "order-modal-shipping-city": "Πόλη",
-                    "order-modal-shipping-postal": "Τ.Κ.",
-                    "order-modal-shipping-customer-note": "Σημειώσεις Πελάτη",
-                    "off-canvas-shipping-parclel-cod": "Αντικαταβολή",
-                    // Sorting Table GR
-                    "sorting-table-voucher-id": "VOUCHER ID",
-                    "sorting-table-order-id": "ID ΠΑΡΑΓΓΕΛΙΑΣ",
-                    "sorting-table-order-date": "ΗΜ/ΝΙΑ",
-                    "sorting-table-order-cod": "ΑΝΤΙΚΑΤΑΒΟΛΗ",
-                    "sorting-table-status-header": "ΚΑΤΑΣΤΑΣΗ",
-                    "sorting-table-printed": "ΕΚΤΥΠΩΜΕΝΟ",
-                    "sorting-table-action-header": "ΕΝΕΡΓΕΙΕΣ",
-                    "sorting-no-results-msg": "Δεν υπάρχουν αποτελέσματα",
-                    "sorting-create-voucher": "Δημιουργία Voucher",
-                    // Side nav GR
-                    "side-nav-logout": "Αποσύνδεση",
-                    "side-nav-projects": "Έργα",
-                    "side-nav-dashboard": "Πίνακας Ελέγχου",
-                    "side-nav-default": "Στατιστικά",
-                    "side-nav-customers": "Πελάτες",
-                    "side-nav-products": "Προϊόντα",
-                    "side-nav-orders": "Παραγγελίες",
-                    "side-nav-resources": "Πόροι",
-                    "side-nav-extensions": "Επεκτάσεις",
-                    "side-nav-add-extensions": "Προσθήκη Επεκτάσεων",
-                    "side-nav-settings": "Ρυθμίσεις",
-                    // Dashboard overview EN ( Shared with Order/Customer/Product Overview )
-                    "dashboard-overview_orders": "Παραγγελίες",
-                    "dashboard-overview_products": "Προϊόντα",
-                    "dashboard-overview_customers": "Πελάτες",
-                    "dashboard-overview-total_orders": "Συνολικές Παραγγελίες",
-                    "dashboard-overview_orders": "Παραγγελίες",
-                    "dashboard-overview-week_orders": "Παραγγελίες",
-                    "dashboard-overview-month_orders": "Παραγγελίες",
-                    // Dashboard Shared Tables EN
-                    "dashboard-table-order_id": "ID Παραγγελίας",
-                    "dashboard-table-order-created": "Ημ/νία Δημιουργίας",
-                    "dashboard-table-order_date": "Ημ/νία Παραγγελίας",
-                    "dashboard-table-order_status": "Κατάσταση Παραγγελίας",
-                    "dashboard-table-order_total": "Συνολικό Ποσό",
-                    "dashboard-table-order_action": "Ενέργειες",
-                    "dashboard-table-customer_name": "Όνομα Πελάτη",
-                    "dashboard-table-customer_email": "Email",
-                    "dashboard-table-customer-total_orders": "Συνολικές Παραγγελίες",
-                    "dashboard-table-customer-total_spent": "Συνολικό Ποσό",
-                    "dashboard-table-products_id": "ID Προϊόντος",
-                    "dashboard-table-products_name": "Όνομα Προϊόντος",
-                    "dashboard-table-products_price": "Τιμή Προϊόντος",
-                    "dashboard-table-products_category": "Κατηγορία Προϊόντος",
-                    "dashboard-table-products_type": "Τύπος Προϊόντος",
-                    "dashboard-table-products-total_orders": "Συνολικές Παραγγελίες",
 
 
+            "el": {
+                "translation": {
+                    // Application-wide shared components and text
+                    "common": {
+                        "form_fields": {
+                            "first_name": "Όνομα",
+                            "last_name": "Επώνυμο",
+                            "email": "Email",
+                            "phone": "Τηλέφωνο",
+                            "address": "Διεύθυνση",
+                            "city": "Πόλη",
+                            "postal": "Ταχυδρομικός Κώδικας",
+                            "order_number": "Αριθμός Παραγγελίας"
+                        },
+                        "buttons": {
+                            "save": "Αποθήκευση",
+                            "close": "Κλείσιμο",
+                            "cancel": "Ακύρωση",
+                            "create": "Δημιουργία",
+                            "update": "Ενημέρωση",
+                            "export": "Εξαγωγή",
+                            "submit": "Υποβολή",
+                            "apply": "Εφαρμογή"
+                        },
+                        "status": {
+                            "processing": "Επεξεργασία...",
+                            "loading": "Φόρτωση...",
+                            "completed": "Ολοκληρώθηκε",
+                            "pending": "Εκκρεμεί",
+                            "cancelled": "Ακυρώθηκε"
+                        },
+                        "messages": {
+                            "success": "Η ενέργεια ολοκληρώθηκε με επιτυχία",
+                            "error": "Παρουσιάστηκε σφάλμα",
+                            "no_results": "Δεν βρέθηκαν αποτελέσματα"
+                        },
+                        "validation": {
+                            "required": "Το πεδίο είναι υποχρεωτικό",
+                            "email": "Παρακαλώ εισάγετε έγκυρη διεύθυνση email",
+                            "phone": "Παρακαλώ εισάγετε έγκυρο αριθμό τηλεφώνου",
+                            "postal": "Παρακαλώ εισάγετε έγκυρο ταχυδρομικό κώδικα",
+                            "amount": "Παρακαλώ εισάγετε έγκυρο ποσό"
+                        }
+                    },
 
+                    // Homepage content
+                    "index": {
+                        "title": "Μια Ολοκληρωμένη Λύση, Πιο Γρήγορα από Ποτέ!",
+                        "subtitle": "Με το KonektorX, μπορείτε να συνδέσετε οποιαδήποτε πλατφόρμα e-commerce πιο γρήγορα από ποτέ."
+                    },
 
+                    // Main navigation
+                    "navigation": {
+                        "side_nav": {
+                            "dashboard": "Πίνακας Ελέγχου",
+                            "projects": "Projects",
+                            "customers": "Πελάτες",
+                            "products": "Προϊόντα",
+                            "orders": "Παραγγελίες",
+                            "resources": "Πόροι",
+                            "extensions": "Επεκτάσεις",
+                            "add_extensions": "Προσθήκη Επεκτάσεων",
+                            "settings": "Ρυθμίσεις",
+                            "default": "Προεπιλογή",
+                            "logout": "Αποσύνδεση"
+                        }
+                    },
+
+                    // Dashboard and main components
+                    "dashboard": {
+                        "overview": {
+                            "orders": "Παραγγελίες",
+                            "customers": "Πελάτες",
+                            "products": "Προϊόντα",
+                            "total_orders": "Σύνολο Παραγγελιών",
+                            "day_orders": "Παραγγελίες (24Ω)",
+                            "week_orders": "Παραγγελίες (7Η)",
+                            "month_orders": "Παραγγελίες (30Η)",
+                            "default": "Προεπιλογή",
+                            "quick_stats": "Γρήγορα Στατιστικά",
+                            // Tooltips
+                            "tooltip": {
+                                "day_orders": "Οι συνολικές ολοκληρωμένες παραγγελίες τις τελευταίες 24 ώρες.",
+                                "week_orders": "Οι συνολικές ολοκληρωμένες παραγγελίες τις τελευταίες 7 ημέρες.",
+                                "month_orders": "Οι συνολικές ολοκληρωμένες παραγγελίες τον τελευταίο μήνα."
+                            },
+                            "weekly_balance": {
+                                "title": "Εβδομαδιαίο Υπόλοιπο",
+                                "active_rate": "Ποσοστό Ενεργών Παραγγελιών",
+                                "total_revenue": "Συνολικά Έσοδα"
+                            },
+                            "stats": {
+                                "orders": {
+                                    "title": "Παραγγελίες",
+                                    "icon": "bag-plus"
+                                },
+                                "customers": {
+                                    "title": "Πελάτες",
+                                    "icon": "file-earmark-person"
+                                },
+                                "products": {
+                                    "title": "Προϊόντα",
+                                    "icon": "shop"
+                                }
+                            }
+
+                        },
+
+                        "header": "Πίνακας Ελέγχου",
+                        "customer": {
+                            "header": "Πληροφορίες Πελάτη",
+                            "search": {
+                                "placeholder": "Αναζήτηση σε όλους τους πελάτες",
+                                "aria_label": "Αναζήτηση πελατών"
+                            },
+                            "metrics": {
+                                "total_orders": "Σύνολο Παραγγελιών",
+                                "total_spent": "Σύνολο Δαπανών"
+                            }
+                        },
+                        "product": {
+                            "header": "Προϊόντα",
+                            "fields": {
+                                "name": "Όνομα Προϊόντος",
+                                "quantity": "Ποσότητα",
+                                "price": "Τιμή",
+                                "id": "ID Προϊόντος",
+                                "category": "Κατηγορία",
+                                "type": "Τύπος",
+                                "search_placeholder": "Αναζήτηση σε όλα τα προϊόντα",
+                                "search_aria_label": "Αναζήτηση προϊόντων"
+                            }
+                        },
+                        "order": {
+                            "header": "Λεπτομέρειες Παραγγελίας",
+                            "types": {
+                                "all": "Όλες οι Παραγγελίες",
+                                "new": "Νέες Παραγγελίες",
+                                "completed": "Ολοκληρωμένες Παραγγελίες",
+                                "pending": "Εκκρεμείς Παραγγελίες",
+                                "processing": "Παραγγελίες σε Επεξεργασία",
+                                "cancelled": "Ακυρωμένες Παραγγελίες"
+                            },
+                            "actions": {
+                                "bulk": "Ομαδικές Ενέργειες"
+                            },
+                            "bulk_actions": {
+                                "change_status_completed": "Αλλαγή κατάστασης σε ολοκληρωμένη",
+                                "change_status_pending": "Αλλαγή κατάστασης σε εκκρεμή",
+                                "change_status_processing": "Αλλαγή κατάστασης σε επεξεργασία",
+                                "change_status_cancelled": "Αλλαγή κατάστασης σε ακυρωμένη"
+                            }
+                        },
+                        "tables": {
+                            "order": {
+                                "id": "ID Παραγγελίας",
+                                "order_id": "Αριθμός Παραγγελίας",
+                                "date": "Ημ/νία Παραγγελίας",
+                                "status": "Κατάσταση Παραγγελίας",
+                                "action": "Ενέργεια",
+                                "created": "Ημ/νία Δημιουργίας",
+                                "total": "Συνολικό Ποσό"
+                            },
+                            "customer": {
+                                "id": "ID Πελάτη",
+                                "name": "Όνομα Πελάτη",
+                                "email": "Email",
+                                "phone": "Τηλέφωνο",
+                                "total_spent": "Σύνολο Δαπανών",
+                                "total_orders": "Σύνολο Παραγγελιών"
+                            },
+                            "product": {
+                                "id": "ID Προϊόντος",
+                                "name": "Όνομα Προϊόντος",
+                                "quantity": "Ποσότητα",
+                                "price": "Τιμή",
+                                "category": "Κατηγορία",
+                                "type": "Τύπος Προϊόντος",
+                                "total_orders": "Σύνολο Παραγγελιών"
+                            }
+                        }
+                    },
+
+                    // Modal section
+                    "modal": {
+                        "order": {
+                            "title": "Παραγγελία",
+                            "payment_method": "Μέθοδος Πληρωμής",
+                            "details": {
+                                "header": "Λεπτομέρειες Παραγγελίας",
+                                "payment_info": "Πληροφορίες Πληρωμής",
+                                "products_list": "Λίστα Προϊόντων"
+                            },
+                            "billing": {
+                                "header": "Πληροφορίες Τιμολόγησης",
+                                "address_2": "Διεύθυνση 2"
+                            },
+                            "shipping": {
+                                "header": "Πληροφορίες Αποστολής",
+                                "address_2": "Διεύθυνση 2",
+                                "customer_note": "Σημειώσεις Πελάτη"
+                            },
+                            "products": {
+                                "header": "Προϊόντα",
+                                "table": {
+                                    "name": "Προϊόν",
+                                    "quantity": "Ποσ",
+                                    "price": "Τιμή"
+                                }
+                            },
+                            "buttons": {
+                                "save": "Αποθήκευση Αλλαγών",
+                                "close": "Κλείσιμο",
+                                "saving": "Αποθήκευση..."
+                            }
+                        }
+                    },
+                    // Offcanvas components
+                    "offcanvas": {
+                        "order_processing": {
+                            "header": {
+                                "title": "Επεξεργασία Παραγγελίας #",
+                                "close": "Κλείσιμο"
+                            },
+                            "tabs": {
+                                "customer": "Πελάτης",
+                                "shipping": "Αποστολή"
+                            },
+                            "customer": {
+                                "header": "Στοιχεία Πελάτη",
+                                "products": {
+                                    "header": "Προϊόντα",
+                                    "table": {
+                                        "product": "Προϊόν",
+                                        "quantity": "Ποσότητα",
+                                        "price": "Τιμή"
+                                    }
+                                },
+                                "delivery": {
+                                    "header": "Πληροφορίες Παράδοσης",
+                                    "instructions": "Οδηγίες Παράδοσης"
+                                }
+                            },
+                            "shipping": {
+                                "header": "Πληροφορίες Αποστολής",
+                                "form": {
+                                    "company": "Εταιρεία Μεταφοράς",
+                                    "provider": "Επιλέξτε Πάροχο Κούριερ",
+                                    "order_number": "Αριθμός Παραγγελίας",
+                                    "cod": "Αντικαταβολή (€)"
+                                },
+                                "dimensions": {
+                                    "weight": "Βάρος Πακέτου (kg)",
+                                    "depth": "Βάθος Πακέτου (cm)",
+                                    "width": "Πλάτος Πακέτου (cm)",
+                                    "height": "Ύψος Πακέτου (cm)"
+                                },
+                                "courier_options": {
+                                    "acs": {
+                                        "header": "Επιλογές Παράδοσης (ACS)",
+                                        "standard": "Κανονική Παράδοση",
+                                        "saturday": "Παράδοση Σάββατο",
+                                        "urgent": "Επείγουσα Παράδοση",
+                                        "pickup": "Παραλαβή"
+                                    },
+                                    "courier4u": {
+                                        "header": "Επιλογές Β/Π/Υ/Μ (Courier4U)",
+                                        "delivery_header": "Επιλογές Παράδοσης (Courier4U)",
+                                        "saturday": "Παράδοση Σάββατο",
+                                        "urgent": "Επείγουσα Παράδοση",
+                                        "return": "Παράδοση - Παραλαβή",
+                                        "pickup": "Παραλαβή από το κατάστημα",
+                                        "same_day": "Αυθημερόν",
+                                        "protocol": "Αριθμός Πρωτοκόλλου"
+                                    }
+                                }
+                            },
+                            "actions": {
+                                "create": "Δημιουργία Voucher",
+                                "close": "Κλείσιμο",
+                                "processing": "Επεξεργασία..."
+                            }
+                        }
+                    },
+
+                    // Voucher management
+                    "voucher": {
+                        "header": "Διαχείριση Voucher",
+                        "actions": {
+                            "create": "Δημιουργία Voucher",
+                            "update": "Ενημέρωση Voucher",
+                            "new": "Νέο Voucher",
+                            "export": "Εξαγωγή Voucher"
+                        },
+                        "table": {
+                            "id": "ID Voucher",
+                            "code": "Κωδικός Voucher",
+                            "discount": "Έκπτωση",
+                            "expiry_date": "Ημ/νία Λήξης",
+                            "status": "Κατάσταση"
+                        }
+                    },
+
+                    // Project settings
+                    "project_settings": {
+                        "header": "Ρυθμίσεις Έργου",
+                        "sections": {
+                            "general": "Γενικές Ρυθμίσεις",
+                            "secrets": "Μυστικά",
+                            "webhooks": "Webhooks",
+                            "notifications": "Ειδοποιήσεις",
+                            "payment_subscription": "Πληρωμές & Συνδρομές",
+                            "team": "Διαχείριση Ομάδας"
+                        },
+                        "integrations": {
+                            "courier4u": "Ενοποίηση Courier4U",
+                            "acs_courier": "Ενοποίηση ACS Courier"
+                        }
+                    },
+                    // Greek version
+                    "voucher": {
+                        "types": {
+                            "new": "Νέο",
+                            "processing": "Σε Επεξεργασία",
+                            "completed": "Ολοκληρωμένο",
+                            "cancelled": "Ακυρωμένο",
+                            "all": "Όλα"
+                        },
+                        "actions": {
+                            "bulk": "Μαζική Ενέργεια",
+                            "download_multiple": "Λήψη Πολλαπλών Vouchers",
+                            "new": "Νέο Voucher",
+                            "create": "Δημιουργία Voucher",
+                            "export": "Εξαγωγή"
+                        },
+                        "table": {
+                            "id": "ID Voucher",
+                            "order_id": "ID Παραγγελίας",
+                            "date": "Ημ/νία",
+                            "cod": "Αντικαταβολή",
+                            "status": "Κατάσταση",
+                            "printed": "Εκτυπωμένο",
+                            "action": "Ενέργεια"
+                        },
+                        "messages": {
+                            "no_results": "Δεν βρέθηκαν vouchers",
+                            "error": "Παρουσιάστηκε σφάλμα",
+                            "success": "Η ενέργεια ολοκληρώθηκε με επιτυχία"
+                        }
+                    }
                 }
             }
         }
+
+
     }, function (err, t) {
-        // Initialize the content with the current language
+        if (err) console.error("i18next initialization error:", err);
         updateContent();
     });
 
 // Function to change language
 function changeLanguage(lng) {
-    i18next.changeLanguage(lng, updateContent);
+    i18next.changeLanguage(lng, () => {
+        localStorage.setItem('preferredLanguage', lng);
+        updateContent();
+    });
 }
 
-// Function to update the content  / support placeholders etc.
+// Function to update content and support placeholders
 function updateContent() {
     document.querySelectorAll('[data-i18n]').forEach(function (element) {
-        var dataI18n = element.getAttribute('data-i18n');
+        const dataI18n = element.getAttribute('data-i18n');
+        if (!dataI18n) return;
 
         if (dataI18n.includes('[')) {
-            // This is an attribute translation
-            var parts = dataI18n.match(/\[([^\]]+)\](.+)/);
-            var attribute = parts[1]; // e.g., 'placeholder'
-            var key = parts[2]; // e.g., 'off-canvas-special-instructions'
-            element.setAttribute(attribute, i18next.t(key.trim()));
+            const parts = dataI18n.match(/\[([^\]]+)\](.+)/);
+            if (parts && parts[1] && parts[2]) {
+                const attribute = parts[1];
+                const key = parts[2].trim();
+                element.setAttribute(attribute, i18next.t(key) || '');
+            }
         } else {
-            // This is a text content translation
-            var key = dataI18n;
-            element.textContent = i18next.t(key);
+            element.textContent = i18next.t(dataI18n) || '';
         }
     });
 }
 
-
-// Listen to HTMX event when content is dynamically updated
-document.body.addEventListener('htmx:afterSettle', function (evt) {
-    // Update i18n content in the dynamically updated section
+// Listen for HTMX dynamic updates and reapply translations
+document.body.addEventListener('htmx:afterSettle', () => {
     updateContent();
 });

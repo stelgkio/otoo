@@ -16,7 +16,7 @@ templ OrderOverView(projectId, totalCount, count24h, count7d, count1m string) {
 			<div class="mb-6 mb-xl-10">
 				<div class="row g-3 align-items-center">
 					<div class="col">
-						<h1 class="ls-tight" data-i18n="dashboard-overview_orders">Orders</h1>
+						<h1 class="ls-tight" data-i18n="dashboard.overview.orders">Orders</h1>
 					</div>
 					<div class="col">
 						<div class="hstack gap-2 justify-content-end">
@@ -29,7 +29,7 @@ templ OrderOverView(projectId, totalCount, count24h, count7d, count1m string) {
 							>
 								<span
 									class="pe-2"
-								></span><span data-i18n="dashboard-overview_products">Products</span>
+								></span><span data-i18n="dashboard.overview.products">Products</span>
 							</button>
 							<button
 								hx-get={ fmt.Sprintf("/dashboard/customer/%s", projectId) }
@@ -40,7 +40,7 @@ templ OrderOverView(projectId, totalCount, count24h, count7d, count1m string) {
 							>
 								<span
 									class="pe-2"
-								></span><span data-i18n="dashboard-overview_customers">Customers</span>
+								></span><span data-i18n="dashboard.overview.customers">Customers</span>
 							</button>
 						</div>
 					</div>
@@ -52,7 +52,7 @@ templ OrderOverView(projectId, totalCount, count24h, count7d, count1m string) {
 						<div class="card border-primary-hover">
 							<div class="card-body d-flex gap-3">
 								<div class="">
-									<span class="d-block text-muted mb-1" data-i18n="dashboard-overview-total_orders">Total Orders</span>
+									<span class="d-block text-muted mb-1" data-i18n="dashboard.overview.total_orders">Total Orders</span>
 									<span
 										class="d-block text-lg fw-bold text-heading"
 									>{ totalCount } </span>
@@ -64,7 +64,7 @@ templ OrderOverView(projectId, totalCount, count24h, count7d, count1m string) {
 						<div class="card">
 							<div class="card-body">
 								<div class="d-flex gap-3 mb-1">
-									<span class="text-muted" data-i18n="dashboard-overview_orders">Orders</span>
+									<span class="text-muted" data-i18n="dashboard.overview.day_orders">Orders</span>
 									<span
 										class="badge text-bg-light rounded"
 									>24H</span>
@@ -75,7 +75,7 @@ templ OrderOverView(projectId, totalCount, count24h, count7d, count1m string) {
 										data-bs-trigger="hover focus"
 										data-bs-placement="right"
 										data-bs-html="true"
-										data-bs-content="The total completed order the last 24 hours."
+										data-bs-content="dashboard.overview.tooltip.day_orders"
 										role="button"
 									><i class="bi bi-info-circle"></i></span>
 								</div>
@@ -94,7 +94,7 @@ templ OrderOverView(projectId, totalCount, count24h, count7d, count1m string) {
 						<div class="card">
 							<div class="card-body">
 								<div class="d-flex gap-3 mb-1">
-									<span class="text-muted" data-i18n="dashboard-overview-week_orders">Orders</span>
+									<span class="text-muted" data-i18n="dashboard.overview.week_orders">Orders</span>
 									<span
 										class="badge text-bg-light rounded"
 									>7D</span>
@@ -105,7 +105,7 @@ templ OrderOverView(projectId, totalCount, count24h, count7d, count1m string) {
 										data-bs-trigger="hover focus"
 										data-bs-placement="right"
 										data-bs-html="true"
-										data-bs-content="The total completed order the last 7 days."
+										data-bs-content="dashboard.overview.tooltip.week_orders"
 										role="button"
 									><i class="bi bi-info-circle"></i></span>
 								</div>
@@ -124,7 +124,7 @@ templ OrderOverView(projectId, totalCount, count24h, count7d, count1m string) {
 						<div class="card">
 							<div class="card-body">
 								<div class="d-flex gap-3 mb-1">
-									<span class="text-muted" data-i18n="dashboard-overview-month_orders">Orders</span>
+									<span class="text-muted" data-i18n="dashboard.overview.month_orders">Orders</span>
 									<span
 										class="badge text-bg-light rounded"
 									>30D</span>
@@ -135,7 +135,7 @@ templ OrderOverView(projectId, totalCount, count24h, count7d, count1m string) {
 										data-bs-trigger="hover focus"
 										data-bs-placement="right"
 										data-bs-html="true"
-										data-bs-content="The total completed order the last month."
+										data-bs-content="dashboard.overview.tooltip.month_orders"
 										role="button"
 									><i class="bi bi-info-circle"></i></span>
 								</div>

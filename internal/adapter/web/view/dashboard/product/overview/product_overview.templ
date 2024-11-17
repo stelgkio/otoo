@@ -14,7 +14,7 @@ templ ProductOverview(projectId string) {
 			<div class="mb-6 mb-xl-10">
 				<div class="row g-3 align-items-center">
 					<div class="col">
-						<h1 class="ls-tight" data-i18n="dashboard-overview_products">Products</h1>
+						<h1 class="ls-tight" data-i18n="dashboard.overview.products">Products</h1>
 					</div>
 					<div class="col">
 						<div class="hstack gap-2 justify-content-end">
@@ -27,7 +27,7 @@ templ ProductOverview(projectId string) {
 								data-bs-target="#depositLiquidityModal"
 								data-bs-toggle="modal"
 							>
-								<span class="pe-2"></span><span data-i18n="dashboard-overview_orders">Orders</span>
+								<span class="pe-2"></span><span data-i18n="dashboard.overview.orders">Orders</span>
 							</button>
 							<button
 								hx-get={ fmt.Sprintf("/dashboard/customer/%s", projectId) }
@@ -38,7 +38,7 @@ templ ProductOverview(projectId string) {
 								data-bs-target="#depositLiquidityModal"
 								data-bs-toggle="modal"
 							>
-								<span class="pe-2"></span><span data-i18n="dashboard-overview_customers">Customers</span>
+								<span class="pe-2"></span><span data-i18n="dashboard.overview.customers">Customers</span>
 							</button>
 						</div>
 					</div>

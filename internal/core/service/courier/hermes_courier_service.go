@@ -85,7 +85,7 @@ func (vs *HermesService) CreateVoucher(ctx echo.Context, courier4u *domain.Couri
 		return nil, err
 	}
 	// Print the response body
-	fmt.Println("Response:", string(body))
+
 	// Decode the response JSON into the VoucherResponse struct
 	var voucherResponse *courier_domain.VoucherResponse
 	err = json.Unmarshal(body, &voucherResponse)
@@ -94,7 +94,7 @@ func (vs *HermesService) CreateVoucher(ctx echo.Context, courier4u *domain.Couri
 		return nil, err
 	}
 	// Print the structured response
-	fmt.Printf("Response Struct: %+v\n", voucherResponse)
+
 	return voucherResponse, nil
 }
 
@@ -306,7 +306,7 @@ func (vs *HermesService) UpdateVoucher(ctx echo.Context, courier4u *domain.Couri
 		return nil, err
 	}
 	// Print the response body
-	fmt.Println("Response:", string(body))
+
 	// Decode the response JSON into the VoucherResponse struct
 	var voucherResponse *courier_domain.VoucherResponse
 	err = json.Unmarshal(body, &voucherResponse)
@@ -315,7 +315,7 @@ func (vs *HermesService) UpdateVoucher(ctx echo.Context, courier4u *domain.Couri
 		return nil, err
 	}
 	// Print the structured response
-	fmt.Printf("Response Struct: %+v\n", voucherResponse)
+
 	return voucherResponse, nil
 }
 
@@ -369,7 +369,7 @@ func (vs *HermesService) TrackingHermerVoucherStatus(ctx echo.Context, courier4u
 		return nil, err
 	}
 	// Print the response body
-	fmt.Println("Response:", string(body))
+
 	// Decode the response JSON into the VoucherResponse struct
 	var trackingResponse *courier_domain.TrackingResponse
 	err = json.Unmarshal(body, &trackingResponse)
@@ -378,6 +378,6 @@ func (vs *HermesService) TrackingHermerVoucherStatus(ctx echo.Context, courier4u
 		return nil, err
 	}
 	// Print the structured response
-	fmt.Printf("Response Struct: %+v\n", trackingResponse)
+
 	return trackingResponse, nil
 }

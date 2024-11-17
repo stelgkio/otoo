@@ -35,6 +35,12 @@ func InitCronScheduler() *cron.Cron {
 		return c
 	}
 
+	// Add a cron job that runs every 15 minutes
+	_, err = c.AddFunc("*/15 * * * *", RunHermerTrackingCronJob)
+	if err != nil {
+		fmt.Println("Error scheduling RunHermerTrackingCronJob:", err)
+		return c
+	}
 	// Start the cron scheduler
 	c.Start()
 	fmt.Println("Cron scheduler initialized")
@@ -135,6 +141,23 @@ func RunOrderWeeklyBalanceJob() {
 func RunOrderMonthlyCountJob() {
 	domain := os.Getenv("SITE_URL")
 	resp, err := http.Get(fmt.Sprintf("%s/RunOrderMonthlyCountJob", domain))
+	if err != nil {
+		fmt.Println("Error while calling the API:", err)
+		return
+	}
+	defer resp.Body.Close()
+	_, err = io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("Error reading the response body:", err)
+		return
+	}
+}
+
+// RunHermerTrackingCronJob is the function to be executed by the cron job
+func RunHermerTrackingCronJob() {
+	domain := os.Getenv("SITE_URL")
+	key := os.Getenv("EXTENSION_KEY")
+	resp, err := http.Get(fmt.Sprintf("%s/RunHermerTrackingCronJob/%s", domain, key))
 	if err != nil {
 		fmt.Println("Error while calling the API:", err)
 		return

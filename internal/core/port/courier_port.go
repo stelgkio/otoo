@@ -19,3 +19,5 @@ type HermesService interface {
 	// TrackingHermerVoucherStatus
 	TrackingHermerVoucherStatus(ctx echo.Context, courier4u *domain.Courier4uExtension, redcourier *domain.RedCourierExtension, voucherId int64) (*domain_courier.TrackingResponse, error)
 }
+
+type CourierTrackingCron interface{}

@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -34,6 +35,7 @@ func NewRouter(
 	profileHandler *h.ProfileHandler,
 	orderAnalyticsCron *cr.OrderAnalyticsCron,
 	productBestSellerCron *cr.ProductBestSellerCron,
+	courierTrackingCron *cr.CourierTrackingCron,
 
 ) (*Router, error) {
 
@@ -74,6 +76,18 @@ func NewRouter(
 	})
 
 	e.GET("/RunCustomerBestBuyerJob", func(c echo.Context) error {
+		return c.JSON(http.StatusAccepted, "OK")
+	})
+	e.GET("/RunHermerTrackingCronJob/:key", func(c echo.Context) error {
+		data := c.Param("key")
+		exkey := os.Getenv("EXTENSION_KEY")
+		if data != exkey {
+			return c.JSON(http.StatusInternalServerError, "internal server error")
+		}
+		err := courierTrackingCron.RunCourier4uTrackingCron()
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
 		return c.JSON(http.StatusAccepted, "OK")
 	})
 	e.POST("/contact", homeHandler.ContactForm)

@@ -17,15 +17,17 @@ import (
 
 // VoucherService defines the methods for interacting with the Voucher service
 type VoucherService struct {
-	repo      port.VoucherRepository
-	hermesSvc port.HermesService
+	repo            port.VoucherRepository
+	hermesSvc       port.HermesService
+	woocommerceRepo port.WoocommerceRepository
 }
 
 // NewVoucherService creates a new voucher service instance
-func NewVoucherService(repo port.VoucherRepository, hermesSvc port.HermesService) *VoucherService {
+func NewVoucherService(repo port.VoucherRepository, hermesSvc port.HermesService, woocommerceRepo port.WoocommerceRepository) *VoucherService {
 	return &VoucherService{
 		repo,
 		hermesSvc,
+		woocommerceRepo,
 	}
 }
 
@@ -237,6 +239,7 @@ func (vs *VoucherService) FindVoucherByProjectIDAsync(projectID string, size, pa
 	}
 }
 
+// UpdateVoucherNewDetails retrieves a Voucher by its ID asynchronously
 func (vs *VoucherService) UpdateVoucherNewDetails(ctx echo.Context, voucher *domain.Voucher, projectID string, courier4u *d.Courier4uExtension, redcourier *d.RedCourierExtension) (*domain.Voucher, error) {
 	if !voucher.HasError {
 		vID, err := strconv.ParseInt(voucher.VoucherID, 10, 64)
@@ -253,4 +256,50 @@ func (vs *VoucherService) UpdateVoucherNewDetails(ctx echo.Context, voucher *dom
 	}
 
 	return vs.repo.UpdateVoucherNewDetails(ctx, voucher, projectID)
+}
+
+// UpdateVoucherTracking updates a Voucher
+func (vs *VoucherService) UpdateVoucherTracking(ctx echo.Context, voucher *domain.Voucher, projectID string, client *woocommerce.Client) (*domain.Voucher, error) {
+
+	order, err := vs.woocommerceRepo.GetOrderByID(projectID, *voucher.OrderID)
+	if err != nil {
+
+	}
+
+	for _, lineItem := range voucher.HermesTrackingStages.Data {
+		if lineItem.Status == "Παραδόθηκε" {
+			order.Order.Status = o.OrderStatusCompleted.String()
+			order.Status = o.OrderStatusCompleted
+			voucher.UpdateVoucherStatus(domain.VoucherStatusCompleted)
+			if order != nil {
+				go func() {
+					_, err = client.Order.Update(&order.Order)
+				}()
+
+			}
+		}
+		if lineItem.Status == "Επιστροφή στον αποστολέα" {
+			order.Order.Status = o.OrderStatusCancelled.String()
+			order.Status = o.OrderStatusCancelled
+			voucher.UpdateVoucherStatus(domain.VoucherStatusCancelled)
+			if order != nil {
+				go func() {
+					_, err = client.Order.Update(&order.Order)
+				}()
+			}
+		}
+		if lineItem.Status == "Ακύρωση Αποστολής" {
+			order.Order.Status = o.OrderStatusCancelled.String()
+			order.Status = o.OrderStatusCancelled
+			voucher.UpdateVoucherStatus(domain.VoucherStatusCancelled)
+			if order != nil {
+				go func() {
+					_, err = client.Order.Update(&order.Order)
+				}()
+			}
+		}
+
+	}
+
+	return vs.repo.UpdateVoucher(ctx, voucher, projectID, voucher.VoucherID, *voucher.OrderID)
 }

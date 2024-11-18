@@ -353,6 +353,67 @@ i18next
                             "error": "An error occurred",
                             "success": "Operation completed successfully"
                         }
+                    },
+                    "extensions": {
+                        "header": "Extensions",
+                        "pricing": {
+                            "per_month": "€/mo",
+                            "per_year": "€/yr"
+                        },
+                        "descriptions": {
+                            "acs": "Streamline your shipping process with ACS Courier integration. Automate order fulfillment, track shipments in real-time, and provide excellent customer service.",
+                            "courier4u": "Optimize your delivery operations with Courier4U. Manage multiple shipments, automate tracking updates, and enhance your logistics efficiency.",
+                            "wallet": "Take control of your finances with comprehensive expense tracking, automated tax calculations, and integrated campaign management.",
+                            "data_sync": "Keep your business data synchronized across all platforms. Seamlessly integrate customer information, product data, and analytics in real-time.",
+                            "team": "Expand your team's capabilities with collaborative tools, role-based access control, and streamlined workflow management."
+                        },
+                        "couriers": {
+                            "acs": {
+                                "title": "ACS Courier Integration",
+                                "cta": "Buy Extension",
+                                "features": {
+                                    "status_updates": "Automatic order status updates",
+                                    "vouchers": "Download shipping vouchers",
+                                    "notifications": "Send customer notifications via email"
+                                }
+                            },
+                            "courier4u": {
+                                "title": "Courier4U Integration",
+                                "cta": "Buy Extension",
+                                "features": {
+                                    "status_updates": "Automatic order status updates",
+                                    "vouchers": "Download shipping vouchers",
+                                    "notifications": "Send customer notifications via email"
+                                }
+                            }
+                        },
+                        "wallet": {
+                            "title": "Wallet & Expenses",
+                            "cta": "Buy Extension",
+                            "features": {
+                                "facebook": "Integrate with Facebook campaigns",
+                                "courier_charges": "Monitor courier charges",
+                                "tax": "Automatic tax calculations",
+                                "support": "Priority support for KonektorX users"
+                            }
+                        },
+                        "data_sync": {
+                            "title": "Data Synchronizer",
+                            "cta": "Buy Extension",
+                            "features": {
+                                "customer_data": "Retrieve customer data seamlessly",
+                                "product_sync": "Sync product information and variations",
+                                "order_history": "Access full order history",
+                                "analytics": "Build custom analytics and reports"
+                            }
+                        },
+                        "team": {
+                            "title": "Team Management",
+                            "cta": "Buy Extension",
+                            "features": {
+                                "unlimited": "Add as many users you want to your project"
+                            }
+                        }
                     }
 
                 }
@@ -434,9 +495,9 @@ i18next
                             "customers": "Πελάτες",
                             "products": "Προϊόντα",
                             "total_orders": "Σύνολο Παραγγελιών",
-                            "day_orders": "Παραγγελίες (24Ω)",
-                            "week_orders": "Παραγγελίες (7Η)",
-                            "month_orders": "Παραγγελίες (30Η)",
+                            "day_orders": "Παραγγελίες",
+                            "week_orders": "Παραγγελίες",
+                            "month_orders": "Παραγγελίες",
                             "default": "Προεπιλογή",
                             "quick_stats": "Γρήγορα Στατιστικά",
                             // Tooltips
@@ -495,12 +556,12 @@ i18next
                         "order": {
                             "header": "Λεπτομέρειες Παραγγελίας",
                             "types": {
-                                "all": "Όλες οι Παραγγελίες",
-                                "new": "Νέες Παραγγελίες",
-                                "completed": "Ολοκληρωμένες Παραγγελίες",
-                                "pending": "Εκκρεμείς Παραγγελίες",
-                                "processing": "Παραγγελίες σε Επεξεργασία",
-                                "cancelled": "Ακυρωμένες Παραγγελίες"
+                                "all": "Όλες",
+                                "new": "Νέες",
+                                "completed": "Ολοκληρωμένες",
+                                "pending": "Εκκρεμείς",
+                                "processing": "Επεξεργασία",
+                                "cancelled": "Ακυρωμένες"
                             },
                             "actions": {
                                 "bulk": "Ομαδικές Ενέργειες"
@@ -644,7 +705,7 @@ i18next
                         }
                     },
 
-                    // Voucher management
+                    // Voucher Μanagement
                     "voucher": {
                         "header": "Διαχείριση Voucher",
                         "actions": {
@@ -662,7 +723,7 @@ i18next
                         }
                     },
 
-                    // Project settings
+                    // Project Settings
                     "project_settings": {
                         "header": "Ρυθμίσεις Έργου",
                         "sections": {
@@ -674,8 +735,8 @@ i18next
                             "team": "Διαχείριση Ομάδας"
                         },
                         "integrations": {
-                            "courier4u": "Ενοποίηση Courier4U",
-                            "acs_courier": "Ενοποίηση ACS Courier"
+                            "courier4u": "Courier4U Extension",
+                            "acs_courier": "ACS Courier Extension"
                         }
                     },
                     // Greek version
@@ -707,6 +768,68 @@ i18next
                             "no_results": "Δεν βρέθηκαν vouchers",
                             "error": "Παρουσιάστηκε σφάλμα",
                             "success": "Η ενέργεια ολοκληρώθηκε με επιτυχία"
+                        }
+                    },
+                    // Greek translations
+                    "extensions": {
+                        "header": "Επεκτάσεις",
+                        "pricing": {
+                            "per_month": "€/μήνα",
+                            "per_year": "€/έτος"
+                        },
+                        "descriptions": {
+                            "acs": "Απλοποιήστε τη διαδικασία αποστολής με την ενσωμάτωση ACS Courier. Αυτοματοποιήστε την εκπλήρωση παραγγελιών, παρακολουθήστε τις αποστολές σε πραγματικό χρόνο και παρέχετε εξαιρετική εξυπηρέτηση πελατών.",
+                            "courier4u": "Βελτιστοποιήστε τις λειτουργίες παράδοσης με το Courier4U. Διαχειριστείτε πολλαπλές αποστολές, αυτοματοποιήστε τις ενημερώσεις παρακολούθησης και βελτιώστε την αποδοτικότητα των logistics σας.",
+                            "wallet": "Αναλάβετε τον έλεγχο των οικονομικών σας με ολοκληρωμένη παρακολούθηση εξόδων, αυτοματοποιημένους υπολογισμούς φόρων και ολοκληρωμένη διαχείριση καμπάνιας.",
+                            "data_sync": "Διατηρήστε τα επιχειρηματικά σας δεδομένα συγχρονισμένα σε όλες τις πλατφόρμες. Ενσωματώστε απρόσκοπτα πληροφορίες πελατών, δεδομένα προϊόντων και αναλύσεις σε πραγματικό χρόνο.",
+                            "team": "Επεκτείνετε τις δυνατότητες της ομάδας σας με εργαλεία συνεργασίας, έλεγχο πρόσβασης βάσει ρόλων και εξορθολογισμένη ροή εργασίας."
+                        },
+                        "couriers": {
+                            "acs": {
+                                "title": "ACS Courier",
+                                "cta": "Αγορά Extension",
+                                "features": {
+                                    "status_updates": "Αυτόματες ενημερώσεις κατάστασης παραγγελίας",
+                                    "vouchers": "Λήψη vouchers αποστολής",
+                                    "notifications": "Αποστολή ειδοποιήσεων στον πελάτη μέσω email"
+                                }
+                            },
+                            "courier4u": {
+                                "title": "Courier4U",
+                                "cta": "Αγορά Extension",
+                                "features": {
+                                    "status_updates": "Αυτόματες ενημερώσεις κατάστασης παραγγελίας",
+                                    "vouchers": "Λήψη vouchers αποστολής",
+                                    "notifications": "Αποστολή ειδοποιήσεων στον πελάτη μέσω email"
+                                }
+                            }
+                        },
+                        "wallet": {
+                            "title": "Πορτοφόλι & Έξοδα",
+                            "cta": "Αγορά Extension",
+                            "features": {
+                                "facebook": "Ενσωμάτωση με καμπάνιες Facebook",
+                                "courier_charges": "Παρακολούθηση χρεώσεων courier",
+                                "tax": "Αυτόματοι υπολογισμοί φόρων",
+                                "support": "Προτεραιότητα υποστήριξης για χρήστες KonektorX"
+                            }
+                        },
+                        "data_sync": {
+                            "title": "Συγχρονισμός Δεδομένων",
+                            "cta": "Αγορά Extension",
+                            "features": {
+                                "customer_data": "Λήψη δεδομένων πελατών χωρίς διακοπή",
+                                "product_sync": "Συγχρονισμός πληροφοριών προϊόντων και παραλλαγών",
+                                "order_history": "Πρόσβαση σε πλήρες ιστορικό παραγγελιών",
+                                "analytics": "Δημιουργία προσαρμοσμένων αναλύσεων και αναφορών"
+                            }
+                        },
+                        "team": {
+                            "title": "Διαχείριση Ομάδας",
+                            "cta": "Προσθέστε Μέλος Ομάδας στο project σας!",
+                            "features": {
+                                "unlimited": "Προσθέστε όσους χρήστες θέλετε στο project σας"
+                            }
                         }
                     }
                 }

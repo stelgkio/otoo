@@ -339,10 +339,10 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 							</div>
 						</div>
 						<!-- Section for Courier4U Options (Conditional) -->
-						<div class="card mb-3 shadow-sm" x-show="selectedCourier === 'courier4u'">
+						<div class="card mb-3 shadow-sm" x-show="selectedCourier === 'courier4u' || selectedCourier === 'redcourier'">
 							<div class="card-header">
 								<h6 class="mb-0" data-i18n="off-canvas-wh-options-courier4u">
-									<i class="bi bi-box-arrow-in-down"></i> W/D/W/H Options (Courier4U)
+									<i class="bi bi-box-arrow-in-down"></i>
 								</h6>
 							</div>
 							<div class="card-body">
@@ -421,7 +421,7 @@ templ CreateVoucher(extensions []*domain.ProjectExtension, projectId string) {
 								</div>
 							</div>
 						</div>
-						<div class="card mb-3 shadow-sm" x-show="selectedCourier === 'courier4u'">
+						<div class="card mb-3 shadow-sm" x-show="selectedCourier === 'courier4u' || selectedCourier === 'redcourier'">
 							<div class="card-header">
 								<h6 class="mb-0" data-i18n="off-canvas-delivery-options-courier4u">
 									<i class="bi bi-box-arrow-in-down"></i> Delivery Options (Courier4U)

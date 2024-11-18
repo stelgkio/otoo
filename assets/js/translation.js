@@ -101,7 +101,7 @@ i18next
                                 "active_rate": "Active Order Rate",
                                 "total_revenue": "Total Revenue"
                             },
-                            // Stats
+                            // Statss
                             "stats": {
                                 "orders": {
                                     "title": "Orders",

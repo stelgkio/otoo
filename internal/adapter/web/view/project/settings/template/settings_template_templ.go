@@ -12,6 +12,7 @@ import (
 	t "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/template"
 	ac "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/acs-courier"
 	cu "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/courier4u"
+	ru "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/redcourier"
 	s "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/settings_general"
 	tm "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/team"
 	"github.com/stelgkio/otoo/internal/core/domain"
@@ -186,6 +187,50 @@ func Courier4uTemplate(user *domain.User, projectName string, projectId string, 
 			return templ_7745c5c3_Err
 		})
 		templ_7745c5c3_Err = t.DashboardTemplate(user, projectName, projectId).Render(templ.WithChildren(ctx, templ_7745c5c3_Var8), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func RedCourierTemplate(user *domain.User, projectName string, projectId string, project *domain.Project, projectExtensions []*domain.ProjectExtension, errors map[string](string), values *domain.RedCourierExtension) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var9 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var9 == nil {
+			templ_7745c5c3_Var9 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Var10 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+			if !templ_7745c5c3_IsBuffer {
+				defer func() {
+					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err == nil {
+						templ_7745c5c3_Err = templ_7745c5c3_BufErr
+					}
+				}()
+			}
+			ctx = templ.InitializeContext(ctx)
+			templ_7745c5c3_Err = ru.SettingsRedCourier(projectId, projectExtensions, user, errors, values).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			return templ_7745c5c3_Err
+		})
+		templ_7745c5c3_Err = t.DashboardTemplate(user, projectName, projectId).Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

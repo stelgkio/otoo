@@ -190,6 +190,11 @@ func NewRouter(
 		extensiongroup.POST("/courier4u/settings/:projectId", dashboardHandler.Courier4uSettingsFormPost)
 		extensiongroup.POST("/courier4u/deactivate/:projectId", dashboardHandler.Courier4uDeActivate)
 
+		extensiongroup.GET("/redcourier/:projectId", dashboardHandler.RedCourier)
+		extensiongroup.POST("/redcourier/:projectId", dashboardHandler.RedCourierFormPost)
+		extensiongroup.POST("/redcourier/settings/:projectId", dashboardHandler.RedCourierettingsFormPost)
+		extensiongroup.POST("/redcourier/deactivate/:projectId", dashboardHandler.RedCourierDeActivate)
+
 		extensiongroup.GET("/wallet-expences/:projectId", dashboardHandler.WalletExpenses)
 
 		extensiongroup.GET("/data-synchronizer/:projectId", dashboardHandler.DataSynchronizer)
@@ -255,6 +260,7 @@ func NewRouter(
 
 			settingsroup.GET("/asc-courier/:projectId", projectHandler.ProjectSettingsAcsCourier)
 			settingsroup.GET("/courier4u/:projectId", projectHandler.ProjectSettingsCourier4u)
+			settingsroup.GET("/redcourier/:projectId", projectHandler.ProjectSettingsRedCourier)
 
 			settingsroup.GET("/payment/:projectId", projectHandler.ProjectSettingsPayment)
 		}

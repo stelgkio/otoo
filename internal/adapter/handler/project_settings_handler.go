@@ -10,6 +10,7 @@ import (
 	pn "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/notification"
 	pm "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/payment"
 	ps "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/project_secrets"
+	ru "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/redcourier"
 	wp "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/settings_general"
 	tm "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/team"
 	st "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/template"
@@ -337,4 +338,45 @@ func (ph *ProjectHandler) ProjectSettingsCourier4u(ctx echo.Context) error {
 		return r.Render(ctx, cu.SettingsCourier4u(projectID, projectExtensions, user, make(map[string]string), courier4u))
 	}
 	return r.Render(ctx, st.Courier4uTemplate(user, project.Name, projectID, project, projectExtensions, make(map[string]string), courier4u))
+}
+
+// ProjectSettingsCourier4u GET /project/settings/team/:projectId
+func (ph *ProjectHandler) ProjectSettingsRedCourier(ctx echo.Context) error {
+	projectID := ctx.Param("projectId")
+	userID, err := auth.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
+	user, err := ph.userSvc.GetUserById(ctx, userID)
+	if err != nil {
+		return err
+	}
+	project, err := ph.svc.GetProjectByID(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	projectExtensions, err := ph.extensionSvc.GetAllProjectExtensions(ctx, projectID)
+	if err != nil {
+		return err
+	}
+	extension := util.Filter(projectExtensions, func(e *domain.ProjectExtension) bool {
+		return e.Code == domain.Courier4u
+	})
+	courier4u := new(domain.RedCourierExtension)
+	if len(extension) > 0 {
+
+		courier4u, err = ph.extensionSvc.GetRedCourierProjectExtensionByID(ctx, extension[0].ExtensionID, projectID)
+		if err != nil {
+			return err
+		}
+		if courier4u == nil {
+			courier4u = new(domain.RedCourierExtension)
+		}
+
+	}
+
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return r.Render(ctx, ru.SettingsRedCourier(projectID, projectExtensions, user, make(map[string]string), courier4u))
+	}
+	return r.Render(ctx, st.RedCourierTemplate(user, project.Name, projectID, project, projectExtensions, make(map[string]string), courier4u))
 }

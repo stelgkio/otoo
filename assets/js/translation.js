@@ -414,6 +414,108 @@ i18next
                                 "unlimited": "Add as many users you want to your project"
                             }
                         }
+                    },
+                    "settings": {
+                        "header": "Project Settings",
+                        "navigation": {
+                            "general": "General",
+                            "secrets": "Secrets",
+                            "webhooks": "Webhooks",
+                            "notifications": "Notifications",
+                            "payment": "Payment & Subscription",
+                            "team": "Team"
+                        },
+                        "general": {
+                            "title": "General",
+                            "description": "Update your project data",
+                            "fields": {
+                                "name": "Name",
+                                "description": "Description",
+                                "domain": "Domain",
+                                "domain_tooltip": "Contact our support team to change your domain."
+                            },
+                            "buttons": {
+                                "update": "Update"
+                            },
+                            "delete": {
+                                "title": "Delete Project",
+                                "warning": "By deleting this project you are losing all of your data!",
+                                "extension_warning": "Make sure you have deactivate all of your extensions!",
+                                "confirmation": "Are you sure you want to delete this project?",
+                                "button": "Delete"
+                            }
+                        },
+                        "secrets": {
+                            "title": "Project Secrets",
+                            "reset": {
+                                "title": "Secrets Reset",
+                                "description": "By updating your project secrets you will reset all the secrets for this project.",
+                                "consumer_key": "ConsumerKey",
+                                "consumer_secret": "ConsumerSecret",
+                                "error": "Unable to connect to the server, check your secrets and try again."
+                            }
+                        },
+                        "couriers": {
+                            "acs": {
+                                "title": "ACS Courier",
+                                "description": "DeActivate extension and remove subscription",
+                                "fields": {
+                                    "user_id": "User Id",
+                                    "user_password": "User Password",
+                                    "company_id": "Company Id",
+                                    "company_password": "Company Password",
+                                    "billing_code": "Billing Code",
+                                    "acs_api_key": "AcsAPIKey"
+                                },
+                                "printer": {
+                                    "label": "Select Printer Type",
+                                    "laser": "Laser",
+                                    "thermal": "Thermal"
+                                }
+                            },
+                            "courier4u": {
+                                "title": "Courier4u",
+                                "description": "DeActivate extension and remove subscription",
+                                "fields": {
+                                    "api_key": "APIKey"
+                                }
+                            }
+                        },
+                        "team": {
+                            "title": "Team",
+                            "description": "The new user can not add new extension to project",
+                            "add_member": {
+                                "title": "Add team member",
+                                "fields": {
+                                    "email": "Email",
+                                    "name": "Name",
+                                    "last_name": "Last Name",
+                                    "password": "Password",
+                                    "confirm_password": "Confirmation Password",
+                                    "role": {
+                                        "label": "Role",
+                                        "user": "User",
+                                        "admin": "Admin"
+                                    },
+                                    "notifications": "Receive Notification"
+                                }
+                            },
+                            "members": "Members"
+                        },
+                        "payment": {
+                            "title": "Payments",
+                            "table": {
+                                "extension_name": "Extension Name",
+                                "amount": "Amount",
+                                "status": "Status",
+                                "created": "Created",
+                                "status_values": {
+                                    "paid": "Paid",
+                                    "failed": "Failed",
+                                    "pending": "Pending"
+                                }
+                            }
+                        }
                     }
 
                 }
@@ -829,6 +931,108 @@ i18next
                             "cta": "Προσθέστε Μέλος Ομάδας στο project σας!",
                             "features": {
                                 "unlimited": "Προσθέστε όσους χρήστες θέλετε στο project σας"
+                            }
+                        }
+                    },
+                    "settings": {
+                        "header": "Ρυθμίσεις Project",
+                        "navigation": {
+                            "general": "Γενικά",
+                            "secrets": "Μυστικά",
+                            "webhooks": "Webhooks",
+                            "notifications": "Ειδοποιήσεις",
+                            "payment": "Πληρωμές & Συνδρομές",
+                            "team": "Ομάδα"
+                        },
+                        "general": {
+                            "title": "Γενικά",
+                            "description": "Ενημέρωση των δεδομένων του project",
+                            "fields": {
+                                "name": "Όνομα",
+                                "description": "Περιγραφή",
+                                "domain": "Domain",
+                                "domain_tooltip": "Επικοινωνήστε με την ομάδα υποστήριξης για να αλλάξετε το domain σας."
+                            },
+                            "buttons": {
+                                "update": "Ενημέρωση"
+                            },
+                            "delete": {
+                                "title": "Διαγραφή Project",
+                                "warning": "Διαγράφοντας αυτό το project χάνετε όλα σας τα δεδομένα!",
+                                "extension_warning": "Βεβαιωθείτε ότι έχετε απενεργοποιήσει όλες τις επεκτάσεις!",
+                                "confirmation": "Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το project;",
+                                "button": "Διαγραφή"
+                            }
+                        },
+                        "secrets": {
+                            "title": "Μυστικά Project",
+                            "reset": {
+                                "title": "Επαναφορά Μυστικών",
+                                "description": "Ενημερώνοντας τα μυστικά του project θα γίνει επαναφορά όλων των μυστικών.",
+                                "consumer_key": "Consumer Key",
+                                "consumer_secret": "Consumer Secret",
+                                "error": "Αδυναμία σύνδεσης στον server, ελέγξτε τα μυστικά σας και δοκιμάστε ξανά."
+                            }
+                        },
+                        "couriers": {
+                            "acs": {
+                                "title": "ACS Courier",
+                                "description": "Απενεργοποίηση επέκτασης και διαγραφή συνδρομής",
+                                "fields": {
+                                    "user_id": "ID Χρήστη",
+                                    "user_password": "Κωδικός Χρήστη",
+                                    "company_id": "ID Εταιρίας",
+                                    "company_password": "Κωδικός Εταιρίας",
+                                    "billing_code": "Κωδικός Χρέωσης",
+                                    "acs_api_key": "ACS API Key"
+                                },
+                                "printer": {
+                                    "label": "Επιλέξτε Τύπο Εκτυπωτή",
+                                    "laser": "Laser",
+                                    "thermal": "Thermal"
+                                }
+                            },
+                            "courier4u": {
+                                "title": "Courier4u",
+                                "description": "Απενεργοποίηση επέκτασης και διαγραφή συνδρομής",
+                                "fields": {
+                                    "api_key": "API Key"
+                                }
+                            }
+                        },
+                        "team": {
+                            "title": "Ομάδα",
+                            "description": "Ο νέος χρήστης δεν μπορεί να προσθέσει νέες επεκτάσεις στο project",
+                            "add_member": {
+                                "title": "Προσθήκη μέλους ομάδας",
+                                "fields": {
+                                    "email": "Email",
+                                    "name": "Όνομα",
+                                    "last_name": "Επώνυμο",
+                                    "password": "Κωδικός",
+                                    "confirm_password": "Επιβεβαίωση Κωδικού",
+                                    "role": {
+                                        "label": "Ρόλος",
+                                        "user": "Χρήστης",
+                                        "admin": "Διαχειριστής"
+                                    },
+                                    "notifications": "Λήψη Ειδοποιήσεων"
+                                }
+                            },
+                            "members": "Μέλη"
+                        },
+                        "payment": {
+                            "title": "Πληρωμές",
+                            "table": {
+                                "extension_name": "Όνομα Επέκτασης",
+                                "amount": "Ποσό",
+                                "status": "Κατάσταση",
+                                "created": "Ημ/νία Δημιουργίας",
+                                "status_values": {
+                                    "paid": "Πληρώθηκε",
+                                    "failed": "Απέτυχε",
+                                    "pending": "Σε Εκκρεμότητα"
+                                }
                             }
                         }
                     }

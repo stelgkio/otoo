@@ -19,6 +19,7 @@ i18next
                             "postal": "Postal Code",
                             "order_number": "Order Number"
                         },
+                        // buttons  
                         "buttons": {
                             "save": "Save",
                             "close": "Close",
@@ -29,6 +30,7 @@ i18next
                             "submit": "Submit",
                             "apply": "Apply"
                         },
+                        // Options
                         "status": {
                             "processing": "Processing...",
                             "loading": "Loading...",
@@ -36,11 +38,13 @@ i18next
                             "pending": "Pending",
                             "cancelled": "Cancelled"
                         },
+                        // Messages
                         "messages": {
                             "success": "Operation completed successfully",
                             "error": "An error occurred",
                             "no_results": "No results found"
                         },
+                        // Validations
                         "validation": {
                             "required": "This field is required",
                             "email": "Please enter a valid email address",
@@ -91,11 +95,13 @@ i18next
                                 "week_orders": "The total completed order the last 7 days.",
                                 "month_orders": "The total completed order the last month."
                             },
+                            // Charts
                             "weekly_balance": {
                                 "title": "Weekly Balance",
                                 "active_rate": "Active Order Rate",
                                 "total_revenue": "Total Revenue"
                             },
+                            // Stats
                             "stats": {
                                 "orders": {
                                     "title": "Orders",
@@ -113,6 +119,7 @@ i18next
                             }
 
                         },
+                        // Header Titles and Descriptions, Metrics, Search etc.
                         "header": "Dashboard",
                         "customer": {
                             "header": "Customer Information",
@@ -158,6 +165,7 @@ i18next
                                 "change_status_cancelled": "Change status to cancelled"
                             }
                         },
+                        // Tables
                         "tables": {
                             "order": {
                                 "id": "Order ID",
@@ -168,6 +176,7 @@ i18next
                                 "created": "Order Created",
                                 "total": "Total Amount"
                             },
+                            //  Customer Table
                             "customer": {
                                 "id": "Customer ID",
                                 "name": "Customer Name",
@@ -176,6 +185,7 @@ i18next
                                 "total_spent": "Total Spent",
                                 "total_orders": "Total Orders"
                             },
+                            // Product Table
                             "product": {
                                 "id": "Product ID",
                                 "name": "Product Name",
@@ -324,6 +334,7 @@ i18next
                             "acs_courier": "ACS Courier Integration"
                         }
                     },
+                    // Voucher management
                     "voucher": {
                         "types": {
                             "new": "New",
@@ -354,6 +365,7 @@ i18next
                             "success": "Operation completed successfully"
                         }
                     },
+                    // Extensions management
                     "extensions": {
                         "header": "Extensions",
                         "pricing": {
@@ -387,6 +399,7 @@ i18next
                                 }
                             }
                         },
+                        // Wallet & Expenses
                         "wallet": {
                             "title": "Wallet & Expenses",
                             "cta": "Buy Extension",
@@ -397,6 +410,7 @@ i18next
                                 "support": "Priority support for KonektorX users"
                             }
                         },
+                        // Data Synchronizer
                         "data_sync": {
                             "title": "Data Synchronizer",
                             "cta": "Buy Extension",
@@ -407,6 +421,7 @@ i18next
                                 "analytics": "Build custom analytics and reports"
                             }
                         },
+                        // Team Management
                         "team": {
                             "title": "Team Management",
                             "cta": "Buy Extension",
@@ -415,6 +430,7 @@ i18next
                             }
                         }
                     },
+                    // Settings Section
                     "settings": {
                         "header": "Project Settings",
                         "navigation": {
@@ -445,6 +461,7 @@ i18next
                                 "button": "Delete"
                             }
                         },
+                        // Secrets Section
                         "secrets": {
                             "title": "Project Secrets",
                             "reset": {
@@ -455,6 +472,7 @@ i18next
                                 "error": "Unable to connect to the server, check your secrets and try again."
                             }
                         },
+                        // Couriers Section
                         "couriers": {
                             "acs": {
                                 "title": "ACS Courier",
@@ -481,6 +499,7 @@ i18next
                                 }
                             }
                         },
+                        // Team Settins options
                         "team": {
                             "title": "Team",
                             "description": "The new user can not add new extension to project",
@@ -502,6 +521,7 @@ i18next
                             },
                             "members": "Members"
                         },
+                        // Payment Options
                         "payment": {
                             "title": "Payments",
                             "table": {
@@ -522,6 +542,7 @@ i18next
             },
 
 
+            // Greek
             "el": {
                 "translation": {
                     // Application-wide shared components and text
@@ -536,6 +557,7 @@ i18next
                             "postal": "Ταχυδρομικός Κώδικας",
                             "order_number": "Αριθμός Παραγγελίας"
                         },
+                        // Κουμπιά
                         "buttons": {
                             "save": "Αποθήκευση",
                             "close": "Κλείσιμο",
@@ -546,6 +568,7 @@ i18next
                             "submit": "Υποβολή",
                             "apply": "Εφαρμογή"
                         },
+                        // Επιλογές
                         "status": {
                             "processing": "Επεξεργασία...",
                             "loading": "Φόρτωση...",
@@ -553,11 +576,13 @@ i18next
                             "pending": "Εκκρεμεί",
                             "cancelled": "Ακυρώθηκε"
                         },
+                        // Ενημερώσεις
                         "messages": {
                             "success": "Η ενέργεια ολοκληρώθηκε με επιτυχία",
                             "error": "Παρουσιάστηκε σφάλμα",
                             "no_results": "Δεν βρέθηκαν αποτελέσματα"
                         },
+                        // Validations
                         "validation": {
                             "required": "Το πεδίο είναι υποχρεωτικό",
                             "email": "Παρακαλώ εισάγετε έγκυρη διεύθυνση email",
@@ -590,7 +615,7 @@ i18next
                         }
                     },
 
-                    // Dashboard and main components
+                    // Διαχειριστικό Περιεχόμενο
                     "dashboard": {
                         "overview": {
                             "orders": "Παραγγελίες",
@@ -608,11 +633,13 @@ i18next
                                 "week_orders": "Οι συνολικές ολοκληρωμένες παραγγελίες τις τελευταίες 7 ημέρες.",
                                 "month_orders": "Οι συνολικές ολοκληρωμένες παραγγελίες τον τελευταίο μήνα."
                             },
+                            // Charts
                             "weekly_balance": {
                                 "title": "Εβδομαδιαίο Υπόλοιπο",
                                 "active_rate": "Ποσοστό Ενεργών Παραγγελιών",
                                 "total_revenue": "Συνολικά Έσοδα"
                             },
+                            // Stats
                             "stats": {
                                 "orders": {
                                     "title": "Παραγγελίες",
@@ -629,7 +656,7 @@ i18next
                             }
 
                         },
-
+                        // Πίνακας Ελέγχου
                         "header": "Πίνακας Ελέγχου",
                         "customer": {
                             "header": "Πληροφορίες Πελάτη",
@@ -642,6 +669,7 @@ i18next
                                 "total_spent": "Σύνολο Δαπανών"
                             }
                         },
+                        // Προϊόντα
                         "product": {
                             "header": "Προϊόντα",
                             "fields": {
@@ -655,6 +683,7 @@ i18next
                                 "search_aria_label": "Αναζήτηση προϊόντων"
                             }
                         },
+                        // Παραγγελίες
                         "order": {
                             "header": "Λεπτομέρειες Παραγγελίας",
                             "types": {
@@ -675,6 +704,7 @@ i18next
                                 "change_status_cancelled": "Αλλαγή κατάστασης σε ακυρωμένη"
                             }
                         },
+                        // Πίνακες
                         "tables": {
                             "order": {
                                 "id": "ID Παραγγελίας",
@@ -765,6 +795,7 @@ i18next
                                     "instructions": "Οδηγίες Παράδοσης"
                                 }
                             },
+                            // Shipping
                             "shipping": {
                                 "header": "Πληροφορίες Αποστολής",
                                 "form": {
@@ -825,7 +856,7 @@ i18next
                         }
                     },
 
-                    // Project Settings
+                    // Ρυθμίσεις Project
                     "project_settings": {
                         "header": "Ρυθμίσεις Έργου",
                         "sections": {
@@ -841,7 +872,7 @@ i18next
                             "acs_courier": "ACS Courier Extension"
                         }
                     },
-                    // Greek version
+                    // Ρυθμίσεις Γενικές Voucher
                     "voucher": {
                         "types": {
                             "new": "Νέο",
@@ -872,7 +903,7 @@ i18next
                             "success": "Η ενέργεια ολοκληρώθηκε με επιτυχία"
                         }
                     },
-                    // Greek translations
+                    // Extensions Management
                     "extensions": {
                         "header": "Επεκτάσεις",
                         "pricing": {
@@ -906,6 +937,7 @@ i18next
                                 }
                             }
                         },
+                        // Πορτοφόλι & Έξοδα
                         "wallet": {
                             "title": "Πορτοφόλι & Έξοδα",
                             "cta": "Αγορά Extension",
@@ -916,6 +948,7 @@ i18next
                                 "support": "Προτεραιότητα υποστήριξης για χρήστες KonektorX"
                             }
                         },
+                        // Συγχρονισμός Δεδομένων
                         "data_sync": {
                             "title": "Συγχρονισμός Δεδομένων",
                             "cta": "Αγορά Extension",
@@ -926,6 +959,7 @@ i18next
                                 "analytics": "Δημιουργία προσαρμοσμένων αναλύσεων και αναφορών"
                             }
                         },
+                        /// Διαχείριση Ομάδας
                         "team": {
                             "title": "Διαχείριση Ομάδας",
                             "cta": "Προσθέστε Μέλος Ομάδας στο project σας!",
@@ -934,6 +968,7 @@ i18next
                             }
                         }
                     },
+                    // Ρυθμίσεις Section
                     "settings": {
                         "header": "Ρυθμίσεις Project",
                         "navigation": {

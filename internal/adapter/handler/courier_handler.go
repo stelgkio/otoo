@@ -32,6 +32,7 @@ func (dh *DashboardHandler) CourierTable(ctx echo.Context) error {
 	extensionCodes := []string{
 		domain.AcsCode,
 		domain.Courier4u,
+		domain.RedCourier,
 	}
 	yes := domain.ContainsExtensionCodes(projectExtensions, extensionCodes)
 
@@ -40,7 +41,7 @@ func (dh *DashboardHandler) CourierTable(ctx echo.Context) error {
 		return ctx.String(http.StatusOK, "Redirecting...")
 	}
 	extensions := util.Filter(projectExtensions, func(e *domain.ProjectExtension) bool {
-		return e.Code == domain.AcsCode || e.Code == domain.Courier4u
+		return e.Code == domain.AcsCode || e.Code == domain.Courier4u || e.Code == domain.RedCourier
 	})
 	if ctx.Request().Header.Get("HX-Request") == "true" {
 		return util.Render(ctx, t.VoucherOverview(projectID, extensions))
@@ -68,6 +69,7 @@ func (dh *DashboardHandler) VoucherTableHTML(ctx echo.Context) error {
 	extensionCodes := []string{
 		domain.AcsCode,
 		domain.Courier4u,
+		domain.RedCourier,
 	}
 	yes := domain.ContainsExtensionCodes(projectExtensions, extensionCodes)
 	if !yes {
@@ -75,7 +77,7 @@ func (dh *DashboardHandler) VoucherTableHTML(ctx echo.Context) error {
 		return ctx.String(http.StatusOK, "Redirecting...")
 	}
 	extensions := util.Filter(projectExtensions, func(e *domain.ProjectExtension) bool {
-		return e.Code == domain.AcsCode || e.Code == domain.Courier4u
+		return e.Code == domain.AcsCode || e.Code == domain.Courier4u || e.Code == domain.RedCourier
 	})
 
 	if ctx.Request().Header.Get("HX-Request") == "true" {

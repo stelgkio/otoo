@@ -117,6 +117,10 @@ func (dh *DashboardHandler) StripeFailRedirect(ctx echo.Context) error {
 		dh.extensionSvc.DeleteProjectExtension(ctx, extensionID, projectID)
 		return util.Render(ctx, et.ExtentionCourier4uSubscriptionFailTemplate(user, project.Name, projectID, extensionID))
 	}
+	if extension.Code == "redcourier" {
+		dh.extensionSvc.DeleteProjectExtension(ctx, extensionID, projectID)
+		return util.Render(ctx, et.ExtentionRedCourierSubscriptionFailTemplate(user, project.Name, projectID, extensionID))
+	}
 	if extension.Code == "wallet-expences" {
 		dh.extensionSvc.DeleteProjectExtension(ctx, extensionID, projectID)
 	}

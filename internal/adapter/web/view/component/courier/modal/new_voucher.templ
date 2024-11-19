@@ -223,7 +223,15 @@ templ NewVoucher(extensions []*domain.ProjectExtension, projectId string) {
 										<span class="input-group-text">
 											<i class="bi bi-upc-scan"></i>
 										</span>
-										<input type="number" class="form-control form-control-sm" @blur="formatOrderIdWithLeadingZeros" id="orderId" x-model="voucher_object.orderId"/>
+										<input
+											type="number"
+											class="form-control form-control-sm"
+											@blur="formatOrderIdWithLeadingZeros"
+											id="orderId"
+											x-model="voucher_object.orderId"
+											:class="{ 'is-invalid': errors['orderId'] }"
+										/>
+										<div class="invalid-feedback" x-text="errors['orderId']"></div>
 									</div>
 								</div>
 								<!-- Order COD -->

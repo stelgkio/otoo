@@ -380,6 +380,7 @@ func NewRouter(
 		couriergroup.POST("/courier4u/download-multiple/:projectId", dashboardHandler.Courier4uDownloadMmultipleVoucher)
 		couriergroup.POST("/redcourier/download-multiple/:projectId", dashboardHandler.RedCourierDownloadMmultipleVoucher)
 
+		couriergroup.GET("/validateOrderId/:orderId/:projectID", dashboardHandler.ValidateOrderID)
 	}
 
 	return &Router{e}, nil

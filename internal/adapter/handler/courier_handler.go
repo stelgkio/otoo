@@ -796,3 +796,44 @@ func (dh *DashboardHandler) Courier4uDownloadMmultipleVoucher(ctx echo.Context) 
 	return ctx.JSON(http.StatusOK, pdfResponse)
 
 }
+
+type ValidationResponse struct {
+	OrderExists bool   `json:"orderexists"`
+	Message     string `json:"message,omitempty"`
+}
+
+func (dh *DashboardHandler) ValidateOrderID(ctx echo.Context) error {
+	// Extract parameters from the route
+	orderID := ctx.Param("orderId")
+	projectID := ctx.Param("projectID")
+
+	// Example validation logic
+	// Replace this with your database or business logic to check the order ID
+	if orderID == "" || projectID == "" {
+		return ctx.JSON(http.StatusBadRequest, ValidationResponse{
+			Message: "Order ID or Project ID is missing",
+		})
+	}
+
+	// Simulated check for existing order ID (e.g., from database)
+	ordID, err := strconv.ParseInt(orderID, 10, 64)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, ValidationResponse{
+			Message: "Invalid Order ID",
+		})
+	}
+	voucher, _ := dh.voucherSvc.GetVoucherByOrderIDAndProjectID(ctx, ordID, projectID)
+
+	if voucher != nil {
+		return ctx.JSON(http.StatusOK, ValidationResponse{
+			OrderExists: true,
+			Message:     "Order ID already exists",
+		})
+	}
+
+	// Return success response if order ID is valid and does not exist
+	return ctx.JSON(http.StatusOK, ValidationResponse{
+		OrderExists: false,
+		Message:     "Order ID is valid and available",
+	})
+}

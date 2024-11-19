@@ -894,12 +894,36 @@ function newVoucher(projectId) {
             // Dispatch the event to the parent component
             this.$dispatch('update-voucher');
         },
-        formatOrderIdWithLeadingZeros() {
+        async checkorderId(orderId) {
+            const response = await fetch(`/voucher/validateOrderId/${orderId}/${this.projectID}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'An error occurred while checking the order ID.');
+            }
+            return response.json();
+        },
+        async formatOrderIdWithLeadingZeros() {
             // Convert orderId to a string and pad with five leading zeros
             const orderIdString = String(this.voucher_object.orderId).padEnd(10, '0');
             this.voucher_object.orderId = orderIdString;
-        },
+            try {
+                const response = await this.checkorderId(orderIdString);
 
+                if (response.orderexists) {
+                    this.errors["orderId"] = 'Order ID already exists.';
+                } else {
+                    this.errors["orderId"] = '';
+                }
+            } catch (error) {
+                console.error('Error checking order ID:', error);
+                this.showToast(error, 'bg-danger');
+            }
+        },
         // Prepare payload for Hermes API
         prepareHermesPayload() {
             return {

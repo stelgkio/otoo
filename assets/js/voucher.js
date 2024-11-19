@@ -959,7 +959,8 @@ function newVoucher(projectId) {
         async handleSubmit() {
             this.hideToast()
             this.hasInteracted = true;
-            if (!this.validateForm()) {
+            const valid = await this.validateForm();
+            if (!valid) {
                 this.showToast('Please check the form for errors', 'bg-danger');
                 return;
             }
@@ -1236,8 +1237,27 @@ function newVoucher(projectId) {
             }
         },
         // Validate the entire form before submission
-        validateForm() {
+        async validateForm() {
             if (!this.hasInteracted) return true;
+            let valid = true;
+            try {
+                const response = await this.checkorderId(this.voucher_object.orderId);
+
+                if (response.orderexists) {
+                    this.errors["orderId"] = 'Order ID already exists.';
+                    valid = false;
+                } else {
+                    this.errors["orderId"] = '';
+                    valid = true;
+                }
+            } catch (error) {
+                console.error('Error checking order ID:', error.message);
+                this.showToast(error.message, 'bg-danger');
+                valid = false;
+            }
+            if (valid == false) {
+                return valid;
+            }
             const fieldsToValidate = [
                 'billing.email', 'billing.phone',
 
@@ -1245,7 +1265,7 @@ function newVoucher(projectId) {
                 'shipping.city', 'shipping.postcode', 'shipping.courier',
                 'cod', 'hermes_settings.ParcelWeight'
             ];
-            let valid = true;
+
 
             fieldsToValidate.forEach(field => {
                 valid = this.validateField(field) && valid;  // Combine validation results
@@ -1302,12 +1322,6 @@ function newVoucher(projectId) {
         showToast(message, type) {
             this.toastMessage = message;
             this.toastType = type;
-
-            const toastElement = document.getElementById('toast');
-            if (toastElement) {
-                const toast = new bootstrap.Toast(toastElement);
-                toast.show();  // Show the toast
-            }
         },
 
         // Close the order offcanvas

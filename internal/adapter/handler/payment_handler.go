@@ -387,6 +387,11 @@ func (dh *DashboardHandler) SubscriptionCreated(ctx echo.Context, subscriptionID
 			return err
 		}
 	}
+	if extension.Code == "redcourier" {
+		if err := dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, subscriptionID); err != nil {
+			return err
+		}
+	}
 	if extension.Code == "wallet-expences" {
 		if err := dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, subscriptionID); err != nil {
 			return err

@@ -40,10 +40,12 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	paymentRepo := mongorepo.NewPaymentRepository(mongodb)
 	usersprojectsRepo := repository.NewUserProjectRepository(db)
 
+	//HermesService
+	hermesService := courier.NewHermesService(voucherRepo)
 	// UserProject
 	usersprojectsService := service.NewUsersProjectsService(usersprojectsRepo)
 	//Voucher
-	voucherService := courier.NewVoucherService(voucherRepo)
+	voucherService := courier.NewVoucherService(voucherRepo, hermesService, woocommerceRepo)
 	// NewExtensionService
 	extensionService := service.NewExtensionService(extensionRepo)
 	//WooCommerceCustomerServer
@@ -67,7 +69,7 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	userHandler := handler.NewUserHandler(userService)
 
 	//User
-	hermesService := courier.NewHermesService(voucherRepo)
+
 	//WooCommerce
 	woocommerceWebhookService := woocommerce.NewWoocommerceWebhookService(woocommerceRepo)
 	WooCommerceHandler := handler.NewWooCommerceHandler(woocommerceRepo,
@@ -87,6 +89,15 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 	woocommerceReportService := woocommerce.NewWoocommerceReportService(projectService)
 	//ProjectHandler
 	bestSellerCron := cronjob.NewProductBestSellerCron(projectService, analyticsRepo, woocommerceCustomerService, woocommerceProductService, woocommerceOrderService)
+
+	courierTrackingCron := cronjob.NewCourierTrackingCron(
+		projectService,
+		userService,
+		woocommerceOrderService,
+		extensionService,
+		voucherService,
+		hermesService)
+
 	analyticsCron := cronjob.NewOrderAnalyticsCron(
 		projectService,
 		userService,
@@ -121,13 +132,24 @@ func NewServer(db *pg.DB, mongodb *mongo.Client, logger *slog.Logger, config *co
 		notificationService,
 		voucherService,
 		paymentService,
-		hermesService)
+		hermesService,
+	)
 
 	//Profile
 	profileHandler := handler.NewProfileHandler(userService, projectService, authService)
 
 	//Router
-	_, err := NewRouter(s, userHandler, authHandler, homeHandler, projectHandler, WooCommerceHandler, dashboardHandler, profileHandler, analyticsCron, bestSellerCron)
+	_, err := NewRouter(s,
+		userHandler,
+		authHandler,
+		homeHandler,
+		projectHandler,
+		WooCommerceHandler,
+		dashboardHandler,
+		profileHandler,
+		analyticsCron,
+		bestSellerCron,
+		courierTrackingCron)
 	if err != nil {
 		return nil
 	}

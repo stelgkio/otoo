@@ -1,0 +1,204 @@
+package views
+
+import (
+	"fmt"
+	h "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/settings_header"
+	"github.com/stelgkio/otoo/internal/core/domain"
+)
+
+templ SettingsRedCourier(projectId string, projectExtensions []*domain.ProjectExtension, user *domain.User, errors map[string](string), values *domain.RedCourierExtension) {
+	<div
+		id="dashboard-content"
+		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
+	>
+		<main class="container-fluid px-3 py-5 p-lg-6 p-xxl-8">
+			@h.SettingsHeader("Red Courier", 10, projectId, projectExtensions, user)
+			if ConvertUserRole(user.Role) == "admin" {
+				<div class="d-flex align-items-end justify-content-between">
+					<div>
+						<h3 class="fw-semibold mb-1">RedCourier</h3>
+						<p class="text-sm text-muted">DeActivate extension and remove subscription</p>
+					</div>
+					<div>
+						<button
+							data-bs-target="#DeActivateCourier4u"
+							data-bs-toggle="modal"
+							class="btn btn-sm btn-danger"
+						>
+							<span
+								id="spinner4u"
+								class="htmx-indicator spinner-border spinner-border-sm"
+								role="status"
+								aria-hidden="true"
+							></span>DeActivate
+						</button>
+					</div>
+				</div>
+			}
+			<hr class="my-6 "/>
+			<div class="row mt-2 ">
+				<div class="col-12 ">
+					<form autocomplete="off">
+						<div class="row  g-2 mt-6">
+							<div class="col-md-2">
+								<label class="form-label mb-0">APIKey</label>
+							</div>
+							<div class="col-md-8 col-xl-5" hx-target="this" hx-swap="outerHTML">
+								if errors["courier_api_key"] != "" {
+									<input
+										name="courier_api_key"
+										type="text"
+										class="form-control is-invalid"
+										placeholder="APIKey"
+										value={ values.CourierAPIKey }
+									/>
+									<div class="invalid-feedback" style="display: block;">
+										{ errors["courier_api_key"] }
+									</div>
+								} else {
+									<input
+										name="courier_api_key"
+										type="text"
+										class="form-control"
+										placeholder="APIKey"
+										value={ values.CourierAPIKey }
+									/>
+								}
+							</div>
+						</div>
+						<hr class="my-6"/>
+						<div class="row align-items-center g-3">
+							<div class="col-md-2"><label class="form-label mb-0">Select Printer Type</label></div>
+							<div class="col-md-8 col-xl-5">
+								<div class="d-flex gap-3 scrollable-x">
+									<div class="form-item-checkable">
+										if values.PrinterType == "lazer" {
+											<input
+												class="form-item-check"
+												type="radio"
+												name="printer_type"
+												id="projecttypewoo"
+												checked="checked"
+												value="lazer"
+											/>
+										} else {
+											<input
+												class="form-item-check"
+												type="radio"
+												name="printer_type"
+												id="projecttypewoo"
+												value="lazer"
+											/>
+										}
+										<label class="form-item cursor-pointer" for="projecttypewoo">
+											<span
+												class="form-item-click d-inline-flex flex-column gap-3 align-items-center justify-content-center form-control w-rem-24 h-rem-24 text-center text-muted"
+											>
+												// <i // class="bi bi-currency-bitcoin text-xl" / /></i>
+												<span class="fw-semibold text-xs">Laser</span>
+											</span>
+										</label>
+									</div>
+									<div class="form-item-checkable">
+										if values.PrinterType == "thermal" {
+											<input
+												class="form-control form-item-check"
+												type="radio"
+												name="printer_type"
+												id="projecttypeshopy"
+												checked="checked"
+												value="thermal"
+											/>
+										} else {
+											<input
+												class="form-control form-item-check"
+												type="radio"
+												name="printer_type"
+												id="projecttypeshopy"
+												value="thermal"
+											/>
+										}
+										<label class="form-item cursor-pointer" for="projecttypeshopy">
+											<span
+												class="form-item-click d-inline-flex flex-column gap-3 align-items-center justify-content-center form-control w-rem-24 h-rem-24 text-center text-muted"
+											>
+												<span class="fw-semibold text-xs">Thermal</span>
+											</span>
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<hr class="my-6 "/>
+						<div class="d-flex justify-content-end gap-2">
+							<button
+								type="submit"
+								hx-post={ fmt.Sprintf("/extension/redcourier/settings/%s", projectId) }
+								hx-indicator="#spinner"
+								class="btn btn-sm btn-primary"
+								hx-target="#dashboard-content"
+							>
+								<span
+									id="spinner"
+									class="htmx-indicator spinner-border spinner-border-sm"
+									role="status"
+									aria-hidden="true"
+								></span>
+								Submit
+							</button>
+						</div>
+						<hr class="my-6 "/>
+						<div class="row justify-content-md-center"></div>
+					</form>
+				</div>
+			</div>
+		</main>
+		<div
+			class="modal fade"
+			id="DeActivateCourier4u"
+			tabindex="-1"
+			aria-labelledby="DeActivateCourier4uLabel"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content overflow-hidden">
+					<div class="modal-header pb-0 border-0">
+						<h1 class="modal-title h4" id="DeActivateCourier4uLabel">DeActivate RedCourier</h1>
+						<button
+							type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close"
+						></button>
+					</div>
+					<div class="modal-body p-0">
+						<div class="px-6 py-5 border-bottom">
+							<h3 class="modal-title h4" id="DeActivateCourier4uLabel">Are you sure you want to deactivate extension and remove subscription?</h3>
+						</div>
+						<div class="px-6 py-5 bg-body-secondary d-flex justify-content-center">
+							<button
+								type="submit"
+								hx-post={ fmt.Sprintf("/extension/redcourier/deactivate/%s", projectId) }
+								class="btn btn-sm btn-danger"
+								hx-target="#dashboard-content"
+								data-bs-dismiss="modal"
+								aria-label="Close"
+								hx-indicator="#spinner4u"
+							>
+								Delete 
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+func ConvertUserRole(role domain.UserRole) string {
+	if role == "client" {
+		return "admin"
+	} else {
+		return "user"
+	}
+}

@@ -141,7 +141,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 			</div>
 			//Voucher Table
 			<div class="table-responsive">
-				<table class="table table-hover table-striped table-sm table-nowrap">
+				<table class="table table-hover table-sm  table-striped  table-nowrap">
 					<thead>
 						<tr>
 							<th>
@@ -175,6 +175,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 								<i :class="getSortIcon('total_amount')"></i>
 							</th>
 							<th><span data-i18n="sorting-table-status-header">Status</span></th>
+							<th><span>Tracking</span></th>
 							<template x-if="isPrinted">
 								<th @click="sortTable('is_printed')">
 									<span data-i18n="sorting-table-printed">Printed</span>
@@ -187,7 +188,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 					<tbody>
 						<template x-if="!loading && totalItems === 0">
 							<tr>
-								<td colspan="8"><span data-i18n="sorting-no-results-msg"></span>No vouchers found</td>
+								<td colspan="9"><span data-i18n="sorting-no-results-msg"></span>No vouchers found</td>
 							</tr>
 						</template>
 						<template x-for="voucher in paginatedVouchers" :key="voucher.Id">
@@ -213,6 +214,9 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 								<td x-text="voucher.total_amount"></td>
 								<td>
 									<span :class="badgeClass(voucher.status)" x-text="voucher.status"></span>
+								</td>
+								<td role="button">
+									<span class="align-items-center ms-auto text-sm text-muted text-primary-hover" x-text="voucher.tracking_status" role="" @click="openTrackingModal(voucher)"></span>
 								</td>
 								<template x-if="isPrinted">
 									<td>
@@ -257,7 +261,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 						</template>
 						<template x-for="i in 10 - paginatedVouchers.length" :key="'empty' + i">
 							<tr>
-								<td colspan="8" class="py-5"></td>
+								<td colspan="9" class="py-6"></td>
 							</tr>
 						</template>
 					</tbody>
@@ -267,6 +271,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 			@c.CreateVoucher(extensions, projectId)
 			@c.UpdateHermerVoucher(extensions, projectId)
 			@c.NewVoucher(extensions, projectId)
+			@c.HermesTrackingModal()
 			@p.PaginationControl()
 		</div>
 	</div>

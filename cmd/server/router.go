@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -34,6 +35,7 @@ func NewRouter(
 	profileHandler *h.ProfileHandler,
 	orderAnalyticsCron *cr.OrderAnalyticsCron,
 	productBestSellerCron *cr.ProductBestSellerCron,
+	courierTrackingCron *cr.CourierTrackingCron,
 
 ) (*Router, error) {
 
@@ -74,6 +76,22 @@ func NewRouter(
 	})
 
 	e.GET("/RunCustomerBestBuyerJob", func(c echo.Context) error {
+		return c.JSON(http.StatusAccepted, "OK")
+	})
+	e.GET("/RunHermerTrackingCronJob/:key", func(c echo.Context) error {
+		data := c.Param("key")
+		exkey := os.Getenv("EXTENSION_KEY")
+		if data != exkey {
+			return c.JSON(http.StatusInternalServerError, "internal server error")
+		}
+		err := courierTrackingCron.RunCourier4uTrackingCron()
+		//err2 := courierTrackingCron.RunRedCourierTrackingCron()
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+		// if err2 != nil {
+		// 	return c.JSON(http.StatusInternalServerError, err2)
+		// }
 		return c.JSON(http.StatusAccepted, "OK")
 	})
 	e.POST("/contact", homeHandler.ContactForm)
@@ -172,6 +190,11 @@ func NewRouter(
 		extensiongroup.POST("/courier4u/settings/:projectId", dashboardHandler.Courier4uSettingsFormPost)
 		extensiongroup.POST("/courier4u/deactivate/:projectId", dashboardHandler.Courier4uDeActivate)
 
+		extensiongroup.GET("/redcourier/:projectId", dashboardHandler.RedCourier)
+		extensiongroup.POST("/redcourier/:projectId", dashboardHandler.RedCourierFormPost)
+		extensiongroup.POST("/redcourier/settings/:projectId", dashboardHandler.RedCourierettingsFormPost)
+		extensiongroup.POST("/redcourier/deactivate/:projectId", dashboardHandler.RedCourierDeActivate)
+
 		extensiongroup.GET("/wallet-expences/:projectId", dashboardHandler.WalletExpenses)
 
 		extensiongroup.GET("/data-synchronizer/:projectId", dashboardHandler.DataSynchronizer)
@@ -237,6 +260,7 @@ func NewRouter(
 
 			settingsroup.GET("/asc-courier/:projectId", projectHandler.ProjectSettingsAcsCourier)
 			settingsroup.GET("/courier4u/:projectId", projectHandler.ProjectSettingsCourier4u)
+			settingsroup.GET("/redcourier/:projectId", projectHandler.ProjectSettingsRedCourier)
 
 			settingsroup.GET("/payment/:projectId", projectHandler.ProjectSettingsPayment)
 		}

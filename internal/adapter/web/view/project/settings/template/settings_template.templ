@@ -4,6 +4,7 @@ import (
 	t "github.com/stelgkio/otoo/internal/adapter/web/view/dashboard/template"
 	ac "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/acs-courier"
 	cu "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/courier4u"
+	ru "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/redcourier"
 	s "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/settings_general"
 	tm "github.com/stelgkio/otoo/internal/adapter/web/view/project/settings/team"
 	"github.com/stelgkio/otoo/internal/core/domain"
@@ -30,5 +31,11 @@ templ AcsCourierTemplate(user *domain.User, projectName string, projectId string
 templ Courier4uTemplate(user *domain.User, projectName string, projectId string, project *domain.Project, projectExtensions []*domain.ProjectExtension, errors map[string](string), values *domain.Courier4uExtension) {
 	@t.DashboardTemplate(user, projectName, projectId) {
 		@cu.SettingsCourier4u(projectId, projectExtensions, user, errors, values)
+	}
+}
+
+templ RedCourierTemplate(user *domain.User, projectName string, projectId string, project *domain.Project, projectExtensions []*domain.ProjectExtension, errors map[string](string), values *domain.RedCourierExtension) {
+	@t.DashboardTemplate(user, projectName, projectId) {
+		@ru.SettingsRedCourier(projectId, projectExtensions, user, errors, values)
 	}
 }

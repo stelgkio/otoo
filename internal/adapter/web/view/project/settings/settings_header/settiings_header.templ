@@ -202,6 +202,29 @@ templ SettingsHeader(headerTitle string, active int, projectId string, projectEx
 						</li>
 					}
 				}
+				if (extension.Code == "redcourier") {
+					if (active==10) {
+						<li class="nav-item ">
+							<a
+								href="javascript:void(0)"
+								hx-get={ fmt.Sprintf("/project/settings/redcourier/%s", projectId) }
+								hx-target="#dashboard-content"
+								hx-push-url="true"
+								class="nav-link active"
+							>{ extension.Title }</a>
+						</li>
+					} else {
+						<li class="nav-item">
+							<a
+								href="javascript:void(0)"
+								hx-get={ fmt.Sprintf("/project/settings/redcourier/%s", projectId) }
+								hx-target="#dashboard-content"
+								hx-push-url="true"
+								class="nav-link"
+							>{ extension.Title }</a>
+						</li>
+					}
+				}
 			}
 			//<li class="nav-item"><a href="/pages/account-team.html" class="nav-link">Team</a></li>
 		</ul>

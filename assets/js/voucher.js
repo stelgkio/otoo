@@ -23,8 +23,19 @@ function voucherTable(projectId) {
         isNewTab: true,
         isPrinted: false,
         isDownloading: false,
+        isHermesTrackingModalOpen: false,
+        trackingData: [],
 
+        openTrackingModal(voucher) {
+            this.trackingData = voucher.hermes_tracking_stages?.data || []; // Safely access data
+            this.isHermesTrackingModalOpen = true;
+        },
 
+        // Close modal and clear tracking data
+        closeTrackingModal() {
+            this.trackingData = []; // Clear the tracking data
+            this.isHermesTrackingModalOpen = false;
+        },
         async init() {
             await this.fetchVouchers(this.currentPage);
         },
@@ -107,7 +118,10 @@ function voucherTable(projectId) {
             if (page < 1 || page > this.totalPages) return;
             this.fetchVouchers(page);
         },
-
+        triggerUpdateVoucherEvent() {
+            // Dispatch the event to the parent component
+            this.$dispatch('update-voucher');
+        },
         async downloadVoucher(voucherId, courier_provider) {
             // Ask for confirmation before proceeding
             const userConfirmed = window.confirm("Are you sure you want to download this voucher? If you download this voucher, it will be marked as printed and cannot be edited.");
@@ -168,13 +182,13 @@ function voucherTable(projectId) {
 
                     // Clean up URL object
                     window.URL.revokeObjectURL(link.href);
+                    this.triggerUpdateVoucherEvent();
                 })
                 .catch(error => {
                     console.error("There was a problem with the fetch operation:", error);
                     isDownloading = false
                 });
             isDownloading = false
-            await this.fetchVouchers(page);
 
         },
 

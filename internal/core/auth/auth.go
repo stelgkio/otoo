@@ -166,14 +166,14 @@ func TokenRefresherMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		// Check if the user is authenticated
 		userToken, ok := c.Get("user").(*jwt.Token)
 		if !ok || userToken == nil {
-			slog.Error("No valid user token in context")
+			//	slog.Error("No valid user token in context")
 			return next(c)
 		}
 
 		// Retrieve and verify claims from user token
 		claims, ok := userToken.Claims.(*JwtCustomClaims)
 		if !ok || claims == nil {
-			slog.Error("Failed to retrieve claims from user token")
+			//	slog.Error("Failed to retrieve claims from user token")
 			return next(c)
 		}
 

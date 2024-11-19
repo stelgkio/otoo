@@ -2,8 +2,10 @@ package port
 
 import (
 	"github.com/labstack/echo/v4"
+	d "github.com/stelgkio/otoo/internal/core/domain"
 	domain "github.com/stelgkio/otoo/internal/core/domain/courier"
 	o "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
+	woo "github.com/stelgkio/woocommerce"
 )
 
 // VoucherRepository 	defines the methods for interacting with the Voucher repository
@@ -42,7 +44,7 @@ type VoucherService interface {
 	// // UpdateVoucher updates a Voucher
 	UpdateVoucher(ctx echo.Context, voucher *o.OrderRecord, projectID string) (*domain.Voucher, error)
 	// UpdateVoucherWithDetails updates a Voucher with details
-	UpdateVoucherNewDetails(ctx echo.Context, voucher *domain.Voucher, projectID string) (*domain.Voucher, error)
+	UpdateVoucherNewDetails(ctx echo.Context, voucher *domain.Voucher, projectID string, courier4u *d.Courier4uExtension, redcourier *d.RedCourierExtension) (*domain.Voucher, error)
 	// // DeleteUser deletes a user
 	// DeleteUser(ctx context.Context, id uint64) error
 	DeleteVouchersByID(ctx echo.Context, voucherID string) error
@@ -50,4 +52,5 @@ type VoucherService interface {
 	GetVoucherCountAsync(projectID string, voucherStatus domain.VoucherStatus, results chan<- int64, errors chan<- error)
 	DeleteVouchersByOrderIdandProjectID(ctx echo.Context, projectID string, orderID int64) error
 	GetVoucherByOrderIDAndProjectID(ctx echo.Context, orderID int64, projectID string) (*domain.Voucher, error)
+	UpdateVoucherTracking(ctx echo.Context, vch *domain.Voucher, projectID string, client *woo.Client) (*domain.Voucher, error)
 }

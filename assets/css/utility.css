@@ -27293,4 +27293,11 @@ a.text-current:hover {
     /* Make sure overlay doesn't interfere with interactions */
 }
 
+.text-bg-secondary-red {
+    color: #000 !important;
+    /* Set the text color to black, or adjust as needed */
+    background-color: #E54B4B !important;
+    /* Set the background color to red */
+}
+
 /*# sourceMappingURL=utility.css.map */

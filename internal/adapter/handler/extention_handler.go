@@ -69,12 +69,15 @@ func (dh *DashboardHandler) StripeSuccesRedirect(ctx echo.Context) error {
 	}
 	if extension.Code == "asc-courier" {
 		dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, "")
-
 		return util.Render(ctx, et.ExtentionAcsSubscriptionSuccessTemplate(user, project.Name, projectID, extensionID))
 	}
 	if extension.Code == "courier4u" {
 		dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, "")
 		return util.Render(ctx, et.ExtentionCourier4uSubscriptionSuccessTemplate(user, project.Name, projectID, extensionID))
+	}
+	if extension.Code == "redcourier" {
+		dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, "")
+		return util.Render(ctx, et.ExtentionRedCourierSubscriptionSuccessTemplate(user, project.Name, projectID, extensionID))
 	}
 	if extension.Code == "wallet-expences" {
 		//dh.extensionSvc.CreateProjectExtension(ctx, projectID, extension, 30, "")

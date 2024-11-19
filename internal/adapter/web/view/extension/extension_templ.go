@@ -243,9 +243,9 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var14 string
-					templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/extension/courier4u/%s", projectId))
+					templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/extension/redcourier/%s", projectId))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/extension/extension.templ`, Line: 186, Col: 70}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/extension/extension.templ`, Line: 186, Col: 71}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 					if templ_7745c5c3_Err != nil {

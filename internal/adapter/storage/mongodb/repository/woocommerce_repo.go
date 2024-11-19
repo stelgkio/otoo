@@ -562,7 +562,7 @@ func (repo WoocommerceRepository) ProductFindByProjectID(
 	findOptions.SetSkip(int64(size * (page - 1)))
 	findOptions.SetSort(bson.D{
 		{Key: sortField, Value: sortDirection},
-		{Key: "_id", Value: 1}, // Secondary sort to ensure consistent ordering
+		//{Key: "_id", Value: 1}, // Secondary sort to ensure consistent ordering
 	})
 
 	cursor, err := coll.Find(ctx, filter, findOptions)

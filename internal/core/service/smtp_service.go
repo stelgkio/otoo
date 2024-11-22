@@ -34,7 +34,7 @@ func (s *SmtpService) SendEmail(ctx echo.Context, sender, email, template, subje
 
 	m := gomail.NewMessage()
 	m.SetHeader("From", sender)
-	m.SetHeader("To", email, "support@konektorx.com")
+	m.SetHeader("To", email, "support@Otoo.com")
 	m.SetHeader("Subject", subject)
 	m.SetBody("text/html", template)
 	d := gomail.NewDialer(config.SMTP.Host, 587, config.SMTP.User, config.SMTP.Password)
@@ -73,9 +73,9 @@ func (s *SmtpService) SendForgetPasswordEmail(ctx echo.Context, email, firstName
 	// Convert the buffer to a string
 	body := tpl.String()
 
-	subject := "KonektorX Reset Your Password"
+	subject := "Otoo Reset Your Password"
 
-	go s.SendEmail(ctx, "administrator@konektorx.com", email, body, subject, true)
+	go s.SendEmail(ctx, "administrator@Otoo.com", email, body, subject, true)
 	return nil
 }
 
@@ -97,9 +97,9 @@ func (s *SmtpService) SendContactEmail(ctx echo.Context, req *domain.ContactRequ
 	// Convert the buffer to a string
 	body := tpl.String()
 
-	subject := "KonektorX: Your Message Has Been Received"
+	subject := "Otoo: Your Message Has Been Received"
 
-	go s.SendEmail(ctx, "hello@konektorx.com", req.Email, body, subject, true)
+	go s.SendEmail(ctx, "hello@Otoo.com", req.Email, body, subject, true)
 	return nil
 
 }
@@ -141,9 +141,9 @@ func (s *SmtpService) SendWeeklyBalanceEmail(ctx echo.Context, req *w.WeeklyAnal
 	// Convert the buffer to a string
 	body := tpl.String()
 
-	subject := "KonektorX: Weekly Balance Report"
+	subject := "Otoo: Weekly Balance Report"
 
-	go s.SendEmail(ctx, "hello@konektorx.com", email, body, subject, true)
+	go s.SendEmail(ctx, "hello@Otoo.com", email, body, subject, true)
 	return nil
 
 }
@@ -166,9 +166,9 @@ func (s *SmtpService) SendMonthlyOrdersEmail(ctx echo.Context, req *w.MonthlyOrd
 	// Convert the buffer to a string
 	body := tpl.String()
 
-	subject := "KonektorX: Monthly Balance Report"
+	subject := "Otoo: Monthly Balance Report"
 
-	go s.SendEmail(ctx, "hello@konektorx.com", email, body, subject, true)
+	go s.SendEmail(ctx, "hello@Otoo.com", email, body, subject, true)
 	return nil
 
 }

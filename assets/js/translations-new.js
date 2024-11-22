@@ -13,7 +13,7 @@ i18next
                 {
                     "index": {
                         "title": "All in one Solution,Integration & Dashboard Analytics Faster than Ever.!",
-                        "subtitle": "With KonektorX you can connect any e-commerce platform quicker than ever.",
+                        "subtitle": "With Otoo you can connect any e-commerce platform quicker than ever.",
 
                     },
                     "general": {
@@ -103,7 +103,7 @@ i18next
                 {
                     "index": {
                         "title": "Μια Ολοκληρωμένη Λύση για την επιχείρηση σας, Πιο Γρήγορα από Ποτέ!",
-                        "subtitle": "Με το KonektorX, μπορείτε να συνδέσετε οποιαδήποτε πλατφόρμα e-commerce πιο γρήγορα από ποτέ.",
+                        "subtitle": "Με το Otoo, μπορείτε να συνδέσετε οποιαδήποτε πλατφόρμα e-commerce πιο γρήγορα από ποτέ.",
 
                     },
                     "general": {

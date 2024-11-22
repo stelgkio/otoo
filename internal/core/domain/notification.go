@@ -71,7 +71,7 @@ func CreateDataSynchronizerNotification(userID, projectID string) *Notification 
 	newNotification := &Notification{
 		ID:          primitive.NewObjectID(), // Generate a new ObjectID
 		Title:       "Data Synchronizer",
-		Description: "Keep your eShop and KonektorX perfectly in sync. Effortlessly transfer product details, customer information, and order data.",
+		Description: "Keep your eShop and Otoo perfectly in sync. Effortlessly transfer product details, customer information, and order data.",
 		Link:        "",
 		IsRead:      false,      // Default value
 		Timestamp:   time.Now(), // Current timestamp

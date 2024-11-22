@@ -11,7 +11,7 @@ i18next
                 translation: {
                     // Index EN
                     "title": "All in one Solution,Integration & Dashboard Analytics	Faster than Ever.!",
-                    "subtitle": "With KonektorX you can connect any e-commerce platform quicker than ever.",
+                    "subtitle": "With Otoo you can connect any e-commerce platform quicker than ever.",
                     "Dashboard": "Dashboard",
                     // Off Canvas EN
                     "offcanvas-order_processing": "Create Voucher#",
@@ -175,7 +175,7 @@ i18next
                 translation: {
                     // Index GR
                     "title": "Μια Ολοκληρωμένη Λύση για την επιχείρηση σας, Πιο Γρήγορα από Ποτέ!",
-                    "subtitle": "Με το KonektorX, μπορείτε να συνδέσετε οποιαδήποτε πλατφόρμα e-commerce πιο γρήγορα από ποτέ.",
+                    "subtitle": "Με το Otoo, μπορείτε να συνδέσετε οποιαδήποτε πλατφόρμα e-commerce πιο γρήγορα από ποτέ.",
                     "Dashboard": "Πίνακας Ελέγχου",
                     //Off Canvas GR
                     "offcanvas-order_processing": "Δημιουργία Voucher#",

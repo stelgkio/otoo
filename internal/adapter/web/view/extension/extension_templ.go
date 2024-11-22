@@ -86,7 +86,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Start Shipping with KonektorX!</span> <a href=\"javascript:void(0)\" hx-get=\"")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Start Shipping with Otoo!</span> <a href=\"javascript:void(0)\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -140,7 +140,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Start Shipping with KonektorX!</span> <a href=\"javascript:void(0)\" hx-get=\"")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Start Shipping with Otoo!</span> <a href=\"javascript:void(0)\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -184,7 +184,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Start Shipping with KonektorX!</span> <a href=\"javascript:void(0)\" hx-get=\"")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Start Shipping with Otoo!</span> <a href=\"javascript:void(0)\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -238,7 +238,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Start Shipping with KonektorX!</span> <a href=\"javascript:void(0)\" hx-get=\"")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Start Shipping with Otoo!</span> <a href=\"javascript:void(0)\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -282,7 +282,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Start Shipping with KonektorX!</span> <a href=\"javascript:void(0)\" hx-get=\"")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-7 mb-2 d-flex justify-content-between align-items-center\"><span class=\"text-sm fw-semibold\">Start Shipping with Otoo!</span> <a href=\"javascript:void(0)\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}

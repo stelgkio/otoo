@@ -233,7 +233,7 @@ func (s *WoocommerceWebhookService) createAndSaveAllWebhooks(client *woocommerce
 // initWebhook initializes a webhook for a specific event
 func initWebhook(event string, projectID string) woocommerce.Webhook {
 	webhook := woocommerce.Webhook{
-		Name:        "KonektorX:" + event,
+		Name:        "Otoo:" + event,
 		Topic:       event,
 		DeliveryUrl: os.Getenv("DELIVERY_URL") + "/woocommerce/" + strings.Replace(event, ".", "/", -1), // your callback URL
 		Secret:      projectID,

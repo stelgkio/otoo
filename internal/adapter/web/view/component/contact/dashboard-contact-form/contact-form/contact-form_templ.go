@@ -8,9 +8,7 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import (
-	"github.com/stelgkio/otoo/internal/core/domain"
-)
+import "github.com/stelgkio/otoo/internal/core/domain"
 
 func ContactForm(invalid, success bool, errors map[string](string), values *domain.ContactRequest) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -30,7 +28,7 @@ func ContactForm(invalid, success bool, errors map[string](string), values *doma
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"dashboard-content\" class=\"flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2\"><main class=\"ccontainer-fluid px-3 py-5 p-lg-6 p-xxl-8\"><div class=\"mb-6 mb-xl-10\"><div class=\"row g-3 align-items-center\"><div class=\"col\"><h1 class=\"ls-tight\">Get in Touch</h1></div><div class=\"col\"></div></div></div><form autocomplete=\"off\"><hr class=\"my-6\"><div class=\"row g-5\"><div class=\"row align-items-center g-3 mt-6\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">Full Name</label></div><div class=\"col-md-8 col-xl-5\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"dashboard-content\" class=\"flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2\"><main class=\"ccontainer-fluid px-3 py-5 p-lg-6 p-xxl-8\"><div class=\"mb-6 mb-xl-10\"><div class=\"row g-3 align-items-center\"><div class=\"col\"><h1 class=\"ls-tight\" data-i18n=\"getInTouch\">Get in Touch</h1></div><div class=\"col\"></div></div></div><form autocomplete=\"off\"><hr class=\"my-6\"><div class=\"row g-5\"><div class=\"row align-items-center g-3 mt-6\"><div class=\"col-md-2\"><label class=\"form-label mb-0\" data-i18n=\"off-canvas-modal-fullname\">Full Name</label></div><div class=\"col-md-8 col-xl-5\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -42,7 +40,7 @@ func ContactForm(invalid, success bool, errors map[string](string), values *doma
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(values.FullName)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 35, Col: 32}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 33, Col: 32}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -55,7 +53,7 @@ func ContactForm(invalid, success bool, errors map[string](string), values *doma
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(errors["full_name"])
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 38, Col: 30}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 36, Col: 30}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -73,7 +71,7 @@ func ContactForm(invalid, success bool, errors map[string](string), values *doma
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(values.FullName)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 46, Col: 32}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 44, Col: 32}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -84,7 +82,7 @@ func ContactForm(invalid, success bool, errors map[string](string), values *doma
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><hr class=\"my-6\"><div class=\"row align-items-center g-3 mt-6\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">Email</label></div><div class=\"col-md-8 col-xl-5\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><hr class=\"my-6\"><div class=\"row align-items-center g-3 mt-6\"><div class=\"col-md-2\"><label class=\"form-label mb-0\" data-i18n=\"off-canvas-email\">Email</label></div><div class=\"col-md-8 col-xl-5\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -96,7 +94,7 @@ func ContactForm(invalid, success bool, errors map[string](string), values *doma
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(values.Email)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 63, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 61, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -109,7 +107,7 @@ func ContactForm(invalid, success bool, errors map[string](string), values *doma
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(errors["email"])
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 67, Col: 26}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 65, Col: 26}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -127,7 +125,7 @@ func ContactForm(invalid, success bool, errors map[string](string), values *doma
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(values.Email)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 75, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 73, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -138,7 +136,7 @@ func ContactForm(invalid, success bool, errors map[string](string), values *doma
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><hr class=\"my-6\"><div class=\"row align-items-center g-3 mt-6\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">Phone</label></div><div class=\"col-md-8 col-xl-5\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><hr class=\"my-6\"><div class=\"row align-items-center g-3 mt-6\"><div class=\"col-md-2\"><label class=\"form-label mb-0\" data-i18n=\"off-canvas-modal-phone\">Phone</label></div><div class=\"col-md-8 col-xl-5\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -150,7 +148,7 @@ func ContactForm(invalid, success bool, errors map[string](string), values *doma
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(values.Phone)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 93, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 91, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -163,7 +161,7 @@ func ContactForm(invalid, success bool, errors map[string](string), values *doma
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(errors["phone"])
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 97, Col: 26}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 95, Col: 26}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -181,7 +179,7 @@ func ContactForm(invalid, success bool, errors map[string](string), values *doma
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(values.Phone)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 105, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 103, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -192,7 +190,7 @@ func ContactForm(invalid, success bool, errors map[string](string), values *doma
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><hr class=\"my-6\"><div class=\"row align-items-center g-3 mt-6\"><div class=\"col-md-2\"><label class=\"form-label mb-0\">Message</label></div><div class=\"col-md-8 col-xl-5\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><hr class=\"my-6\"><div class=\"row align-items-center g-3 mt-6\"><div class=\"col-md-2\"><label class=\"form-label mb-0\" data-i18n=\"off-canvas-modal-message\">Message</label></div><div class=\"col-md-8 col-xl-5\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -204,7 +202,7 @@ func ContactForm(invalid, success bool, errors map[string](string), values *doma
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(errors["message"])
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 126, Col: 28}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 124, Col: 28}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -222,7 +220,7 @@ func ContactForm(invalid, success bool, errors map[string](string), values *doma
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(values.Message)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 134, Col: 25}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/component/contact/dashboard-contact-form/contact-form/contact-form.templ`, Line: 132, Col: 25}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {

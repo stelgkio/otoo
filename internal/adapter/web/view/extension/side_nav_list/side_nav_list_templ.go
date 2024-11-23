@@ -31,7 +31,7 @@ func SideNavList(projectId, extensionId string, extensions []*domain.ProjectExte
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"nav-item my-1\" id=\"extensions-dropdown\"><a class=\"nav-link d-flex align-items-center rounded-pill\" href=\"#extension-components\" data-bs-toggle=\"collapse\" role=\"button\" aria-expanded=\"false\" aria-controls=\"extension-components\" onfocus=\"handleExtensionsClick()\"><i class=\"bi bi-grid-1x2-fill\"></i> <span>Extensions</span> <span class=\"badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto\"></span></a><div class=\"collapse\" id=\"extension-components\"><ul class=\"nav nav-sm flex-column mt-1\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"nav-item my-1\" id=\"extensions-dropdown\"><a class=\"nav-link d-flex align-items-center rounded-pill\" href=\"#extension-components\" data-bs-toggle=\"collapse\" role=\"button\" aria-expanded=\"false\" aria-controls=\"extension-components\" onfocus=\"handleExtensionsClick()\"><i class=\"bi bi-grid-1x2-fill\"></i> <span data-i18n=\"side-nav-extensions\">Extensions</span> <span class=\"badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto\"></span></a><div class=\"collapse\" id=\"extension-components\"><ul class=\"nav nav-sm flex-column mt-1\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -64,7 +64,7 @@ func SideNavList(projectId, extensionId string, extensions []*domain.ProjectExte
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"nav-link\" hx-push-url=\"true\" hx-target=\"#dashboard-content\" hx-indicator=\"#spinnerCourier\">Courier <span id=\"spinnerCourier\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span></a></li>")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"nav-link\" hx-push-url=\"true\" hx-target=\"#dashboard-content\" hx-indicator=\"#spinnerCourier\"><span data-i18n=\"Courier\">Courier</span> <span id=\"spinnerCourier\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span></a></li>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}

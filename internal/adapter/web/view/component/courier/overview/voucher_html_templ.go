@@ -45,7 +45,7 @@ func VoucherHtml(projectId string, extensions []*domain.ProjectExtension) templ.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-order\"><i class=\"bi bi-box-seam-fill\"></i> <span class=\"ms-2\">Orders</span></button></div></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-order\"><i class=\"bi bi-box-seam-fill\"></i> <span class=\"ms-2\" data-i18n=\"orders\">Orders</span></button></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

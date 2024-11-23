@@ -26,7 +26,7 @@ func ContactBtn() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"collapse navbar-collapse overflow-x-hidden\" id=\"sidebarCollapse\"><div class=\"mt-auto\"></div><div class=\"card bg-dark border-0 mt-5 mb-3\"><div class=\"card-body\"><div class=\"vstack gap-4\"><i class=\"bi bi-rocket-takeoff-fill text-white text-2xl\"></i><p class=\"text-sm text-white text-opacity-70\">Let's talk about your project.</p><a href=\"javascript:void(0)\" hx-get=\"/dashboard/contact\" hx-target=\"#dashboard-content\" class=\"btn btn-sm btn-primary w-100\">Get In Touch<i class=\"bi bi-arrow-right ms-2\"></i></a></div></div></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"collapse navbar-collapse overflow-x-hidden\" id=\"sidebarCollapse\"><div class=\"mt-auto\"></div><div class=\"card bg-dark border-0 mt-5 mb-3\"><div class=\"card-body\"><div class=\"vstack gap-4\"><i class=\"bi bi-rocket-takeoff-fill text-white text-2xl\"></i><p class=\"text-sm text-white text-opacity-70\"><span data-i18n=\"letsTalkAboutYourProject\">Let's talk about your project.</span></p><a href=\"javascript:void(0)\" hx-get=\"/dashboard/contact\" hx-target=\"#dashboard-content\" class=\"btn btn-sm btn-primary w-100\"><span data-i18n=\"getInTouch\">Get In Touch</span><i class=\"bi bi-arrow-right ms-2\"></i></a></div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

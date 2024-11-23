@@ -1,10 +1,8 @@
 package views
 
-import (
-	"github.com/stelgkio/otoo/internal/core/domain"
-)
+import "github.com/stelgkio/otoo/internal/core/domain"
 
-templ ContactForm(invalid, success bool,errors map[string](string),values *domain.ContactRequest) {
+templ ContactForm(invalid, success bool, errors map[string](string), values *domain.ContactRequest) {
 	<div
 		id="dashboard-content"
 		class="flex-fill overflow-y-lg-auto scrollbar bg-body rounded-top-4 rounded-top-start-lg-4 rounded-top-end-lg-0 border-top border-lg shadow-2"
@@ -13,7 +11,7 @@ templ ContactForm(invalid, success bool,errors map[string](string),values *domai
 			<div class="mb-6 mb-xl-10">
 				<div class="row g-3 align-items-center">
 					<div class="col">
-						<h1 class="ls-tight">Get in Touch</h1>
+						<h1 class="ls-tight" data-i18n="getInTouch">Get in Touch</h1>
 					</div>
 					<div class="col"></div>
 				</div>
@@ -23,7 +21,7 @@ templ ContactForm(invalid, success bool,errors map[string](string),values *domai
 				<div class="row g-5">
 					<div class="row align-items-center g-3 mt-6">
 						<div class="col-md-2">
-							<label class="form-label mb-0">Full Name</label>
+							<label class="form-label mb-0" data-i18n="off-canvas-modal-fullname">Full Name</label>
 						</div>
 						<div class="col-md-8 col-xl-5">
 							if errors["full_name"] != "" {
@@ -51,7 +49,7 @@ templ ContactForm(invalid, success bool,errors map[string](string),values *domai
 					<hr class="my-6"/>
 					<div class="row align-items-center g-3 mt-6">
 						<div class="col-md-2">
-							<label class="form-label mb-0">Email</label>
+							<label class="form-label mb-0" data-i18n="off-canvas-email">Email</label>
 						</div>
 						<div class="col-md-8 col-xl-5">
 							if errors["email"] != "" {
@@ -81,7 +79,7 @@ templ ContactForm(invalid, success bool,errors map[string](string),values *domai
 					<hr class="my-6"/>
 					<div class="row align-items-center g-3 mt-6">
 						<div class="col-md-2">
-							<label class="form-label mb-0">Phone</label>
+							<label class="form-label mb-0" data-i18n="off-canvas-modal-phone">Phone</label>
 						</div>
 						<div class="col-md-8 col-xl-5">
 							if errors["phone"] != "" {
@@ -111,7 +109,7 @@ templ ContactForm(invalid, success bool,errors map[string](string),values *domai
 					<hr class="my-6"/>
 					<div class="row align-items-center g-3 mt-6">
 						<div class="col-md-2">
-							<label class="form-label mb-0">Message</label>
+							<label class="form-label mb-0" data-i18n="off-canvas-modal-message">Message</label>
 						</div>
 						<div class="col-md-8 col-xl-5">
 							if errors["message"] != "" {

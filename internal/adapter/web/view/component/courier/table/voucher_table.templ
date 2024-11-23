@@ -63,7 +63,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 						@click="showDropdown = !showDropdown"
 						:aria-expanded="showDropdown.toString()"
 					>
-						<i class="bi bi-plus-circle"></i> <span class="ms-2">Bulk Action</span>
+						<i class="bi bi-plus-circle"></i> <span class="ms-2" data-i18n="Bulk_Action">Bulk Action</span>
 					</button>
 					<div class="dropdown-menu" :class="{ 'show': showDropdown }" aria-labelledby="dropdownMenuButton2">
 						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
@@ -78,7 +78,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 								/>
 							</div>
 							<div class="ms-3 me-5">
-								<label for="multiplevouchercreation">Download Mutliple Vouchers</label>
+								<label for="multiplevouchercreation" data-i18n="Download_Mutliple_Vouchers">Download Mutliple Vouchers</label>
 							</div>
 							// <div class="ms-auto">
 							// <span class="badge rounded-pill bg-opacity-25 bg-success text-success">23</span>
@@ -188,7 +188,7 @@ templ VoucherTable(projectId string, extensions []*domain.ProjectExtension) {
 					<tbody>
 						<template x-if="!loading && totalItems === 0">
 							<tr>
-								<td colspan="9"><span data-i18n="sorting-no-results-msg"></span>No vouchers found</td>
+								<td colspan="9"><span data-i18n="sorting-no-results-msg"></span></td>
 							</tr>
 						</template>
 						<template x-for="voucher in paginatedVouchers" :key="voucher.Id">

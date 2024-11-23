@@ -43,6 +43,7 @@ i18next
                     "off-canvas-parcel-cod": "COD",
                     //Off Canvas Billing Info EN
                     "off-canvas-modal-name": "Name",
+                    "off-canvas-modal-desc": "Description",
                     "off-canvas-modal-last-name": "Last Name",
                     "off-canvas-email": "Email",
                     "off-canvas-modal-phone": "Phone",
@@ -159,16 +160,35 @@ i18next
                     "dashboard-table-products_category": "Category",
                     "dashboard-table-products_type": "Type",
                     "dashboard-table-products-total_orders": "Total Orders",
-
-
-
-
-
-
-
-
-
-
+                    "Bulk_Action": "Bulk Action",
+                    "Download_Mutliple_Vouchers": "Download Multiple Vouchers",
+                    "Courier": "Courier",
+                    "General": "Γενικά",
+                    "Update_your_project_data": "Update your project data.",
+                    "Secrets": "Secrets",
+                    "Notifications": "Notifications",
+                    "Payment_Subscription": "Payment & Subscription",
+                    "Team": "Team",
+                    'update': "Update",
+                    "Delete_Project": "Delete Project",
+                    "deleteconfim": "Are you sure you want to delete this project?",
+                    "deleteWarning": "By deleting this project you are lossing all of your data!",
+                    "deleteWarning2": "Make sure you have deactivated all of your extensions!",
+                    "orders": "Orders",
+                    "weeklyBalance": "Weekly Balance",
+                    "quickStats": "Quick Stats",
+                    "bestSeller": "Best Seller",
+                    "latestOrderHistory": "Latest Order History",
+                    "changeStatusToCompleted": "Change status to completed",
+                    "changeStatusToPending": "Change status to pending",
+                    "changeStatusToProcessing": "Change status to processing",
+                    "changeStatusToCancelled": "Change status to cancelled",
+                    "apply": "Apply",
+                    "letsTalkAboutYourProject": "Let's talk about your project",
+                    "getInTouch": "Get in Touch",
+                    "off-canvas-modal-fullname": "Full Name",
+                    "off-canvas-modal-message": "Message",
+                    "vouchers": "Voucher",
                 }
             },
             el: {
@@ -183,12 +203,14 @@ i18next
                     "off-canvas-shipping-tab": "Αποστολή",
                     "off-canvas-customer-info-header": "Στοιχεία Πελάτη",
                     "off-canvas-modal-name": "Όνομα",
+                    "off-canvas-modal-fullname": "Όνοματεπώνυμο",
                     "off-canvas-modal-last-name": "Επώνυμο",
                     "off-canvas-email": "Email",
                     "off-canvas-modal-phone": "Τηλέφωνο",
                     "ooff-canvas-modal-address": "Διεύθυνση",
                     "off-canvas-modal-city": "Πόλη",
                     "off-canvas-modal-postal": "Τ.K.",
+                    "off-canvas-modal-message": "Μήνυμα",
                     //Off Canvas Products Info GR
                     "off-canvas-customer-products-header": "Προϊόντα",
                     "off-canvas-customer-product-name": "Όνομα Προϊόντος",
@@ -249,6 +271,7 @@ i18next
                     "order-modal-header-title": "Πληροφορίες Παραγγελίας",
                     "order-modal-header-billing": "Πληροφορίες Πληρωμής",
                     "order-modal-billing-name": "Όνομα",
+                    "off-canvas-modal-desc": "Περιγραφή",
                     "order-modal-billing-last-name": "Επώνυμο",
                     "order-modal-billing-address": "Διεύθυνση",
                     "order-modal-billing-city": "Πόλη",
@@ -267,7 +290,7 @@ i18next
                     "off-canvas-shipping-parclel-cod": "Αντικαταβολή",
                     // Sorting Table GR
                     "sorting-table-voucher-id": "VOUCHER ID",
-                    "sorting-table-order-id": "ID ΠΑΡΑΓΓΕΛΙΑΣ",
+                    "sorting-table-order-id": "ΑΡΘ. ΠΑΡΑΓΓΕΛΙΑΣ",
                     "sorting-table-order-date": "ΗΜ/ΝΙΑ",
                     "sorting-table-order-cod": "ΑΝΤΙΚΑΤΑΒΟΛΗ",
                     "sorting-table-status-header": "ΚΑΤΑΣΤΑΣΗ",
@@ -312,10 +335,33 @@ i18next
                     "dashboard-table-products_category": "Κατηγορία Προϊόντος",
                     "dashboard-table-products_type": "Τύπος Προϊόντος",
                     "dashboard-table-products-total_orders": "Συνολικές Παραγγελίες",
-
-
-
-
+                    "Bulk_Action": "Μαζικές Ενέργειες",
+                    "Download_Mutliple_Vouchers": "Λήψη Πολλαπλών Voucher",
+                    "Courier": "Μεταφορική",
+                    "General": "Γενικά",
+                    "Update_your_project_data": "Ενημέρωση δεδομένων έργου",
+                    "Secrets": "Συνθηματικά",
+                    "Notifications": "Ειδοποιήσεις",
+                    "Payment_Subscription": "Πληρωμές & Εγγραφές",
+                    "Team": "Ομάδα",
+                    "Delete_Project": "Διαγραφή Έργου",
+                    'update': "Ενημέρωση",
+                    "deleteconfim": "Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το έργο;",
+                    "deleteWarning": "Ανακαλώντας αυτό το έργο, θα χάσετε όλα τα δεδομένα σας!",
+                    "deleteWarning2": "Βεβαιωθείτε ότι έχετε απενεργοποιήσει όλες τις επεκτάσεις σας!",
+                    "orders": "Παραγγελίες",
+                    "weeklyBalance": "Εβδομαδιαίος Τζίρος",
+                    "quickStats": "Στατιστικά Στοιχεία",
+                    "bestSeller": "Δημοφιλής Προϊόντα",
+                    "latestOrderHistory": "Ιστορικό Παραγγελιών",
+                    "changeStatusToCompleted": "Αλλαγή κατάστασης σε ολοκληρωμένο",
+                    "changeStatusToPending": "Αλλαγή κατάστασης σε εκκρεμότητα",
+                    "changeStatusToProcessing": "Αλλαγή κατάστασης σε επεξεργασία",
+                    "changeStatusToCancelled": "Αλλαγή κατάστασης σε ακυρωμένο",
+                    "apply": "Εφαρμογή",
+                    "letsTalkAboutYourProject": "Ας μιλήσουμε για το έργο σας",
+                    "getInTouch": "Επικοινωνήστε μαζί μας",
+                    "vouchers": "Παραστατικά",
                 }
             }
         }

@@ -24,7 +24,7 @@ templ VoucherHtml(projectId string, extensions []*domain.ProjectExtension) {
 					hx-get={ fmt.Sprintf("/order/tablehtml/%s", projectId) }
 					hx-target="#dashboard-order"
 				>
-					<i class="bi bi-box-seam-fill"></i> <span class="ms-2">Orders</span>
+					<i class="bi bi-box-seam-fill"></i> <span class="ms-2" data-i18n="orders">Orders</span>
 				</button>
 			</div>
 		</div>

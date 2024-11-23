@@ -41,7 +41,7 @@ func ProductBestSeller(bestSeller []*woo.ProductBestSellerRecord) templ.Componen
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card border-0 border-xxl\"><div class=\"card-body p-0 p-xxl-6\"><div class=\"d-flex justify-content-between align-items-center mb-5\"><div><h5>Best Seller</h5></div><div class=\"hstack align-items-center\"><a href=\"#\" class=\"text-muted\"><i class=\"bi bi-arrow-repeat\"></i></a></div></div><div class=\"vstack gap-1\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card border-0 border-xxl\"><div class=\"card-body p-0 p-xxl-6\"><div class=\"d-flex justify-content-between align-items-center mb-5\"><div><h5 data-i18n=\"bestSeller\">Best Seller</h5></div><div class=\"hstack align-items-center\"><a href=\"#\" class=\"text-muted\"><i class=\"bi bi-arrow-repeat\"></i></a></div></div><div class=\"vstack gap-1\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -53,7 +53,7 @@ func ProductBestSeller(bestSeller []*woo.ProductBestSellerRecord) templ.Componen
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(prod.ProductName)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/product/best_seller/best_seller.templ`, Line: 37, Col: 27}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/product/best_seller/best_seller.templ`, Line: 35, Col: 28}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -66,7 +66,7 @@ func ProductBestSeller(bestSeller []*woo.ProductBestSellerRecord) templ.Componen
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.f%%", prod.TotalOrdersRate))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/product/best_seller/best_seller.templ`, Line: 42, Col: 52}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/product/best_seller/best_seller.templ`, Line: 40, Col: 53}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -79,7 +79,7 @@ func ProductBestSeller(bestSeller []*woo.ProductBestSellerRecord) templ.Componen
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", prod.TotalOrders))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/product/best_seller/best_seller.templ`, Line: 49, Col: 44}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/product/best_seller/best_seller.templ`, Line: 46, Col: 45}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -114,7 +114,7 @@ func ProductBestSeller(bestSeller []*woo.ProductBestSellerRecord) templ.Componen
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", int64(prod.TotalOrdersRate)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/product/best_seller/best_seller.templ`, Line: 57, Col: 69}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/product/best_seller/best_seller.templ`, Line: 54, Col: 71}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {

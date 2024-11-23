@@ -17,7 +17,7 @@ templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExt
 			onfocus="handleExtensionsClick()"
 		>
 			<i class="bi bi-grid-1x2-fill"></i>
-			<span>Extensions</span>
+			<span data-i18n="side-nav-extensions">Extensions</span>
 			<span
 				class="badge badge-sm rounded-pill me-n2 bg-success-subtle text-success ms-auto"
 			></span>
@@ -36,7 +36,7 @@ templ SideNavList(projectId, extensionId string, extensions []*domain.ProjectExt
 									hx-target="#dashboard-content"
 									hx-indicator="#spinnerCourier"
 								>
-									Courier
+									<span data-i18n="Courier">Courier</span>
 									<span
 										id="spinnerCourier"
 										class="htmx-indicator spinner-border spinner-border-sm"

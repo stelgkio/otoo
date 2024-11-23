@@ -33,7 +33,7 @@ func LatestOrderHistory(orders []*woo.OrderRecord) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card\"><div class=\"card-body pb-0\"><div class=\"d-flex justify-content-between align-items-center\"><div><h5>Latest Order History</h5></div><div class=\"hstack align-items-center\"><a href=\"#\" class=\"text-muted\"><i class=\"bi bi-arrow-repeat\"></i></a></div></div><div class=\"list-group list-group-flush\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card\"><div class=\"card-body pb-0\"><div class=\"d-flex justify-content-between align-items-center\"><div><h5 data-i18n=\"latestOrderHistory\">Latest Order History</h5></div><div class=\"hstack align-items-center\"><a href=\"#\" class=\"text-muted\"><i class=\"bi bi-arrow-repeat\"></i></a></div></div><div class=\"list-group list-group-flush\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

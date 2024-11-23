@@ -40,7 +40,7 @@ func ProjectSecrets(project *domain.Project, projectExtensions []*domain.Project
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<hr class=\"my-6\"><form><div class=\"d-flex align-items-end justify-content-between\"><div><h4 class=\"fw-semibold mb-1\">Secrest Reset</h4><p class=\"text-sm text-muted\">By updating your project secrets you will reset all the secrets for this project.\t\t\t\t\t\t\t</p></div><div class=\"d-none d-md-flex gap-2\"><button type=\"button\" class=\"btn btn-sm btn-primary\" hx-indicator=\"#spinner\" hx-post=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<hr class=\"my-6\"><form><div class=\"d-flex align-items-end justify-content-between\"><div><h4 class=\"fw-semibold mb-1\">Secrets Update</h4><p class=\"text-sm text-muted\">By updating your project secrets you will reset all the secrets for this project.\t\t\t\t\t\t\t</p></div><div class=\"d-none d-md-flex gap-2\"><button type=\"button\" class=\"btn btn-sm btn-primary\" hx-indicator=\"#spinner\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -53,7 +53,7 @@ func ProjectSecrets(project *domain.Project, projectExtensions []*domain.Project
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Update</button></div></div><hr class=\"my-6\"><div class=\"vstack gap-5\"><div class=\"row align-items-center g-3\"><div class=\"col-md-2\"><label class=\"form-label mb-0\" for=\"consumer_key\">ConsumerKey</label></div><div class=\"col-md-6\"><div class=\"password-container\"><input type=\"password\" class=\"form-control\" id=\"consumer_key\" name=\"consumer_key\" value=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> <span data-i18n=\"update\">Update</span></button></div></div><hr class=\"my-6\"><div class=\"vstack gap-5\"><div class=\"row align-items-center g-3\"><div class=\"col-md-2\"><label class=\"form-label mb-0\" for=\"consumer_key\">ConsumerKey</label></div><div class=\"col-md-6\"><div class=\"password-container\"><input type=\"password\" class=\"form-control\" id=\"consumer_key\" name=\"consumer_key\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -24,7 +24,7 @@ templ OrderTable(projectId string) {
 						hx-get={ fmt.Sprintf("/voucher/table/html/%s", projectId) }
 						hx-target="#dashboard-order"
 					>
-						<i class="bi bi-box-seam-fill"></i> <span class="ms-2">Vouchers</span>
+						<i class="bi bi-send"></i><span class="ms-2" data-i18n="vouchers">Vouchers</span>
 					</button>
 				</div>
 			</div>
@@ -83,7 +83,7 @@ templ OrderTable(projectId string) {
 						@click="showDropdown = !showDropdown"
 						:aria-expanded="showDropdown.toString()"
 					>
-						<i class="bi bi-plus-circle"></i> <span class="ms-2">Bulk Action</span>
+						<i class="bi bi-plus-circle"></i> <span class="ms-2" data-i18n="Bulk_Action">Bulk Action</span>
 					</button>
 					<div class="dropdown-menu" :class="{ 'show': showDropdown }" aria-labelledby="dropdownMenuButton2">
 						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
@@ -98,7 +98,7 @@ templ OrderTable(projectId string) {
 								/>
 							</div>
 							<div class="ms-3 me-5">
-								<label for="statusCompleted">Change status to completed</label>
+								<label for="statusCompleted" data-i18n="changeStatusToCompleted">Change status to completed</label>
 							</div>
 							// <div class="ms-auto">
 							// <span class="badge rounded-pill bg-opacity-25 bg-success text-success">23</span>
@@ -116,7 +116,7 @@ templ OrderTable(projectId string) {
 								/>
 							</div>
 							<div class="ms-3 me-5">
-								<label for="statuSpending">Change status to pending</label>
+								<label for="statuSpending" data-i18n="changeStatusToPending">Change status to pending</label>
 							</div>
 						</div>
 						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
@@ -131,7 +131,7 @@ templ OrderTable(projectId string) {
 								/>
 							</div>
 							<div class="ms-3 me-5">
-								<label for="statusProdessing">Change status to processing</label>
+								<label for="statusProdessing" data-i18n="changeStatusToProcessing">Change status to processing</label>
 							</div>
 						</div>
 						<div class="dropdown-item py-1 px-2 d-flex align-items-center">
@@ -146,7 +146,7 @@ templ OrderTable(projectId string) {
 								/>
 							</div>
 							<div class="ms-3 me-5">
-								<label for="statusCancelled">Change status to cancelled</label>
+								<label for="statusCancelled" data-i18n="changeStatusToCancelled">Change status to cancelled</label>
 							</div>
 						</div>
 						<!-- Add other status options here -->
@@ -156,7 +156,7 @@ templ OrderTable(projectId string) {
 								class="btn btn-sm btn-primary d-sm-inline-flex position-relative"
 								@click="applyAction"
 							>
-								<span x-show="!loading">Apply </span>
+								<span x-show="!loading" data-i18n="apply">Apply </span>
 								<span
 									x-show="loading"
 									class="spinner-border spinner-border-sm"
@@ -191,7 +191,7 @@ templ OrderTable(projectId string) {
 								</div>
 							</th>
 							<th @click="sortTable('orderId')">
-								<span data-i18n="dashboard-table-order_id">Order ID</span>
+								<span data-i18n="sorting-table-order-id">Order ID</span>
 								<i :class="getSortIcon('orderId')"></i>
 							</th>
 							<th @click="sortTable('order_created')">

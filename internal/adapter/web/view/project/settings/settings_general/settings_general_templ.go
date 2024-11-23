@@ -42,7 +42,7 @@ func SettingsGeneral(user *domain.User, project *domain.Project, projectExtensio
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form><div class=\"d-flex align-items-end justify-content-between\"><div><h4 class=\"fw-semibold mb-1\">General</h4><p class=\"text-sm text-muted\">Update your project data.</p></div><div class=\"d-none d-md-flex gap-2\"><button type=\"submit\" hx-indicator=\"#spinner\" hx-post=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form><div class=\"d-flex align-items-end justify-content-between\"><div><h4 class=\"fw-semibold mb-1\" data-i18n=\"side-nav-settings\">General</h4><p class=\"text-sm text-muted\" data-i18n=\"Update_your_project_data\">Update your project data.</p></div><div class=\"d-none d-md-flex gap-2\"><button type=\"submit\" hx-indicator=\"#spinner\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -55,7 +55,7 @@ func SettingsGeneral(user *domain.User, project *domain.Project, projectExtensio
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\" class=\"btn btn-sm btn-primary\"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Update</button></div></div><hr class=\"my-6\"><div class=\"row align-items-center\"><div class=\"col-md-2\"><label class=\"form-label\" for=\"name\">Name</label></div><div class=\"col-md-8 col-xl-5\"><div class=\"\"><input type=\"text\" class=\"form-control\" name=\"name\" value=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\" class=\"btn btn-sm btn-primary\"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> <span data-i18n=\"update\">Update</span></button></div></div><hr class=\"my-6\"><div class=\"row align-items-center\"><div class=\"col-md-2\"><label class=\"form-label\" for=\"name\" data-i18n=\"off-canvas-modal-name\">Name</label></div><div class=\"col-md-8 col-xl-5\"><div class=\"\"><input type=\"text\" class=\"form-control\" name=\"name\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -68,7 +68,7 @@ func SettingsGeneral(user *domain.User, project *domain.Project, projectExtensio
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div></div></div><hr class=\"my-6\"><div class=\"row align-items-center\"><div class=\"col-md-2\"><label class=\"form-label\" for=\"description\">Description</label></div><div class=\"col-md-8 col-xl-5\"><div class=\"\"><input type=\"text\" class=\"form-control\" name=\"description\" value=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div></div></div><hr class=\"my-6\"><div class=\"row align-items-center\"><div class=\"col-md-2\"><label class=\"form-label\" for=\"description\" data-i18n=\"off-canvas-modal-desc\">Description</label></div><div class=\"col-md-8 col-xl-5\"><div class=\"\"><input type=\"text\" class=\"form-control\" name=\"description\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -107,17 +107,17 @@ func SettingsGeneral(user *domain.User, project *domain.Project, projectExtensio
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\" class=\"btn btn-sm btn-primary \"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Update</button></div></form>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\" class=\"btn btn-sm btn-primary \"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> <span data-i18n=\"update\">Update</span></button></div></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if ConvertUserRole(user.Role) == "admin" {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<hr class=\"my-6\"><div class=\"d-flex align-items-end justify-content-between\"><div><h4 class=\"fw-semibold mb-1\">Delete Project</h4><p class=\"text-sm text-muted\">By deleting this project you are lossing all of your data!<br><strong>Make sure you have deactivate all of your extensions!</strong></p></div><div class=\"d-md-flex gap-2\"><button data-bs-target=\"#deleteProjectModal\" data-bs-toggle=\"modal\" class=\"btn btn-sm btn-danger\">Delete </button></div></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<hr class=\"my-6\"><div class=\"d-flex align-items-end justify-content-between\"><div><h4 class=\"fw-semibold mb-1\" data-i18n=\"Delete_Project\">Delete Project</h4><p class=\"text-sm text-muted\"><span data-i18n=\"deleteWarning\">By deleting this project you are lossing all of your data!</span><br><strong data-i18n=\"deleteWarning2\">Make sure you have deactivate all of your extensions!</strong></p></div><div class=\"d-md-flex gap-2\"><button data-bs-target=\"#deleteProjectModal\" data-bs-toggle=\"modal\" class=\"btn btn-sm btn-danger\"><span data-i18n=\"Delete_Project\"></span></button></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</main><div class=\"modal fade\" id=\"deleteProjectModal\" tabindex=\"-1\" aria-labelledby=\"deleteProjectModalLabel\" aria-hidden=\"true\"><div class=\"modal-dialog modal-dialog-centered\"><div class=\"modal-content overflow-hidden\"><div class=\"modal-header pb-0 border-0\"><h1 class=\"modal-title h4\" id=\"deleteProjectModalLabel\">Delete Project</h1><button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button></div><div class=\"modal-body p-0\"><div class=\"px-6 py-5 border-bottom\"><h3 class=\"modal-title h4\" id=\"deleteProjectModalLabel\">Are you sure you want to delete this project?</h3></div><div class=\"px-6 py-5 bg-body-secondary d-flex justify-content-center\"><button type=\"submit\" id=\"spinner\" hx-post=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</main><div class=\"modal fade\" id=\"deleteProjectModal\" tabindex=\"-1\" aria-labelledby=\"deleteProjectModalLabel\" aria-hidden=\"true\"><div class=\"modal-dialog modal-dialog-centered\"><div class=\"modal-content overflow-hidden\"><div class=\"modal-header pb-0 border-0\"><h1 class=\"modal-title h4\" id=\"deleteProjectModalLabel\" data-i18n=\"Delete_Project\">Delete Project</h1><button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button></div><div class=\"modal-body p-0\"><div class=\"px-6 py-5 border-bottom\"><h3 class=\"modal-title h4\" id=\"deleteProjectModalLabel\" data-i18n=\"deleteconfim\">Are you sure you want to delete this project?</h3></div><div class=\"px-6 py-5 bg-body-secondary d-flex justify-content-center\"><button type=\"submit\" id=\"spinner\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -130,7 +130,7 @@ func SettingsGeneral(user *domain.User, project *domain.Project, projectExtensio
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"btn btn-sm btn-danger\"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Delete </button></div></div></div></div></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"btn btn-sm btn-danger\"><span id=\"spinner\" class=\"htmx-indicator spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> <span data-i18n=\"Delete_Project\"></span></button></div></div></div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

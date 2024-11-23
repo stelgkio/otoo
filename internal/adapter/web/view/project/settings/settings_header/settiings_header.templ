@@ -5,11 +5,13 @@ import (
 	"github.com/stelgkio/otoo/internal/core/domain"
 )
 
+var helloHandle = templ.NewOnceHandle()
+
 templ SettingsHeader(headerTitle string, active int, projectId string, projectExtensions []*domain.ProjectExtension, user *domain.User) {
 	<header class="border-bottom mb-10">
 		<div class="row align-items-center">
 			<div class="col-sm-6 col-12">
-				<h1 class="ls-tight">{ headerTitle }</h1>
+				//<h1 class="ls-tight">{ headerTitle }</h1>
 			</div>
 		</div>
 		<ul class="nav nav-tabs nav-tabs-flush gap-6 overflow-x border-0 mt-4">
@@ -21,6 +23,7 @@ templ SettingsHeader(headerTitle string, active int, projectId string, projectEx
 						hx-target="#dashboard-content"
 						hx-push-url="true"
 						class="nav-link active"
+						data-i18n="General"
 					>General</a>
 				</li>
 			} else {
@@ -31,6 +34,7 @@ templ SettingsHeader(headerTitle string, active int, projectId string, projectEx
 						hx-target="#dashboard-content"
 						hx-push-url="true"
 						class="nav-link"
+						data-i18n="General"
 					>General</a>
 				</li>
 			}
@@ -42,6 +46,7 @@ templ SettingsHeader(headerTitle string, active int, projectId string, projectEx
 						hx-get={ fmt.Sprintf("/project/settings/secret/%s", projectId) }
 						hx-target="#dashboard-content"
 						class="nav-link active"
+						data-i18n="Secrets"
 					>Secrets</a>
 				</li>
 			} else {
@@ -51,6 +56,7 @@ templ SettingsHeader(headerTitle string, active int, projectId string, projectEx
 						hx-get={ fmt.Sprintf("/project/settings/secret/%s", projectId) }
 						hx-target="#dashboard-content"
 						class="nav-link"
+						data-i18n="Secrets"
 					>Secrets</a>
 				</li>
 			}
@@ -80,6 +86,7 @@ templ SettingsHeader(headerTitle string, active int, projectId string, projectEx
 						hx-get={ fmt.Sprintf("/project/settings/notification/%s", projectId) }
 						hx-target="#dashboard-content"
 						class="nav-link active"
+						data-i18n="Notifications"
 					>Notifications</a>
 				</li>
 			} else {
@@ -89,6 +96,7 @@ templ SettingsHeader(headerTitle string, active int, projectId string, projectEx
 						hx-get={ fmt.Sprintf("/project/settings/notification/%s", projectId) }
 						hx-target="#dashboard-content"
 						class="nav-link"
+						data-i18n="Notifications"
 					>Notifications</a>
 				</li>
 			}
@@ -100,6 +108,7 @@ templ SettingsHeader(headerTitle string, active int, projectId string, projectEx
 							hx-get={ fmt.Sprintf("/project/settings/payment/%s", projectId) }
 							hx-target="#dashboard-content"
 							class="nav-link active"
+							data-i18n="Payment_Subscription"
 						>Payment & Subscription</a>
 					</li>
 				} else {
@@ -109,6 +118,7 @@ templ SettingsHeader(headerTitle string, active int, projectId string, projectEx
 							hx-get={ fmt.Sprintf("/project/settings/payment/%s", projectId) }
 							hx-target="#dashboard-content"
 							class="nav-link"
+							data-i18n="Payment_Subscription"
 						>Payment & Subscription</a>
 					</li>
 				}
@@ -121,6 +131,7 @@ templ SettingsHeader(headerTitle string, active int, projectId string, projectEx
 						hx-target="#dashboard-content"
 						hx-push-url="true"
 						class="nav-link active"
+						data-i18n="Team"
 					>Team</a>
 				</li>
 			} else {
@@ -131,6 +142,7 @@ templ SettingsHeader(headerTitle string, active int, projectId string, projectEx
 						hx-target="#dashboard-content"
 						hx-push-url="true"
 						class="nav-link"
+						data-i18n="Team"
 					>Team</a>
 				</li>
 			}

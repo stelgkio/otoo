@@ -46,14 +46,14 @@ func DeafultDashboard(projectId string, counts map[string]string, orders []*woo.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\" class=\"h6 stretched-link\" hx-push-url=\"true\">Orders</a></div><div class=\"text-sm fw-semibold mt-3\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\" class=\"h6 stretched-link\" hx-push-url=\"true\" data-i18n=\"orders\">Orders</a></div><div class=\"text-sm fw-semibold mt-3\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(counts["order_count"])
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 55, Col: 71}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 56, Col: 71}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -66,20 +66,20 @@ func DeafultDashboard(projectId string, counts map[string]string, orders []*woo.
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/dashboard/customer/%s", projectId))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 70, Col: 69}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 71, Col: 69}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\" class=\"h6 stretched-link\" hx-push-url=\"true\">Customers</a></div><div class=\"text-sm fw-semibold mt-3\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\" class=\"h6 stretched-link\" hx-push-url=\"true\" data-i18n=\"side-nav-customers\">Customers</a></div><div class=\"text-sm fw-semibold mt-3\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(counts["customer_count"])
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 76, Col: 74}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 78, Col: 74}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -92,20 +92,20 @@ func DeafultDashboard(projectId string, counts map[string]string, orders []*woo.
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/dashboard/product/%s", projectId))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 91, Col: 68}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 93, Col: 68}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\" class=\"h6 stretched-link\" hx-push-url=\"true\">Products</a></div><div class=\"text-sm fw-semibold mt-3\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#dashboard-content\" class=\"h6 stretched-link\" hx-push-url=\"true\" data-i18n=\"side-nav-products\">Products</a></div><div class=\"text-sm fw-semibold mt-3\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(counts["product_count"])
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 97, Col: 73}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 100, Col: 73}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -123,7 +123,7 @@ func DeafultDashboard(projectId string, counts map[string]string, orders []*woo.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div class=\"col-xxl-4\"><div class=\"offcanvas-xxl m-xxl-0 rounded-sm-4 rounded-xxl-0 offcanvas-end overflow-hidden m-sm-4\" tabindex=\"-1\" id=\"responsiveOffcanvas\" aria-labelledby=\"responsiveOffcanvasLabel\"><div class=\"offcanvas-header rounded-top-4\"><h5 class=\"offcanvas-title\" id=\"responsiveOffcanvasLabel\">Quick Stats</h5><button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"offcanvas\" data-bs-target=\"#responsiveOffcanvas\" aria-label=\"Close\"></button></div><div class=\"offcanvas-body d-flex flex-column p-3 p-sm-6 p-xxl-0 gap-3 gap-xxl-6\"><div class=\"vstack gap-6 gap-xxl-6\"><div class=\"card border-0 border-xxl\"><div class=\"card-body d-flex flex-column p-0 p-xxl-6\"><div class=\"d-flex justify-content-between align-items-center mb-3\"><div><h5>Weekly Balance</h5></div><div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div class=\"col-xxl-4\"><div class=\"offcanvas-xxl m-xxl-0 rounded-sm-4 rounded-xxl-0 offcanvas-end overflow-hidden m-sm-4\" tabindex=\"-1\" id=\"responsiveOffcanvas\" aria-labelledby=\"responsiveOffcanvasLabel\"><div class=\"offcanvas-header rounded-top-4\"><h5 class=\"offcanvas-title\" id=\"responsiveOffcanvasLabel\" data-i18n=\"quickStats\">Quick Stats</h5><button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"offcanvas\" data-bs-target=\"#responsiveOffcanvas\" aria-label=\"Close\"></button></div><div class=\"offcanvas-body d-flex flex-column p-3 p-sm-6 p-xxl-0 gap-3 gap-xxl-6\"><div class=\"vstack gap-6 gap-xxl-6\"><div class=\"card border-0 border-xxl\"><div class=\"card-body d-flex flex-column p-0 p-xxl-6\"><div class=\"d-flex justify-content-between align-items-center mb-3\"><div><h5 data-i18n=\"weeklyBalance\">Weekly Balance</h5></div><div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -135,7 +135,7 @@ func DeafultDashboard(projectId string, counts map[string]string, orders []*woo.
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%2.f", weeklyBalance.AnalyticsBase.ActiveOrderRate))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 145, Col: 80}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 148, Col: 80}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -163,7 +163,7 @@ func DeafultDashboard(projectId string, counts map[string]string, orders []*woo.
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("€%.2f", weeklyBalance.AnalyticsBase.TotalRevenue))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 156, Col: 78}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 159, Col: 78}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -220,13 +220,13 @@ func MonthlyChart(projectId string) templ.Component {
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("chartComponent('%s')", projectId))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 199, Col: 61}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/adapter/web/view/dashboard/default/deafult-dashboard.templ`, Line: 202, Col: 61}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" x-init=\"init()\"><div class=\"card\"><div class=\"card-body pb-0\"><div class=\"d-flex justify-content-between align-items-center\"><div><h5>Orders</h5></div><div class=\"hstack align-items-center\"><a href=\"#\" class=\"text-muted\" @click=\"refreshChart\"><i class=\"bi bi-arrow-repeat\"></i></a></div></div><div class=\"mx-n4\"><div id=\"chart-users\" data-height=\"270\"></div></div></div></div></div><script>\n  \t\t function chartComponent(projectId) {\n    return {\n            projectID: projectId,  // Store project ID\n            chartData: {\n                months: [],  // Categories (Months)\n                orders: []  // Data for the chart\n            },\n        \tchartInstance: null,  // Store the ApexCharts instance\n \t\t\t\n            // Initialize and fetch data\n            async init() {\n                await this.fetchChartData();  // Fetch data first\n            },\n\n            // Fetch data from the server\n            async fetchChartData() {\n                try {\n                    const response = await fetch(`${window.location.origin}/order/monthy/chart/${this.projectID}`);\n                    const data = await response.json();                   \n\n                    // Assuming the API returns \"months\" and \"orders\" arrays\n                    this.chartData.months = data.months || [];\n                    this.chartData.orders = data.orders || [];\n\n                    // Render or update the chart after data is fetched\n                    this.renderChart();\n                } catch (error) {\n                    console.error('Error fetching chart data:', error);\n                }\n            },\n\n            // Render the chart using ApexCharts\n            renderChart() {\n                const chartElement = document.querySelector(\"#chart-users\");\n\n                const options = {\n                    chart: {\n                        type: \"bar\",\n                        stacked: true,\n                        zoom: { enabled: true },\n                        toolbar: { show: true },\n                        height: 390,\n                        animations: {\n                            enabled: true,\n                            speed: 800,\n                        },\n                    },\n                    colors: ['#8957ff', '#ffc107', '#dc3545'],\n                    plotOptions: {\n                        bar: {\n                            columnWidth: \"23px\",\n                            borderRadius: 2\n                        }\n                    },\n                    series: [{\n                        name: \"Orders\",\n                        data: this.chartData.orders  // Fetched orders data\n                    }],\n                    xaxis: {\n                        categories: this.chartData.months,  // Fetched months (categories)\n                        labels: {\n                            style: {\n                                colors: \"#a1a1a1\",\n                                fontSize: \"13px\"\n                            }\n                        }\n                    },\n                    yaxis: {\n                        labels: {\n                            style: {\n                                colors: \"#a1a1a1\",\n                                fontSize: \"13px\"\n                            }\n                        }\n                    },\n                    grid: {\n                        borderColor: \"#999\",\n                        strokeDashArray: 3\n                    },\n                    dataLabels: {\n                        enabled: false\n                    },\n                    tooltip: {\n                        shared: true,\n                        intersect: false,\n                        y: {\n                            formatter: function (val) {\n                                return val.toFixed(0) + \" orders\";\n                            }\n                        }\n                    }\n                };\n\n                // Initialize chart only once\n                if (!this.chartInstance) {\n                    this.chartInstance = new ApexCharts(chartElement, options);\n                    this.chartInstance.render();\n                } else {\n                    this.chartInstance.updateOptions(options);  // Update chart if it already exists\n                }\n            },\n\n            // Method to refresh the chart (if needed)\n            refreshChart() {\n                this.fetchChartData();  // Fetch new data and re-render chart\n            }\n\t\t\t// Display progress message if current month is in progress\n       \n       \n    }};\n</script>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" x-init=\"init()\"><div class=\"card\"><div class=\"card-body pb-0\"><div class=\"d-flex justify-content-between align-items-center\"><div><h5 data-i18n=\"orders\">Orders</h5></div><div class=\"hstack align-items-center\"><a href=\"#\" class=\"text-muted\" @click=\"refreshChart\"><i class=\"bi bi-arrow-repeat\"></i></a></div></div><div class=\"mx-n4\"><div id=\"chart-users\" data-height=\"270\"></div></div></div></div></div><script>\n  \t\t function chartComponent(projectId) {\n    return {\n            projectID: projectId,  // Store project ID\n            chartData: {\n                months: [],  // Categories (Months)\n                orders: []  // Data for the chart\n            },\n        \tchartInstance: null,  // Store the ApexCharts instance\n \t\t\t\n            // Initialize and fetch data\n            async init() {\n                await this.fetchChartData();  // Fetch data first\n            },\n\n            // Fetch data from the server\n            async fetchChartData() {\n                try {\n                    const response = await fetch(`${window.location.origin}/order/monthy/chart/${this.projectID}`);\n                    const data = await response.json();                   \n\n                    // Assuming the API returns \"months\" and \"orders\" arrays\n                    this.chartData.months = data.months || [];\n                    this.chartData.orders = data.orders || [];\n\n                    // Render or update the chart after data is fetched\n                    this.renderChart();\n                } catch (error) {\n                    console.error('Error fetching chart data:', error);\n                }\n            },\n\n            // Render the chart using ApexCharts\n            renderChart() {\n                const chartElement = document.querySelector(\"#chart-users\");\n\n                const options = {\n                    chart: {\n                        type: \"bar\",\n                        stacked: true,\n                        zoom: { enabled: true },\n                        toolbar: { show: true },\n                        height: 390,\n                        animations: {\n                            enabled: true,\n                            speed: 800,\n                        },\n                    },\n                    colors: ['#8957ff', '#ffc107', '#dc3545'],\n                    plotOptions: {\n                        bar: {\n                            columnWidth: \"23px\",\n                            borderRadius: 2\n                        }\n                    },\n                    series: [{\n                        name: \"Orders\",\n                        data: this.chartData.orders  // Fetched orders data\n                    }],\n                    xaxis: {\n                        categories: this.chartData.months,  // Fetched months (categories)\n                        labels: {\n                            style: {\n                                colors: \"#a1a1a1\",\n                                fontSize: \"13px\"\n                            }\n                        }\n                    },\n                    yaxis: {\n                        labels: {\n                            style: {\n                                colors: \"#a1a1a1\",\n                                fontSize: \"13px\"\n                            }\n                        }\n                    },\n                    grid: {\n                        borderColor: \"#999\",\n                        strokeDashArray: 3\n                    },\n                    dataLabels: {\n                        enabled: false\n                    },\n                    tooltip: {\n                        shared: true,\n                        intersect: false,\n                        y: {\n                            formatter: function (val) {\n                                return val.toFixed(0) + \" orders\";\n                            }\n                        }\n                    }\n                };\n\n                // Initialize chart only once\n                if (!this.chartInstance) {\n                    this.chartInstance = new ApexCharts(chartElement, options);\n                    this.chartInstance.render();\n                } else {\n                    this.chartInstance.updateOptions(options);  // Update chart if it already exists\n                }\n            },\n\n            // Method to refresh the chart (if needed)\n            refreshChart() {\n                this.fetchChartData();  // Fetch new data and re-render chart\n            }\n\t\t\t// Display progress message if current month is in progress\n       \n       \n    }};\n</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

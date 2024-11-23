@@ -1,22 +1,20 @@
 package views
 
-
 import (
 	"fmt"
-	  woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
+	woo "github.com/stelgkio/otoo/internal/core/domain/woocommerce"
 )
 
 css loading(percent int64) {
 	width: { fmt.Sprintf("%d%%", percent) };
 }
 
-
 templ ProductBestSeller(bestSeller []*woo.ProductBestSellerRecord) {
 	<div class="card border-0 border-xxl">
 		<div class="card-body p-0 p-xxl-6">
 			<div class="d-flex justify-content-between align-items-center mb-5">
 				<div>
-					<h5>Best Seller</h5>
+					<h5 data-i18n="bestSeller">Best Seller</h5>
 				</div>
 				<div class="hstack align-items-center">
 					<a
@@ -26,42 +24,41 @@ templ ProductBestSeller(bestSeller []*woo.ProductBestSellerRecord) {
 				</div>
 			</div>
 			<div class="vstack gap-1">
-			for _,prod := range bestSeller {
-				<div class="d-flex bg-body-secondary gap-3 rounded-3 p-4">
-					<div class="vstack gap-2">
-						<div class="d-flex mb-1">
-							<div class="">
-								<span
-									class="d-block text-heading text-sm fw-semibold"
+				for _,prod := range bestSeller {
+					<div class="d-flex bg-body-secondary gap-3 rounded-3 p-4">
+						<div class="vstack gap-2">
+							<div class="d-flex mb-1">
+								<div class="">
+									<span
+										class="d-block text-heading text-sm fw-semibold"
+									>
+										{ prod.ProductName }
+									</span>
+									<span
+										class="d-block text-muted text-xs"
+									>
+										{ fmt.Sprintf("%.f%%",prod.TotalOrdersRate) }
+									</span>
+								</div>
+								<div
+									class="ms-auto d-block text-heading text-sm fw-semibold"
 								>
-									{ prod.ProductName}
-								</span>
-								<span
-									class="d-block text-muted text-xs"
-								>
-									{ fmt.Sprintf("%.f%%",prod.TotalOrdersRate) }
-								</span>
+									{ fmt.Sprintf("%d",prod.TotalOrders) }
+								</div>
 							</div>
-
-							<div
-								class="ms-auto d-block text-heading text-sm fw-semibold"
-							>
-								{ fmt.Sprintf("%d",prod.TotalOrders) }
+							<div class="progress bg-body-tertiary">
+								<div
+									class={ "progress-bar bg-primary", loading(int64(prod.TotalOrdersRate)) }
+									role="progressbar"
+									aria-label="Basic example"
+									aria-valuenow={ fmt.Sprintf("%d", int64(prod.TotalOrdersRate)) }
+									aria-valuemin="0"
+									aria-valuemax="100"
+								></div>
 							</div>
-						</div>
-						<div class="progress bg-body-tertiary">
-							<div
-								class={ "progress-bar bg-primary", loading(int64(prod.TotalOrdersRate)) }								
-								role="progressbar"
-								aria-label="Basic example"
-								aria-valuenow={ fmt.Sprintf("%d",int64(prod.TotalOrdersRate)) }
-								aria-valuemin="0"
-								aria-valuemax="100"
-							></div>
 						</div>
 					</div>
-				</div>
-			}
+				}
 			</div>
 		</div>
 	</div>

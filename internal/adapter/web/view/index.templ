@@ -19,85 +19,88 @@ templ IndexTemplate() {
 			<script src="https://unpkg.com/i18next-http-backend@1.5.19/i18nextHttpBackend.min.js"></script>
 			<script src="https://unpkg.com/i18next-browser-languagedetector@6.1.4/i18nextBrowserLanguageDetector.min.js"></script>
 		</head>
-		<body class="p-1 p-lg-2">
-			<div class="overflow-x-hidden rounded-top-4 pt-2 pt-lg-4">
+		<body class="">
+			<div class="overflow-x-hidden">
 				<header>
-					<div
-						class="w-lg-75 mx-2 mx-lg-auto position-relative z-2 px-lg-3 py-0 shadow-5 rounded-3 rounded-lg-pill bg-dark"
-					>
-						<nav class="navbar navbar-expand-lg navbar-dark p-0" id="navbar">
+					<div class="mx-lg-auto position-relative z-2 px-lg-3 py-0 bg-dark">
+						<nav class="navbar navbar-expand-lg navbar-dark p-0 fixed-top" id="navbar">
 							<div class="container px-sm-0">
 								<a class="navbar-brand d-inline-block w-lg-64" href="/index">
-									<h1 class="display-9 mylogo text-white fw-bolder lh-tight px-sm-1">
-										Otoo 
-									</h1>
+									<h1 class="display-9 mylogo text-white fw-bolder lh-tight px-sm-1">Otoo</h1>
 								</a>
-								<button
-									class="navbar-toggler"
-									type="button"
-									data-bs-toggle="collapse"
-									data-bs-target="#navbarCollapse"
-									aria-controls="navbarCollapse"
-									aria-expanded="false"
-									aria-label="Toggle navigation"
-								>
+								<button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 									<span class="navbar-toggler-icon"></span>
 								</button>
-								<div class="collapse navbar-collapse" id="navbarCollapse">
+								<div class="navbar-collapse collapse" id="navbarCollapse">
 									<ul class="navbar-nav gap-2 mx-lg-auto">
-										<li class="nav-item">
-											<a
-												class="nav-link rounded-pill"
-												href="#howtiworks"
-												aria-current="page"
-											>
-												How
-												it works
-											</a>
-										</li>
-										<li class="nav-item"><a class="nav-link rounded-pill" href="#speed">Speed</a></li>
-										<li class="nav-item">
-											<a class="nav-link rounded-pill" href="#custom">Customization</a>
-										</li>
-										<li class="nav-item"><a class="nav-link rounded-pill" href="#contact">Contact</a></li>
+										<ul class="navbar-nav gap-2 mx-lg-auto">
+											<li class="nav-item">
+												<a class="nav-link rounded-pill" href="#howtiworks" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">How it works</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link rounded-pill" href="#speed" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">Speed</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link rounded-pill" href="#custom" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">Customization</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link rounded-pill" href="#contact" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">Contact</a>
+											</li>
+										</ul>
 									</ul>
 									<div class="navbar-nav align-items-lg-center justify-content-end gap-2 ms-lg-4 w-lg-64">
 										<div class="dropdown">
-											<a
-												href="#"
-												class="nav-link"
-												data-bs-toggle="dropdown"
-												aria-expanded="false"
-											><i class="bi bi-translate"></i></a>
+											<a href="#" class="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+												<i class="bi bi-translate"></i>
+											</a>
 											<div class="dropdown-menu">
-												<button
-													type="button"
-													class="dropdown-item d-flex align-items-center"
-													onclick="changeLanguage('en')"
-												>English</button>
-												<button
-													type="button"
-													class="dropdown-item d-flex align-items-center"
-													onclick="changeLanguage('el')"
-												>Ελληνικά</button>
+												<button type="button" class="dropdown-item d-flex align-items-center" onclick="changeLanguage('en')">English</button>
+												<button type="button" class="dropdown-item d-flex align-items-center" onclick="changeLanguage('el')">Ελληνικά</button>
 											</div>
 										</div>
-										<a
-											class="nav-item nav-link rounded-pill d-none d-lg-block"
-											href="/login"
-										>Sign in</a>
-										<a
-											href="/register"
-											class="btn btn-sm btn-white bg-dark-hover border-0 rounded-pill w-100 w-lg-auto mb-4 mb-lg-0"
-										>
-											Get
-											started
-										</a>
+										<a class="nav-item nav-link rounded-pill d-none d-lg-block" href="/login">Sign in</a>
+										<a href="/register" class="btn btn-sm btn-white bg-dark-hover border-0 rounded-pill w-100 w-lg-auto mb-4 mb-lg-0">Get started</a>
 									</div>
 								</div>
 							</div>
 						</nav>
 					</div>
+					<style>
+  /* Default navbar style */
+  #navbar {
+    background-color: rgba(0, 0, 0, 0.3); /* Default background at the top */
+    transition: background-color 0.3s ease;
+	
+	
+  }
+
+  /* Darker background for scroll or toggled */
+  #navbar.scrolled, #navbar.toggled {
+    background-color: rgba(0, 0, 0, 0.9); /* Darker background */
+  }
+</style>
+					<script>
+  // JavaScript to handle scroll and toggle
+  const navbar = document.getElementById('navbar');
+  const navbarCollapse = document.getElementById('navbarCollapse');
+
+  window.addEventListener('scroll', function () {
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
+
+  navbarCollapse.addEventListener('shown.bs.collapse', function () {
+    navbar.classList.add('toggled');
+  });
+
+  navbarCollapse.addEventListener('hidden.bs.collapse', function () {
+    navbar.classList.remove('toggled');
+  });
+
+</script>
 				</header>
 				<main>
 					<div
@@ -589,6 +592,18 @@ templ IndexTemplate() {
 			<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 			<script src="./assets/js/main.js"></script>
 			<script src="./assets/js/translation.js"></script>
+			<script>
+			  document.querySelectorAll('.navbar-collapse .nav-link').forEach(function (link) {
+      link.addEventListener('click', function (event) {
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+          const navbarCollapse = document.querySelector('.navbar-collapse');
+          new bootstrap.Collapse(navbarCollapse).hide();
+        }
+      });
+    });	
+			</script>
 		</body>
 	</html>
 }

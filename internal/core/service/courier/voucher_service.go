@@ -229,9 +229,29 @@ func (vs *VoucherService) GetVoucherCountAsync(projectID string, voucherStatus d
 	}
 }
 
+// GetVoucherCountByProviderAsync retrieves the count of vouchers asynchronously
+func (vs *VoucherService) GetVoucherCountByProviderAsync(projectID string, voucherStatus domain.VoucherStatus, provider string, results chan<- int64, errors chan<- error) {
+	count, err := vs.repo.GetVoucherCountByProvider(projectID, voucherStatus, provider)
+	if err != nil {
+		errors <- err
+	} else {
+		results <- count
+	}
+}
+
 // FindVoucherByProjectIDAsync retrieves vouchers for a given project ID asynchronously
 func (vs *VoucherService) FindVoucherByProjectIDAsync(projectID string, size, page int, sort, direction string, voucherStatus domain.VoucherStatus, results chan<- []*domain.Voucher, errors chan<- error) {
 	vouchers, err := vs.repo.FindVoucherByProjectID(projectID, size, page, sort, direction, voucherStatus)
+	if err != nil {
+		errors <- err
+	} else {
+		results <- vouchers
+	}
+}
+
+// FindVoucherByProjectIDAndCourierProviderAsync retrieves vouchers for a given project ID asynchronously
+func (vs *VoucherService) FindVoucherByProjectIDAndCourierProviderAsync(projectID string, size, page int, sort, direction string, voucherStatus domain.VoucherStatus, provider string, results chan<- []*domain.Voucher, errors chan<- error) {
+	vouchers, err := vs.repo.FindVoucherByProjecAndCourierProvidertID(projectID, size, page, sort, direction, voucherStatus, provider)
 	if err != nil {
 		errors <- err
 	} else {

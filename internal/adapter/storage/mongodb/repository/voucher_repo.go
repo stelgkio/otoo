@@ -235,6 +235,64 @@ func (r *VoucherRepository) FindVoucherByProjectID(projectID string, size, page 
 	return vouchers, nil // Return the list of vouchers
 }
 
+// FindVoucherByProjecAndCourierProvidertID finds all vouchers by projectID with pagination and sorting.
+func (r *VoucherRepository) FindVoucherByProjecAndCourierProvidertID(projectID string, size, page int, sort, direction string, voucherStatus domain.VoucherStatus, provider string) ([]*domain.Voucher, error) {
+	collection := r.mongo.Database("otoo").Collection("vouchers")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	// Prepare filter to find vouchers for the given projectID
+	filter := bson.M{"projectId": projectID, "is_active": true, "status": voucherStatus, "courier_provider": provider}
+	if voucherStatus == domain.VoucherStatusAll {
+		filter = bson.M{"projectId": projectID, "is_active": true, "courier_provider": provider}
+	}
+	// Determine sort order
+	sortOrder := 1
+	if direction == "desc" {
+		sortOrder = -1
+	} else if direction == "" {
+		sortOrder = -1
+	}
+
+	// Set sort field
+	sortField := sort
+	if sort == "" {
+		sortField = "created_at" // Default sort field if none provided
+	}
+
+	// Create an aggregation pipeline
+	pipeline := mongo.Pipeline{
+		{{Key: "$match", Value: filter}},
+		{{Key: "$sort", Value: bson.D{{Key: sortField, Value: sortOrder}}}},
+		{{Key: "$skip", Value: int64(size * (page - 1))}}, // Skip for pagination
+		{{Key: "$limit", Value: int64(size)}},             // Limit the number of documents returned
+	}
+
+	cursor, err := collection.Aggregate(ctx, pipeline)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil // No documents found
+		}
+		return nil, err // Return any other error
+	}
+	defer cursor.Close(ctx)
+
+	var vouchers []*domain.Voucher
+	for cursor.Next(ctx) {
+		var voucher domain.Voucher
+		if err := cursor.Decode(&voucher); err != nil {
+			return nil, err // Return decoding error
+		}
+		vouchers = append(vouchers, &voucher) // Append to results
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err // Return cursor error
+	}
+
+	return vouchers, nil // Return the list of vouchers
+}
+
 // DeleteVouchersByID marks a Voucher as inactive by setting is_active to false and adding a deleted_at timestamp.
 func (r *VoucherRepository) DeleteVouchersByID(ctx echo.Context, voucherID string) error {
 	collection := r.mongo.Database("otoo").Collection("vouchers")
@@ -267,6 +325,31 @@ func (r *VoucherRepository) GetVoucherCount(projectID string, voucherStatus doma
 
 	// Prepare filter to count vouchers for the given projectID and status
 	filter := bson.M{"projectId": projectID, "is_active": true}
+
+	// If a specific status is provided, include it in the filter
+	if voucherStatus != domain.VoucherStatusAll {
+		filter["status"] = voucherStatus
+	}
+
+	// Count the documents that match the filter
+	count, err := coll.CountDocuments(ctx, filter)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return 0, nil // No documents found
+		}
+		return 0, err // Return any other error
+	}
+	return count, nil // Return the count of vouchers
+}
+
+// GetVoucherCountByProvider gets the number of vouchers by projectID and status.
+func (r *VoucherRepository) GetVoucherCountByProvider(projectID string, voucherStatus domain.VoucherStatus, provider string) (int64, error) {
+	coll := r.mongo.Database("otoo").Collection("vouchers")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	// Prepare filter to count vouchers for the given projectID and status
+	filter := bson.M{"projectId": projectID, "is_active": true, "courier_provider": provider}
 
 	// If a specific status is provided, include it in the filter
 	if voucherStatus != domain.VoucherStatusAll {

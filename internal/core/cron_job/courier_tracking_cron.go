@@ -104,11 +104,11 @@ func (c *CourierTrackingCron) RunCourier4uTrackingCron() error {
 
 			vooucherCountChan := make(chan int64, 1)
 			errChan := make(chan error, 1)
-			slog.Info("No vouchers count ", "projectID", projectID)
+
 			wg2.Add(1)
 			go func() {
 				defer wg2.Done()
-				c.voucherSvc.GetVoucherCountAsync(projectID, cr.VoucherStatusProcessing, vooucherCountChan, errChan)
+				c.voucherSvc.GetVoucherCountByProviderAsync(projectID, cr.VoucherStatusProcessing, "courier4u", vooucherCountChan, errChan)
 			}()
 			go func() {
 				wg2.Wait()
@@ -139,7 +139,7 @@ func (c *CourierTrackingCron) RunCourier4uTrackingCron() error {
 				//	errProjectChan <- errors.New("no vouchers found for project")
 				return
 			}
-			slog.Info("No voucher count extension found for project", "projectID", projectID, "totalVouchers", totalVouchers)
+			slog.Info("Voucher count courier4u extension found for project", "projectID", projectID, "totalVouchers", totalVouchers)
 			workers := int(math.Ceil(float64(totalVouchers) / 100))
 			if workers == 0 {
 				workers = 1
@@ -152,7 +152,7 @@ func (c *CourierTrackingCron) RunCourier4uTrackingCron() error {
 				wg2.Add(1)
 				go func() {
 					defer wg2.Done()
-					c.voucherSvc.FindVoucherByProjectIDAsync(projectID, 100, i+1, "orderId", "desc", cr.VoucherStatusProcessing, voucherListChan, errListChan)
+					c.voucherSvc.FindVoucherByProjectIDAndCourierProviderAsync(projectID, 100, i+1, "orderId", "desc", cr.VoucherStatusProcessing, "courier4u", voucherListChan, errListChan)
 				}()
 			}
 
@@ -233,7 +233,7 @@ func (c *CourierTrackingCron) RunRedCourierTrackingCron() error {
 			errChan := make(chan error, 1)
 			go func() {
 				defer wg.Done()
-				c.voucherSvc.GetVoucherCountAsync(projectID.String(), cr.VoucherStatusProcessing, vooucherCountChan, errChan)
+				c.voucherSvc.GetVoucherCountByProviderAsync(projectID.String(), cr.VoucherStatusProcessing, "redcourier", vooucherCountChan, errChan)
 			}()
 			go func() {
 				wg.Wait()
@@ -267,7 +267,7 @@ func (c *CourierTrackingCron) RunRedCourierTrackingCron() error {
 				wg.Add(1)
 				go func() {
 					defer wg.Done()
-					c.voucherSvc.FindVoucherByProjectIDAsync(projectID.String(), 100, i+1, "orderId", "desc", cr.VoucherStatusProcessing, voucherListChan, errListChan)
+					c.voucherSvc.FindVoucherByProjectIDAndCourierProviderAsync(projectID.String(), 100, i+1, "orderId", "desc", cr.VoucherStatusProcessing, "redcourier", voucherListChan, errListChan)
 				}()
 			}
 

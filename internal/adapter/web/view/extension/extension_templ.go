@@ -42,7 +42,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					return templ_7745c5c3_Err
 				}
 				if domain.ContainsExtensionID(projectExtensions, extension.ID.Hex()) {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-primary border-0 shadow-4 shadow-6-hover card-disabled\"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">ASC Courier</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">29€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-primary border-0 shadow-4 shadow-6-hover card-disabled\"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">ASC Courier</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">19€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -73,7 +73,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 						return templ_7745c5c3_Err
 					}
 				} else {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-primary border-0 shadow-4 shadow-6-hover \"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">ASC Courier</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">29€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-primary border-0 shadow-4 shadow-6-hover \"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">ASC Courier</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">19€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -127,7 +127,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">29€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">19€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -171,7 +171,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">29€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">19€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -225,7 +225,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">29€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">19€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -269,7 +269,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">29€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">19€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -310,7 +310,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					return templ_7745c5c3_Err
 				}
 				if domain.ContainsExtensionID(projectExtensions, extension.ID.Hex()) {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-dark shadow-4 shadow-6-hover card-disabled\"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">Wallet & Expenses</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">23€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-dark shadow-4 shadow-6-hover card-disabled\"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">Wallet & Expenses</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">13€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -341,7 +341,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 						return templ_7745c5c3_Err
 					}
 				} else {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-dark shadow-4 shadow-6-hover \"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">Wallet & Expenses</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">23€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-dark shadow-4 shadow-6-hover \"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">Wallet & Expenses</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">13€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -382,7 +382,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					return templ_7745c5c3_Err
 				}
 				if domain.ContainsExtensionID(projectExtensions, extension.ID.Hex()) {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-dark shadow-4 shadow-6-hover card-disabled\"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">Data Synchronizer</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">290€/yr</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-dark shadow-4 shadow-6-hover card-disabled\"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">Data Synchronizer</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">190€/yr</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -426,7 +426,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 						return templ_7745c5c3_Err
 					}
 				} else {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-dark shadow-4 shadow-6-hover \"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">Data Synchronizer</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">290€/yr</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card card-pricing text-bg-dark shadow-4 shadow-6-hover \"><div class=\"p-6\"><h3 class=\"text-reset ls-tight mb-1\">Data Synchronizer</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">190€/yr</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -493,7 +493,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">20€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">10€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -550,7 +550,7 @@ func Extensions(projectId string, extensions []*domain.Extension, projectExtensi
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">20€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3><div class=\"d-flex align-items-center my-5\"><span class=\"d-block display-5 text-reset\">10€/mo</span></div><p class=\"text-reset text-opacity-75 mb-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}

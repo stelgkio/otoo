@@ -57,6 +57,7 @@ func (dh *DashboardHandler) Payment(c echo.Context) error {
 
 func checkout(email, projectID, extensionID, priceID string) (*stripe.CheckoutSession, error) {
 	var discounts []*stripe.CheckoutSessionDiscountParams
+
 	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
 
 	// Initialize variable to store the customer ID
@@ -110,8 +111,9 @@ func checkout(email, projectID, extensionID, priceID string) (*stripe.CheckoutSe
 		PaymentMethodTypes: stripe.StringSlice([]string{
 			"card",
 		}),
-		Discounts: discounts,
-		Mode:      stripe.String(string(stripe.CheckoutSessionModeSubscription)),
+		Discounts:           discounts,
+		AllowPromotionCodes: stripe.Bool(true),
+		Mode:                stripe.String(string(stripe.CheckoutSessionModeSubscription)),
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
 			{
 				Price:    stripe.String(priceID),
